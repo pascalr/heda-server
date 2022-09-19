@@ -41,7 +41,7 @@ var helloWorldContent = function (req, res, next) {
 }
 
 var server = connect.createServer(
-  connect.logger({ format: ':method :url' }),
+  //connect.logger({ format: ':method :url' }),
   connect.cookieParser(),
   connect.session({ secret: 'foobar' }),
   connect.bodyParser(),
