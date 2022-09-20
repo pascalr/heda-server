@@ -1,1 +1,7 @@
 # Heda Server
+
+## Npm watch
+Pour voir les modifications en effet chaque fois qu'un fichier change, il faut installer watch.
+https://stackoverflow.com/questions/60424844/do-i-need-to-run-npm-run-build-every-time-i-made-changes
+1. npm install watch
+1. watch 'npm start'

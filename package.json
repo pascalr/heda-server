@@ -28,7 +28,8 @@
   },
   "license": "Unlicense",
   "scripts": {
-    "start": "node ./server.js"
+    "start": "node ./server.js",
+    "build": "esbuild app.jsx --bundle --outfile=build/compiled.js"
   },
   "dependencies": {
     "connect-ensure-login": "^0.1.1",
@@ -37,6 +38,7 @@
     "csurf": "^1.11.0",
     "debug": "~2.6.9",
     "ejs": "~2.6.1",
+    "esbuild": "^0.15.8",
     "express": "~4.16.1",
     "express-session": "^1.17.2",
     "http-errors": "~1.6.3",
@@ -45,6 +47,9 @@
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "pluralize": "^8.0.0",
-    "sqlite3": "^5.0.2"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "sqlite3": "^5.0.2",
+    "watch": "^1.0.2"
   }
 }
