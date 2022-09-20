@@ -31,7 +31,9 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(path.join(__dirname, '..'), 'public')));
+app.use(express.static(path.join(__dirname, '../node_modules/bootstrap/dist/')));
+app.use(express.static(path.join(__dirname, '../node_modules/bootstrap/dist/')));
+app.use(express.static(path.join(__dirname, '../public')));
 app.use(session({
   secret: 'keyboard cat',
   resave: false, // don't save session if unmodified
