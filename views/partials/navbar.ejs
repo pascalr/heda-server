@@ -1,0 +1,13 @@
+<section class="todoapp">
+  <nav class="nav">
+    <ul>
+      <li class="user"><%= user.username %></li>
+      <li>
+        <form action="/logout" method="post">
+          <button class="logout" type="submit">Sign out</button>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        </form>
+      </li>
+    </ul>
+  </nav>
+</section>
