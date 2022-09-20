@@ -8,3 +8,4 @@ https://stackoverflow.com/questions/60424844/do-i-need-to-run-npm-run-build-ever
 
 ## Credit
 Les os de l'application ont de base été créer selon: https://github.com/passport/todos-express-password
+Les images de chefs cuisinier: https://pixabay.com/vectors/chef-character-cook-gourmet-1417239/

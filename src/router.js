@@ -11,17 +11,6 @@ var tododb = new sqlite3.Database('./var/db/todos.db');
 var ensureLoggedIn = ensureLogIn();
 var router = express.Router();
 
-/* Configure password authentication strategy.
- *
- * The `LocalStrategy` authenticates users by verifying a username and password.
- * The strategy parses the username and password from the request and calls the
- * `verify` function.
- *
- * The `verify` function queries the database for the user record and verifies
- * the password by hashing the password supplied by the user and comparing it to
- * the hashed password stored in the database.  If the comparison succeeds, the
- * user is authenticated; otherwise, not.
- */
 passport.use(new LocalStrategy(function verify(email, password, cb) {
   db.get('SELECT * FROM accounts WHERE email = ?', [ email ], function(err, row) {
     if (err) { return cb(err); }
@@ -68,31 +57,17 @@ router.get('/login', function(req, res, next) {
   res.render('login');
 });
 
-router.get('/choose_user', function(req, res, next) {
+router.get('/choose_user', fetchUsers, function(req, res, next) {
   res.render('choose_user');
 });
 
-//router.post('/choose_user', function(req, res, next) {
-//});
+router.post('/choose_user', function(req, res, next) {
+  console.log(req.body.user_id)
+  res.redirect('/');
+});
 
-/* POST /login/password
- *
- * This route authenticates the user by verifying a username and password.
- *
- * A username and password are submitted to this route via an HTML form, which
- * was rendered by the `GET /login` route.  The username and password is
- * authenticated using the `local` strategy.  The strategy will parse the
- * username and password from the request and call the `verify` function.
- *
- * Upon successful authentication, a login session will be established.  As the
- * user interacts with the app, by clicking links and submitting forms, the
- * subsequent requests will be authenticated by verifying the session.
- *
- * When authentication fails, the user will be re-prompted to login and shown
- * a message informing them of what went wrong.
- */
 router.post('/login/password', passport.authenticate('local', {
-  successReturnToOrRedirect: '/',
+  successReturnToOrRedirect: '/choose_user',
   failureRedirect: '/login',
   failureMessage: true
 }));
@@ -245,6 +220,24 @@ router.post('/reset', function (req, res, next) {
   //  }
   //});
 });
+
+function fetchUsers(req, res, next) {
+  db.all('SELECT * FROM users WHERE account_id = ?', [
+    req.user.id
+  ], function(err, rows) {
+    if (err) { return next(err); }
+
+    var users = rows.map(function(row) {
+      return {
+        id: row.id,
+        email: row.email,
+        name: row.name
+      }
+    })
+    res.locals.users = users;
+    next();
+  })
+}
 
 function fetchRecipes(req, res, next) {
   db.all('SELECT * FROM recipes WHERE user_id = ?', [
