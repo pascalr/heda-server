@@ -2,8 +2,11 @@ var express = require('express');
 var passport = require('passport');
 var LocalStrategy = require('passport-local');
 var crypto = require('crypto');
-var db = require('./db');
 var ensureLogIn = require('connect-ensure-login').ensureLoggedIn;
+var sqlite3 = require('sqlite3');
+
+var db = new sqlite3.Database('./var/db/dev.db');
+var tododb = new sqlite3.Database('./var/db/todos.db');
 
 var ensureLoggedIn = ensureLogIn();
 var router = express.Router();
@@ -19,14 +22,21 @@ var router = express.Router();
  * the hashed password stored in the database.  If the comparison succeeds, the
  * user is authenticated; otherwise, not.
  */
-passport.use(new LocalStrategy(function verify(username, password, cb) {
-  db.get('SELECT * FROM users WHERE username = ?', [ username ], function(err, row) {
+passport.use(new LocalStrategy(function verify(email, password, cb) {
+  db.get('SELECT * FROM users WHERE email = ?', [ email ], function(err, row) {
     if (err) { return cb(err); }
     if (!row) { return cb(null, false, { message: 'Incorrect username or password.' }); }
-    
+   
+    console.log('password: ', password)
+    console.log('salt: ', row.salt)
     crypto.pbkdf2(password, row.salt, 310000, 32, 'sha256', function(err, hashedPassword) {
+      console.log('hashed: ', hashedPassword)
+      console.log('encrypted: ', row.encrypted_password)
+      var buf = typeof row.encrypted_password === 'string' ? Buffer.from(row.encrypted_password, 'utf8') : row.encrypted_password
+      console.log('buf: ', buf)
+      console.log('heeeeeeeeeeeeeeeeerrrrrrrrrrrrrrrrrrrrrreeeeeeeeeeeeeeeeeeeeeeee')
       if (err) { return cb(err); }
-      if (!crypto.timingSafeEqual(row.hashed_password, hashedPassword)) {
+      if (!crypto.timingSafeEqual(buf, hashedPassword)) {
         return cb(null, false, { message: 'Incorrect username or password.' });
       }
       return cb(null, row);
@@ -51,7 +61,7 @@ passport.use(new LocalStrategy(function verify(username, password, cb) {
  */
 passport.serializeUser(function(user, cb) {
   process.nextTick(function() {
-    cb(null, { id: user.id, username: user.username });
+    cb(null, { id: user.id, username: user.email });
   });
 });
 
@@ -61,14 +71,6 @@ passport.deserializeUser(function(user, cb) {
   });
 });
 
-/* GET /login
- *
- * This route prompts the user to log in.
- *
- * The 'login' view renders an HTML form, into which the user enters their
- * username and password.  When the user submits the form, a request will be
- * sent to the `POST /login/password` route.
- */
 router.get('/login', function(req, res, next) {
   res.render('login');
 });
@@ -95,10 +97,6 @@ router.post('/login/password', passport.authenticate('local', {
   failureMessage: true
 }));
 
-/* POST /logout
- *
- * This route logs the user out.
- */
 router.post('/logout', function(req, res, next) {
   req.logout(function(err) {
     if (err) { return next(err); }
@@ -106,17 +104,29 @@ router.post('/logout', function(req, res, next) {
   });
 });
 
-/* GET /signup
- *
- * This route prompts the user to sign up.
- *
- * The 'signup' view renders an HTML form, into which the user enters their
- * desired username and password.  When the user submits the form, a request
- * will be sent to the `POST /signup` route.
- */
 router.get('/signup', function(req, res, next) {
   res.render('signup');
 });
+
+// https://stackoverflow.com/questions/5914020/javascript-date-to-string
+function padStr(i) {
+  return (i < 10) ? "0" + i : "" + i;
+}
+
+// Get the time of now. Format looks like: 2022-09-20T17:48:11.522Z
+// The format is comptatible with Ruby on Rails.
+// FIXME: This is not tested, I am not sure this is compatible...
+function nowStr() {
+  let now = new Date();
+  let s = padStr(now.getFullYear()) + '-' +
+          padStr(1 + now.getMonth()) + '-' +
+          padStr(now.getDate()) + ' ' +
+          padStr(now.getHours()) + ':' +
+          padStr(now.getMinutes()) + ':' +
+          padStr(now.getSeconds()) + '.' +
+          now.getMilliseconds() + '000';
+  return s
+}
 
 /* POST /signup
  *
@@ -131,10 +141,8 @@ router.post('/signup', function(req, res, next) {
   var salt = crypto.randomBytes(16);
   crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', function(err, hashedPassword) {
     if (err) { return next(err); }
-    db.run('INSERT INTO users (username, hashed_password, salt) VALUES (?, ?, ?)', [
-      req.body.username,
-      hashedPassword,
-      salt
+    db.run('INSERT INTO users (email, encrypted_password, salt, created_at, updated_at) VALUES (?, ?, ?, ?, ?)', [
+      req.body.username, hashedPassword, salt, nowStr(), nowStr() 
     ], function(err) {
       if (err) { return next(err); }
       var user = {
@@ -149,8 +157,26 @@ router.post('/signup', function(req, res, next) {
   });
 });
 
+function fetchRecipes(req, res, next) {
+  db.all('SELECT * FROM recipes WHERE user_id = ?', [
+    req.user.id
+  ], function(err, rows) {
+    if (err) { return next(err); }
+
+    var recipes = rows.map(function(row) {
+      return {
+        id: row.id,
+        name: row.name
+      }
+    })
+    res.locals.recipes = recipes;
+    next();
+  })
+
+}
+
 function fetchTodos(req, res, next) {
-  db.all('SELECT * FROM todos WHERE owner_id = ?', [
+  tododb.all('SELECT * FROM todos WHERE owner_id = ?', [
     req.user.id
   ], function(err, rows) {
     if (err) { return next(err); }
@@ -174,22 +200,27 @@ function fetchTodos(req, res, next) {
 router.get('/', function(req, res, next) {
   if (!req.user) { return res.render('home'); }
   next();
-}, fetchTodos, function(req, res, next) {
+}, fetchRecipes, fetchTodos, function(req, res, next) {
   res.locals.filter = null;
   res.render('index', { user: req.user });
 });
 
-router.get('/active', ensureLoggedIn, fetchTodos, function(req, res, next) {
+router.get('/active', ensureLoggedIn, fetchRecipes, fetchTodos, function(req, res, next) {
   res.locals.todos = res.locals.todos.filter(function(todo) { return !todo.completed; });
   res.locals.filter = 'active';
   res.render('index', { user: req.user });
 });
 
-router.get('/completed', ensureLoggedIn, fetchTodos, function(req, res, next) {
+router.get('/completed', ensureLoggedIn, fetchRecipes, fetchTodos, function(req, res, next) {
   res.locals.todos = res.locals.todos.filter(function(todo) { return todo.completed; });
   res.locals.filter = 'completed';
   res.render('index', { user: req.user });
 });
+
+function handleError(err, req, res, next) {
+  if (err) { return next(err); }
+  return res.redirect('/' + (req.body.filter || ''));
+}
 
 router.post('/', ensureLoggedIn, function(req, res, next) {
   req.body.title = req.body.title.trim();
@@ -198,14 +229,11 @@ router.post('/', ensureLoggedIn, function(req, res, next) {
   if (req.body.title !== '') { return next(); }
   return res.redirect('/' + (req.body.filter || ''));
 }, function(req, res, next) {
-  db.run('INSERT INTO todos (owner_id, title, completed) VALUES (?, ?, ?)', [
+  tododb.run('INSERT INTO todos (owner_id, title, completed) VALUES (?, ?, ?)', [
     req.user.id,
     req.body.title,
     req.body.completed == true ? 1 : null
-  ], function(err) {
-    if (err) { return next(err); }
-    return res.redirect('/' + (req.body.filter || ''));
-  });
+  ], function(err) {handleError(err, req, res, next)});
 });
 
 router.post('/:id(\\d+)', ensureLoggedIn, function(req, res, next) {
@@ -213,53 +241,38 @@ router.post('/:id(\\d+)', ensureLoggedIn, function(req, res, next) {
   next();
 }, function(req, res, next) {
   if (req.body.title !== '') { return next(); }
-  db.run('DELETE FROM todos WHERE id = ? AND owner_id = ?', [
+  tododb.run('DELETE FROM todos WHERE id = ? AND owner_id = ?', [
     req.params.id,
     req.user.id
-  ], function(err) {
-    if (err) { return next(err); }
-    return res.redirect('/' + (req.body.filter || ''));
-  });
+  ], function(err) {handleError(err, req, res, next)});
 }, function(req, res, next) {
-  db.run('UPDATE todos SET title = ?, completed = ? WHERE id = ? AND owner_id = ?', [
+  tododb.run('UPDATE todos SET title = ?, completed = ? WHERE id = ? AND owner_id = ?', [
     req.body.title,
     req.body.completed !== undefined ? 1 : null,
     req.params.id,
     req.user.id
-  ], function(err) {
-    if (err) { return next(err); }
-    return res.redirect('/' + (req.body.filter || ''));
-  });
+  ], function(err) {handleError(err, req, res, next)});
 });
 
 router.post('/:id(\\d+)/delete', ensureLoggedIn, function(req, res, next) {
-  db.run('DELETE FROM todos WHERE id = ? AND owner_id = ?', [
+  tododb.run('DELETE FROM todos WHERE id = ? AND owner_id = ?', [
     req.params.id,
     req.user.id
-  ], function(err) {
-    if (err) { return next(err); }
-    return res.redirect('/' + (req.body.filter || ''));
-  });
+  ], function(err) {handleError(err, req, res, next)});
 });
 
 router.post('/toggle-all', ensureLoggedIn, function(req, res, next) {
-  db.run('UPDATE todos SET completed = ? WHERE owner_id = ?', [
+  tododb.run('UPDATE todos SET completed = ? WHERE owner_id = ?', [
     req.body.completed !== undefined ? 1 : null,
     req.user.id
-  ], function(err) {
-    if (err) { return next(err); }
-    return res.redirect('/' + (req.body.filter || ''));
-  });
+  ], function(err) {handleError(err, req, res, next)});
 });
 
 router.post('/clear-completed', ensureLoggedIn, function(req, res, next) {
-  db.run('DELETE FROM todos WHERE owner_id = ? AND completed = ?', [
+  tododb.run('DELETE FROM todos WHERE owner_id = ? AND completed = ?', [
     req.user.id,
     1
-  ], function(err) {
-    if (err) { return next(err); }
-    return res.redirect('/' + (req.body.filter || ''));
-  });
+  ], function(err) {handleError(err, req, res, next)});
 });
 
 module.exports = router;

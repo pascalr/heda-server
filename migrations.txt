@@ -1,0 +1,5 @@
+ALTER TABLE users ADD COLUMN salt;
+tododb.run('INSERT INTO users (username, hashed_password, salt) VALUES (?, ?, ?)', [
+
+EXEMPLES:
+ALTER TABLE users ADD COLUMN score NOT NULL DEFAULT 0;
