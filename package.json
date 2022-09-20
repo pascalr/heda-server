@@ -28,8 +28,8 @@
   },
   "license": "Unlicense",
   "scripts": {
-    "start": "node ./server.js",
-    "build": "esbuild app.jsx --bundle --outfile=build/compiled.js"
+    "start": "node ./src/server.js",
+    "build": "esbuild app.jsx --bundle --outfile=build/app.js"
   },
   "dependencies": {
     "connect-ensure-login": "^0.1.1",
