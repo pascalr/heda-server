@@ -5,6 +5,7 @@ var sqlite3 = require('sqlite3');
 
 var db = require('./db');
 var passport = require('./passport');
+var utils = require('./utils');
 
 var tododb = new sqlite3.Database('./var/db/todos.db');
 
@@ -41,26 +42,6 @@ router.get('/signup', function(req, res, next) {
   res.render('signup');
 });
 
-// https://stackoverflow.com/questions/5914020/javascript-date-to-string
-function padStr(i) {
-  return (i < 10) ? "0" + i : "" + i;
-}
-
-// Get the time of now. Format looks like: 2022-09-20T17:48:11.522Z
-// The format is comptatible with Ruby on Rails.
-// FIXME: This is not tested, I am not sure this is compatible...
-function nowStr() {
-  let now = new Date();
-  let s = padStr(now.getFullYear()) + '-' +
-          padStr(1 + now.getMonth()) + '-' +
-          padStr(now.getDate()) + ' ' +
-          padStr(now.getHours()) + ':' +
-          padStr(now.getMinutes()) + ':' +
-          padStr(now.getSeconds()) + '.' +
-          now.getMilliseconds() + '000';
-  return s
-}
-
 /* POST /signup
  *
  * This route creates a new user account.
@@ -75,7 +56,7 @@ router.post('/signup', function(req, res, next) {
   crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', function(err, hashedPassword) {
     if (err) { return next(err); }
     db.run('INSERT INTO accounts (email, encrypted_password, salt, created_at, updated_at) VALUES (?, ?, ?, ?, ?)', [
-      req.body.username, hashedPassword, salt, nowStr(), nowStr() 
+      req.body.username, hashedPassword, salt, utils.now(), utils.now() 
     ], function(err) {
       if (err) { return next(err); }
       var user = {
@@ -134,7 +115,7 @@ router.post('/reset', function (req, res, next) {
   crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', function(err, hashedPassword) {
     if (err) { return next(err); }
     db.run('UPDATE accounts SET encrypted_password = ?, salt = ?, updated_at = ? WHERE reset_password_token = ?', [
-        hashedPassword, salt, nowStr(), req.body.token
+        hashedPassword, salt, utils.now(), req.body.token
       ], function(err) {
         if (err) { return next(err); }
         var user = {

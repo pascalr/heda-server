@@ -8,3 +8,6 @@ Match session et mes users à moi.
 Écrire chacune des routes qui modifie la base de donnée...
 Pouvoir modifier le mot de passe des utilisateurs: https://stackoverflow.com/questions/20277020/how-to-reset-change-password-in-node-js-with-passport-js
 Add security to password reset (token expiration) Unique token. Not null token
+
+Later (other users):
+Create default user for account
