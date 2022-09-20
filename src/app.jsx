@@ -1,5 +1,12 @@
-import * as React from 'react'
-import * as Server from 'react-dom/server'
+import React, { useState, useEffect, useRef } from 'react'
+import ReactDOM from 'react-dom'
 
-let Greet = () => <h1>Hello, world!</h1>
-console.log(Server.renderToString(<Greet />))
+const App = () => {
+  return <h2>IT WORKS!!!</h2>
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  const root = document.getElementById('root')
+  if (root) {ReactDOM.render(<App/>, root)}
+})

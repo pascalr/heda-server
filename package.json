@@ -29,7 +29,7 @@
   "license": "Unlicense",
   "scripts": {
     "start": "node ./src/server.js",
-    "build": "esbuild app.jsx --bundle --outfile=build/app.js"
+    "build": "esbuild src/app.jsx --bundle --outfile=public/build/app.js"
   },
   "dependencies": {
     "connect-ensure-login": "^0.1.1",
