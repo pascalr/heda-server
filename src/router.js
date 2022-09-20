@@ -23,20 +23,13 @@ var router = express.Router();
  * user is authenticated; otherwise, not.
  */
 passport.use(new LocalStrategy(function verify(email, password, cb) {
-  db.get('SELECT * FROM users WHERE email = ?', [ email ], function(err, row) {
+  db.get('SELECT * FROM accounts WHERE email = ?', [ email ], function(err, row) {
     if (err) { return cb(err); }
     if (!row) { return cb(null, false, { message: 'Incorrect username or password.' }); }
    
-    console.log('password: ', password)
-    console.log('salt: ', row.salt)
     crypto.pbkdf2(password, row.salt, 310000, 32, 'sha256', function(err, hashedPassword) {
-      console.log('hashed: ', hashedPassword)
-      console.log('encrypted: ', row.encrypted_password)
-      var buf = typeof row.encrypted_password === 'string' ? Buffer.from(row.encrypted_password, 'utf8') : row.encrypted_password
-      console.log('buf: ', buf)
-      console.log('heeeeeeeeeeeeeeeeerrrrrrrrrrrrrrrrrrrrrreeeeeeeeeeeeeeeeeeeeeeee')
       if (err) { return cb(err); }
-      if (!crypto.timingSafeEqual(buf, hashedPassword)) {
+      if (!crypto.timingSafeEqual(row.encrypted_password, hashedPassword)) {
         return cb(null, false, { message: 'Incorrect username or password.' });
       }
       return cb(null, row);
@@ -74,6 +67,13 @@ passport.deserializeUser(function(user, cb) {
 router.get('/login', function(req, res, next) {
   res.render('login');
 });
+
+router.get('/choose_user', function(req, res, next) {
+  res.render('choose_user');
+});
+
+//router.post('/choose_user', function(req, res, next) {
+//});
 
 /* POST /login/password
  *
@@ -141,7 +141,7 @@ router.post('/signup', function(req, res, next) {
   var salt = crypto.randomBytes(16);
   crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', function(err, hashedPassword) {
     if (err) { return next(err); }
-    db.run('INSERT INTO users (email, encrypted_password, salt, created_at, updated_at) VALUES (?, ?, ?, ?, ?)', [
+    db.run('INSERT INTO accounts (email, encrypted_password, salt, created_at, updated_at) VALUES (?, ?, ?, ?, ?)', [
       req.body.username, hashedPassword, salt, nowStr(), nowStr() 
     ], function(err) {
       if (err) { return next(err); }
@@ -200,7 +200,7 @@ router.post('/reset', function (req, res, next) {
   var salt = crypto.randomBytes(16);
   crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', function(err, hashedPassword) {
     if (err) { return next(err); }
-    db.run('UPDATE users SET encrypted_password = ?, salt = ?, updated_at = ? WHERE reset_password_token = ?', [
+    db.run('UPDATE accounts SET encrypted_password = ?, salt = ?, updated_at = ? WHERE reset_password_token = ?', [
         hashedPassword, salt, nowStr(), req.body.token
       ], function(err) {
         if (err) { return next(err); }
