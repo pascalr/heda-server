@@ -135,7 +135,6 @@ router.post('/reset', function (req, res, next) {
 
 //class AppController < ApplicationController
 //  def index
-//    gon.suggestions = current_user.suggestions.includes(:recipe).map {|s| o = s.to_obj_with_recipe_info}
 //    gon.current_user_admin = current_user_admin?
 //    gon.recipe_filters = RecipeFilter.where(user_id: nil).or(current_user.recipe_filters).map {|f| f.to_obj }
 //    gon.favorite_recipes = current_user.favorite_recipes.includes(:recipe).sort_by {|fav| fav.recipe.name}.map{|fav| fav.to_obj}
@@ -230,9 +229,7 @@ function fetchMachines(req, res, next) {
 function fetchFavoriteRecipes(req, res, next) {
   // , 'image_used_id'
   fetchTable('favorite_recipes', {}, ['list_id', 'recipe_id'], res, next, (favorite_recipes) => {
-    //let r = res.locals.recipes.find(r => r.id == 
-    return favorite_recipes
-    //return utils.sortBy(favorite_recipes, 'name')
+    return utils.sortBy(favorite_recipes, 'name')
   })
 }
 
@@ -257,8 +254,20 @@ router.get('/', function(req, res, next) {
   if (!req.user) { return res.render('home'); }
   next();
 }, fetchUsers, fetchRecipes, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchFavoriteRecipes, fetchSuggestions, fetchPublicRecipeFilters, fetchUserRecipeFilters, function(req, res, next) {
-  res.locals.filter = null;
   let user = res.locals.users.find(u => u.id == req.user.user_id)
+
+  console.log('recipes', res.locals.recipes)
+  // Set the recipe name for the favorite recipes
+  res.locals.favorite_recipes.forEach(o => {
+    console.log('id', o.recipe_id)
+    let r = res.locals.recipes.find(r => r.id == o.recipe_id)
+    if (r) {
+      o.name = r.name
+    } else {
+      console.log('WARNING: Missing recipe for favorite recipe')
+    }
+  })
+
   res.render('index', { user, account: req.user });
 });
 
