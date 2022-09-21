@@ -126,36 +126,10 @@ router.post('/reset', function (req, res, next) {
       }
     );
   });
-  //db.get('SELECT * FROM users WHERE token = ?', [ req.body.token ], function(err, row) {
-  //  if (err) { return cb(err); }
-  //  if (!row) { return cb(null, false, { message: 'Incorrect username or password.' }); }
-  // 
-  //  console.log('password: ', password)
-  //  console.log('salt: ', row.salt)
-  //  crypto.pbkdf2(password, row.salt, 310000, 32, 'sha256', function(err, hashedPassword) {
-  //    console.log('hashed: ', hashedPassword)
-  //    console.log('encrypted: ', row.encrypted_password)
-  //    var buf = typeof row.encrypted_password === 'string' ? Buffer.from(row.encrypted_password, 'utf8') : row.encrypted_password
-  //    console.log('buf: ', buf)
-  //    console.log('heeeeeeeeeeeeeeeeerrrrrrrrrrrrrrrrrrrrrreeeeeeeeeeeeeeeeeeeeeeee')
-  //    if (err) { return cb(err); }
-  //    if (!crypto.timingSafeEqual(buf, hashedPassword)) {
-  //      return cb(null, false, { message: 'Incorrect username or password.' });
-  //    }
-  //    return cb(null, row);
-  //  });
-  //});
-  //users.reset(req, res, function (err) {
-  //  if (err) {
-  //    req.flash('error', err);
-  //    return res.redirect('/reset');
-  //  }
-  //  else {
-  //    req.flash('success', 'Password successfully reset.  Please login using new password.');
-  //    return res.redirect('/login');
-  //  }
-  //});
 });
+
+function fetchTable(tableName) {
+}
 
 function fetchUsers(req, res, next) {
   db.all('SELECT * FROM users WHERE account_id = ?', [
