@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { createRoot } from 'react-dom/client';
-import Hammer from "react-hammerjs"
+//import Hammer from "react-hammerjs"
 //var windowHistory = window.history // window.history.back() => same as back in browser
 //import history from 'history/hash'
 
@@ -122,8 +122,9 @@ const RecipeSingleCarrousel = ({tag, suggestions, isCategory}) => {
   //<button type="button" className="btn btn-danger" onClick={() => nextSuggestion()}>Non, pas cette fois</button>
  
   const href = isCategory ? recipe_kind_path(suggestion) : recipe_path({id: suggestion.recipe_id})
+    //<Hammer onSwipe={handleSwipe}>
+    //</Hammer>
   return (<>
-    <Hammer onSwipe={handleSwipe}>
       <div>
         <div className="over-container" style={{margin: "auto"}}>
           <img src={suggestion.image_id ? image_variant_path({id: suggestion.image_id}, "medium") : "/img/default_recipe_01.png"} style={{maxWidth: "100vw"}} width="452" height="304" />
@@ -140,7 +141,6 @@ const RecipeSingleCarrousel = ({tag, suggestions, isCategory}) => {
           <a type="button" className="btn btn-primary" onClick={sendStats} href={href}>Cuisiner!</a>
         </div>
       </div>
-    </Hammer>
   </>)
 }
 

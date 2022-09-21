@@ -2,31 +2,6 @@
   "name": "heda-server",
   "version": "0.0.0",
   "private": true,
-  "description": "Todo app using Express and Passport for sign in with username and password.",
-  "keywords": [
-    "example",
-    "express",
-    "passport",
-    "sqlite"
-  ],
-  "author": {
-    "name": "Jared Hanson",
-    "email": "jaredhanson@gmail.com",
-    "url": "https://www.jaredhanson.me/"
-  },
-  "homepage": "https://github.com/passport/todos-express-password",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/passport/todos-express-password.git"
-  },
-  "bugs": {
-    "url": "https://github.com/passport/todos-express-password/issues"
-  },
-  "funding": {
-    "type": "github",
-    "url": "https://github.com/sponsors/jaredhanson"
-  },
-  "license": "Unlicense",
   "scripts": {
     "start": "node ./src/server.js",
     "build": "esbuild src/react/app.jsx --bundle --sourcemap --outfile=public/build/app.js",
@@ -66,7 +41,6 @@
     "react-beautiful-dnd": "^13.1.1",
     "react-bootstrap": "^2.5.0",
     "react-dom": "^18.2.0",
-    "react-hammerjs": "^1.0.1",
     "sqlite3": "^5.0.2",
     "watch": "^1.0.2"
   }
