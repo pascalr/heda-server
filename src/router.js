@@ -171,13 +171,18 @@ function fetchTable(tableName, conditions, attributes, res, next, mapFunc=null) 
   if (l != 0) {s += ' WHERE '}
   Object.keys(conditions).forEach((cond,i) => {
     if (i < l-1) {s += ' AND '}
-    s += cond + ' = ?'
-    a.push(conditions[cond])
+    if (conditions[cond] == null) {
+      s += cond + ' IS NULL'
+    } else {
+      s += cond + ' = ?'
+      a.push(conditions[cond])
+    }
   })
   //console.log('fetchTable db statement: ', s)
   db.all(s, a, function(err, rows) {
     if (err) { return next(err); }
-    res.locals[tableName] = mapClassName(mapFunc ? mapFunc(rows) : rows, tableName);
+    let r = mapClassName(mapFunc ? mapFunc(rows) : rows, tableName);
+    res.locals[tableName] = [...(res.locals[tableName]||[]), ...r]
     next();
   })
 }
@@ -239,11 +244,19 @@ function fetchSuggestions(req, res, next) {
   })
 }
 
+function fetchPublicRecipeFilters(req, res, next) {
+  fetchTable('recipe_filters', {user_id: null}, ['name', 'image_src', 'user_id'], res, next)
+}
+
+function fetchUserRecipeFilters(req, res, next) {
+  fetchTable('recipe_filters', {user_id: req.user.user_id}, ['name', 'image_src', 'user_id'], res, next)
+}
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   if (!req.user) { return res.render('home'); }
   next();
-}, fetchUsers, fetchRecipes, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchFavoriteRecipes, fetchSuggestions, function(req, res, next) {
+}, fetchUsers, fetchRecipes, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchFavoriteRecipes, fetchSuggestions, fetchPublicRecipeFilters, fetchUserRecipeFilters, function(req, res, next) {
   res.locals.filter = null;
   let user = res.locals.users.find(u => u.id == req.user.user_id)
   res.render('index', { user, account: req.user });
