@@ -14,6 +14,7 @@ import {PublicImageField} from './modals/public_image'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import {AddUserTagModal} from './modals/add_user_tag'
 import {RecipeEditor} from "./recipe_editor"
+import {ModificationsHandler} from './tiptap'
 
 // The advantage of using this instead of the number is if I need to search and to refactor, I can easy
 const PAGE_1 = 1 // TagIndex
@@ -629,8 +630,7 @@ export const EditMix = ({page, recipes, favoriteRecipes, machines, mixes, machin
 }
 
 const ShowRecipe = ({page}) => {
-  const recipeHTML = useCacheOrFetchHTML(inline_recipe_path({id: page.recipeId}), {waitFor: page.recipeId})
-  return recipeHTML ? <div dangerouslySetInnerHTML={{__html: recipeHTML}} /> : ''
+  return <LinkToPage page={{...page, page: 16}} className="nav-link" active={page.page == 16}>Modifier</LinkToPage>
 }
 
 const EditRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recipes, foods}) => {
@@ -935,6 +935,12 @@ const App = () => {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+
+  const modHandler = new ModificationsHandler()
+  window.registerEditor = (editor, model, json_field, html_field, url) => {
+    modHandler.registerEditor(editor, model, json_field, html_field, url)
+  }
+
   const root = createRoot(document.getElementById("root"));
   root.render(<App/>);
 })

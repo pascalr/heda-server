@@ -92,6 +92,7 @@ export const LinkToPage = ({page, className, children, active, ...props}) => {
 
 
 export const mapModels = (list, func) => {
+  if (!list) {return null;}
   return list.map((item,i) => <span key={item.id}>{func(item,i)}</span>)
 }
 

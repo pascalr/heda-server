@@ -1,0 +1,136 @@
+.ProseMirror {
+
+  border-radius: 2px;
+
+  > * + * {
+    margin-top: 0.75em;
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+
+  ul, ol {
+    padding: 0 1.5rem;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.1;
+  }
+
+  code {
+    background-color: rgba(#616161, 0.1);
+    color: #616161;
+  }
+
+  pre {
+    background: #0D0D0D;
+    color: #FFF;
+    font-family: 'JetBrainsMono', monospace;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+
+    code {
+      color: inherit;
+      padding: 0;
+      background: none;
+      font-size: 0.8rem;
+    }
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  blockquote {
+    padding-left: 1rem;
+    border-left: 2px solid rgba(#0D0D0D, 0.1);
+  }
+
+  hr {
+    border: none;
+    border-top: 2px solid rgba(#0D0D0D, 0.1);
+    margin: 2rem 0;
+  }
+
+  font-family: 'Raleway', sans-serif;
+  p {
+    margin-bottom: 0;
+  }
+  ol > li::marker {
+    font-weight: bold;
+  }
+  ul > li::marker {
+    content: "- ";
+  }
+  ul {
+    font-style: italic;
+  }
+  ol > li + li {
+    margin-top: 0.75rem;
+  }
+}
+
+.ProseMirror-selectednode > * {
+  border: 1px solid blue;
+}
+
+span[data-ingredient-ids] {
+  display: block;
+}
+span[data-ingredient-ids] > ul {
+  display: inline-block;
+}
+span[data-ingredient] {
+  font-style: italic;
+}
+
+.tippy-content {
+  background-color: white;
+}
+.toolbar, .tippy-content {
+
+  border: 1px solid #bbb;
+
+  button {
+	  background: none;
+	  color: inherit;
+	  border: none;
+	  padding: 0.6em 0.1em;
+	  font: inherit;
+	  cursor: pointer;
+	  outline: inherit;
+  }
+
+  button.is-active {
+    color: #06c;
+  }
+
+  select {
+	  background: none;
+	  color: inherit;
+	  border: none;
+	  padding: 0.6em 0.1em;
+	  font: inherit;
+	  cursor: pointer;
+	  outline: inherit;
+  }
+}
+
+.dropdown-grid > * {
+  padding: 0.25em;
+  cursor: pointer;
+}
+
+.article-editor > .ProseMirror {
+  min-height: 600px;
+  //max-height: 100px;
+  //overflow: scroll;
+}
+
+.recipe-kind-editor .ProseMirror {
+  min-height: 300px;
+  //max-height: 100px;
+  //overflow: scroll;
+}
