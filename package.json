@@ -29,10 +29,18 @@
   "license": "Unlicense",
   "scripts": {
     "start": "node ./src/server.js",
-    "build": "esbuild src/react/app.jsx --bundle --outfile=public/build/app.js"
+    "build": "esbuild src/react/app.jsx --bundle --minify --sourcemap --outfile=public/build/app.js"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.6",
+    "@tiptap/core": "^2.0.0-beta.196",
+    "@tiptap/extension-bubble-menu": "^2.0.0-beta.196",
+    "@tiptap/extension-link": "^2.0.0-beta.196",
+    "@tiptap/extension-subscript": "^2.0.0-beta.196",
+    "@tiptap/extension-superscript": "^2.0.0-beta.196",
+    "@tiptap/react": "^2.0.0-beta.196",
+    "@tiptap/starter-kit": "^2.0.0-beta.196",
+    "@tiptap/suggestion": "^2.0.0-beta.196",
     "bootstrap": "^5.2.1",
     "connect-ensure-login": "^0.1.1",
     "connect-sqlite3": "^0.9.13",
@@ -44,13 +52,20 @@
     "express": "~4.16.1",
     "express-session": "^1.17.2",
     "http-errors": "~1.6.3",
+    "jquery": "^3.6.1",
+    "js-autocomplete": "^1.0.4",
+    "jsxstyle": "^2.5.1",
     "mkdirp": "^1.0.4",
     "morgan": "~1.9.1",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "pluralize": "^8.0.0",
     "react": "^18.2.0",
+    "react-autosuggest": "^10.1.0",
+    "react-beautiful-dnd": "^13.1.1",
+    "react-bootstrap": "^2.5.0",
     "react-dom": "^18.2.0",
+    "react-hammerjs": "^1.0.1",
     "sqlite3": "^5.0.2",
     "watch": "^1.0.2"
   }
