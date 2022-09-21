@@ -182,7 +182,7 @@ function fetchUsers(req, res, next) {
 }
 
 function fetchRecipes(req, res, next) {
-  fetchTable('recipes', {user_id: req.user.id}, ['name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'raw_servings', 'json', 'use_personalised_image', 'image_id', 'image_used_id'], res, next)
+  fetchTable('recipes', {user_id: req.user.id}, ['name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id'], res, next)
 }
 
 /* GET home page. */
