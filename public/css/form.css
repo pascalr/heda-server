@@ -1,0 +1,21 @@
+.form-container {
+  max-width: 450px;
+  background: #fff;
+  padding: 1.5em;
+  margin: auto;
+  margin-top: 3em;
+}
+
+.form-container h2 {
+  text-align: center;
+  color: #0707b9;
+}
+
+.form-container h1 {
+  margin: 0.5em 0 0.5em 0;
+}
+
+.form-container .help {
+  font-size: 0.9em;
+  text-align: center;
+}

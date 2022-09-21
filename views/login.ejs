@@ -2,27 +2,33 @@
 <html lang="en">
   <head>
     <%- include('partials/head') %>
+    <link rel="stylesheet" href="/css/form.css">
   </head>
   <body>
-    <h1>Sign in</h1>
-    <% if (hasMessages) { %>
-      <% messages.forEach(function(message) { %>
-      <p><%= message %></p>
-      <% }); %>
-    <% } %>
-    <form action="/login/password" method="post">
-      <div>
-        <label for="username">Username</label>
-        <input id="username" name="username" type="text" autocomplete="username" required autofocus>
-      </div>
-      <div>
-        <label for="current-password">Password</label>
-        <input id="current-password" name="password" type="password" autocomplete="current-password" required>
-      </div>
-      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-      <button type="submit">Sign in</button>
-    </form>
-    <hr>
-    <p class="help">Don't have an account? <a href="/signup">Sign up</a></p>
+    <div class="form-container">
+      <h2>HedaCuisine</h2>
+      <h1>Sign in</h1>
+      <% if (hasMessages) { %>
+        <% messages.forEach(function(message) { %>
+        <p><%= message %></p>
+        <% }); %>
+      <% } %>
+      <form action="/login/password" method="post">
+        <div>
+          <label for="username">Username</label><br/>
+          <input id="username" name="username" class="form-control" type="text" autocomplete="username" required autofocus>
+        </div>
+        <br/>
+        <div>
+          <label for="current-password">Password</label><br/>
+          <input id="current-password" name="password" class="form-control" type="password" autocomplete="current-password" required>
+        </div>
+        <br/>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <button class="btn btn-primary form-control" type="submit">Sign in</button>
+      </form>
+      <hr>
+      <p class="help">Don't have an account? <a href="/signup">Sign up</a></p>
+    </div>
   </body>
 </html>

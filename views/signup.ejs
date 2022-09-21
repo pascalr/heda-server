@@ -2,22 +2,28 @@
 <html lang="en">
   <head>
     <%- include('partials/head') %>
+    <link rel="stylesheet" href="/css/form.css">
   </head>
   <body>
-    <h1>Sign up</h1>
-    <form action="/signup" method="post">
-      <div>
-        <label for="username">Username</label>
-        <input id="username" name="username" type="text" autocomplete="username" required>
-      </div>
-      <div>
-        <label for="new-password">Password</label>
-        <input id="new-password" name="password" type="password" autocomplete="new-password" required>
-      </div>
-      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-      <button type="submit">Sign up</button>
-    </form>
-    <hr>
-    <p class="help">Already have an account? <a href="/login">Sign in</a></p>
+    <div class="form-container">
+      <h2>HedaCuisine</h2>
+      <h1>Sign up</h1>
+      <form action="/signup" method="post">
+        <div>
+          <label for="username">Username</label>
+          <input id="username" name="username" class="form-control" type="text" autocomplete="username" required>
+        </div>
+        <br/>
+        <div>
+          <label for="new-password">Password</label>
+          <input id="new-password" name="password" class="form-control" type="password" autocomplete="new-password" required>
+        </div>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <br/>
+        <button class="btn btn-primary form-control" type="submit">Sign up</button>
+      </form>
+      <hr>
+      <p class="help">Already have an account? <a href="/login">Sign in</a></p>
+    </div>
   </body>
 </html>
