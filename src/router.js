@@ -18,7 +18,12 @@ router.get('/choose_user', fetchUsers, function(req, res, next) {
 });
 
 router.post('/choose_user', function(req, res, next) {
-  console.log(req.body.user_id)
+  req.user.user_id = req.body.user_id
+  res.redirect('/');
+});
+
+router.post('/change_user', function(req, res, next) {
+  req.user.user_id = req.body.user_id
   res.redirect('/');
 });
 
@@ -53,12 +58,12 @@ router.post('/signup', function(req, res, next) {
   crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', function(err, hashedPassword) {
     if (err) { return next(err); }
     db.run('INSERT INTO accounts (email, encrypted_password, salt, created_at, updated_at) VALUES (?, ?, ?, ?, ?)', [
-      req.body.username, hashedPassword, salt, utils.now(), utils.now() 
+      req.body.email, hashedPassword, salt, utils.now(), utils.now() 
     ], function(err) {
       if (err) { return next(err); }
       var user = {
-        id: this.lastID,
-        username: req.body.username
+        account_id: this.lastID,
+        email: req.body.email
       };
       req.login(user, function(err) {
         if (err) { return next(err); }
@@ -179,11 +184,11 @@ function fetchTable(tableName, conditions, attributes, res, next, mapFunc=null) 
 
 
 function fetchUsers(req, res, next) {
-  fetchTable('users', {account_id: req.user.id}, ['name'], res, next)
+  fetchTable('users', {account_id: req.user.account_id}, ['name'], res, next)
 }
 
 function fetchRecipes(req, res, next) {
-  fetchTable('recipes', {user_id: req.user.id}, ['name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id'], res, next, (recipes) => {
+  fetchTable('recipes', {user_id: req.user.user_id}, ['name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id'], res, next, (recipes) => {
     return utils.sortBy(recipes, 'name')
   })
 }
@@ -201,13 +206,13 @@ function fetchRecipeKinds(req, res, next) {
 }
 
 function fetchMixes(req, res, next) {
-  fetchTable('mixes', {user_id: req.user.id}, ['name', 'instructions', 'recipe_id', 'original_recipe_id'], res, next, (mixes) => {
+  fetchTable('mixes', {user_id: req.user.user_id}, ['name', 'instructions', 'recipe_id', 'original_recipe_id'], res, next, (mixes) => {
     return utils.sortBy(mixes, 'name')
   })
 }
 
 function fetchUserTags(req, res, next) {
-  fetchTable('user_tags', {user_id: req.user.id}, ['tag_id', 'position'], res, next, (user_tags) => {
+  fetchTable('user_tags', {user_id: req.user.user_id}, ['tag_id', 'position'], res, next, (user_tags) => {
     return utils.sortBy(user_tags, 'position')
   })
 }
@@ -229,7 +234,7 @@ function fetchFavoriteRecipes(req, res, next) {
 //    gon.favorite_recipes = current_user.favorite_recipes.includes(:recipe).sort_by {|fav| fav.recipe.name}.map{|fav| fav.to_obj}
 
 function fetchSuggestions(req, res, next) {
-  fetchTable('suggestions', {user_id: req.user.id}, ['user_id', 'recipe_id', 'filter_id', 'score'], res, next, (suggestions) => {
+  fetchTable('suggestions', {user_id: req.user.user_id}, ['user_id', 'recipe_id', 'filter_id', 'score'], res, next, (suggestions) => {
     return suggestions
   })
 }
@@ -238,9 +243,10 @@ function fetchSuggestions(req, res, next) {
 router.get('/', function(req, res, next) {
   if (!req.user) { return res.render('home'); }
   next();
-}, fetchRecipes, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchFavoriteRecipes, fetchSuggestions, function(req, res, next) {
+}, fetchUsers, fetchRecipes, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchFavoriteRecipes, fetchSuggestions, function(req, res, next) {
   res.locals.filter = null;
-  res.render('index', { user: req.user });
+  let user = res.locals.users.find(u => u.id == req.user.user_id)
+  res.render('index', { user, account: req.user });
 });
 
 function handleError(err, req, res, next) {

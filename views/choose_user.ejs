@@ -28,7 +28,7 @@
     let e = elems[i]
     e.addEventListener("click", function(ev) {
       let form = document.getElementById('choose-user-form')
-      form.elements["user_id"] = e.dataset.userId
+      form.elements["user_id"].value = e.dataset.userId
       form.submit();
     }, false)
   }

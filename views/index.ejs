@@ -13,7 +13,7 @@
         <div class="dropdown">
           <a class="nav-link dropdown-toggle" style="color: black;" href="#" id="dropdownMenuButton" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <img src="/icons/person.svg" height="20"></img>
-            <%- user.username %>
+            <%- user.name %>
           </a>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <a href="/todo" class="dropdown-item">Mon profil</a>
@@ -23,6 +23,14 @@
             </form>
             <hr class="dropdown-divider">
             <h6 class="dropdown-header">Changer d'utilisateur</h6>
+            <% users.forEach(function(usr) { %>
+              <% if (usr.id == user.id) {return;} %>
+              <form action="/change_user" method="post">
+                <button class="dropdown-item" type="submit"><%= usr.name %></button>
+                <input type="hidden" name="user_id" value="<%= usr.id %>">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              </form>
+            <% }) %>
           </div>
         </div>
       <% } else { %>

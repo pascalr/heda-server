@@ -14,7 +14,9 @@ passport.use(new LocalStrategy(function verify(email, password, cb) {
       if (!crypto.timingSafeEqual(row.encrypted_password, hashedPassword)) {
         return cb(null, false, { message: 'Incorrect username or password.' });
       }
-      return cb(null, row);
+      let o = row;
+      o.account_id = o.id;
+      return cb(null, o);
     });
   });
 }));
@@ -36,7 +38,7 @@ passport.use(new LocalStrategy(function verify(email, password, cb) {
  */
 passport.serializeUser(function(user, cb) {
   process.nextTick(function() {
-    cb(null, { id: user.id, username: user.email });
+    cb(null, { account_id: user.account_id, email: user.email });
   });
 });
 
