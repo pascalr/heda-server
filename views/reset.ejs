@@ -1,27 +1,23 @@
 <!doctype html>
 <html lang="en">
-	<head>
+  <head>
     <%- include('partials/head') %>
-	</head>
-	<body>
-		<section class="prompt">
-			<h1>Reset password</h1>
-			<% if (hasMessages) { %>
-			<section class="messages">
-				<% messages.forEach(function(message) { %>
-				<p><%= message %></p>
-				<% }); %>
-			</section>
-			<% } %>
-			<form action="/reset" method="post">
-				<section>
-					<label for="new-password">New password</label>
-					<input id="new-password" name="password" type="password" required autofocus>
-				</section>
-				<input type="hidden" name="_csrf" value="<%= csrfToken %>">
-				<input type="hidden" name="token" value="<%= token %>">
-				<button type="submit">Reset</button>
-			</form>
-		</section>
-	</body>
+  </head>
+  <body>
+    <h1>Reset password</h1>
+    <% if (hasMessages) { %>
+      <% messages.forEach(function(message) { %>
+      <p><%= message %></p>
+      <% }); %>
+    <% } %>
+    <form action="/reset" method="post">
+      <div>
+        <label for="new-password">New password</label>
+        <input id="new-password" name="password" type="password" required autofocus>
+      </div>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <input type="hidden" name="token" value="<%= token %>">
+      <button type="submit">Reset</button>
+    </form>
+  </body>
 </html>

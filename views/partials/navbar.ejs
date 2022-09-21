@@ -1,14 +1,28 @@
-<section class="todoapp">
-  <nav class="nav">
-    <ul>
-      <img src="/icons/person.svg" height="20"></img>
-      <li class="user"><%= user.username %></li>
-      <li>
-        <form action="/logout" method="post">
-          <button class="logout" type="submit">Sign out</button>
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-        </form>
-      </li>
-    </ul>
-  </nav>
-</section>
+<nav class="nav">
+  <% if (user) { %>
+    <div class="dropdown nav-item">
+      <a class="nav-link dropdown-toggle" href="#" id="dropdownMenuButton" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <%- user.username %>
+      </a>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a href="/login" class="dropdown-item">Mon profil</a>
+        <a href="/login" class="dropdown-item">Modifier</a>
+        <a href="/login" class="dropdown-item">Logout</a>
+        <hr class="dropdown-divider">
+        <h6 class="dropdown-header">Changer d'utilisateur</h6>
+      </div>
+    </div>
+  <% } else { %>
+    <a href="/login">Login</a>
+  <% } %>
+  <ul>
+    <img src="/icons/person.svg" height="20"></img>
+    <li class="user"><%= user.username %></li>
+    <li>
+      <form action="/logout" method="post">
+        <button class="logout" type="submit">Sign out</button>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      </form>
+    </li>
+  </ul>
+</nav>

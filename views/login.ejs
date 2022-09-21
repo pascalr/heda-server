@@ -1,33 +1,28 @@
 <!doctype html>
 <html lang="en">
-	<head>
+  <head>
     <%- include('partials/head') %>
-	</head>
-	<body>
-		<section class="prompt">
-			<h3>todos</h3>
-			<h1>Sign in</h1>
-			<% if (hasMessages) { %>
-			<section class="messages">
-				<% messages.forEach(function(message) { %>
-				<p><%= message %></p>
-				<% }); %>
-			</section>
-			<% } %>
-			<form action="/login/password" method="post">
-				<section>
-					<label for="username">Username</label>
-					<input id="username" name="username" type="text" autocomplete="username" required autofocus>
-				</section>
-				<section>
-					<label for="current-password">Password</label>
-					<input id="current-password" name="password" type="password" autocomplete="current-password" required>
-				</section>
-				<input type="hidden" name="_csrf" value="<%= csrfToken %>">
-				<button type="submit">Sign in</button>
-			</form>
-			<hr>
-			<p class="help">Don't have an account? <a href="/signup">Sign up</a></p>
-		</section>
-	</body>
+  </head>
+  <body>
+    <h1>Sign in</h1>
+    <% if (hasMessages) { %>
+      <% messages.forEach(function(message) { %>
+      <p><%= message %></p>
+      <% }); %>
+    <% } %>
+    <form action="/login/password" method="post">
+      <div>
+        <label for="username">Username</label>
+        <input id="username" name="username" type="text" autocomplete="username" required autofocus>
+      </div>
+      <div>
+        <label for="current-password">Password</label>
+        <input id="current-password" name="password" type="password" autocomplete="current-password" required>
+      </div>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button type="submit">Sign in</button>
+    </form>
+    <hr>
+    <p class="help">Don't have an account? <a href="/signup">Sign up</a></p>
+  </body>
 </html>
