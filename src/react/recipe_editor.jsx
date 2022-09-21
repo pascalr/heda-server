@@ -466,7 +466,7 @@ export class RecipeEditor extends React.Component {
     //console.log('recipe kind image', recipeKindImage)
     //console.log('recipe kind', recipe_kind)
     //console.log('recipe image', recipe_image)
-    const imagePath = image ? image_variant_path(image, 'medium') : "/default_recipe_01.png"
+    const imagePath = image ? image_variant_path(image, 'medium') : "/img/default_recipe_01.png"
     //console.log(model)
     const mix = mixes.find(m => m.recipe_id == recipe.id)
 

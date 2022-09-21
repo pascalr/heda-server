@@ -9,7 +9,7 @@ import { image_variant_path } from '../routes'
 export const EditRecipeImageModal = ({recipe, recipeImage, recipeKindImage, show, handleClose}) => {
 
   const image = recipe.use_personalised_image ? recipeImage : recipeKindImage
-  const imagePath = image ? image_variant_path(image, 'medium') : "/default_recipe_01.png"
+  const imagePath = image ? image_variant_path(image, 'medium') : "/img/default_recipe_01.png"
   
   const handleRemove = () => {
     recipeImage.onUpdate(clearRecord(recipeImage))

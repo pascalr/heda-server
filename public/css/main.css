@@ -5,3 +5,9 @@ body {
   max-width: 800px;
   margin: 0 auto;
 }
+
+.recipe-list li {
+  list-style-type: none;
+  padding: 0.25em;
+  border-bottom: 1px solid #ddd;
+}
