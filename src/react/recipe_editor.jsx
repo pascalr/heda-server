@@ -578,14 +578,14 @@ export class RecipeEditor extends React.Component {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  window.recipe_editor = React.createRef()
-  const root = document.getElementById('root')
-
-  const modHandler = new ModificationsHandler()
-  window.registerEditor = (editor, model, json_field, html_field, url) => {
-    modHandler.registerEditor(editor, model, json_field, html_field, url)
-  }
-
-  if (root) {ReactDOM.render(<RecipeEditor ref={window.recipe_editor}/>, root)}
-})
+//document.addEventListener('DOMContentLoaded', () => {
+//  window.recipe_editor = React.createRef()
+//  const root = document.getElementById('root')
+//
+//  const modHandler = new ModificationsHandler()
+//  window.registerEditor = (editor, model, json_field, html_field, url) => {
+//    modHandler.registerEditor(editor, model, json_field, html_field, url)
+//  }
+//
+//  if (root) {ReactDOM.render(<RecipeEditor ref={window.recipe_editor}/>, root)}
+//})

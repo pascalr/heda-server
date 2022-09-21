@@ -18,4 +18,14 @@ function now() {
   return s
 }
 
-module.exports = {padStr, now};
+function sortBy(list, attr) {
+  return list.sort((a,b) => {
+    if (typeof a[attr] === 'string') {
+      return a[attr].localeCompare(b[attr])
+    } else {
+      return a[attr] - b[attr]
+    }
+  })
+}
+
+module.exports = {padStr, now, sortBy};

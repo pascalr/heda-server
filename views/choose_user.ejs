@@ -8,7 +8,7 @@
     <h1 style='text-align: center;'>Who's cooking?</h1>
     <br/><br/>
 		<form id='choose-user-form' action="/choose_user" method="post">
-      <div style="display: flex; justify-content: center;">
+      <div style="display: flex; justify-content: center; gap: 1em;">
         <% users.forEach(function(user) { %>
           <div class='account-user' style='cursor: pointer;' data-user-id='<%= user.id %>'>
             <img src="/img/chef_m.png" height="150"></img>

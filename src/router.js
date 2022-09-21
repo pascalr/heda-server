@@ -132,21 +132,16 @@ router.post('/reset', function (req, res, next) {
 //  def index
 //    gon.suggestions = current_user.suggestions.includes(:recipe).map {|s| o = s.to_obj_with_recipe_info}
 //    gon.current_user_admin = current_user_admin?
-//    gon.user_tags = current_user.user_tags.order(:position).map {|t| t.to_obj}
 //    gon.recipe_filters = RecipeFilter.where(user_id: nil).or(current_user.recipe_filters).map {|f| f.to_obj }
 //    gon.favorite_recipes = current_user.favorite_recipes.includes(:recipe).sort_by {|fav| fav.recipe.name}.map{|fav| fav.to_obj}
 //    gon.machines = current_user.machines.map {|m| m.to_obj}
 //    gon.containers = current_user.containers.map {|c| c.to_obj}
 //    gon.machine_foods = current_user.machine_foods.includes(:food).sort_by(&:name).map {|f| f.to_obj}
 //    gon.container_quantities = current_user.container_quantities.includes(:container_format).map {|c| c.to_obj}
-//    gon.mixes = current_user.mixes.map {|e| e.to_obj}
-//    gon.recipes = current_user.recipes.order(:name).map {|e| e.to_obj}
 //    gon.ingredient_sections = IngredientSection.where(recipe_id: gon.recipes.map{|e|e[:id]}).map {|e| e.to_obj}
-//    gon.recipe_kinds = RecipeKind.order(:name).map {|e| e.to_obj(only: [:name, :image_id])}
 //    gon.images = Image.where(id: gon.recipes.map{|e|e[:image_id]}+gon.recipe_kinds.map{|e|e[:image_id]}).map {|e| e.to_obj }
 //    #TODO: Tools
 //    #TODO: Ingredient
-//    gon.recipe_ingredients = RecipeIngredient.order(:item_nb).where(recipe_id: gon.recipes.map{|r|r[:id]}).map {|e| e.to_obj}
 //    gon.notes = RecipeNote.where(recipe_id: gon.recipes.map{|r|r[:id]}).map {|e| e.to_obj}
 //    gon.foods = Food.order(:name).all.map {|food| food.to_obj}
 //    gon.units = Unit.all.map {|unit| unit.to_obj}
@@ -156,7 +151,7 @@ router.post('/reset', function (req, res, next) {
 //  end
 //end
 
-function fetchTable(tableName, conditions, attributes, res, next) {
+function fetchTable(tableName, conditions, attributes, res, next, mapFunc=null) {
   // TODO: Select only attributes instead of select *
   // Then there is no need to extract
   let s = 'SELECT '+['id',...attributes].join(', ')+' FROM '+tableName
@@ -171,25 +166,56 @@ function fetchTable(tableName, conditions, attributes, res, next) {
   //console.log('fetchTable db statement: ', s)
   db.all(s, a, function(err, rows) {
     if (err) { return next(err); }
-    res.locals[tableName] = rows;
+    res.locals[tableName] = mapFunc ? mapFunc(rows) : rows;
     next();
   })
 }
 
 
 function fetchUsers(req, res, next) {
-  fetchTable('users', {account_id: req.user.id}, ['email', 'name'], res, next)
+  fetchTable('users', {account_id: req.user.id}, ['name'], res, next)
 }
 
 function fetchRecipes(req, res, next) {
-  fetchTable('recipes', {user_id: req.user.id}, ['name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id'], res, next)
+  fetchTable('recipes', {user_id: req.user.id}, ['name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id'], res, next, (recipes) => {
+    return utils.sortBy(recipes, 'name')
+  })
+}
+
+function fetchRecipeIngredients(req, res, next) {
+  fetchTable('recipe_ingredients', {recipe_id: res.locals.recipes.map(r=>r.id)}, ['item_nb', 'raw', 'comment_json', 'food_id', 'raw_food', 'recipe_id'], res, next, (recipe_ingredients) => {
+    return utils.sortBy(recipe_ingredients, 'item_nb')
+  })
+}
+
+function fetchRecipeKinds(req, res, next) {
+  fetchTable('recipe_kinds', {}, ['name', 'description_json'], res, next, (recipe_kinds) => {
+    return utils.sortBy(recipe_kinds, 'name')
+  })
+}
+
+function fetchMixes(req, res, next) {
+  fetchTable('mixes', {user_id: req.user.id}, ['name', 'instructions', 'recipe_id', 'original_recipe_id'], res, next, (mixes) => {
+    return utils.sortBy(mixes, 'name')
+  })
+}
+
+function fetchUserTags(req, res, next) {
+  fetchTable('user_tags', {user_id: req.user.id}, ['tag_id', 'position'], res, next, (user_tags) => {
+    return utils.sortBy(user_tags, 'position')
+  })
+}
+
+function fetchMachines(req, res, next) {
+  // FIXME: Condition based on MachineUser model...
+  fetchTable('machines', {}, ['name'], res, next)
 }
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   if (!req.user) { return res.render('home'); }
   next();
-}, fetchRecipes, function(req, res, next) {
+}, fetchRecipes, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, function(req, res, next) {
   res.locals.filter = null;
   res.render('index', { user: req.user });
 });

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client';
 import Hammer from "react-hammerjs"
 //var windowHistory = window.history // window.history.back() => same as back in browser
 //import history from 'history/hash'
@@ -935,7 +935,6 @@ const App = () => {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-
-  const root = document.getElementById('app')
-  if (root) {ReactDOM.render(<App/>, root)}
+  const root = createRoot(document.getElementById("root"));
+  root.render(<App/>);
 })

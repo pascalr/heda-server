@@ -46,6 +46,7 @@ export const useUpdatableState = (name, initial, callback=null) => {
   //}, [state])
   
   useEffect(() => {
+    if (!state) {return}
     state.update = setState
     if (callback) {callback(state)}
   
