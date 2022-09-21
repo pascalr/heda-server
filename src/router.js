@@ -151,6 +151,12 @@ router.post('/reset', function (req, res, next) {
 //  end
 //end
 
+function mapClassName(objs, tableName) {
+  // TODO: Handle exceptions like mixes
+  let className = tableName.substr(0, tableName.length-1)
+  return objs.map(o => {o.class_name = className; return o;})
+}
+
 function fetchTable(tableName, conditions, attributes, res, next, mapFunc=null) {
   // TODO: Select only attributes instead of select *
   // Then there is no need to extract
@@ -166,7 +172,7 @@ function fetchTable(tableName, conditions, attributes, res, next, mapFunc=null) 
   //console.log('fetchTable db statement: ', s)
   db.all(s, a, function(err, rows) {
     if (err) { return next(err); }
-    res.locals[tableName] = mapFunc ? mapFunc(rows) : rows;
+    res.locals[tableName] = mapClassName(mapFunc ? mapFunc(rows) : rows, tableName);
     next();
   })
 }
