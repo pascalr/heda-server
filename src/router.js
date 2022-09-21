@@ -211,11 +211,28 @@ function fetchMachines(req, res, next) {
   fetchTable('machines', {}, ['name'], res, next)
 }
 
+function fetchFavoriteRecipes(req, res, next) {
+  // , 'image_used_id'
+  fetchTable('favorite_recipes', {}, ['list_id', 'recipe_id'], res, next, (favorite_recipes) => {
+    //let r = res.locals.recipes.find(r => r.id == 
+    return favorite_recipes
+    //return utils.sortBy(favorite_recipes, 'name')
+  })
+}
+
+//    gon.favorite_recipes = current_user.favorite_recipes.includes(:recipe).sort_by {|fav| fav.recipe.name}.map{|fav| fav.to_obj}
+
+function fetchSuggestions(req, res, next) {
+  fetchTable('suggestions', {user_id: req.user.id}, ['user_id', 'recipe_id', 'filter_id', 'score'], res, next, (suggestions) => {
+    return suggestions
+  })
+}
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   if (!req.user) { return res.render('home'); }
   next();
-}, fetchRecipes, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, function(req, res, next) {
+}, fetchRecipes, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchFavoriteRecipes, fetchSuggestions, function(req, res, next) {
   res.locals.filter = null;
   res.render('index', { user: req.user });
 });
