@@ -160,9 +160,7 @@ function mapClassName(objs, tableName) {
   return objs.map(o => {o.class_name = className; return o;})
 }
 
-function fetchTable(tableName, conditions, attributes, res, next, mapFunc=null) {
-  // TODO: Select only attributes instead of select *
-  // Then there is no need to extract
+function fetchTable(tableName, conditions, attributes, next, callback) {
   let s = 'SELECT '+['id',...attributes].join(', ')+' FROM '+tableName
   let a = []
   let l = Object.keys(conditions).length
@@ -176,83 +174,97 @@ function fetchTable(tableName, conditions, attributes, res, next, mapFunc=null) 
       a.push(conditions[cond])
     }
   })
-  //console.log('fetchTable db statement: ', s)
   db.all(s, a, function(err, rows) {
     if (err) { return next(err); }
-    let r = mapClassName(mapFunc ? mapFunc(rows) : rows, tableName);
-    res.locals[tableName] = [...(res.locals[tableName]||[]), ...r]
+    callback(mapClassName(rows, tableName))
     next();
   })
 }
 
 
 function fetchUsers(req, res, next) {
-  fetchTable('users', {account_id: req.user.account_id}, ['name'], res, next)
+  fetchTable('users', {account_id: req.user.account_id}, ['name'], next, (records) => {
+    res.locals.users = records
+  })
 }
 
 function fetchRecipes(req, res, next) {
-  fetchTable('recipes', {user_id: req.user.user_id}, ['name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id'], res, next, (recipes) => {
-    return utils.sortBy(recipes, 'name')
+  let attrs = ['name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id']
+  fetchTable('recipes', {user_id: req.user.user_id}, attrs, next, (records) => {
+    res.locals.recipes = utils.sortBy(records, 'name')
   })
 }
 
 function fetchRecipeIngredients(req, res, next) {
-  fetchTable('recipe_ingredients', {recipe_id: res.locals.recipes.map(r=>r.id)}, ['item_nb', 'raw', 'comment_json', 'food_id', 'raw_food', 'recipe_id'], res, next, (recipe_ingredients) => {
-    return utils.sortBy(recipe_ingredients, 'item_nb')
+  let attrs = ['item_nb', 'raw', 'comment_json', 'food_id', 'raw_food', 'recipe_id']
+  let ids = res.locals.recipes.map(r=>r.id)
+  fetchTable('recipe_ingredients', {recipe_id: ids}, attrs, next, (records) => {
+    res.locals.recipe_ingredients = utils.sortBy(records, 'item_nb')
   })
 }
 
 function fetchRecipeKinds(req, res, next) {
-  fetchTable('recipe_kinds', {}, ['name', 'description_json'], res, next, (recipe_kinds) => {
-    return utils.sortBy(recipe_kinds, 'name')
+  fetchTable('recipe_kinds', {}, ['name', 'description_json'], next, (records) => {
+    res.locals.recipe_kinds = utils.sortBy(records, 'name')
   })
 }
 
 function fetchMixes(req, res, next) {
-  fetchTable('mixes', {user_id: req.user.user_id}, ['name', 'instructions', 'recipe_id', 'original_recipe_id'], res, next, (mixes) => {
-    return utils.sortBy(mixes, 'name')
+  let attrs = ['name', 'instructions', 'recipe_id', 'original_recipe_id']
+  fetchTable('mixes', {user_id: req.user.user_id}, attrs, next, (records) => {
+    res.locals.mixes = utils.sortBy(records, 'name')
   })
 }
 
 function fetchUserTags(req, res, next) {
-  fetchTable('user_tags', {user_id: req.user.user_id}, ['tag_id', 'position'], res, next, (user_tags) => {
-    return utils.sortBy(user_tags, 'position')
+  let attrs = ['tag_id', 'position']
+  fetchTable('user_tags', {user_id: req.user.user_id}, attrs, next, (records) => {
+    res.locals.user_tags = utils.sortBy(records, 'position')
   })
 }
 
 function fetchMachines(req, res, next) {
   // FIXME: Condition based on MachineUser model...
-  fetchTable('machines', {}, ['name'], res, next)
+  fetchTable('machines', {}, ['name'], next, (records) => {
+    res.locals.machines = records
+  })
 }
 
 function fetchFavoriteRecipes(req, res, next) {
   // , 'image_used_id'
-  fetchTable('favorite_recipes', {}, ['list_id', 'recipe_id'], res, next, (favorite_recipes) => {
-    return utils.sortBy(favorite_recipes, 'name')
+  fetchTable('favorite_recipes', {}, ['list_id', 'recipe_id'], next, (records) => {
+    res.locals.favorite_recipes = utils.sortBy(records, 'name')
   })
 }
 
 //    gon.favorite_recipes = current_user.favorite_recipes.includes(:recipe).sort_by {|fav| fav.recipe.name}.map{|fav| fav.to_obj}
 
 function fetchSuggestions(req, res, next) {
-  fetchTable('suggestions', {user_id: req.user.user_id}, ['user_id', 'recipe_id', 'filter_id', 'score'], res, next, (suggestions) => {
-    return suggestions
+  let attrs = ['user_id', 'recipe_id', 'filter_id', 'score']
+  fetchTable('suggestions', {user_id: req.user.user_id}, attrs, next, (records) => {
+    res.locals.suggestions = records
+  })
+}
+
+function fetchUserRecipeFilters(req, res, next) {
+  let attrs = ['name', 'image_src', 'user_id']
+  fetchTable('recipe_filters', {user_id: req.user.user_id}, attrs, next, (records) => {
+    res.locals.user_recipe_filters = records
   })
 }
 
 function fetchPublicRecipeFilters(req, res, next) {
-  fetchTable('recipe_filters', {user_id: null}, ['name', 'image_src', 'user_id'], res, next)
-}
-
-function fetchUserRecipeFilters(req, res, next) {
-  fetchTable('recipe_filters', {user_id: req.user.user_id}, ['name', 'image_src', 'user_id'], res, next)
+  let attrs = ['name', 'image_src', 'user_id']
+  fetchTable('recipe_filters', {user_id: null}, attrs, next, (records) => {
+    res.locals.public_recipe_filters = records
+  })
 }
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   if (!req.user) { return res.render('home'); }
   next();
-}, fetchUsers, fetchRecipes, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchFavoriteRecipes, fetchSuggestions, fetchPublicRecipeFilters, fetchUserRecipeFilters, function(req, res, next) {
+}, fetchUsers, fetchRecipes, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchFavoriteRecipes, fetchSuggestions, fetchUserRecipeFilters, fetchPublicRecipeFilters, function(req, res, next) {
   let user = res.locals.users.find(u => u.id == req.user.user_id)
 
   console.log('recipes', res.locals.recipes)

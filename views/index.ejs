@@ -50,7 +50,7 @@
   window.machines = <%- JSON.stringify(machines) %>
   window.favorite_recipes = <%- JSON.stringify(favorite_recipes) %>
   window.suggestions = <%- JSON.stringify(suggestions) %>
-  window.recipe_filters = <%- JSON.stringify(recipe_filters) %>
+  window.recipe_filters = <%- JSON.stringify([...public_recipe_filters, ...user_recipe_filters]) %>
   window.gon = {mixes, recipes, recipe_kinds, recipe_ingredients, user_tags, machines, favorite_recipes, suggestions, recipe_filters}
   window.gon.recipe = {} // FIXME: Ugly fix
 </script>
