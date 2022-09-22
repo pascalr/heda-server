@@ -237,6 +237,21 @@ function fetchFavoriteRecipes(req, res, next) {
   })
 }
 
+function fetchFavoriteRecipesNames(req, res, next) {
+  let ids = res.locals.favorite_recipes.map(r=>r.recipe_id)
+  fetchTable('recipes', {id: ids}, ['name'], next, (recipes) => {
+    res.locals.favorite_recipes = res.locals.favorite_recipes.map(f => {
+      let r = recipes.find(r => r.id == f.recipe_id)
+      if (r) {
+        f.name = r.name
+      } else {
+        console.log('WARNING: Missing recipe for favorite recipe')
+      }
+      return f
+    })
+  })
+}
+
 //    gon.favorite_recipes = current_user.favorite_recipes.includes(:recipe).sort_by {|fav| fav.recipe.name}.map{|fav| fav.to_obj}
 
 function fetchSuggestions(req, res, next) {
@@ -264,20 +279,20 @@ function fetchPublicRecipeFilters(req, res, next) {
 router.get('/', function(req, res, next) {
   if (!req.user) { return res.render('home'); }
   next();
-}, fetchUsers, fetchRecipes, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchFavoriteRecipes, fetchSuggestions, fetchUserRecipeFilters, fetchPublicRecipeFilters, function(req, res, next) {
+}, fetchUsers, fetchRecipes, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchFavoriteRecipes, fetchSuggestions, fetchUserRecipeFilters, fetchPublicRecipeFilters, fetchFavoriteRecipesNames, function(req, res, next) {
   let user = res.locals.users.find(u => u.id == req.user.user_id)
 
-  console.log('recipes', res.locals.recipes)
-  // Set the recipe name for the favorite recipes
-  res.locals.favorite_recipes.forEach(o => {
-    console.log('id', o.recipe_id)
-    let r = res.locals.recipes.find(r => r.id == o.recipe_id)
-    if (r) {
-      o.name = r.name
-    } else {
-      console.log('WARNING: Missing recipe for favorite recipe')
-    }
-  })
+  //console.log('recipes', res.locals.recipes)
+  //// Set the recipe name for the favorite recipes
+  //res.locals.favorite_recipes.forEach(o => {
+  //  console.log('id', o.recipe_id)
+  //  let r = res.locals.recipes.find(r => r.id == o.recipe_id)
+  //  if (r) {
+  //    o.name = r.name
+  //  } else {
+  //    console.log('WARNING: Missing recipe for favorite recipe')
+  //  }
+  //})
 
   res.render('index', { user, account: req.user });
 });
