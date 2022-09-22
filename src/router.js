@@ -167,13 +167,23 @@ function fetchTable(tableName, conditions, attributes, next, callback) {
   if (l != 0) {s += ' WHERE '}
   Object.keys(conditions).forEach((cond,i) => {
     if (i < l-1) {s += ' AND '}
-    if (conditions[cond] == null) {
+    let val = conditions[cond]
+    if (val == null) {
       s += cond + ' IS NULL'
+    } else if (Array.isArray(val) && val.length > 1) {
+      s += cond + ' IN ('
+      val.forEach((v,i) => {
+        s += '?' + ((i < val.length - 1) ? ', ' : '')
+        a.push(v)
+      })
+      s += ')'
     } else {
       s += cond + ' = ?'
-      a.push(conditions[cond])
+      a.push(val)
     }
   })
+  console.log('statement:', s)
+  console.log('values', a)
   db.all(s, a, function(err, rows) {
     if (err) { return next(err); }
     callback(mapClassName(rows, tableName))
@@ -191,56 +201,56 @@ function fetchUsers(req, res, next) {
 function fetchRecipes(req, res, next) {
   let attrs = ['name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id']
   fetchTable('recipes', {user_id: req.user.user_id}, attrs, next, (records) => {
-    res.locals.recipes = utils.sortBy(records, 'name')
+    res.locals.gon.recipes = utils.sortBy(records, 'name')
   })
 }
 
 function fetchRecipeIngredients(req, res, next) {
   let attrs = ['item_nb', 'raw', 'comment_json', 'food_id', 'raw_food', 'recipe_id']
-  let ids = res.locals.recipes.map(r=>r.id)
+  let ids = res.locals.gon.recipes.map(r=>r.id)
   fetchTable('recipe_ingredients', {recipe_id: ids}, attrs, next, (records) => {
-    res.locals.recipe_ingredients = utils.sortBy(records, 'item_nb')
+    res.locals.gon.recipe_ingredients = utils.sortBy(records, 'item_nb')
   })
 }
 
 function fetchRecipeKinds(req, res, next) {
   fetchTable('recipe_kinds', {}, ['name', 'description_json'], next, (records) => {
-    res.locals.recipe_kinds = utils.sortBy(records, 'name')
+    res.locals.gon.recipe_kinds = utils.sortBy(records, 'name')
   })
 }
 
 function fetchMixes(req, res, next) {
   let attrs = ['name', 'instructions', 'recipe_id', 'original_recipe_id']
   fetchTable('mixes', {user_id: req.user.user_id}, attrs, next, (records) => {
-    res.locals.mixes = utils.sortBy(records, 'name')
+    res.locals.gon.mixes = utils.sortBy(records, 'name')
   })
 }
 
 function fetchUserTags(req, res, next) {
   let attrs = ['tag_id', 'position']
   fetchTable('user_tags', {user_id: req.user.user_id}, attrs, next, (records) => {
-    res.locals.user_tags = utils.sortBy(records, 'position')
+    res.locals.gon.user_tags = utils.sortBy(records, 'position')
   })
 }
 
 function fetchMachines(req, res, next) {
   // FIXME: Condition based on MachineUser model...
   fetchTable('machines', {}, ['name'], next, (records) => {
-    res.locals.machines = records
+    res.locals.gon.machines = records
   })
 }
 
 function fetchFavoriteRecipes(req, res, next) {
   // , 'image_used_id'
   fetchTable('favorite_recipes', {}, ['list_id', 'recipe_id'], next, (records) => {
-    res.locals.favorite_recipes = utils.sortBy(records, 'name')
+    res.locals.gon.favorite_recipes = utils.sortBy(records, 'name')
   })
 }
 
 function fetchFavoriteRecipesNames(req, res, next) {
-  let ids = res.locals.favorite_recipes.map(r=>r.recipe_id)
+  let ids = res.locals.gon.favorite_recipes.map(r=>r.recipe_id)
   fetchTable('recipes', {id: ids}, ['name'], next, (recipes) => {
-    res.locals.favorite_recipes = res.locals.favorite_recipes.map(f => {
+    res.locals.gon.favorite_recipes = res.locals.gon.favorite_recipes.map(f => {
       let r = recipes.find(r => r.id == f.recipe_id)
       if (r) {
         f.name = r.name
@@ -257,42 +267,40 @@ function fetchFavoriteRecipesNames(req, res, next) {
 function fetchSuggestions(req, res, next) {
   let attrs = ['user_id', 'recipe_id', 'filter_id', 'score']
   fetchTable('suggestions', {user_id: req.user.user_id}, attrs, next, (records) => {
-    res.locals.suggestions = records
+    res.locals.gon.suggestions = records
   })
 }
 
 function fetchUserRecipeFilters(req, res, next) {
   let attrs = ['name', 'image_src', 'user_id']
   fetchTable('recipe_filters', {user_id: req.user.user_id}, attrs, next, (records) => {
-    res.locals.user_recipe_filters = records
+    res.locals.gon.recipe_filters = [...(res.locals.gon.recipe_filters||[]), ...records]
   })
 }
 
 function fetchPublicRecipeFilters(req, res, next) {
   let attrs = ['name', 'image_src', 'user_id']
   fetchTable('recipe_filters', {user_id: null}, attrs, next, (records) => {
-    res.locals.public_recipe_filters = records
+    res.locals.gon.recipe_filters = [...(res.locals.gon.recipe_filters||[]), ...records]
   })
+}
+
+function fetchFoods(req, res, next) {
+  fetchTable('foods', {}, ['name'], next, (records) => {
+    res.locals.gon.foods = utils.sortBy(records, 'name')
+  })
+}
+
+function initGon(req, res, next) {
+  res.locals.gon = {}; next()
 }
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   if (!req.user) { return res.render('home'); }
   next();
-}, fetchUsers, fetchRecipes, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchFavoriteRecipes, fetchSuggestions, fetchUserRecipeFilters, fetchPublicRecipeFilters, fetchFavoriteRecipesNames, function(req, res, next) {
+}, initGon, fetchUsers, fetchRecipes, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchFavoriteRecipes, fetchSuggestions, fetchUserRecipeFilters, fetchPublicRecipeFilters, fetchFavoriteRecipesNames, fetchFoods, function(req, res, next) {
   let user = res.locals.users.find(u => u.id == req.user.user_id)
-
-  //console.log('recipes', res.locals.recipes)
-  //// Set the recipe name for the favorite recipes
-  //res.locals.favorite_recipes.forEach(o => {
-  //  console.log('id', o.recipe_id)
-  //  let r = res.locals.recipes.find(r => r.id == o.recipe_id)
-  //  if (r) {
-  //    o.name = r.name
-  //  } else {
-  //    console.log('WARNING: Missing recipe for favorite recipe')
-  //  }
-  //})
 
   res.render('index', { user, account: req.user });
 });

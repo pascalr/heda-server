@@ -21,6 +21,10 @@ body {
   margin-bottom: 0.5rem;
 }
 
+.recipe-body a {
+  text-decoration: none;
+}
+
 .editable-input {
   border: none;
   border-bottom: 1px dashed black;

@@ -1,15 +1,19 @@
 Utiliser la base de donnée du disque volume.
 Ajouter var dans .flyignore (Il s'appelle comme ça???)
 Copier les routes et les utiliser des 2 côtés, serveur et client.
-Essayer d'utiliser Ionic pour une application mobile? https://ionicframework.com/docs/components
-Expressjs mobile development???
-Ajouter une page pour choisir l'utilisateur dès le départ, comme Netflix.
-Ajouter la vue react.
-Accèder au data SQLite3.
-Match session et mes users à moi.
-Écrire chacune des routes qui modifie la base de donnée...
-Pouvoir modifier le mot de passe des utilisateurs: https://stackoverflow.com/questions/20277020/how-to-reset-change-password-in-node-js-with-passport-js
-Add security to password reset (token expiration) Unique token. Not null token
+Pouvoir voir les recettes
+Pouvoir modifier les recettes
+Pouvoir rechercher
+Mettre un peu de couleur!
 
 Later (other users):
 Create default user for account
+Pouvoir modifier le mot de passe des utilisateurs: https://stackoverflow.com/questions/20277020/how-to-reset-change-password-in-node-js-with-passport-js
+Add security to password reset (token expiration) Unique token. Not null token
+
+Later (mobile app):
+Essayer d'utiliser Ionic pour une application mobile? https://ionicframework.com/docs/components
+Expressjs mobile development???
+
+Later (optimize):
+Delegate all the db data sorting to the client to avoid load on the server.
