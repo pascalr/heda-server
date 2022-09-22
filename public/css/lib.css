@@ -1,5 +1,13 @@
 /* Generic styles which are not application specific. */
 
+.plain-input {
+  border: none;
+  /*font-family: inherit;*/
+  /*font-size: inherit;*/
+  padding: 0;
+  width: auto;
+}
+
 .plain-btn, .btn-image {
   background: none;
   color: inherit;

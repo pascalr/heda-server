@@ -12,3 +12,27 @@ body {
   border-bottom: 1px solid #ddd;
   font-size: 0.9em;
 }
+
+.recipe-body h2, #recipe-editor h2 {
+  border-bottom: 1px solid black;
+  padding-left: 0.25rem;
+  font-size: 1.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.editable-input {
+  border: none;
+  border-bottom: 1px dashed black;
+  /*font-family: inherit;*/
+  /*font-size: inherit;*/
+  padding: 0;
+  width: auto;
+}
+
+.recipe-title {
+  font-family: "Satisfy", cursive;
+  font-weight: bold;
+  font-size: 3.0rem;
+  margin-top: 0.5rem;
+}
