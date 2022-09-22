@@ -13,6 +13,10 @@ body {
   font-size: 0.9em;
 }
 
+.recipe-body {
+  font-size: 14px;
+}
+
 .recipe-body h2, #recipe-editor h2 {
   border-bottom: 1px solid black;
   padding-left: 0.25rem;
@@ -21,8 +25,17 @@ body {
   margin-bottom: 0.5rem;
 }
 
+.recipe-body h3 {
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
 .recipe-body a {
   text-decoration: none;
+}
+
+.food-name {
+  color: #cc0000;
 }
 
 .editable-input {

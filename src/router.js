@@ -136,21 +136,12 @@ router.post('/reset', function (req, res, next) {
 //class AppController < ApplicationController
 //  def index
 //    gon.current_user_admin = current_user_admin?
-//    gon.favorite_recipes = current_user.favorite_recipes.includes(:recipe).sort_by {|fav| fav.recipe.name}.map{|fav| fav.to_obj}
-//    gon.machines = current_user.machines.map {|m| m.to_obj}
 //    gon.containers = current_user.containers.map {|c| c.to_obj}
 //    gon.machine_foods = current_user.machine_foods.includes(:food).sort_by(&:name).map {|f| f.to_obj}
 //    gon.container_quantities = current_user.container_quantities.includes(:container_format).map {|c| c.to_obj}
 //    gon.ingredient_sections = IngredientSection.where(recipe_id: gon.recipes.map{|e|e[:id]}).map {|e| e.to_obj}
 //    gon.images = Image.where(id: gon.recipes.map{|e|e[:image_id]}+gon.recipe_kinds.map{|e|e[:image_id]}).map {|e| e.to_obj }
-//    #TODO: Tools
-//    #TODO: Ingredient
-//    gon.notes = RecipeNote.where(recipe_id: gon.recipes.map{|r|r[:id]}).map {|e| e.to_obj}
-//    gon.foods = Food.order(:name).all.map {|food| food.to_obj}
-//    gon.units = Unit.all.map {|unit| unit.to_obj}
 //    gon.contractionList = FrenchExpression.where(contract_preposition: true).map(&:singular)
-//    #gon.user_recipes = current_user.recipes.order(:name).map {|r| r.to_obj(only: :name)}
-//    #gon.favorite_recipes = current_user.favorite_recipes.includes(:recipe).sort_by {|fav| fav.recipe.name}.map {|fav| o = fav.recipe.to_obj(only: :name); o[:fav_id] = fav.id; o}
 //  end
 //end
 
@@ -209,7 +200,9 @@ function fetchRecipeIngredients(req, res, next) {
   let attrs = ['item_nb', 'raw', 'comment_json', 'food_id', 'raw_food', 'recipe_id']
   let ids = res.locals.gon.recipes.map(r=>r.id)
   fetchTable('recipe_ingredients', {recipe_id: ids}, attrs, next, (records) => {
-    res.locals.gon.recipe_ingredients = utils.sortBy(records, 'item_nb')
+    res.locals.gon.recipe_ingredients = utils.sortBy(records, 'item_nb').map(r => {
+      r.name = r.raw_food||''; return r;
+    })
   })
 }
 
@@ -291,6 +284,37 @@ function fetchFoods(req, res, next) {
   })
 }
 
+function fetchUnits(req, res, next) {
+  let attrs = ['name', 'value', 'is_weight', 'is_volume', 'show_fraction']
+  fetchTable('units', {}, attrs, next, (records) => {
+    res.locals.gon.units = records
+  })
+}
+
+function fetchNotes(req, res, next) {
+  let ids = res.locals.gon.recipes.map(r=>r.id)
+  fetchTable('recipe_notes', {recipe_id: ids}, ['item_nb'], next, (records) => {
+    res.locals.gon.notes = records
+  })
+}
+
+function fetchIngredientSections(req, res, next) {
+  let ids = res.locals.gon.recipes.map(r=>r.id)
+  let attrs = ['before_ing_nb', 'name', 'recipe_id']
+  fetchTable('ingredient_sections', {recipe_id: ids}, attrs, next, (records) => {
+    res.locals.gon.ingredient_sections = records
+  })
+}
+
+function fetchImages(req, res, next) {
+  let ids = res.locals.gon.recipes.map(r=>r.image_id).filter(x=>x)
+  ids = [...ids, ...res.locals.gon.recipe_kinds.map(r=>r.image_id).filter(x=>x)]
+  let attrs = ['author', 'source', 'filename', 'is_user_author']
+  fetchTable('images', {id: ids}, attrs, next, (records) => {
+    res.locals.gon.notes = records
+  })
+}
+
 function initGon(req, res, next) {
   res.locals.gon = {}; next()
 }
@@ -299,7 +323,7 @@ function initGon(req, res, next) {
 router.get('/', function(req, res, next) {
   if (!req.user) { return res.render('home'); }
   next();
-}, initGon, fetchUsers, fetchRecipes, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchFavoriteRecipes, fetchSuggestions, fetchUserRecipeFilters, fetchPublicRecipeFilters, fetchFavoriteRecipesNames, fetchFoods, function(req, res, next) {
+}, initGon, fetchUsers, fetchRecipes, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchFavoriteRecipes, fetchSuggestions, fetchUserRecipeFilters, fetchPublicRecipeFilters, fetchFavoriteRecipesNames, fetchFoods, fetchUnits, fetchNotes, fetchIngredientSections, fetchImages, function(req, res, next) {
   let user = res.locals.users.find(u => u.id == req.user.user_id)
 
   res.render('index', { user, account: req.user });
