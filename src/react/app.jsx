@@ -629,8 +629,14 @@ export const EditMix = ({page, recipes, favoriteRecipes, machines, mixes, machin
   </>)
 }
 
-const ShowRecipe = ({page}) => {
-  return <LinkToPage page={{...page, page: 16}} className="nav-link" active={page.page == 16}>Modifier</LinkToPage>
+//const ShowRecipe = ({page}) => {
+const ShowRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recipes, foods}) => {
+  //return <LinkToPage page={{...page, page: 16}} className="nav-link" active={page.page == 16}>Modifier</LinkToPage>
+  const recipe = recipes.find(e => e.id == page.recipeId)
+
+  window.recipe_editor = useRef(null) // FIXME: This is really ugly
+  gon.recipe = recipe // FIXME: This is really ugly
+  return <RecipeEditor {...{page, favoriteRecipes, machines, mixes, machineFoods, foods}} ref={window.recipe_editor} editable={false} />
 }
 
 const EditRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recipes, foods}) => {

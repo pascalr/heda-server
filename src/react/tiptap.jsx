@@ -817,14 +817,15 @@ export const RecipeExtensions = [
   Bold, Italic, Document, Paragraph, Strike, Text, CustomHeading,
   History, IngredientNode, IngredientListNode, StepNode, LinkModel
 ]
-export const recipeEditor = (content) => {
+export const recipeEditor = (content, editable=true) => {
   return {
     extensions: RecipeExtensions,
-    content: content,
+    content,
+    editable
   }
 }
-export const Tiptap = ({content, model, json_field, html_field, url}) => {
-  const editor = useEditor(recipeEditor(content))
+export const Tiptap = ({content, model, json_field, html_field, url, editable}) => {
+  const editor = useEditor(recipeEditor(content, editable))
 
   useEffect(() => {
     window.registerEditor(editor, model, json_field, html_field, url)
@@ -832,7 +833,7 @@ export const Tiptap = ({content, model, json_field, html_field, url}) => {
 
   return (
     <div>
-      <Toolbar editor={editor} />
+      {editable ? <Toolbar editor={editor} /> : ''}
       <EditorContent editor={editor} />
     </div>
   )

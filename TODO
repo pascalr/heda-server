@@ -1,3 +1,6 @@
+Show tiptap editor.
+Add the recipes from favorite_recipes in recipes.
+Change the sorry mess that favorite_recipes is handled inside react...
 image_used_in
 Utiliser la base de donnée du disque volume.
 Ajouter var dans .flyignore (Il s'appelle comme ça???)

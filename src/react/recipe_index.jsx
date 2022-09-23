@@ -37,7 +37,7 @@ const RecipeList = ({page, list, original, selected, suggestions, tags, editUser
         return (
           <li key={recipe.id} className='d-flex'>
             <span>
-              <img src={recipe.image_used_id ? image_variant_path({id: recipe.image_used_id}, "thumb") : "/img/default_recipe_01_thumb.png"} width="71" height="48" style={{marginRight: '0.5em'}} />
+              <img src={recipe.image_id ? image_variant_path({id: recipe.image_id}, "thumb") : "/img/default_recipe_01_thumb.png"} width="71" height="48" style={{marginRight: '0.5em'}} />
               <LinkToPage page={{...page, page: 15, recipeId: recipe.id}} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={current == selected ? "selected" : undefined}>{recipe.name}</LinkToPage>
               {mix ? <img src="logo_001.svg" width="24" height="24"/> : ''}
               <span style={{color: 'gray', fontSize: '0.78em'}}>{recipeTags.map(tag => ` #${tag.name}`)} </span>
