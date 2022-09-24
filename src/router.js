@@ -1,12 +1,14 @@
 import express from 'express';
 import crypto from 'crypto';
 import connectEnsureLogin from 'connect-ensure-login'
-import Bucket from "backblaze";
 
 import db from './db.js';
 import gon from './gon.js';
 import passport from './passport.js';
 import utils from './utils.js';
+
+import dotenv from 'dotenv';
+import Bucket from "backblaze";
 
 const ensureLogIn = connectEnsureLogin.ensureLoggedIn;
 const ensureLoggedIn = ensureLogIn();
