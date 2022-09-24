@@ -36,6 +36,21 @@ export const useRegisteredState = (name, initial, callback=null) => {
   return state
 }
 
+//window.hcu.update(recipe)
+export const useHcuState = (initial, options, callback=null) => {
+  const [state, setState] = useState(initial)
+
+  const {className} = options;
+
+  useEffect(() => {
+    window.hcu ||= {}
+    window.hcu.setters ||= {}
+    window.hcu.setters[className] = setState
+  }, [])
+
+  return state
+}
+
 export const useUpdatableState = (name, initial, callback=null) => {
   const [state, setState] = useState(initial)
   //useEffect(() => {

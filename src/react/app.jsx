@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 //import history from 'history/hash'
 
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, LinkToPage, useUpdatableState, getStateProperties, register, getRegister, useRegisteredState } from "./lib"
+import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, LinkToPage, useUpdatableState, getStateProperties, register, getRegister, useRegisteredState, useHcuState } from "./lib"
 import {RecipeIndex} from './recipe_index'
 import { ajax, isBlank, preloadImage, getUrlParams, join, bindSetter, sortBy, capitalize } from "./utils"
 import { icon_path, recipe_kind_path, suggestions_path, image_variant_path, send_data_suggestions_path, batch_update_filtered_recipes_path, batch_create_filtered_recipes_path, batch_destroy_filtered_recipes_path, recipe_filters_path, recipe_filter_path, missing_filtered_recipes_path, user_recipes_recipes_path, new_recipe_path, new_book_path, user_books_books_path, my_books_path, all_recipe_kinds_recipe_filters_path, recipe_path, user_tags_path, user_tag_path, containers_path, grocery_list_path, calendar_path, inventory_path, mixes_path, mix_path, inline_recipe_path, recipe_recipe_ingredients_path } from './routes'
@@ -872,7 +872,7 @@ const App = () => {
   const containerQuantities = useUpdatableState('containerQuantities', gon.container_quantities)
   const mixes = useUpdatableState('mixes', gon.mixes)
   const foods = useUpdatableState('foods', gon.foods)
-  const recipes = useUpdatableState('recipes', gon.recipes)
+  const recipes = useHcuState(gon.recipes, {className: 'recipe'})
   const recipeKinds = gon.recipe_kinds //useUpdatableState('recipe_kinds', gon.recipe_kinds)
   const ingredientSections = gon.ingredient_sections
   const recipeIngredients = gon.recipe_ingredients

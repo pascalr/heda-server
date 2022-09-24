@@ -224,7 +224,7 @@ export const updateRecordField = (model, field, value, url, getter, setter) => {
     console.log('Error updating the record field.', field)
   }})
 }
-export const TextField = ({model, field, inputRef, onUpdate, url, getter, setter, ...props}) => {
+export const TextField = ({model, field, inputRef, onUpdate, url, getter, setter, collection, ...props}) => {
   const [value, setValue] = useState(model[field])
 
   if (url && getter && setter) {
