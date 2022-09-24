@@ -1,20 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Autosuggest from 'react-autosuggest'
 import {Block, Inline, InlineBlock, Row, Col, InlineRow, InlineCol, Grid} from 'jsxstyle'
 
 import Quantity from './models/quantity'
-import { ajax } from "./utils"
-import { DeleteConfirmButton } from './components/delete_confirm_button'
 import { Tiptap, BubbleTiptap, ModificationsHandler } from './tiptap'
-import {AutocompleteInput, updateRecord, TextField, CollectionSelect} from './form'
-import { combineOrderedListWithHeaders } from './lib'
-import {EditRecipeImageModal} from './modals/recipe_image'
-import {PasteIngredientsButton} from './modals/paste_ingredients'
-import {EditMix} from './app'
 
-import {paste_ingredients_recipes_path, recipe_recipe_ingredients_path, recipe_recipe_ingredient_path, food_path, recipe_ingredient_sections_path, recipe_ingredient_section_path, recipe_recipe_notes_path, move_ing_recipe_path, recipe_path, recipe_recipe_note_path, image_variant_path, mixes_path, mix_path } from './routes'
+import {image_variant_path, recipe_path} from './routes'
 
 
 export const RecipeViewer = ({recipe, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipeIngredients, ingredientSections, recipeKinds, images}) => {
@@ -76,17 +68,6 @@ export const RecipeViewer = ({recipe, page, userRecipes, favoriteRecipes, machin
   //console.log(model)
   const mix = mixes.find(m => m.recipe_id == recipe.id)
 
-  const createMix = () => {
-    ajax({url: mixes_path(), type: 'POST', data: {mix: {recipe_id: recipe.id}}, success: (mix) => {
-      mixes.update([...mixes, mix])
-    }})
-  }
-  
-  let mixEditor = mix ? <EditMix {...{page, userRecipes, favoriteRecipes, machines, mixes, machineFoods}} /> : (<>
-    <p>Vous pouvez ajouter des instructions pour automatiser cette recette.</p>
-    <button type="button" className="btn btn-primary" onClick={createMix}>Ajouter</button>
-  </>)
-
   return (<>
     <div className="recipe">
       <div className="d-block d-md-flex gap-20">
@@ -135,9 +116,6 @@ export const RecipeViewer = ({recipe, page, userRecipes, favoriteRecipes, machin
         </div>
       </div>
       <div className="recipe-body">
-        
-        <h2>Commandes</h2>
-        {mixEditor}
 
         <h2 style={{flexGrow: '1'}}>Ingrédients</h2>
         {IngredientList}
@@ -155,16 +133,6 @@ export const RecipeViewer = ({recipe, page, userRecipes, favoriteRecipes, machin
           {Tools}
         </ul>
         
-        <h2>Informations</h2>
-        <table className="table table-light">
-          <tbody>
-            <tr>
-              <th>Ingrédient principal</th>
-              <td><CollectionSelect model={recipe} field="main_ingredient_id" options={ingredients.map(i => i.id)} showOption={(ingId) => ingredients.filter(i => i.id == ingId).name} includeBlank="true"></CollectionSelect></td>
-            </tr>
-          </tbody>
-        </table>
-
         <h2>Références</h2>
 
       </div>
