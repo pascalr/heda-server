@@ -64,3 +64,9 @@
   left: 50%;
   transform: translateX(-50%);
 }
+.inline {
+  display: inline;
+}
+.inline-block {
+  display: inline-block;
+}

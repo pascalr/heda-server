@@ -58,3 +58,24 @@ body {
   border: 1px solid #555;
   border-radius: 5px;
 }
+
+*[data-step="true"] {
+  counter-reset: stepnb;
+}
+*[data-step] {
+  counter-increment: stepnb;
+}
+*[data-step]::before {
+  font-weight: bold;
+  content: counter(stepnb) ". ";
+}
+*[data-link-model="note"]::before {
+  content: "[";
+}
+*[data-link-model="note"]::after {
+  content: "]";
+}
+*[data-link-model="note"] {
+  vertical-align: super;
+  font-size: 70%;
+}
