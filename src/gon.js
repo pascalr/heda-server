@@ -192,6 +192,35 @@ function fetchImages(req, res, next) {
   })
 }
 
+//  create_table "active_storage_attachments", force: :cascade do |t|
+//    t.string "name", limit: 255, null: false
+//    t.string "record_type", limit: 255, null: false
+//    t.bigint "record_id", null: false
+//    t.bigint "blob_id", null: false
+//    t.datetime "created_at", precision: nil, null: false
+//    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+//    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+//  end
+//  
+//  create_table "active_storage_blobs", force: :cascade do |t|
+//    t.string "key", limit: 255, null: false
+//    t.string "filename", limit: 255, null: false
+//    t.string "content_type", limit: 255
+//    t.text "metadata"
+//    t.bigint "byte_size", null: false
+//    t.string "checksum", limit: 255
+//    t.datetime "created_at", precision: nil, null: false
+//    t.string "service_name", limit: 255, null: false
+//    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+//  end
+//
+//  create_table "active_storage_variant_records", force: :cascade do |t|
+//    t.bigint "blob_id", null: false
+//    t.string "variation_digest", limit: 255, null: false
+//    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+//  end
+
+
 function initGon(req, res, next) {
   res.locals.gon = {}; next()
 }
