@@ -50,9 +50,10 @@ export const useHcuState = (initial, options, callback=null) => {
       window.hcu.updateField = (model, field, value) => {
         if (value != model[field]) { // update only if value changed
 
-          let data = {[model.class_name+"["+field+"]"]: value}
+          //let data = {[model.class_name+"["+field+"]"]: value}
+          let data = {field, value}
           console.log('PATCH', urlFor(model))
-          ajax({url: '/update_field', type: 'PATCH', data: data, success: () => {
+          ajax({url: '/update_field/'+model.class_name+'/'+model.id, type: 'PATCH', data: data, success: () => {
             console.log(`Updating model ${model.class_name} field ${field} from ${model[field]} to ${value}.`)
             model[field] = value
             //if (successCallback) {successCallback()}

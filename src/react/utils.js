@@ -145,14 +145,13 @@ export function ajax(params) {
 
   } else {
 
-    let data = {
-      authenticity_token: $('[name="csrf-token"]').content,
-      ...params.data
-    }
+    //let _csrf = $('[name="csrf-token"]').content
+    let _csrf = document.querySelector('[name="csrf-token"]').content
+    console.log('_csrf', _csrf)
     $.ajax({
       type: params.type,
-      url: addExtensionToPath("json", params.url),
-      data: data,
+      url: params.url, //addExtensionToPath("json", params.url),
+      data: {_csrf, ...params.data},
       //contentType: "application/json",
       //data: JSON.stringify(data),
       success: params.success,

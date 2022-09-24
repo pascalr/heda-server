@@ -160,6 +160,34 @@ router.get('/images/:id/:variant', function(req, res, next) {
   });
 });
 
+function mapClassNameToTable(className) {
+  switch(className) {
+    case 'recipe': return 'recipes'; break;
+    default:
+      throw "Missing table for className " + className
+  }
+}
+
+router.patch('/update_field/:className/:id', function(req, res, next) {
+
+  const ALLOWED_TABLES = ['recipes']
+  const ALLOWED_COLUMNS = {
+    'recipes': ['name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id']
+  }
+  let id = req.params.id
+  let className = req.params.className
+  let table = mapClassNameToTable(className)
+  let field = req.body.field
+  let value = req.body.value
+  if (ALLOWED_TABLES.includes(table) && ALLOWED_COLUMNS[table].includes(field)) {
+    db.run('UPDATE '+table+' SET '+field+' = ?, updated_at = ? WHERE id = ? AND user_id = ?', [
+      value, utils.now(), id, req.user.user_id, 
+    ])
+  } else {
+    // TODO: Handle error not allowed
+  }
+});
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   if (!req.user) { return res.render('home'); }
