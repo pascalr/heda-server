@@ -1,6 +1,8 @@
 import express from 'express';
 import crypto from 'crypto';
 import connectEnsureLogin from 'connect-ensure-login'
+import { fileURLToPath } from 'url';
+import path from 'path';
 
 import db from './db.js';
 import gon from './gon.js';
@@ -13,6 +15,9 @@ import utils from './utils.js';
 //  id: process.env.B2_ID,
 //  key: process.env.B2_KEY
 //});
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const ensureLogIn = connectEnsureLogin.ensureLoggedIn;
 const ensureLoggedIn = ensureLogIn();
@@ -143,6 +148,16 @@ router.post('/reset', function (req, res, next) {
 });
 
 router.get('/images/:id/:variant', function(req, res, next) {
+
+  // TODO: Send only variants, not original
+  var fileName = req.params.id+'.jpg';
+  res.sendFile(fileName, {root: path.join(__dirname, '../public/images/')}, function (err) {
+      if (err) {
+          next(err);
+      } else {
+          console.log('Sent:', fileName);
+      }
+  });
 });
 
 /* GET home page. */
