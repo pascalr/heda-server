@@ -7,11 +7,6 @@ import {EditUserRecipeModal} from './modals/edit_user_recipe'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import { LinkToPage } from "./lib"
 
-let recipeForItem = (item, recipes) => {
-  if (item.class_name == "recipe") {return item;}
-  return {id: item.recipe_id, name: item.name, image_used_id: item.image_used_id}
-}
-
 const RecipeList = ({page, list, original, selected, suggestions, tags, editUserRecipe, updateFavoriteRecipe, mixes, recipes}) => {
 
   let removeItem = (item) => {
@@ -26,14 +21,15 @@ const RecipeList = ({page, list, original, selected, suggestions, tags, editUser
   return (<>
     <ul id="recipes" className="recipe-list">
       {list.map((item, current) => {
-        let recipe = recipeForItem(item, recipes)
+        let recipe = item.recipe
+        let fav = item.fav
         let recipeTags = suggestions.filter(suggestion => suggestion.recipe_id == recipe.id).map(suggestion => tags.find(t => t.id == suggestion.filter_id))
         let mix = mixes.find(e => e.recipe_id == recipe.id)
 
-        let toCook = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(item, 1)}>À cuisiner</button>
-        let toTry = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(item, 2)}>À essayer</button>
-        let toNotCook = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(item, 0)}>Ne plus cuisiner</button>
-        let toNotTry = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(item, 0)}>Ne plus essayer</button>
+        let toCook = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 1)}>À cuisiner</button>
+        let toTry = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 2)}>À essayer</button>
+        let toNotCook = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 0)}>Ne plus cuisiner</button>
+        let toNotTry = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 0)}>Ne plus essayer</button>
         return (
           <li key={recipe.id} className='d-flex'>
             <span>
@@ -48,11 +44,11 @@ const RecipeList = ({page, list, original, selected, suggestions, tags, editUser
                 <img src="icons/three-dots.svg"/>
               </button>
               <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li>{item.list_id == 1 ? toNotCook : toCook }</li>
-                <li>{item.list_id == 2 ? toNotTry : toTry }</li>
+                <li>{fav && fav.list_id == 1 ? toNotCook : toCook }</li>
+                <li>{fav && fav.list_id == 2 ? toNotTry : toTry }</li>
                 <li><button type="button" className="dropdown-item" onClick={() => editUserRecipe(recipe)}>Modifier</button></li>
                 <li>
-                  <DeleteConfirmButton id={`remove-recipe-${recipe.id}`} onDeleteConfirm={() => removeItem(item)} message="Je veux enlever ce favori?">
+                  <DeleteConfirmButton id={`remove-recipe-${recipe.id}`} onDeleteConfirm={() => removeItem(fav)} message="Je veux enlever ce favori?">
                     <button type="button" className="dropdown-item">Retirer</button>
                   </DeleteConfirmButton>
                 </li>
@@ -83,11 +79,26 @@ export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, re
   }
 
   let ids = favoriteRecipes.map(f => f.recipe_id)
-  let filteredUserRecipes = filterList(recipes.filter(r => !ids.includes(r.id)))
-  let toCookList = filterList(favoriteRecipes.filter(r => r.list_id == 1))
-  let toTryList = filterList(favoriteRecipes.filter(r => r.list_id == 2))
-  let otherList = filterList(favoriteRecipes.filter(r => !r.list_id || r.list_id >= 3))
+  let filteredUserRecipes = []
+  let toCookList = []
+  let toTryList = []
+  let otherList = []
+
+  recipes.forEach((recipe) => {
+    f = favoriteRecipes.find(r => r.recipe_id == recipe.id)
+    if (!f) { filteredUserRecipes.push({recipe: recipe, fav: f}) }
+    else if (f.list_id == 1) { toCookList.push({recipe: recipe, fav: f}) }
+    else if (f.list_id == 2) { toTryList.push({recipe: recipe, fav: f}) }
+    else { otherList.push({recipe: recipe, fav: f}) }
+  })
   let all = [...recipes, ...toCookList, ...toTryList, ...otherList]
+  
+  //let ids = favoriteRecipes.map(f => f.recipe_id)
+  //let filteredUserRecipes = filterList(recipes.filter(r => !ids.includes(r.id)))
+  //let toCookList = filterList(favoriteRecipes.filter(r => r.list_id == 1))
+  //let toTryList = filterList(favoriteRecipes.filter(r => r.list_id == 2))
+  //let otherList = filterList(favoriteRecipes.filter(r => !r.list_id || r.list_id >= 3))
+  //let all = [...recipes, ...toCookList, ...toTryList, ...otherList]
 
   let select = (pos) => {
     setSelected(pos)
@@ -127,12 +138,12 @@ export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, re
       <input ref={inputField} type="search" placeholder="Filtrer..." onChange={(e) => setSearch(e.target.value)} autoComplete="off" style={{width: "100%"}} onKeyDown={onKeyDown}/>
     </div>
     <h3>À cuisinner prochainement</h3>
-    <RecipeList original={favoriteRecipes} list={toCookList} {...listArgs} />
+    <RecipeList original={recipes} list={toCookList} {...listArgs} />
     <h3>À essayer</h3>
-    <RecipeList original={favoriteRecipes} list={toTryList} {...listArgs} />
+    <RecipeList original={recipes} list={toTryList} {...listArgs} />
     <h3>Mes recettes personnelles</h3>
     <RecipeList original={recipes} list={filteredUserRecipes} {...listArgs} />
     <h3>Mes recettes favorites</h3>
-    <RecipeList original={favoriteRecipes} list={otherList} {...listArgs} />
+    <RecipeList original={recipes} list={otherList} {...listArgs} />
   </>)
 }

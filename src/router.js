@@ -245,7 +245,7 @@ function fetchFavoriteRecipes(req, res, next) {
 function fetchFavoriteRecipesRecipe(res, res, next) {
   let recipe_ids = res.locals.gon.favorite_recipes.map(r=>r.recipe_id)
   fetchTable('recipes', {id: recipe_ids}, RECIPE_ATTRS, next, (records) => {
-    res.locals.gon.recipes = res.locals.gon.recipes.concat(utils.sortBy(records, 'name'))
+    res.locals.gon.recipes = utils.removeDuplicateIds(res.locals.gon.recipes.concat(utils.sortBy(records, 'name')))
   })
 }
 
@@ -276,14 +276,14 @@ function fetchSuggestions(req, res, next) {
 function fetchUserRecipeFilters(req, res, next) {
   let attrs = ['name', 'image_src', 'user_id']
   fetchTable('recipe_filters', {user_id: req.user.user_id}, attrs, next, (records) => {
-    res.locals.gon.recipe_filters = [...(res.locals.gon.recipe_filters||[]), ...records]
+    res.locals.gon.recipe_filters = utils.removeDuplicateIds([...(res.locals.gon.recipe_filters||[]), ...records])
   })
 }
 
 function fetchPublicRecipeFilters(req, res, next) {
   let attrs = ['name', 'image_src', 'user_id']
   fetchTable('recipe_filters', {user_id: null}, attrs, next, (records) => {
-    res.locals.gon.recipe_filters = [...new Set([...(res.locals.gon.recipe_filters||[]), ...records])]
+    res.locals.gon.recipe_filters = utils.removeDuplicateIds([...(res.locals.gon.recipe_filters||[]), ...records])
   })
 }
 

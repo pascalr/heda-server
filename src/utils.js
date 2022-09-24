@@ -28,4 +28,8 @@ function sortBy(list, attr) {
   })
 }
 
-module.exports = {padStr, now, sortBy};
+function removeDuplicateIds(records) {
+  return [...new Map(records.map((r) => [r.id, r])).values()];
+}
+
+module.exports = {padStr, now, sortBy, removeDuplicateIds};
