@@ -17,10 +17,12 @@ import {EditMix} from './app'
 import {paste_ingredients_recipes_path, recipe_recipe_ingredients_path, recipe_recipe_ingredient_path, food_path, recipe_ingredient_sections_path, recipe_ingredient_section_path, recipe_recipe_notes_path, move_ing_recipe_path, recipe_path, recipe_recipe_note_path, image_variant_path, mixes_path, mix_path } from './routes'
 
 
-export const RecipeViewer = ({recipe, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipeIngredients, ingredientSections, recipeKinds}) => {
+export const RecipeViewer = ({recipe, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipeIngredients, ingredientSections, recipeKinds, images}) => {
 
+  const recipe_kind = recipeKinds.find(k => k.id == recipe.recipe_kind_id)
+  const image_used_id = recipe.use_personalised_image ? recipe.image_id : recipe_kind && recipe_kind.image_id
+  const image = images.find(i => i.id == image_used_id)
   const noteIds = recipe.notes ? Object.values(recipe.notes).sort((a,b) => a.item_nb - b.item_nb).map(ing => ing.id) : []
-  const recipe_image = recipe.image_id ? gon.images.find(e => e.id == recipe.image_id) : {}
   const ingredients = recipeIngredients.filter(e => e.recipe_id == recipe.id) || []
   const ingredient_sections = ingredientSections.filter(e => e.recipe_id == recipe.id) || []
   const toolIds = []
@@ -69,14 +71,7 @@ export const RecipeViewer = ({recipe, page, userRecipes, favoriteRecipes, machin
       {recipe.tools[id].name}
     </li>
   ))
-
-  const recipe_kind = recipeKinds.find(k => k.id == recipe.recipe_kind_id)
-  let recipeKindImage = recipe_kind && recipe_kind.image_id ? gon.images.find(e => e.id == recipe_kind.image_id) : null
-  const image = recipe.use_personalised_image ? recipe_image : recipeKindImage
-  //console.log('use_personalised_image', recipe.use_personalised_image)
-  //console.log('recipe kind image', recipeKindImage)
-  //console.log('recipe kind', recipe_kind)
-  //console.log('recipe image', recipe_image)
+  
   const imagePath = image ? image_variant_path(image, 'medium') : "/img/default_recipe_01.png"
   //console.log(model)
   const mix = mixes.find(m => m.recipe_id == recipe.id)
@@ -91,11 +86,20 @@ export const RecipeViewer = ({recipe, page, userRecipes, favoriteRecipes, machin
     <p>Vous pouvez ajouter des instructions pour automatiser cette recette.</p>
     <button type="button" className="btn btn-primary" onClick={createMix}>Ajouter</button>
   </>)
-  
+
   return (<>
     <div className="recipe">
       <div className="d-block d-md-flex gap-20">
-        <img style={{maxWidth: "100vh", height: "auto"}} src={imagePath} width="452" height="304"/>
+        <div>
+          <div style={{width: "452px", height: "304px", maxWidth: "100vw"}}>
+            <img src={imagePath} width="452" height="304"/>
+          </div>
+          {!image ? '' : <>
+            <div className="text-center">
+              <i>Crédit photo: </i><u><a style={{color: 'block', fontSize: '0.95em'}} href={image.source}>{image.author}</a></u>
+            </div>
+          </>}
+        </div>
         <div style={{width: '100%'}}>
           <h1><span className="recipe-title">{recipe.name}</span></h1>
           <div>
