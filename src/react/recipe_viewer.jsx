@@ -5,6 +5,7 @@ import {Block, Inline, InlineBlock, Row, Col, InlineRow, InlineCol, Grid} from '
 
 import Quantity from './models/quantity'
 import { Tiptap, BubbleTiptap, ModificationsHandler } from './tiptap'
+import { LinkToPage } from "./lib"
 
 import {image_variant_path, recipe_path} from './routes'
 
@@ -82,7 +83,15 @@ export const RecipeViewer = ({recipe, page, userRecipes, favoriteRecipes, machin
           </>}
         </div>
         <div style={{width: '100%'}}>
-          <h1><span className="recipe-title">{recipe.name}</span></h1>
+          <h1>
+            <span className="recipe-title">{recipe.name}</span>
+            <span className="dropdown" style={{padding: "0 1rem"}}>
+              <img className="clickable" data-bs-toggle="dropdown" src="/icons/list.svg"/>
+              <div className="dropdown-menu">
+                <LinkToPage page={{...page, page: 16}} className="dropdown-item" active={page.page == 16}>Modifier</LinkToPage>
+              </div>
+            </span>
+          </h1>
           <div>
             <b>Préparation (minutes): </b>
             <span style={{color: 'gray'}}>{recipe.preparation_time}</span>
