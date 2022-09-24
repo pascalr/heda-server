@@ -239,7 +239,7 @@ export class RecipeEditor extends React.Component {
       name: gon.recipe.name,
       ingredients: gon.recipe_ingredients.filter(e => e.recipe_id == gon.recipe.id) || [],
       noteIds: noteIds,
-      ingredient_sections: gon.ingredient_sections || [],
+      ingredient_sections: props.ingredientSections.filter(e => e.recipe_id == gon.recipe.id) || [],
       toolIds: Object.keys(gon.recipe.tools || []),
       instructionsSlave: gon.recipe.complete_instructions,
       showImageModal: false,

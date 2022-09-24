@@ -632,22 +632,22 @@ export const EditMix = ({page, recipes, favoriteRecipes, machines, mixes, machin
 }
 
 //const ShowRecipe = ({page}) => {
-const ShowRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recipes, foods}) => {
+const ShowRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recipes, foods, ingredientSections}) => {
   //return <LinkToPage page={{...page, page: 16}} className="nav-link" active={page.page == 16}>Modifier</LinkToPage>
   const recipe = recipes.find(e => e.id == page.recipeId)
 
   window.recipe_editor = useRef(null) // FIXME: This is really ugly
   gon.recipe = recipe // FIXME: This is really ugly
-  return <RecipeEditor {...{page, favoriteRecipes, machines, mixes, machineFoods, foods}} ref={window.recipe_editor} editable={false} />
+  return <RecipeEditor {...{page, favoriteRecipes, machines, mixes, machineFoods, foods, ingredientSections}} ref={window.recipe_editor} editable={false} />
 }
 
-const EditRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recipes, foods}) => {
+const EditRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recipes, foods, ingredientSections}) => {
   
   const recipe = recipes.find(e => e.id == page.recipeId)
 
   window.recipe_editor = useRef(null) // FIXME: This is really ugly
   gon.recipe = recipe // FIXME: This is really ugly
-  return <RecipeEditor {...{page, favoriteRecipes, machines, mixes, machineFoods, foods}} ref={window.recipe_editor}/>
+  return <RecipeEditor {...{page, favoriteRecipes, machines, mixes, machineFoods, foods, ingredientSections}} ref={window.recipe_editor}/>
 }
   
 const ShowMix = ({page, recipes, favoriteRecipes, machines, mixes, machineFoods}) => {
@@ -874,6 +874,7 @@ const App = () => {
   const foods = useUpdatableState('foods', gon.foods)
   const recipes = useUpdatableState('recipes', gon.recipes)
   const recipeKinds = gon.recipe_kinds //useUpdatableState('recipe_kinds', gon.recipe_kinds)
+  const ingredientSections = gon.ingredient_sections
 
   const all = {page, recipeFilters, suggestions, userTags, favoriteRecipes, machines, machineFoods, containerQuantities, mixes, recipes, foods}
 
@@ -912,8 +913,8 @@ const App = () => {
     [PAGE_12]: <MixIndex {...{page, machines, machineFoods, mixes}} />,
     [PAGE_13]: <ShowMix {...all} />,
     [PAGE_14]: <EditMix {...all} />,
-    [PAGE_15]: <ShowRecipe {...all} />,
-    [PAGE_16]: <EditRecipe {...all} />,
+    [PAGE_15]: <ShowRecipe {...{...all, ingredientSections}} />,
+    [PAGE_16]: <EditRecipe {...{...all, ingredientSections}} />,
   }
 
   // I don't want a back system, I want a up system. So if you are given a nested link, you can go up.
