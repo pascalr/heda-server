@@ -146,7 +146,7 @@ export function ajax(params) {
   } else {
 
     let data = {
-      authenticity_token: $('[name="csrf-token"]')[0].content,
+      authenticity_token: $('[name="csrf-token"]').content,
       ...params.data
     }
     $.ajax({

@@ -224,18 +224,28 @@ export const updateRecordField = (model, field, value, url, getter, setter) => {
     console.log('Error updating the record field.', field)
   }})
 }
-export const TextField = ({model, field, inputRef, onUpdate, url, getter, setter, collection, ...props}) => {
+export const TextField = ({model, field, inputRef, onUpdate, url, getter, setter, ...props}) => {
   const [value, setValue] = useState(model[field])
-
-  if (url && getter && setter) {
-    onUpdate = (model, field, value) => updateRecordField(model, field, value, url, getter, setter)
-  }
-
+  if (onUpdate) {throw "Is onUpdate deprecated on TextField? I think so..."}
+  if (url) {throw "Is url deprecated on TextField? I think so..."}
+  if (getter) {throw "Is getter deprecated on TextField? I think so..."}
+  if (setter) {throw "Is setter deprecated on TextField? I think so..."}
+  
   return (
     <input type="text" value={value||''} name={model.class_name+"["+field+"]"} id={field} ref={inputRef} {...props}
       onChange={(e) => setValue(e.target.value)}
-      onBlur={(e) => {onUpdate ? onUpdate(model, field, value) : updateModelField(model, field, value)}} />
+      onBlur={(e) => {window.hcu.updateField(model, field, value)}} />
   )
+
+  //if (url && getter && setter) {
+  //  onUpdate = (model, field, value) => updateRecordField(model, field, value, url, getter, setter)
+  //}
+
+  //return (
+  //  <input type="text" value={value||''} name={model.class_name+"["+field+"]"} id={field} ref={inputRef} {...props}
+  //    onChange={(e) => setValue(e.target.value)}
+  //    onBlur={(e) => {onUpdate ? onUpdate(model, field, value) : updateModelField(model, field, value)}} />
+  //)
 }
 export const EditableField = ({model, field}) => {
   return (

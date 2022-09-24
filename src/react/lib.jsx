@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { omit, join, bindSetter, capitalize } from "./utils"
+import { ajax, omit, join, bindSetter, capitalize } from "./utils"
 
 import {recipe_recipe_ingredient_path, food_path, recipe_ingredient_section_path, recipe_path, recipe_recipe_note_path, image_path } from './routes'
 
@@ -37,14 +37,32 @@ export const useRegisteredState = (name, initial, callback=null) => {
 }
 
 //window.hcu.update(recipe)
+//window.hcu.updateField(recipe)
 export const useHcuState = (initial, options, callback=null) => {
   const [state, setState] = useState(initial)
 
   const {className} = options;
 
   useEffect(() => {
-    window.hcu ||= {}
-    window.hcu.setters ||= {}
+    if (!window.hcu) {
+      window.hcu = {}
+      window.hcu.setters = {}
+      window.hcu.updateField = (model, field, value) => {
+        if (value != model[field]) { // update only if value changed
+
+          let data = {[model.class_name+"["+field+"]"]: value}
+          console.log('PATCH', urlFor(model))
+          ajax({url: '/update_field', type: 'PATCH', data: data, success: () => {
+            console.log(`Updating model ${model.class_name} field ${field} from ${model[field]} to ${value}.`)
+            model[field] = value
+            //if (successCallback) {successCallback()}
+          }, error: (errors) => {
+            console.log('ERROR AJAX UPDATING...')
+            //toastr.error("<ul>"+Object.values(JSON.parse(errors)).map(e => ("<li>"+e+"</li>"))+"</ul>", 'Error updating')
+          }})
+        }
+      }
+    }
     window.hcu.setters[className] = setState
   }, [])
 
