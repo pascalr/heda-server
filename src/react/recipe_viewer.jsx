@@ -244,128 +244,6 @@ export class RecipeViewer extends React.Component {
       instructionsSlave: gon.recipe.complete_instructions,
       showImageModal: false,
     };
-    //this.state.recipe.recipe_image.onUpdate = () => {
-    //  throw "TODO: Image onUpdate"
-    //  recipe = {...this.state.recipe}
-    //  recipe.recipe_image 
-    //  this.setStete
-    //}
-    this.state.recipe.onUpdate = (recipe) => {this.setState({recipe})}
-    this.state.recipe.onServerUpdate = ({recipe, recipe_image}) => {
-      //console.log("recipe", recipe)
-      //console.log("recipe_image", recipe_image)
-      //if (!this.state.recipe_image.url && recipe_image && recipe_image.url) {
-      //  this.setState({recipe_image: {...this.state.recipe_image, ...recipe_image}})
-        this.setState({recipe_image: updateRecord(this.state.recipe_image, recipe_image)})
-      //}
-    }
-    this.state.recipe_image.onUpdate = (recipe_image) => {this.setState({recipe_image})}
-    this.state.recipe_image.onServerUpdate = (image) => {
-      this.setState({recipe_image: updateRecord(this.state.recipe_image, image)})
-    }
-    this.handleDropIng = this.handleDropIng.bind(this);
-    this.appendIngredientSection = this.appendIngredientSection.bind(this)
-    this.addIng = this.addIng.bind(this)
-    this.removeIng = this.removeIng.bind(this)
-    this.removeIngSection = this.removeIngSection.bind(this)
-    this.appendNote = this.appendNote.bind(this)
-    this.pasteIngredients = this.pasteIngredients.bind(this)
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.ingredients !== this.state.ingredients) {
-      gon.recipe_ingredients = this.state.ingredients
-    }
-  }
-
-  //swapIng(dragIndex, dropIndex) {
-  //  let swappedIngs = swapArrayPositions(this.state.ings, dragIndex, dropIndex);
-  //  this.setState({ings: swappedIngs})
-  //}
-
-  addIng(ingredient) {
-    console.log("added ingredient ", ingredient)
-    this.setState({ingredients: [...this.state.ingredients, ingredient]})
-  }
-  removeIng(ing) {
-    console.log("this.state.ingredients", this.state.ingredients)
-    let ings = this.state.ingredients.filter(item => item.id != ing.id)
-    console.log("ings", ings)
-    this.setState({ingredients: ings})
-  }
-
-  appendIngredientSection() {
-    ajax({url: recipe_ingredient_sections_path(gon.recipe), type: 'POST', data: {}, success: (section) => {
-      this.setState({ingredient_sections: [...this.state.ingredient_sections, section]})
-    }})
-  }
-
-  pasteIngredients(text) {
-    ajax({url: paste_ingredients_recipes_path(this.state.recipe), type: 'PATCH',
-          data: {pasted: text}, success: ({ingredients}) => {
-      this.setState({ingredients})
-    }})
-  }
-
-  appendNote() {
-    ajax({url: recipe_recipe_notes_path(gon.recipe), type: 'POST', data: {}, success: (recipe_note) => {
-      if (!gon.recipe.notes) {gon.recipe.notes = {}}
-      gon.recipe.notes[recipe_note.id] = recipe_note
-      this.setState({noteIds: [...this.state.noteIds, recipe_note.id]})
-    }})
-  }
-
-  handleDropIng(ingItems, droppedItem) {
-
-    const getClosestItemNb = (index) => {
-      for (let i = index; i < ingItems.length; i++) {
-        if (ingItems[i].class_name == "recipe_ingredient") {
-          return ingItems[i].item_nb
-        }
-      }
-      return this.state.ingredients.length
-    }
-
-    console.log('Handle drop ing')
-    // Ignore drop outside droppable container
-    if (!droppedItem.destination) return;
-    let source = getClosestItemNb(droppedItem.source.index)-1
-    let destination = getClosestItemNb(droppedItem.destination.index)-1
-    let droppedRecord = ingItems[droppedItem.source.index]
-    //console.log("droppedRecord", droppedRecord)
-    //console.log("droppedItem", droppedItem)
-    //console.log("source", source)
-    //console.log("destination", destination)
-    if (droppedRecord.class_name == "recipe_ingredient") {
-      console.log("dropping recipe ingredient")
-      var updatedList = [...this.state.ingredients];
-      const [reorderedItem] = updatedList.splice(source, 1);
-      updatedList.splice(destination, 0, reorderedItem);
-
-      let data = new FormData()
-      data.append('ing_id', droppedRecord.id)
-      data.append('position', destination+1)
-      ajax({url: move_ing_recipe_path(gon.recipe), type: 'PATCH', data: data})
-      for (let i = 0; i < updatedList.length; i++) {
-        updatedList[i].item_nb = i+1
-      }
-      this.setState({ingredients: updatedList})
-    } else {
-      var others = [...this.state.ingredient_sections].filter(i => i.id != droppedRecord.id);
-      droppedRecord.before_ing_nb = droppedItem.source.index < droppedItem.destination.index ? destination+2 : destination+1
-      console.log("dropping ingredient section at ", droppedRecord.before_ing_nb)
-      let data = new FormData()
-      data.append('ingredient_section[before_ing_nb]', droppedRecord.before_ing_nb)
-      ajax({url: recipe_ingredient_section_path({id: droppedRecord.recipe_id}, droppedRecord), type: 'PATCH', data: data})
-      this.setState({ingredient_sections: [...others, droppedRecord]})
-    }
-  }
-
-  removeIngSection(section) {
-    ajax({url: recipe_ingredient_section_path({id: section.recipe_id}, section), type: 'DELETE', success: () => {
-      let sections = this.state.ingredient_sections.filter(i => i.id != section.id)
-      this.setState({ingredient_sections: sections})
-    }})
   }
 
   render() {
@@ -484,25 +362,9 @@ export class RecipeViewer extends React.Component {
     return (<>
       <div className="recipe">
         <div className="d-block d-md-flex gap-20">
-          <div>
-            <div className="over-container">
-              <EditRecipeImageModal recipe={recipe} show={this.state.showImageModal}
-                                    handleClose={() => this.setState({showImageModal: false})}
-                                    recipeImage={recipe_image} recipeKindImage={recipeKindImage} />
-              <div style={{cursor: "pointer"}} onClick={() => this.setState({showImageModal: true})}>
-                <img style={{maxWidth: "100vh", height: "auto"}} src={imagePath} width="452" height="304"/>
-                <div className="bottom-right" style={{color: 'white', fontSize: '2em'}}>
-                  <img src="/icons/pencil-circle.svg" style={{width: "5rem", padding: "0.5rem"}}/>
-                </div>
-              </div>
-            </div> 
-          </div>
+          <img style={{maxWidth: "100vh", height: "auto"}} src={imagePath} width="452" height="304"/>
           <div style={{width: '100%'}}>
-            <h1>
-              <span className="recipe-title">
-                <TextField model={recipe} field="name" className="plain-input" />
-              </span>
-            </h1>
+            <h1><span className="recipe-title">{recipe.name}</span></h1>
             <div>
               <b>Préparation (minutes): </b>
               <span style={{color: 'gray'}}>{recipe.preparation_time}</span>
@@ -518,6 +380,20 @@ export class RecipeViewer extends React.Component {
             <div>
               <b>Portions: </b>
               <span style={{color: 'gray'}}>{recipe.raw_servings}</span>
+            </div>
+            <div className="d-flex" style={{gap: '5px', marginTop: '10px'}}>
+              <a class="btn btn-outline-secondary" href="FIXME">
+                <img src="/icons/printer.svg" width="16"></img>
+              </a>
+              <a class="btn btn-outline-secondary" href="FIXME">
+                <img src="/icons/share.svg" width="16"></img>
+              </a>
+              <a class="btn btn-outline-secondary" href="FIXME">
+                <img src="/icons/download.svg" width="16"></img>
+              </a>
+              <a class="btn btn-outline-secondary" href="FIXME">
+                <img src="/icons/star.svg" width="16"></img>
+              </a>
             </div>
           </div>
         </div>
