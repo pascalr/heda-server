@@ -177,9 +177,10 @@ function mapClassNameToTable(className) {
 
 router.patch('/update_field/:className/:id', function(req, res, next) {
 
-  const ALLOWED_TABLES = ['recipes']
+  const ALLOWED_TABLES = ['recipes', 'users']
   const ALLOWED_COLUMNS = {
-    'recipes': ['name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id']
+    'recipes': ['name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id'],
+    'users': ['name', 'gender']
   }
   let id = req.params.id
   let className = req.params.className
@@ -187,9 +188,15 @@ router.patch('/update_field/:className/:id', function(req, res, next) {
   let field = req.body.field
   let value = req.body.value
   if (ALLOWED_TABLES.includes(table) && ALLOWED_COLUMNS[table].includes(field)) {
-    db.run('UPDATE '+table+' SET '+field+' = ?, updated_at = ? WHERE id = ? AND user_id = ?', [
-      value, utils.now(), id, req.user.user_id, 
-    ])
+    if (table == 'users') {
+      db.run('UPDATE '+table+' SET '+field+' = ?, updated_at = ? WHERE id = ?', [
+        value, utils.now(), req.user.user_id, 
+      ])
+    } else {
+      db.run('UPDATE '+table+' SET '+field+' = ?, updated_at = ? WHERE id = ? AND user_id = ?', [
+        value, utils.now(), id, req.user.user_id, 
+      ])
+    }
   } else {
     // TODO: Handle error not allowed
   }

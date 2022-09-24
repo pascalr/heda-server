@@ -205,7 +205,7 @@ export const RadioField = ({model, field, value, label, ...props}) => {
   return (<>
     <input type="radio" value={value} name={model.class_name+"["+field+"]"}
       id={id} {...props} checked={model[field] == value}
-      onChange={(e) => {asyncUpdateModelField(model, field, value)}}
+      onChange={(e) => {window.hcu.updateField(model, field, value)}}
     />
     {label ? <label htmlFor={id}>{' '}{label}</label> : ''}
           
