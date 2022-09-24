@@ -2,6 +2,7 @@
   "name": "heda-server",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "start": "node ./src/server.js",
     "build": "esbuild src/react/app.jsx --bundle --sourcemap --outfile=public/build/app.js",

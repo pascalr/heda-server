@@ -1,23 +1,28 @@
 #!/usr/bin/env node
 
-/**
- * Module dependencies.
- */
-
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var session = require('express-session');
-var csrf = require('csurf');
-var passport = require('passport');
-var logger = require('morgan');
+import createError from 'http-errors';
+import express from 'express';
+import path from 'path';
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import csrf from 'csurf';
+import passport from 'passport';
+import logger from 'morgan';
+import { fileURLToPath } from 'url';
+import pluralize from 'pluralize';
+import http from 'http';
+import debugModule from 'debug';
+const debug = debugModule('todos:server');
 
 // pass the session to the connect sqlite3 module
 // allowing it to inherit from session.Store
-var SQLiteStore = require('connect-sqlite3')(session);
+import SQLiteStoreModule from 'connect-sqlite3'
+const SQLiteStore = SQLiteStoreModule(session);
 
-var router = require('./router');
+import router from './router.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 var app = express();
 
@@ -25,7 +30,7 @@ var app = express();
 app.set('views', path.join(path.join(__dirname, '..'), 'views'));
 app.set('view engine', 'ejs');
 
-app.locals.pluralize = require('pluralize');
+app.locals.pluralize = pluralize;
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -72,9 +77,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-var debug = require('debug')('todos:server');
-var http = require('http');
 
 /**
  * Get port from environment and store in Express.

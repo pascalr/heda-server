@@ -1,5 +1,5 @@
-var db = require('./db');
-var utils = require('./utils');
+import db from './db.js';
+import utils from './utils.js';
 
 //class AppController < ApplicationController
 //  def index
@@ -110,7 +110,7 @@ function fetchFavoriteRecipes(req, res, next) {
   })
 }
  
-function fetchFavoriteRecipesRecipe(res, res, next) {
+function fetchFavoriteRecipesRecipe(req, res, next) {
   let recipe_ids = res.locals.gon.favorite_recipes.map(r=>r.recipe_id)
   fetchTable('recipes', {id: recipe_ids}, RECIPE_ATTRS, next, (records) => {
     res.locals.gon.recipes = utils.removeDuplicateIds(res.locals.gon.recipes.concat(utils.sortBy(records, 'name')))
@@ -196,6 +196,9 @@ function initGon(req, res, next) {
   res.locals.gon = {}; next()
 }
 
+// WARNING: LIST ORDER IS IMPORTANT
 const fetchAll = [initGon, fetchUsers, fetchRecipes, fetchFavoriteRecipes, fetchFavoriteRecipesRecipe, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchSuggestions, fetchUserRecipeFilters, fetchPublicRecipeFilters, fetchFoods, fetchUnits, fetchNotes, fetchIngredientSections, fetchImages]
 
-module.exports = {fetchAll, fetchUsers};
+const gon = {fetchAll, fetchUsers};
+export default gon;
+//module.exports = gon;

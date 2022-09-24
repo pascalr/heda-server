@@ -1,14 +1,15 @@
-var express = require('express');
-var crypto = require('crypto');
-var ensureLogIn = require('connect-ensure-login').ensureLoggedIn;
+import express from 'express';
+import crypto from 'crypto';
+import connectEnsureLogin from 'connect-ensure-login'
 
-var db = require('./db');
-var gon = require('./gon');
-var passport = require('./passport');
-var utils = require('./utils');
+import db from './db.js';
+import gon from './gon.js';
+import passport from './passport.js';
+import utils from './utils.js';
 
-var ensureLoggedIn = ensureLogIn();
-var router = express.Router();
+const ensureLogIn = connectEnsureLogin.ensureLoggedIn;
+const ensureLoggedIn = ensureLogIn();
+const router = express.Router();
 
 router.get('/login', function(req, res, next) {
   res.render('login');
@@ -134,12 +135,13 @@ router.post('/reset', function (req, res, next) {
   });
 });
 
+router.get('/images/:id/:variant', function(req, res, next) {
+});
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   if (!req.user) { return res.render('home'); }
   next();
-  // WARNING: LIST ORDER IS IMPORTANT
 }, gon.fetchAll, function(req, res, next) {
   let user = res.locals.users.find(u => u.id == req.user.user_id)
 
@@ -151,4 +153,5 @@ function handleError(err, req, res, next) {
   return res.redirect('/' + (req.body.filter || ''));
 }
 
-module.exports = router;
+export default router;
+//module.exports = router;

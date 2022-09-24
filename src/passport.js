@@ -1,8 +1,8 @@
-var passport = require('passport');
-var LocalStrategy = require('passport-local');
-var crypto = require('crypto');
+import passport from 'passport';
+import LocalStrategy from 'passport-local';
+import crypto from 'crypto';
 
-var db = require('./db');
+import db from './db.js';
 
 passport.use(new LocalStrategy(function verify(email, password, cb) {
   db.get('SELECT * FROM accounts WHERE email = ?', [ email ], function(err, row) {
@@ -48,4 +48,5 @@ passport.deserializeUser(function(user, cb) {
   });
 });
 
-module.exports = passport;
+export default passport;
+//module.exports = passport;
