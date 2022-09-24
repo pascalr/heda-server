@@ -1,3 +1,5 @@
+Store images on volume.
+Backblaze? https://www.npmjs.com/package/backblaze
 Show tiptap editor.
 Add the recipes from favorite_recipes in recipes.
 Change the sorry mess that favorite_recipes is handled inside react...

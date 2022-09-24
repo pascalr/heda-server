@@ -208,7 +208,7 @@ function fetchRecipeIngredients(req, res, next) {
 }
 
 function fetchRecipeKinds(req, res, next) {
-  fetchTable('recipe_kinds', {}, ['name', 'description_json'], next, (records) => {
+  fetchTable('recipe_kinds', {}, ['name', 'description_json', 'image_id'], next, (records) => {
     res.locals.gon.recipe_kinds = utils.sortBy(records, 'name')
   })
 }
@@ -320,7 +320,7 @@ function fetchImages(req, res, next) {
   ids = [...ids, ...res.locals.gon.recipe_kinds.map(r=>r.image_id).filter(x=>x)]
   let attrs = ['author', 'source', 'filename', 'is_user_author']
   fetchTable('images', {id: ids}, attrs, next, (records) => {
-    res.locals.gon.notes = records
+    res.locals.gon.images = records
   })
 }
 
@@ -332,9 +332,8 @@ function initGon(req, res, next) {
 router.get('/', function(req, res, next) {
   if (!req.user) { return res.render('home'); }
   next();
-  // FIXME: Split this list in two. In the second list, put the methods that must be ran after the first list, like fetchFavoriteRecipesRecipe
-  // this way is it less error prone than simply respecting the order
-}, initGon, fetchUsers, fetchRecipes, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchFavoriteRecipes, fetchSuggestions, fetchUserRecipeFilters, fetchPublicRecipeFilters, fetchFavoriteRecipesRecipe, fetchFoods, fetchUnits, fetchNotes, fetchIngredientSections, fetchImages, function(req, res, next) {
+  // WARNING: LIST ORDER IS IMPORTANT
+}, initGon, fetchUsers, fetchRecipes, fetchFavoriteRecipes, fetchFavoriteRecipesRecipe, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchSuggestions, fetchUserRecipeFilters, fetchPublicRecipeFilters, fetchFoods, fetchUnits, fetchNotes, fetchIngredientSections, fetchImages, function(req, res, next) {
   let user = res.locals.users.find(u => u.id == req.user.user_id)
 
   res.render('index', { user, account: req.user });

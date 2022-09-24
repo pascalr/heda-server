@@ -53,3 +53,8 @@ body {
   font-size: 3.0rem;
   margin-top: 0.5rem;
 }
+
+*[contenteditable="true"] {
+  border: 1px solid #555;
+  border-radius: 5px;
+}

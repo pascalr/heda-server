@@ -7,7 +7,7 @@ import {EditUserRecipeModal} from './modals/edit_user_recipe'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import { LinkToPage } from "./lib"
 
-const RecipeList = ({page, list, original, selected, suggestions, tags, editUserRecipe, updateFavoriteRecipe, mixes, recipes}) => {
+const RecipeList = ({page, list, original, selected, suggestions, tags, editUserRecipe, updateFavoriteRecipe, mixes, recipes, recipeKinds}) => {
 
   let removeItem = (item) => {
     if (item.class_name == "favorite_recipe") { // Delete recipes is not supported here
@@ -23,6 +23,8 @@ const RecipeList = ({page, list, original, selected, suggestions, tags, editUser
       {list.map((item, current) => {
         let recipe = item.recipe
         let fav = item.fav
+        let kind = recipe.recipe_kind_id ? recipeKinds.find(k => k.id == recipe.recipe_kind_id) : null
+        let image_used_id = recipe.image_id || (kind && kind.image_id)
         let recipeTags = suggestions.filter(suggestion => suggestion.recipe_id == recipe.id).map(suggestion => tags.find(t => t.id == suggestion.filter_id))
         let mix = mixes.find(e => e.recipe_id == recipe.id)
 
@@ -33,7 +35,7 @@ const RecipeList = ({page, list, original, selected, suggestions, tags, editUser
         return (
           <li key={recipe.id} className='d-flex'>
             <span>
-              <img src={recipe.image_id ? image_variant_path({id: recipe.image_id}, "thumb") : "/img/default_recipe_01_thumb.png"} width="71" height="48" style={{marginRight: '0.5em'}} />
+              <img src={image_used_id ? image_variant_path({id: image_used_id}, "thumb") : "/img/default_recipe_01_thumb.png"} width="71" height="48" style={{marginRight: '0.5em'}} />
               <LinkToPage page={{...page, page: 15, recipeId: recipe.id}} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={current == selected ? "selected" : undefined}>{recipe.name}</LinkToPage>
               {mix ? <img src="logo_001.svg" width="24" height="24"/> : ''}
               <span style={{color: 'gray', fontSize: '0.78em'}}>{recipeTags.map(tag => ` #${tag.name}`)} </span>
@@ -61,7 +63,7 @@ const RecipeList = ({page, list, original, selected, suggestions, tags, editUser
   </>)
 }
 
-export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, recipes}) => {
+export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, recipes, recipeKinds}) => {
   
   const inputField = useRef(null);
   const [search, setSearch] = useState('')
@@ -130,7 +132,7 @@ export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, re
     setShowModal(true)
   }
 
-  let listArgs = {page, selected, suggestions, tags, editUserRecipe, updateFavoriteRecipe, mixes, recipes}
+  let listArgs = {page, selected, suggestions, tags, editUserRecipe, updateFavoriteRecipe, mixes, recipes, recipeKinds}
 
   return (<>
     <EditUserRecipeModal showModal={showModal} setShowModal={setShowModal} recipe={recipeToEdit} tags={tags} suggestions={suggestions} />
