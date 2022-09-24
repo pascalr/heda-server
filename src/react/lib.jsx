@@ -52,7 +52,6 @@ export const useHcuState = (initial, options, callback=null) => {
 
           //let data = {[model.class_name+"["+field+"]"]: value}
           let data = {field, value}
-          console.log('PATCH', urlFor(model))
           ajax({url: '/update_field/'+model.class_name+'/'+model.id, type: 'PATCH', data: data, success: () => {
             console.log(`Updating model ${model.class_name} field ${field} from ${model[field]} to ${value}.`)
             model[field] = value

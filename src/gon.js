@@ -221,7 +221,7 @@ function fetchImages(req, res, next) {
 //  end
 
 
-function initGon(req, res, next) {
+export function initGon(req, res, next) {
   res.locals.gon = {}; next()
 }
 

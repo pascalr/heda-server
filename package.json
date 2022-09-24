@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node ./src/server.js",
     "build": "esbuild src/react/app.jsx --bundle --sourcemap --outfile=public/build/app.js",
+    "build:user_editor": "esbuild src/react/user_editor.jsx --bundle --sourcemap --outfile=public/build/user_editor.js",
     "build:prod": "esbuild src/react/app.jsx --bundle --minify --outfile=public/build/app.js",
     "build:css": "sass src/scss/prose_mirror.scss:public/build/prose_mirror.css src/scss/imports.scss:public/build/imports.css"
   },

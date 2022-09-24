@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 
 import db from './db.js';
-import gon from './gon.js';
+import gon, {initGon} from './gon.js';
 import passport from './passport.js';
 import utils from './utils.js';
 
@@ -56,6 +56,13 @@ router.post('/logout', function(req, res, next) {
 
 router.get('/signup', function(req, res, next) {
   res.render('signup');
+});
+
+router.get('/edit_profile', initGon, gon.fetchUsers, function(req, res, next) {
+  let user = res.locals.users.find(u => u.id == req.user.user_id)
+  res.locals.gon.user = user
+  res.locals.user = user
+  res.render('edit_profile');
 });
 
 /* POST /signup
