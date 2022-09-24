@@ -79,3 +79,7 @@ body {
   vertical-align: super;
   font-size: 70%;
 }
+.recipe-instructions, #ing_list {
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.9rem;
+}

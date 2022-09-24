@@ -307,6 +307,23 @@ export class RecipeViewer extends React.Component {
         </Row>
       </ul>
 
+    const IngredientList2 = 
+      <div id="ing_list">
+        <ul className="list-group">
+          {this.state.ingredients.map(ing => {
+            return <li key={ing.id} className="list-group-item">
+              <span>{ing.raw} de <span className="food-name">{ing.raw_food}</span></span>
+              <div className="dropdown d-inline-block float-end">
+                 <img className="clickable" data-bs-toggle="dropdown" src="/icons/pencil-square.svg"/>
+                <div className="dropdown-menu">
+                  <a className="dropdown-item disabled" href="#">Retirer</a>
+                </div>
+              </div>
+            </li>
+          })}
+        </ul>
+      </div>
+
     const NoteList = this.state.noteIds.map(id => {
       const note = gon.recipe.notes[id]
 
@@ -382,16 +399,16 @@ export class RecipeViewer extends React.Component {
               <span style={{color: 'gray'}}>{recipe.raw_servings}</span>
             </div>
             <div className="d-flex" style={{gap: '5px', marginTop: '10px'}}>
-              <a class="btn btn-outline-secondary" href="FIXME">
+              <a className="btn btn-outline-secondary" href="FIXME">
                 <img src="/icons/printer.svg" width="16"></img>
               </a>
-              <a class="btn btn-outline-secondary" href="FIXME">
+              <a className="btn btn-outline-secondary" href="FIXME">
                 <img src="/icons/share.svg" width="16"></img>
               </a>
-              <a class="btn btn-outline-secondary" href="FIXME">
+              <a className="btn btn-outline-secondary" href="FIXME">
                 <img src="/icons/download.svg" width="16"></img>
               </a>
-              <a class="btn btn-outline-secondary" href="FIXME">
+              <a className="btn btn-outline-secondary" href="FIXME">
                 <img src="/icons/star.svg" width="16"></img>
               </a>
             </div>
@@ -413,7 +430,7 @@ export class RecipeViewer extends React.Component {
               </div>
             </div>
           </div>
-          {IngredientList}
+          {IngredientList2}
         
           <h2>Instructions</h2>
           <Tiptap model="recipe" json_field="json" html_field="html" url={recipe_path(gon.recipe)} content={JSON.parse(gon.recipe.json)} editable={false} />

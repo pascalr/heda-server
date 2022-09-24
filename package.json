@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node ./src/server.js",
     "build": "esbuild src/react/app.jsx --bundle --sourcemap --outfile=public/build/app.js",
-    "build_prod": "esbuild src/react/app.jsx --bundle --minify --outfile=public/build/app.js",
-    "build_css": "sass src/scss/prose_mirror.scss:public/build/prose_mirror.css"
+    "build:prod": "esbuild src/react/app.jsx --bundle --minify --outfile=public/build/app.js",
+    "build:css": "sass src/scss/prose_mirror.scss:public/build/prose_mirror.css src/scss/imports.scss:public/build/imports.css"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.6",
