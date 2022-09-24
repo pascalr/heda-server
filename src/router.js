@@ -189,9 +189,10 @@ function fetchUsers(req, res, next) {
   })
 }
 
+
+const RECIPE_ATTRS = ['name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id']
 function fetchRecipes(req, res, next) {
-  let attrs = ['name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id']
-  fetchTable('recipes', {user_id: req.user.user_id}, attrs, next, (records) => {
+  fetchTable('recipes', {user_id: req.user.user_id}, RECIPE_ATTRS, next, (records) => {
     res.locals.gon.recipes = utils.sortBy(records, 'name')
   })
 }
@@ -234,26 +235,34 @@ function fetchMachines(req, res, next) {
 }
 
 function fetchFavoriteRecipes(req, res, next) {
+
   // , 'image_used_id'
   fetchTable('favorite_recipes', {}, ['list_id', 'recipe_id'], next, (records) => {
     res.locals.gon.favorite_recipes = utils.sortBy(records, 'name')
   })
 }
-
-function fetchFavoriteRecipesNames(req, res, next) {
-  let ids = res.locals.gon.favorite_recipes.map(r=>r.recipe_id)
-  fetchTable('recipes', {id: ids}, ['name'], next, (recipes) => {
-    res.locals.gon.favorite_recipes = res.locals.gon.favorite_recipes.map(f => {
-      let r = recipes.find(r => r.id == f.recipe_id)
-      if (r) {
-        f.name = r.name
-      } else {
-        console.log('WARNING: Missing recipe for favorite recipe')
-      }
-      return f
-    })
+ 
+function fetchFavoriteRecipesRecipe(res, res, next) {
+  let recipe_ids = res.locals.gon.favorite_recipes.map(r=>r.recipe_id)
+  fetchTable('recipes', {id: recipe_ids}, RECIPE_ATTRS, next, (records) => {
+    res.locals.gon.recipes = res.locals.gon.recipes.concat(utils.sortBy(records, 'name'))
   })
 }
+
+//function fetchFavoriteRecipesNames(req, res, next) {
+//  let ids = res.locals.gon.favorite_recipes.map(r=>r.recipe_id)
+//  fetchTable('recipes', {id: ids}, ['name'], next, (recipes) => {
+//    res.locals.gon.favorite_recipes = res.locals.gon.favorite_recipes.map(f => {
+//      let r = recipes.find(r => r.id == f.recipe_id)
+//      if (r) {
+//        f.name = r.name
+//      } else {
+//        console.log('WARNING: Missing recipe for favorite recipe')
+//      }
+//      return f
+//    })
+//  })
+//}
 
 //    gon.favorite_recipes = current_user.favorite_recipes.includes(:recipe).sort_by {|fav| fav.recipe.name}.map{|fav| fav.to_obj}
 
@@ -274,7 +283,7 @@ function fetchUserRecipeFilters(req, res, next) {
 function fetchPublicRecipeFilters(req, res, next) {
   let attrs = ['name', 'image_src', 'user_id']
   fetchTable('recipe_filters', {user_id: null}, attrs, next, (records) => {
-    res.locals.gon.recipe_filters = [...(res.locals.gon.recipe_filters||[]), ...records]
+    res.locals.gon.recipe_filters = [...new Set([...(res.locals.gon.recipe_filters||[]), ...records])]
   })
 }
 
@@ -323,7 +332,9 @@ function initGon(req, res, next) {
 router.get('/', function(req, res, next) {
   if (!req.user) { return res.render('home'); }
   next();
-}, initGon, fetchUsers, fetchRecipes, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchFavoriteRecipes, fetchSuggestions, fetchUserRecipeFilters, fetchPublicRecipeFilters, fetchFavoriteRecipesNames, fetchFoods, fetchUnits, fetchNotes, fetchIngredientSections, fetchImages, function(req, res, next) {
+  // FIXME: Split this list in two. In the second list, put the methods that must be ran after the first list, like fetchFavoriteRecipesRecipe
+  // this way is it less error prone than simply respecting the order
+}, initGon, fetchUsers, fetchRecipes, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchFavoriteRecipes, fetchSuggestions, fetchUserRecipeFilters, fetchPublicRecipeFilters, fetchFavoriteRecipesRecipe, fetchFoods, fetchUnits, fetchNotes, fetchIngredientSections, fetchImages, function(req, res, next) {
   let user = res.locals.users.find(u => u.id == req.user.user_id)
 
   res.render('index', { user, account: req.user });
