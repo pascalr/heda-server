@@ -633,13 +633,12 @@ export const EditMix = ({page, recipes, favoriteRecipes, machines, mixes, machin
 }
 
 //const ShowRecipe = ({page}) => {
-const ShowRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recipes, foods, ingredientSections}) => {
+const ShowRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recipes, foods, ingredientSections, recipeIngredients, recipeKinds}) => {
   //return <LinkToPage page={{...page, page: 16}} className="nav-link" active={page.page == 16}>Modifier</LinkToPage>
   const recipe = recipes.find(e => e.id == page.recipeId)
 
-  window.recipe_editor = useRef(null) // FIXME: This is really ugly
   gon.recipe = recipe // FIXME: This is really ugly
-  return <RecipeViewer {...{page, favoriteRecipes, machines, mixes, machineFoods, foods, ingredientSections}} ref={window.recipe_editor} />
+  return <RecipeViewer {...{recipe, page, favoriteRecipes, machines, mixes, machineFoods, foods, ingredientSections, recipeIngredients, recipeKinds}} />
 }
 
 const EditRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recipes, foods, ingredientSections}) => {
@@ -876,6 +875,7 @@ const App = () => {
   const recipes = useUpdatableState('recipes', gon.recipes)
   const recipeKinds = gon.recipe_kinds //useUpdatableState('recipe_kinds', gon.recipe_kinds)
   const ingredientSections = gon.ingredient_sections
+  const recipeIngredients = gon.recipe_ingredients
 
   const all = {page, recipeFilters, suggestions, userTags, favoriteRecipes, machines, machineFoods, containerQuantities, mixes, recipes, foods}
 
@@ -914,7 +914,7 @@ const App = () => {
     [PAGE_12]: <MixIndex {...{page, machines, machineFoods, mixes}} />,
     [PAGE_13]: <ShowMix {...all} />,
     [PAGE_14]: <EditMix {...all} />,
-    [PAGE_15]: <ShowRecipe {...{...all, ingredientSections}} />,
+    [PAGE_15]: <ShowRecipe {...{...all, ingredientSections, recipeIngredients, recipeKinds}} />,
     [PAGE_16]: <EditRecipe {...{...all, ingredientSections}} />,
   }
 
