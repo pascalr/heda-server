@@ -58,7 +58,7 @@ const SuggestionsNav = ({page, tagSuggestions, categorySuggestions}) => {
   </>)
 }
 
-const RecipeSingleCarrousel = ({tag, suggestions, isCategory}) => {
+const RecipeSingleCarrousel = ({tag, suggestions, isCategory, recipes}) => {
   
   const [suggestionNb, setSuggestionNb] = useState(0)
   const [maxSuggestionNb, setMaxSuggestionNb] = useState(0)
@@ -121,6 +121,8 @@ const RecipeSingleCarrousel = ({tag, suggestions, isCategory}) => {
   }
   
   //<button type="button" className="btn btn-danger" onClick={() => nextSuggestion()}>Non, pas cette fois</button>
+  
+  let recipe = recipes.find(r => r.id == suggestion.recipe_id)
  
   const href = isCategory ? recipe_kind_path(suggestion) : recipe_path({id: suggestion.recipe_id})
     //<Hammer onSwipe={handleSwipe}>
@@ -129,7 +131,7 @@ const RecipeSingleCarrousel = ({tag, suggestions, isCategory}) => {
       <div>
         <div className="over-container" style={{margin: "auto"}}>
           <img src={suggestion.image_id ? image_variant_path({id: suggestion.image_id}, "medium") : "/img/default_recipe_01.png"} style={{maxWidth: "100vw"}} width="452" height="304" />
-          <h2 className="bottom-center font-satisfy" style={{borderRadius: "0.5em", border: "1px solid #777", color: "#333", bottom: "1em", backgroundColor: "#f5f5f5", fontSize: "2em", padding: "0.2em 0.8em 0 0.2em"}}>{suggestion.name}</h2>
+          <h2 className="bottom-center font-satisfy" style={{borderRadius: "0.5em", border: "1px solid #777", color: "#333", bottom: "1em", backgroundColor: "#f5f5f5", fontSize: "2em", padding: "0.2em 0.8em 0 0.2em"}}>{recipe.name}</h2>
           <div className="left-center">
             <img src={icon_path("custom-chevron-left.svg")} width="45" height="90" onClick={previousSuggestion} aria-disabled={suggestionNb <= 0} />
           </div>
@@ -145,7 +147,7 @@ const RecipeSingleCarrousel = ({tag, suggestions, isCategory}) => {
   </>)
 }
 
-const TagSuggestions = ({tags, suggestions, page}) => {
+const TagSuggestions = ({tags, suggestions, page, recipes}) => {
 
   const tag = tags.find(f => f.id == page.filterId)
   if (!tag) {return ''}
@@ -155,11 +157,11 @@ const TagSuggestions = ({tags, suggestions, page}) => {
   return (<>
     <SuggestionsNav {...{page, tagSuggestions}} />
     {tag.name ? <h2 style={{textAlign: 'center'}}>{tag.name}</h2> : ''}
-    <RecipeSingleCarrousel tag={tag} suggestions={tagSuggestions}/>
+    <RecipeSingleCarrousel tag={tag} suggestions={tagSuggestions} recipes={recipes} />
   </>)
 }
 
-const TagCategorySuggestions = ({page, recipeFilters, suggestions}) => {
+const TagCategorySuggestions = ({page, recipeFilters, suggestions, recipes}) => {
 
   const tag = recipeFilters.find(f => f.id == page.filterId)
   if (!tag) {return ''}
@@ -179,7 +181,7 @@ const TagCategorySuggestions = ({page, recipeFilters, suggestions}) => {
   return (<>
     <SuggestionsNav {...{page, tagSuggestions, categorySuggestions}} />
     {tag.name ? <h2 style={{textAlign: 'center'}}>{tag.name}</h2> : ''}
-    <RecipeSingleCarrousel tag={tag} suggestions={categorySuggestions} isCategory={true} />
+    <RecipeSingleCarrousel tag={tag} suggestions={categorySuggestions} isCategory={true} recipes={recipes} />
   </>)
 }
 
@@ -897,14 +899,14 @@ const App = () => {
 
   const pages = {
     [PAGE_1]: <TagIndex {...{page, recipeFilters, userTags, machines}} addRecipeFilter={(filter) => recipeFilters.update(recipeFilters.concat([filter]))} />,
-    [PAGE_2]: <TagCategorySuggestions {...{page, recipeFilters, suggestions}} />,
+    [PAGE_2]: <TagCategorySuggestions {...{page, recipeFilters, suggestions, recipes}} />,
     [PAGE_3]: <EditFilter page={page} recipeFilters={recipeFilters} />,
     [PAGE_4]: <EditUserTags recipeFilters={recipeFilters}userTags={userTags} page={page} />,
     //5: <TrainFilter page={page} recipeFilters={recipeFilters} />,
     [PAGE_6]: <MyRecipes {...{page, recipes, suggestions, recipeFilters, favoriteRecipes, tags: recipeFilters, mixes, recipeKinds}} />,
     [PAGE_7]: <MyBooks page={page} />,
     [PAGE_8]: <TagEditAllCategories page={page} recipeFilters={recipeFilters} />,
-    [PAGE_9]: <TagSuggestions page={page} suggestions={suggestions} tags={recipeFilters} />,
+    [PAGE_9]: <TagSuggestions page={page} suggestions={suggestions} tags={recipeFilters} recipes={recipes} />,
     [PAGE_10]: <HedaIndex {...{page, machines}} />,
     [PAGE_11]: <Inventory {...{page, machines, machineFoods, containerQuantities}} />,
     [PAGE_12]: <MixIndex {...{page, machines, machineFoods, mixes}} />,
