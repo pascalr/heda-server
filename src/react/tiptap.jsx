@@ -799,10 +799,11 @@ export const ArticleExtensions = [
 export const ArticleTiptap = ({model, json_field, html_field, url}) => {
   const editor = useEditor({
     extensions: ArticleExtensions,
-    content: JSON.parse(gon[model][json_field]),
+    content: JSON.parse(model[json_field]),
   })
   useEffect(() => {
-    window.registerEditor(editor, model, json_field, html_field, url)
+    let interval = registerEditorWithEffect(editor, model, json_field, html_field, url)
+    return () => clearInterval(interval);
   }, [editor])
 
   return (
@@ -828,7 +829,8 @@ export const Tiptap = ({content, model, json_field, html_field, url, editable}) 
   const editor = useEditor(recipeEditor(content, editable))
 
   useEffect(() => {
-    window.registerEditor(editor, model, json_field, html_field, url)
+    let interval = registerEditorWithEffect(editor, model, json_field, html_field, url)
+    return () => clearInterval(interval);
   }, [editor])
 
   return (
@@ -851,7 +853,8 @@ export const BubbleTiptap = ({content, model, json_field, html_field, url}) => {
   })
 
   useEffect(() => {
-    window.registerEditor(editor, model, json_field, html_field, url)
+    let interval = registerEditorWithEffect(editor, model, json_field, html_field, url)
+    return () => clearInterval(interval);
   }, [editor])
 
   return (
@@ -879,7 +882,8 @@ export const DescriptionTiptap = ({content, model, json_field, html_field, url})
   })
 
   useEffect(() => {
-    window.registerEditor(editor, model, json_field, html_field, url)
+    let interval = registerEditorWithEffect(editor, model, json_field, html_field, url)
+    return () => clearInterval(interval);
   }, [editor])
 
   return (
@@ -895,76 +899,40 @@ export const DescriptionTiptap = ({content, model, json_field, html_field, url})
   )
 }
 
-export class ModificationsHandler {
-  constructor() {
-    this.editors = new Set()
-    window.onbeforeunload = this.preventLeavingWithoutModifications
-  }
+// Returns the interval
+const registerEditorWithEffect = (editor, model, json_field, html_field, url) => {
+  if (!editor) {return null}
+  console.log('registeringEditorWithEffect')
+  console.log('model', model)
+  editor.on('update', ({ editor }) => {
+    editor.isDirty = true
+  })
+  return setInterval(function() {
+    console.log('here')
+    if (!editor.isDirty) {return;}
+    console.log('there')
+    editor.isDirty = false
+    let json = JSON.stringify(editor.getJSON())
+    if (json != model[json_field]) {
+      console.log('here!')
+      console.log('Saving changes for '+model.class_name+' '+json_field);
 
-  registerEditor(editor, model, json_field, html_field, url) {
-    console.log('registeringEditor')
-    if (!editor || this.editors.has(editor)) {return}
-    console.log('registeringEditor has editor')
-    this.editors.add(editor)
-    editor.savedJSON = JSON.stringify(editor.getJSON())
-    //editor.savedJSON = model[json_field]
-    editor.updateModel = model
-    editor.jsonField = json_field
-    editor.htmlField = html_field
-    editor.updateUrl = url
-    console.log("updateURL", editor.updateUrl)
-    editor.on('update', ({ editor }) => {
-      editor.isDirty = true
-    })
-    this.updateChecking()
-  }
-
-  updateChecking() {
-    let editors = this.editors
-    if (this.checkingFunction) {
-      clearInterval(this.checkingFunction)
+      let data = {field: json_field, value: json}
+      ajax({url: '/update_field/'+model.class_name+'/'+model.id, type: 'PATCH', data: data, success: () => {
+        if (window.display) {window.display("Les changements ont étés enregistrés avec succès.")}
+        editor.savedJSON = json
+      }, error: () => {
+        if (window.displayError) {window.displayError("Les changements n'ont pas pu être enregistrés.")}
+      }})
     }
-    this.checkingFunction = setInterval(function() {
-      //for (let editor of editors) {
-      for (let it = editors.values(), editor=null; editor=it.next().value; ) {
-        if (!editor.isDirty) {continue}
-        editor.isDirty = false
-        let json = JSON.stringify(editor.getJSON())
-        if (json != editor.savedJSON) {
-          console.log('Saving changes for '+editor.updateModel+' '+editor.jsonField);
-
-          let data = new FormData()
-          data.append(`${editor.updateModel}[${editor.jsonField}]`, json)
-          data.append(`${editor.updateModel}[${editor.htmlField}]`, editor.getHTML())
-          ajax({url: editor.updateUrl, type: 'PATCH', data: data, success: () => {
-            if (window.display) {window.display("Les changements ont étés enregistrés avec succès.")}
-            editor.savedJSON = json
-          }, error: () => {
-            if (window.displayError) {window.displayError("Les changements n'ont pas pu être enregistrés.")}
-          }})
-        }
-      }
-    }, 1*1000);
-  }
-
-  preventLeavingWithoutModifications() {
-    for (let editor in this.editors) {
-      if (editor && JSON.stringify(editor.getJSON()) != editor.savedJSON) {
-        return 'There are unsaved changes. Are you sure you want to leave?';
-      }
-    }
-  }
+  }, 1*1000);
 }
-
-  //addNodeView() {
-  //  return (args) => {
-  //    const {editor, node, getPos, HTMLAttributes, decorations, extension} = args
-  //    console.log(args)
-
-  //    const dom = document.createElement('div')
-  //    dom.innerHTML = '<b>TESTING 1212</b>'
-  //    dom.classList.add('node-view')
-
-  //    return {dom,}
-  //  }
-  //},
+  
+//preventLeavingWithoutModifications() {
+//  for (let editor in this.editors) {
+//    if (editor && JSON.stringify(editor.getJSON()) != editor.savedJSON) {
+//      return 'There are unsaved changes. Are you sure you want to leave?';
+//    }
+//  }
+//}
+//window.onbeforeunload = this.preventLeavingWithoutModifications

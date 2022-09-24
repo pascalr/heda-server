@@ -15,7 +15,6 @@ import { DeleteConfirmButton } from './components/delete_confirm_button'
 import {AddUserTagModal} from './modals/add_user_tag'
 import {RecipeEditor} from "./recipe_editor"
 import {RecipeViewer} from "./recipe_viewer"
-import {ModificationsHandler} from './tiptap'
 
 // The advantage of using this instead of the number is if I need to search and to refactor, I can easy
 const PAGE_1 = 1 // TagIndex
@@ -947,11 +946,6 @@ const App = () => {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-
-  const modHandler = new ModificationsHandler()
-  window.registerEditor = (editor, model, json_field, html_field, url) => {
-    modHandler.registerEditor(editor, model, json_field, html_field, url)
-  }
 
   const root = createRoot(document.getElementById("root"));
   root.render(<App/>);

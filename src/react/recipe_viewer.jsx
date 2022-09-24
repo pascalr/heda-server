@@ -4,7 +4,7 @@ import Autosuggest from 'react-autosuggest'
 import {Block, Inline, InlineBlock, Row, Col, InlineRow, InlineCol, Grid} from 'jsxstyle'
 
 import Quantity from './models/quantity'
-import { Tiptap, BubbleTiptap, ModificationsHandler } from './tiptap'
+import { Tiptap, BubbleTiptap } from './tiptap'
 import { LinkToPage } from "./lib"
 
 import {image_variant_path, recipe_path} from './routes'

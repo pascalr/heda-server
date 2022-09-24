@@ -7,7 +7,7 @@ import {Block, Inline, InlineBlock, Row, Col, InlineRow, InlineCol, Grid} from '
 import Quantity from './models/quantity'
 import { ajax } from "./utils"
 import { DeleteConfirmButton } from './components/delete_confirm_button'
-import { Tiptap, BubbleTiptap, ModificationsHandler } from './tiptap'
+import { Tiptap, BubbleTiptap } from './tiptap'
 import {AutocompleteInput, updateRecord, TextField, CollectionSelect} from './form'
 import { combineOrderedListWithHeaders } from './lib'
 import {EditRecipeImageModal} from './modals/recipe_image'
@@ -548,7 +548,7 @@ export class RecipeEditor extends React.Component {
           {IngredientList}
         
           <h2>Instructions</h2>
-          <Tiptap model="recipe" json_field="json" html_field="html" url={recipe_path(gon.recipe)} content={JSON.parse(gon.recipe.json)} editable={this.props.editable} />
+          <Tiptap model={recipe} json_field="json" html_field="html" url={recipe_path(gon.recipe)} content={JSON.parse(gon.recipe.json)} editable={this.props.editable} />
           {this.props.editable ? <InstructionsShortcuts/> : ''}
           
           <h3>Notes</h3>
@@ -579,15 +579,3 @@ export class RecipeEditor extends React.Component {
     </>)
   }
 }
-
-//document.addEventListener('DOMContentLoaded', () => {
-//  window.recipe_editor = React.createRef()
-//  const root = document.getElementById('root')
-//
-//  const modHandler = new ModificationsHandler()
-//  window.registerEditor = (editor, model, json_field, html_field, url) => {
-//    modHandler.registerEditor(editor, model, json_field, html_field, url)
-//  }
-//
-//  if (root) {ReactDOM.render(<RecipeEditor ref={window.recipe_editor}/>, root)}
-//})
