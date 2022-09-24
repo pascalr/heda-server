@@ -227,7 +227,7 @@ const Toggleable = ({children, ...props}) => {
   </div>)
 }
 
-export class RecipeEditor extends React.Component {
+export class RecipeViewer extends React.Component {
   
   constructor(props) {
     super(props);
@@ -505,27 +505,19 @@ export class RecipeEditor extends React.Component {
             </h1>
             <div>
               <b>Préparation (minutes): </b>
-              <span style={{color: 'gray'}}>
-                <TextField model={recipe} field="preparation_time" className="editable-input" />
-              </span>
+              <span style={{color: 'gray'}}>{recipe.preparation_time}</span>
             </div>
             <div>
               <b>Cuisson (minutes): </b>
-              <span style={{color: 'gray'}}>
-                <TextField model={recipe} field="cooking_time" className="editable-input" />
-              </span>
+              <span style={{color: 'gray'}}>{recipe.cooking_time}</span>
             </div>
             <div>
               <b>Total (minutes): </b>
-              <span style={{color: 'gray'}}>
-                <TextField model={recipe} field="total_time" className="editable-input" />
-              </span>
+              <span style={{color: 'gray'}}>{recipe.total_time}</span>
             </div>
             <div>
               <b>Portions: </b>
-              <span style={{color: 'gray'}}>
-                <TextField model={recipe} field="raw_servings" className="editable-input" />
-              </span>
+              <span style={{color: 'gray'}}>{recipe.raw_servings}</span>
             </div>
           </div>
         </div>
@@ -548,14 +540,10 @@ export class RecipeEditor extends React.Component {
           {IngredientList}
         
           <h2>Instructions</h2>
-          <Tiptap model="recipe" json_field="json" html_field="html" url={recipe_path(gon.recipe)} content={JSON.parse(gon.recipe.json)} editable={this.props.editable} />
-          {this.props.editable ? <InstructionsShortcuts/> : ''}
+          <Tiptap model="recipe" json_field="json" html_field="html" url={recipe_path(gon.recipe)} content={JSON.parse(gon.recipe.json)} editable={false} />
           
           <h3>Notes</h3>
           {NoteList}
-          <button type="button" className="plain-btn" onClick={() => this.appendNote()}>
-            <img src="/icons/plus-circle.svg" style={{width: "2.5rem", padding: "0.5rem"}}/>
-          </button>
           
           <h2>Outils</h2>
           <ul style={{fontSize: "1.1rem"}}>
@@ -579,15 +567,3 @@ export class RecipeEditor extends React.Component {
     </>)
   }
 }
-
-//document.addEventListener('DOMContentLoaded', () => {
-//  window.recipe_editor = React.createRef()
-//  const root = document.getElementById('root')
-//
-//  const modHandler = new ModificationsHandler()
-//  window.registerEditor = (editor, model, json_field, html_field, url) => {
-//    modHandler.registerEditor(editor, model, json_field, html_field, url)
-//  }
-//
-//  if (root) {ReactDOM.render(<RecipeEditor ref={window.recipe_editor}/>, root)}
-//})

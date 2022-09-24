@@ -14,6 +14,7 @@ import {PublicImageField} from './modals/public_image'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import {AddUserTagModal} from './modals/add_user_tag'
 import {RecipeEditor} from "./recipe_editor"
+import {RecipeViewer} from "./recipe_viewer"
 import {ModificationsHandler} from './tiptap'
 
 // The advantage of using this instead of the number is if I need to search and to refactor, I can easy
@@ -638,7 +639,7 @@ const ShowRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recip
 
   window.recipe_editor = useRef(null) // FIXME: This is really ugly
   gon.recipe = recipe // FIXME: This is really ugly
-  return <RecipeEditor {...{page, favoriteRecipes, machines, mixes, machineFoods, foods, ingredientSections}} ref={window.recipe_editor} editable={false} />
+  return <RecipeViewer {...{page, favoriteRecipes, machines, mixes, machineFoods, foods, ingredientSections}} ref={window.recipe_editor} />
 }
 
 const EditRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recipes, foods, ingredientSections}) => {
