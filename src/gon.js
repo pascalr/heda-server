@@ -96,16 +96,17 @@ function fetchUserTags(req, res, next) {
 }
 
 function fetchMachines(req, res, next) {
-  // FIXME: Condition based on MachineUser model...
-  fetchTable('machines', {}, ['name'], next, (records) => {
-    res.locals.gon.machines = records
-  })
+  res.locals.gon.machines = []
+  next();
+  //// FIXME: Condition based on MachineUser model...
+  //fetchTable('machines', {}, ['name'], next, (records) => {
+  //  res.locals.gon.machines = records
+  //})
 }
 
 function fetchFavoriteRecipes(req, res, next) {
 
-  // , 'image_used_id'
-  fetchTable('favorite_recipes', {}, ['list_id', 'recipe_id'], next, (records) => {
+  fetchTable('favorite_recipes', {user_id: req.user.user_id}, ['list_id', 'recipe_id'], next, (records) => {
     res.locals.gon.favorite_recipes = utils.sortBy(records, 'name')
   })
 }
