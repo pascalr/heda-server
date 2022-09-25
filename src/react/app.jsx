@@ -15,6 +15,7 @@ import { DeleteConfirmButton } from './components/delete_confirm_button'
 import {AddUserTagModal} from './modals/add_user_tag'
 import {RecipeEditor} from "./recipe_editor"
 import {RecipeViewer} from "./recipe_viewer"
+import { initHcu } from '../hcu'
 
 // The advantage of using this instead of the number is if I need to search and to refactor, I can easy
 const PAGE_1 = 1 // TagIndex
@@ -39,7 +40,8 @@ const PAGE_19 = 19
 const PAGE_20 = 20
 
 const changePage = (page) => {
-  getRegister('setPage')(page)
+  window.hcu.changePage(page)
+  //getRegister('setPage')(page)
 }
   
 const encodeRecord = (record) => (`${record.class_name == "recipe_kind" ? '' : '_'}${record.id}`)
@@ -857,10 +859,18 @@ const MyRecipes = ({page, suggestions, tags, favoriteRecipes, recipes, mixes, re
 
 const App = () => {
   
-  const page = useRegisteredState('page', getUrlParams(), (updated) => {
+  //const page = useRegisteredState('page', getUrlParams(), (updated) => {
+  //  let s = getStateProperties(updated)
+  //  window.history.replaceState(s, '', '?'+new URLSearchParams(s).toString())
+  //})
+
+  const [page, setPage] = useState(getUrlParams())
+  if (!window.hcu) {initHcu()}
+  window.hcu.changePage = (updated) => {
+    setPage(updated)
     let s = getStateProperties(updated)
     window.history.replaceState(s, '', '?'+new URLSearchParams(s).toString())
-  })
+  }
 
   const recipeFilters = useUpdatableState('recipeFilters', gon.recipe_filters)
   const suggestions = useUpdatableState('suggestions', gon.suggestions)

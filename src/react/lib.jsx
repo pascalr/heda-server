@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { ajax, omit, join, bindSetter, capitalize } from "./utils"
 import toastr from 'toastr'
 
+import { ajax, omit, join, bindSetter, capitalize } from "./utils"
 import {recipe_recipe_ingredient_path, food_path, recipe_ingredient_section_path, recipe_path, recipe_recipe_note_path, image_path } from './routes'
 
 // I think I should convert updatable state to registered state.
@@ -46,45 +46,6 @@ export const useHcuState = (initial, options, callback=null) => {
   const {className} = options;
 
   useEffect(() => {
-    if (!window.hcu) {
-      window.hcu = {}
-      window.hcu.getters = {}
-      window.hcu.setters = {}
-      window.hcu.updateField = (model, field, value) => {
-        if (value != model[field]) { // update only if value changed
-
-          //let data = {[model.class_name+"["+field+"]"]: value}
-          let data = {field, value}
-          ajax({url: '/update_field/'+model.class_name+'/'+model.id, type: 'PATCH', data: data, success: () => {
-            console.log(`Updating model ${model.class_name} field ${field} from ${model[field]} to ${value}.`)
-            let record = {...model}
-            record[field] = value
-            let old = window.hcu.getters[record.class_name]
-            let updated = [...old].map(r => r.id == record.id ? record : r)
-            window.hcu.setters[record.class_name](updated)
-            //if (successCallback) {successCallback()}
-          }, error: (errors) => {
-            console.log('ERROR AJAX UPDATING...', errors.responseText)
-            toastr.error(errors.responseText)
-            //toastr.error("<ul>"+Object.values(JSON.parse(errors)).map(e => ("<li>"+e+"</li>"))+"</ul>", 'Error updating')
-          }})
-        }
-      }
-      window.hcu.createRecord = (record) => {
-        if (!record.class_name) { throw "Error: hcu.createRecord record must have valid class_name" }
-        let fields = Object.keys(record)
-        let url = '/create_record/'+record.class_name
-        ajax({url: url, type: 'POST', data: {record, fields}, success: (created) => {
-          console.log('created', created)
-          let old = window.hcu.getters[record.class_name]
-          let updated = [...old, {...created}]
-          window.hcu.setters[record.class_name](updated)
-        }, error: (errors) => {
-          console.log('ERROR AJAX CREATING...', errors.responseText)
-          toastr.error(errors.responseText)
-        }})
-      }
-    }
     window.hcu.setters[className] = setState
   }, [])
 
@@ -142,7 +103,8 @@ export function urlFor(model) {
 export const LinkToPage = ({page, className, children, active, ...props}) => {
   const switchPage = (evt, page) => {
     evt.preventDefault()
-    getRegister('setPage')(getStateProperties(page))
+    //getRegister('setPage')(getStateProperties(page))
+    window.hcu.changePage(page)
   }
   const href = '?'+new URLSearchParams(getStateProperties(page)).toString()
 
