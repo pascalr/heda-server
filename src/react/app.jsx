@@ -840,6 +840,11 @@ const SearchBox = ({recipes, recipeKinds, tags, suggestions, page, setIsSearchin
   const [search, setSearch] = useState('')
   const [term, setTerm] = useState('')
   const [selected, setSelected] = useState(-1)
+  const inputField = useRef(null);
+
+  useEffect(() => {
+    inputField.current.focus()
+  }, [])
 
   let matchingRecipes = (isBlank(term) ? [] : recipes.filter(r => (
     r.name && ~normalizeSearchText(r.name).indexOf(term)
@@ -858,7 +863,7 @@ const SearchBox = ({recipes, recipeKinds, tags, suggestions, page, setIsSearchin
 
   return (<>
     <div style={{height: height, transition: 'height 1s'}}>
-      <input type="search" placeholder="Rechercher..." onChange={(e) => {setTerm(e.target.value); setSearch(e.target.value)}} autoComplete="off" style={{width: "100%"}} onKeyDown={onKeyDown} value={search}/>
+      <input ref={inputField} type="search" placeholder="Rechercher..." onChange={(e) => {setTerm(e.target.value); setSearch(e.target.value)}} autoComplete="off" style={{width: "100%"}} onKeyDown={onKeyDown} value={search}/>
       <h2>Mes recettes</h2>
       <ul id="recipes" className="recipe-list">
         {matchingRecipes.map((recipe, current) => {
