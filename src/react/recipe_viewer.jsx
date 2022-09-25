@@ -10,7 +10,7 @@ import { LinkToPage } from "./lib"
 import {image_variant_path, recipe_path} from './routes'
 
 
-export const RecipeViewer = ({recipe, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipeIngredients, ingredientSections, recipeKinds, images}) => {
+export const RecipeViewer = ({recipe, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipeIngredients, ingredientSections, recipeKinds, images, user}) => {
 
   const recipe_kind = recipeKinds.find(k => k.id == recipe.recipe_kind_id)
   const image_used_id = recipe.use_personalised_image ? recipe.image_id : recipe_kind && recipe_kind.image_id
@@ -92,6 +92,9 @@ export const RecipeViewer = ({recipe, page, userRecipes, favoriteRecipes, machin
               </div>
             </span>
           </h1>
+          <div style={{marginTop: '-1.2em', marginBottom: '1.2em'}}>
+            <span style={{color: 'gray'}}>par {user.name}</span>
+          </div>
           <div>
             <b>Préparation (minutes): </b>
             <span style={{color: 'gray'}}>{recipe.preparation_time}</span>

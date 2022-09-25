@@ -243,7 +243,7 @@ router.get('/', function(req, res, next) {
   next();
 }, gon.fetchAll, function(req, res, next) {
   let user = res.locals.users.find(u => u.id == req.user.user_id)
-
+  res.locals.gon.user = user
   res.render('index', { user, account: req.user });
 });
 

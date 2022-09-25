@@ -129,9 +129,6 @@ export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, re
 
   return (<>
     <EditUserRecipeModal showModal={showModal} setShowModal={setShowModal} recipe={recipeToEdit} tags={tags} suggestions={suggestions} />
-    <div>
-      <input ref={inputField} type="search" placeholder="Filtrer..." onChange={(e) => setSearch(e.target.value)} autoComplete="off" style={{width: "100%"}} onKeyDown={onKeyDown}/>
-    </div>
     <h3>À cuisinner prochainement</h3>
     <RecipeList original={recipes} list={toCookList} {...listArgs} />
     <h3>À essayer</h3>

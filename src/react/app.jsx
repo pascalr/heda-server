@@ -634,12 +634,12 @@ export const EditMix = ({page, recipes, favoriteRecipes, machines, mixes, machin
 }
 
 //const ShowRecipe = ({page}) => {
-const ShowRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recipes, foods, ingredientSections, recipeIngredients, recipeKinds, images}) => {
+const ShowRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recipes, foods, ingredientSections, recipeIngredients, recipeKinds, images, user}) => {
   //return <LinkToPage page={{...page, page: 16}} className="nav-link" active={page.page == 16}>Modifier</LinkToPage>
   const recipe = recipes.find(e => e.id == page.recipeId)
 
   gon.recipe = recipe // FIXME: This is really ugly
-  return <RecipeViewer {...{recipe, page, favoriteRecipes, machines, mixes, machineFoods, foods, ingredientSections, recipeIngredients, recipeKinds, images}} />
+  return <RecipeViewer {...{recipe, page, favoriteRecipes, machines, mixes, machineFoods, foods, ingredientSections, recipeIngredients, recipeKinds, images, user}} />
 }
 
 const EditRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recipes, foods, ingredientSections}) => {
@@ -944,6 +944,7 @@ const App = () => {
   const ingredientSections = gon.ingredient_sections
   const recipeIngredients = gon.recipe_ingredients
   const images = gon.images
+  const user = gon.user
 
   const all = {page, recipeFilters, suggestions, userTags, favoriteRecipes, machines, machineFoods, containerQuantities, mixes, recipes, foods}
 
@@ -983,7 +984,7 @@ const App = () => {
     [PAGE_12]: <MixIndex {...{page, machines, machineFoods, mixes}} />,
     [PAGE_13]: <ShowMix {...all} />,
     [PAGE_14]: <EditMix {...all} />,
-    [PAGE_15]: <ShowRecipe {...{...all, ingredientSections, recipeIngredients, recipeKinds, images}} />,
+    [PAGE_15]: <ShowRecipe {...{...all, ingredientSections, recipeIngredients, recipeKinds, images, user}} />,
     [PAGE_16]: <EditRecipe {...{...all, ingredientSections}} />,
     [PAGE_17]: <NewRecipe {...{page}} />
   }
