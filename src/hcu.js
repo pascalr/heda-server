@@ -1,3 +1,7 @@
+import toastr from 'toastr'
+
+  import { ajax } from "./react/utils"
+
 export const initHcu = () => {
   if (window.hcu) {return;}
   window.hcu = {}

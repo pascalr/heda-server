@@ -34,7 +34,7 @@ const PAGE_13 = 13 // ShowMix
 const PAGE_14 = 14 // EditMix
 const PAGE_15 = 15 // ShowRecipe
 const PAGE_16 = 16 // EditRecipe
-const PAGE_17 = 17
+const PAGE_17 = 17 // NewRecipe
 const PAGE_18 = 18
 const PAGE_19 = 19
 const PAGE_20 = 20
@@ -843,18 +843,30 @@ const SearchBox = ({shown}) => {
 
 const MyRecipes = ({page, suggestions, tags, favoriteRecipes, recipes, mixes, recipeKinds}) => {
 
-  //const data = useCacheOrFetch(user_recipes_recipes_path())
-  //const userRecipes = data ? data.userRecipes : null
-  //const favoriteRecipes = data ? data.favoriteRecipes : null
-      //<%= link_to translated("Quoi manger?"), app_path, class: "btn btn-outline-secondary btn-sm" %>
-    //<RecipeIndex userRecipes={userRecipes} favoriteRecipes={favoriteRecipes} loading={!data} suggestions={suggestions} tags={tags} />
   return (<>
     <div className="d-flex gap-20 align-items-center">
       <h2>Mes recettes</h2>
-      <a href={new_recipe_path()} className="btn btn-outline-primary btn-sm">Nouvelle recette</a>
+      <LinkToPage page={{...page, page: 17}} className="btn btn-outline-primary btn-sm">Nouvelle recette</LinkToPage>
     </div>
     <RecipeIndex page={page} favoriteRecipes={favoriteRecipes} loading={false} suggestions={suggestions} tags={tags} mixes={mixes} recipes={recipes} recipeKinds={recipeKinds} />
   </>)
+}
+
+const NewRecipe = () => {
+
+  const [name, setName] = useState('')
+
+  const createRecipe = () => {
+    window.hcu.createRecord({class_name: 'recipe', name})
+  }
+
+  return <>
+    <h1>Nouvelle recette</h1>
+
+    <b>Nom</b><br/>
+    <input name="name" value={name} onChange={(e) => {setName(e.target.value)}} /><br/><br/>
+    <button className="btn btn-primary" onClick={createRecipe}>Créer</button>
+  </>
 }
 
 const App = () => {
@@ -907,6 +919,7 @@ const App = () => {
     [PAGE_14]: PAGE_13,
     [PAGE_15]: PAGE_6,
     [PAGE_16]: PAGE_15,
+    [PAGE_17]: PAGE_6,
   }
 
   const pages = {
@@ -926,6 +939,7 @@ const App = () => {
     [PAGE_14]: <EditMix {...all} />,
     [PAGE_15]: <ShowRecipe {...{...all, ingredientSections, recipeIngredients, recipeKinds, images}} />,
     [PAGE_16]: <EditRecipe {...{...all, ingredientSections}} />,
+    [PAGE_17]: <NewRecipe />
   }
 
   // I don't want a back system, I want a up system. So if you are given a nested link, you can go up.
