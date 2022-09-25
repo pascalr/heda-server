@@ -16,7 +16,6 @@ const UserEditor = () => {
     <RadioField model={user} field="gender" value={1} label="Homme"/><br/>
     <RadioField model={user} field="gender" value={2} label="Femme"/><br/>
     <RadioField model={user} field="gender" value={3} label="Autre"/><br/>
-    <b>Password</b><br/>
   </>
 }
 
