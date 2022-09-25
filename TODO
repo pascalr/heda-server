@@ -1,3 +1,4 @@
+Demo user
 Store images on volume.
 Backblaze? https://www.npmjs.com/package/backblaze
 Show tiptap editor.
@@ -23,3 +24,10 @@ Expressjs mobile development???
 
 Later (optimize):
 Delegate all the db data sorting to the client to avoid load on the server.
+
+//import Bucket from "backblaze";
+//const bucket = Bucket("heda-bucket-production", {
+//  id: process.env.B2_ID,
+//  key: process.env.B2_KEY
+//});
+

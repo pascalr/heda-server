@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node ./src/server.js",
+    "start": "node -r dotenv/config ./src/server.js",
     "db": "sqlitebrowser var/db/dev.db",
     "dev": "npm run build:all && npm run start",
     "build:js": "npm run build && npm run build:user_editor",

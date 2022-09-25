@@ -9,13 +9,6 @@ import gon, {initGon} from './gon.js';
 import passport from './passport.js';
 import utils from './utils.js';
 
-//import dotenv from 'dotenv';
-//import Bucket from "backblaze";
-//const bucket = Bucket("heda-bucket-production", {
-//  id: process.env.B2_ID,
-//  key: process.env.B2_KEY
-//});
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
