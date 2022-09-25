@@ -194,11 +194,13 @@ router.post('/create_record/:className', function(req, res, next) {
     })
     let query = 'INSERT INTO '+table+' (user_id,created_at,updated_at,'+fields.join(',')+') '
     query += 'VALUES (?,?,?,'+fields.map(f=>'?').join(',')+')'
-    let args = [req.user.user_id, utils.now(), utils.now()]
-    args = [...args, ...fields.map(f => req.body['record['+f+']'])]
+    let values = fields.map(f => req.body['record['+f+']'])
+    let args = [req.user.user_id, utils.now(), utils.now(), ...values]
     db.run(query, args, function(err) {
       if (err) { return next(err); }
-      res.json({...req.body.record})
+      let o = fields.reduce((acc, f) => ({ ...acc, [f]: req.body['record['+f+']']}), {}) 
+      console.log('id', db.lastInsertRowId)
+      res.json({...o, id: this.lastID, class_name: className})
     })
   } catch(err) {
     throw new Error(err)

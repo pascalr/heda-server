@@ -75,6 +75,7 @@ export const useHcuState = (initial, options, callback=null) => {
         let fields = Object.keys(record)
         let url = '/create_record/'+record.class_name
         ajax({url: url, type: 'POST', data: {record, fields}, success: (created) => {
+          console.log('created', created)
           let old = window.hcu.getters[record.class_name]
           let updated = [...old, {...created}]
           window.hcu.setters[record.class_name](updated)
