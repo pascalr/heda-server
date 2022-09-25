@@ -548,7 +548,7 @@ export class RecipeEditor extends React.Component {
           {IngredientList}
         
           <h2>Instructions</h2>
-          <Tiptap model={recipe} json_field="json" html_field="html" url={recipe_path(gon.recipe)} content={JSON.parse(gon.recipe.json)} editable={this.props.editable} />
+          <Tiptap model={recipe} json_field="json" html_field="html" url={recipe_path(gon.recipe)} content={gon.recipe.json ? JSON.parse(gon.recipe.json) : null} editable={this.props.editable} />
           {this.props.editable ? <InstructionsShortcuts/> : ''}
           
           <h3>Notes</h3>

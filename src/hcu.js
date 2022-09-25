@@ -7,7 +7,7 @@ export const initHcu = () => {
   window.hcu = {}
   window.hcu.getters = {}
   window.hcu.setters = {}
-  window.hcu.updateField = (model, field, value) => {
+  window.hcu.updateField = (model, field, value, successCallback=null) => {
     if (value != model[field]) { // update only if value changed
 
       //let data = {[model.class_name+"["+field+"]"]: value}
@@ -19,7 +19,7 @@ export const initHcu = () => {
         let old = window.hcu.getters[record.class_name]
         let updated = [...old].map(r => r.id == record.id ? record : r)
         window.hcu.setters[record.class_name](updated)
-        //if (successCallback) {successCallback()}
+        if (successCallback) {successCallback(record)}
       }, error: (errors) => {
         console.log('ERROR AJAX UPDATING...', errors.responseText)
         toastr.error(errors.responseText)
@@ -27,7 +27,7 @@ export const initHcu = () => {
       }})
     }
   }
-  window.hcu.createRecord = (record) => {
+  window.hcu.createRecord = (record, successCallback=null) => {
     if (!record.class_name) { throw "Error: hcu.createRecord record must have valid class_name" }
     let fields = Object.keys(record)
     let url = '/create_record/'+record.class_name
@@ -36,6 +36,7 @@ export const initHcu = () => {
       let old = window.hcu.getters[record.class_name]
       let updated = [...old, {...created}]
       window.hcu.setters[record.class_name](updated)
+      if (successCallback) {successCallback(created)}
     }, error: (errors) => {
       console.log('ERROR AJAX CREATING...', errors.responseText)
       toastr.error(errors.responseText)

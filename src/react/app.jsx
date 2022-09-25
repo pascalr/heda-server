@@ -852,12 +852,14 @@ const MyRecipes = ({page, suggestions, tags, favoriteRecipes, recipes, mixes, re
   </>)
 }
 
-const NewRecipe = () => {
+const NewRecipe = ({page}) => {
 
   const [name, setName] = useState('')
 
   const createRecipe = () => {
-    window.hcu.createRecord({class_name: 'recipe', name})
+    window.hcu.createRecord({class_name: 'recipe', name}, (created) => {
+      window.hcu.changePage({...page, page: 16, recipeId: created.id})
+    })
   }
 
   return <>
@@ -939,7 +941,7 @@ const App = () => {
     [PAGE_14]: <EditMix {...all} />,
     [PAGE_15]: <ShowRecipe {...{...all, ingredientSections, recipeIngredients, recipeKinds, images}} />,
     [PAGE_16]: <EditRecipe {...{...all, ingredientSections}} />,
-    [PAGE_17]: <NewRecipe />
+    [PAGE_17]: <NewRecipe {...{page}} />
   }
 
   // I don't want a back system, I want a up system. So if you are given a nested link, you can go up.
