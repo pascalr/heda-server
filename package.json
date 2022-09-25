@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "node -r dotenv/config ./src/server.js",
-    "db": "sqlitebrowser var/db/dev.db",
+    "db:open": "sqlitebrowser var/db/dev.db",
+    "db:backup": "scp root@heda-server.internal:/mnt/heda_volume/prod.db var/db/dev.db",
     "dev": "npm run build:all && npm run start",
     "build:js": "npm run build && npm run build:user_editor",
     "build:all": "npm run build:css && npm run build:js",

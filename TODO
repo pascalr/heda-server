@@ -1,12 +1,8 @@
 Nouvel utilisateur
-Nouvelle recette
 DNS hedacuisine.com
-Pouvoir changer les recettes de liste. À essayer, à cuisinner prochainement...
 Demo user
 Store images on volume or backblaze.
 Backblaze? https://www.npmjs.com/package/backblaze
-Utiliser la base de donnée du disque volume.
-Ajouter var dans .flyignore (Il s'appelle comme ça???)
 Pouvoir rechercher
 Mettre un peu de couleur!
 Clean le data. Des bonnes recettes seulement pour le user Pascal.
