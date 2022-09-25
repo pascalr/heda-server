@@ -83,3 +83,7 @@ body {
   font-family: 'Raleway', sans-serif;
   font-size: 0.9rem;
 }
+
+.selected {
+  background-color: #eee;
+}
