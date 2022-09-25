@@ -52,7 +52,7 @@ function fetchTable(tableName, conditions, attributes, next, callback) {
 
 
 function fetchUsers(req, res, next) {
-  fetchTable('users', {account_id: req.user.account_id}, ['name'], next, (records) => {
+  fetchTable('users', {account_id: req.user.account_id}, ['name', 'gender'], next, (records) => {
     res.locals.users = records
   })
 }

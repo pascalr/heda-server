@@ -5,6 +5,10 @@
   "type": "module",
   "scripts": {
     "start": "node ./src/server.js",
+    "db": "sqlitebrowser var/db/dev.db",
+    "dev": "npm run build:all && npm run start",
+    "build:js": "npm run build && npm run build:user_editor",
+    "build:all": "npm run build:css && npm run build:js",
     "build": "esbuild src/react/app.jsx --bundle --sourcemap --outfile=public/build/app.js",
     "build:user_editor": "esbuild src/react/user_editor.jsx --bundle --sourcemap --outfile=public/build/user_editor.js",
     "build:prod": "esbuild src/react/app.jsx --bundle --minify --outfile=public/build/app.js",
@@ -48,6 +52,7 @@
     "react-dom": "^18.2.0",
     "sass": "^1.54.9",
     "sqlite3": "^5.0.2",
+    "toastr": "^2.1.4",
     "watch": "^1.0.2"
   }
 }

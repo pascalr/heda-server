@@ -147,7 +147,6 @@ export function ajax(params) {
 
     //let _csrf = $('[name="csrf-token"]').content
     let _csrf = document.querySelector('[name="csrf-token"]').content
-    console.log('_csrf', _csrf)
     $.ajax({
       type: params.type,
       url: params.url, //addExtensionToPath("json", params.url),

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ajax, omit, join, bindSetter, capitalize } from "./utils"
+import toastr from 'toastr'
 
 import {recipe_recipe_ingredient_path, food_path, recipe_ingredient_section_path, recipe_path, recipe_recipe_note_path, image_path } from './routes'
 
@@ -46,6 +47,7 @@ export const useHcuState = (initial, options, callback=null) => {
   useEffect(() => {
     if (!window.hcu) {
       window.hcu = {}
+      window.hcu.getters = {}
       window.hcu.setters = {}
       window.hcu.updateField = (model, field, value) => {
         if (value != model[field]) { // update only if value changed
@@ -54,10 +56,20 @@ export const useHcuState = (initial, options, callback=null) => {
           let data = {field, value}
           ajax({url: '/update_field/'+model.class_name+'/'+model.id, type: 'PATCH', data: data, success: () => {
             console.log(`Updating model ${model.class_name} field ${field} from ${model[field]} to ${value}.`)
-            model[field] = value
+            let record = {...model}
+            record[field] = value
+            let old = window.hcu.getters[record.class_name]
+            let updated = null
+            if (Array.isArray(old)) {
+              updated = [...old].map(r => r.id == record.id ? record : r)
+            } else {
+              updated = record
+            }
+            window.hcu.setters[record.class_name](updated)
             //if (successCallback) {successCallback()}
           }, error: (errors) => {
-            console.log('ERROR AJAX UPDATING...')
+            console.log('ERROR AJAX UPDATING...', errors)
+            toastr.error(errors.responseText)
             //toastr.error("<ul>"+Object.values(JSON.parse(errors)).map(e => ("<li>"+e+"</li>"))+"</ul>", 'Error updating')
           }})
         }
@@ -65,6 +77,10 @@ export const useHcuState = (initial, options, callback=null) => {
     }
     window.hcu.setters[className] = setState
   }, [])
+
+  useEffect(() => {
+    window.hcu.getters[className] = state
+  }, [state])
 
   return state
 }
