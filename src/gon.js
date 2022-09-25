@@ -54,12 +54,12 @@ function fetchTable(tableName, conditions, attributes, next, callback) {
 function fetchAccountUsers(req, res, next) {
   fetchTable('users', {account_id: req.user.account_id}, ['name', 'gender'], next, (records) => {
     res.locals.users = records
-    res.locals.gon.users = records
+    if (res.locals.gon) {res.locals.gon.users = records}
   })
 }
 
 
-const RECIPE_ATTRS = ['name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id']
+const RECIPE_ATTRS = ['user_id', 'name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id']
 function fetchRecipes(req, res, next) {
   fetchTable('recipes', {user_id: req.user.user_id}, RECIPE_ATTRS, next, (records) => {
     res.locals.gon.recipes = utils.sortBy(records, 'name')

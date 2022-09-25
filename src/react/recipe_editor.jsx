@@ -482,7 +482,14 @@ export class RecipeEditor extends React.Component {
     </>)
 
     let changeOwner = (e) => {
-      console.log('id', e.target.id)
+      let data = {recipeId: recipe.id, newOwnerId: e.target.id}
+      ajax({url: '/change_recipe_owner', type: 'PATCH', data, success: () => {
+        let old = window.hcu.getters['recipe']
+        let updated = [...old].map(r => r.id == recipe.id ? {...r, user_id: e.target.id} : r)
+        window.hcu.setters['recipe'](updated)
+      }, error: (errors) => {
+        console.log('ERROR AJAX UPDATING...', errors.responseText)
+      }})
     }
 
     return (<>
@@ -508,10 +515,10 @@ export class RecipeEditor extends React.Component {
               </span>
             </h1>
             <div style={{marginTop: '-1.2em', marginBottom: '1.2em', color: 'gray'}}>
-              <div className="dropdown dropdown-toggle" style={{padding: "0 1em"}}>
-                <span data-bs-toggle="dropdown">par {this.props.user.name}</span>
+              <div className="dropdown dropdown-toggle clickable" style={{padding: "0 1em"}}>
+                <span data-bs-toggle="dropdown">par user{recipe.user_id}</span>
                 <div className="dropdown-menu">
-                  {this.props.users.filter(u => u.id != this.props.user.id).map(usr => {
+                  {this.props.users.filter(u => u.id != recipe.user_id).map(usr => {
                     return <a key={usr.id} id={usr.id} className="dropdown-item clickable" onClick={changeOwner}>{usr.name}</a>
                   })}
                 </div>
