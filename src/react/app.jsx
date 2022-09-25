@@ -642,13 +642,13 @@ const ShowRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recip
   return <RecipeViewer {...{recipe, page, favoriteRecipes, machines, mixes, machineFoods, foods, ingredientSections, recipeIngredients, recipeKinds, images, user}} />
 }
 
-const EditRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recipes, foods, ingredientSections}) => {
+const EditRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recipes, foods, ingredientSections, user, users}) => {
   
   const recipe = recipes.find(e => e.id == page.recipeId)
 
   window.recipe_editor = useRef(null) // FIXME: This is really ugly
   gon.recipe = recipe // FIXME: This is really ugly
-  return <RecipeEditor {...{page, favoriteRecipes, machines, mixes, machineFoods, foods, ingredientSections}} ref={window.recipe_editor}/>
+  return <RecipeEditor {...{page, favoriteRecipes, machines, mixes, machineFoods, foods, ingredientSections, user, users}} ref={window.recipe_editor}/>
 }
   
 const ShowMix = ({page, recipes, favoriteRecipes, machines, mixes, machineFoods}) => {
@@ -945,6 +945,7 @@ const App = () => {
   const recipeIngredients = gon.recipe_ingredients
   const images = gon.images
   const user = gon.user
+  const users = gon.users
 
   const all = {page, recipeFilters, suggestions, userTags, favoriteRecipes, machines, machineFoods, containerQuantities, mixes, recipes, foods}
 
@@ -985,7 +986,7 @@ const App = () => {
     [PAGE_13]: <ShowMix {...all} />,
     [PAGE_14]: <EditMix {...all} />,
     [PAGE_15]: <ShowRecipe {...{...all, ingredientSections, recipeIngredients, recipeKinds, images, user}} />,
-    [PAGE_16]: <EditRecipe {...{...all, ingredientSections}} />,
+    [PAGE_16]: <EditRecipe {...{...all, ingredientSections, user, users}} />,
     [PAGE_17]: <NewRecipe {...{page}} />
   }
 

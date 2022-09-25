@@ -20,7 +20,7 @@ router.get('/login', function(req, res, next) {
   res.render('login');
 });
 
-router.get('/choose_user', gon.fetchUsers, function(req, res, next) {
+router.get('/choose_user', gon.fetchAccountUsers, function(req, res, next) {
   res.render('choose_user');
 });
 
@@ -51,7 +51,7 @@ router.get('/signup', function(req, res, next) {
   res.render('signup');
 });
 
-router.get('/edit_profile', initGon, gon.fetchUsers, function(req, res, next) {
+router.get('/edit_profile', initGon, gon.fetchAccountUsers, function(req, res, next) {
   let user = res.locals.users.find(u => u.id == req.user.user_id)
   res.locals.gon.user = user
   res.locals.user = user

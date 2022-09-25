@@ -480,7 +480,11 @@ export class RecipeEditor extends React.Component {
       <p>Vous pouvez ajouter des instructions pour automatiser cette recette.</p>
       <button type="button" className="btn btn-primary" onClick={createMix}>Ajouter</button>
     </>)
-    
+
+    let changeOwner = (e) => {
+      console.log('id', e.target.id)
+    }
+
     return (<>
       <div className="recipe">
         <div className="d-block d-md-flex gap-20">
@@ -503,6 +507,16 @@ export class RecipeEditor extends React.Component {
                 <TextField model={recipe} field="name" className="plain-input" />
               </span>
             </h1>
+            <div style={{marginTop: '-1.2em', marginBottom: '1.2em', color: 'gray'}}>
+              <div className="dropdown dropdown-toggle" style={{padding: "0 1em"}}>
+                <span data-bs-toggle="dropdown">par {this.props.user.name}</span>
+                <div className="dropdown-menu">
+                  {this.props.users.filter(u => u.id != this.props.user.id).map(usr => {
+                    return <a key={usr.id} id={usr.id} className="dropdown-item clickable" onClick={changeOwner}>{usr.name}</a>
+                  })}
+                </div>
+              </div>
+            </div>
             <div>
               <b>Préparation (minutes): </b>
               <span style={{color: 'gray'}}>

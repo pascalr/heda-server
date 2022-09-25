@@ -51,9 +51,10 @@ function fetchTable(tableName, conditions, attributes, next, callback) {
 }
 
 
-function fetchUsers(req, res, next) {
+function fetchAccountUsers(req, res, next) {
   fetchTable('users', {account_id: req.user.account_id}, ['name', 'gender'], next, (records) => {
     res.locals.users = records
+    res.locals.gon.users = records
   })
 }
 
@@ -227,8 +228,8 @@ export function initGon(req, res, next) {
 }
 
 // WARNING: LIST ORDER IS IMPORTANT
-const fetchAll = [initGon, fetchUsers, fetchRecipes, fetchFavoriteRecipes, fetchFavoriteRecipesRecipe, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchSuggestions, fetchUserRecipeFilters, fetchPublicRecipeFilters, fetchFoods, fetchUnits, fetchNotes, fetchIngredientSections, fetchImages]
+const fetchAll = [initGon, fetchAccountUsers, fetchRecipes, fetchFavoriteRecipes, fetchFavoriteRecipesRecipe, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchSuggestions, fetchUserRecipeFilters, fetchPublicRecipeFilters, fetchFoods, fetchUnits, fetchNotes, fetchIngredientSections, fetchImages]
 
-const gon = {fetchAll, fetchUsers};
+const gon = {fetchAll, fetchAccountUsers};
 export default gon;
 //module.exports = gon;
