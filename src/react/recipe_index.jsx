@@ -48,12 +48,7 @@ const RecipeList = ({page, list, original, selected, suggestions, tags, editUser
               <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 <li>{fav && fav.list_id == 1 ? toNotCook : toCook }</li>
                 <li>{fav && fav.list_id == 2 ? toNotTry : toTry }</li>
-                <li><button type="button" className="dropdown-item" onClick={() => editUserRecipe(recipe)}>Modifier</button></li>
-                <li>
-                  <DeleteConfirmButton id={`remove-recipe-${recipe.id}`} onDeleteConfirm={() => removeItem(fav)} message="Je veux enlever ce favori?">
-                    <button type="button" className="dropdown-item">Retirer</button>
-                  </DeleteConfirmButton>
-                </li>
+                <li><button type="button" className="dropdown-item" onClick={() => editUserRecipe(recipe)}>Tagger</button></li>
               </ul>
             </span>
           </li>
