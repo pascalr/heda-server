@@ -7,7 +7,8 @@ import { useHcuState } from "./lib"
 
 const UserEditor = () => {
 
-  const user = useHcuState(gon.user, {className: 'user'})
+  const users = useHcuState([gon.user], {className: 'user'})
+  const user = users[0]
 
   return <>
     <b>Name</b><br/>

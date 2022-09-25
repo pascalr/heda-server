@@ -28,10 +28,10 @@ const RecipeList = ({page, list, original, selected, suggestions, tags, editUser
         let recipeTags = suggestions.filter(suggestion => suggestion.recipe_id == recipe.id).map(suggestion => tags.find(t => t.id == suggestion.filter_id))
         let mix = mixes.find(e => e.recipe_id == recipe.id)
 
-        let toCook = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 1)}>À cuisiner</button>
-        let toTry = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 2)}>À essayer</button>
-        let toNotCook = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 0)}>Ne plus cuisiner</button>
-        let toNotTry = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 0)}>Ne plus essayer</button>
+        let toCook = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 1, recipe)}>À cuisiner</button>
+        let toTry = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 2, recipe)}>À essayer</button>
+        let toNotCook = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 0, recipe)}>Ne plus cuisiner</button>
+        let toNotTry = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 0, recipe)}>Ne plus essayer</button>
         return (
           <li key={recipe.id} className='d-flex'>
             <span>
@@ -113,14 +113,14 @@ export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, re
     if (key == "Enter") {window.location.href = recipe_path(recipeForItem(all[selected]))}
   }
   
-  let updateFavoriteRecipe = (item, list_id) =>{
-    if (item.class_name == "favorite_recipe") {
-      window.hcu.updateField(item, 'list_id', list_id)
-    } else if (item.class_name == "recipe") {
-      ajax({url: favorite_recipes_path(), type: 'POST', data: {favorite_recipe: {list_id, recipe_id: item.id}}, success: (created) => {
-        favoriteRecipes.update([...favoriteRecipes, created])
-      }, error: () => {
-      }})
+  let updateFavoriteRecipe = (fav, list_id, recipe) =>{
+    if (fav) {
+      window.hcu.updateField(fav, 'list_id', list_id)
+    } else if (list_id != 0) {
+      //ajax({url: favorite_recipes_path(), type: 'POST', data: {favorite_recipe: {list_id, recipe_id: item.id}}, success: (created) => {
+      //  favoriteRecipes.update([...favoriteRecipes, created])
+      //}, error: () => {
+      //}})
     }
   }
 

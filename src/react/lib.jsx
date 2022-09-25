@@ -59,12 +59,7 @@ export const useHcuState = (initial, options, callback=null) => {
             let record = {...model}
             record[field] = value
             let old = window.hcu.getters[record.class_name]
-            let updated = null
-            if (Array.isArray(old)) {
-              updated = [...old].map(r => r.id == record.id ? record : r)
-            } else {
-              updated = record
-            }
+            updated = [...old].map(r => r.id == record.id ? record : r)
             window.hcu.setters[record.class_name](updated)
             //if (successCallback) {successCallback()}
           }, error: (errors) => {
@@ -73,6 +68,12 @@ export const useHcuState = (initial, options, callback=null) => {
             //toastr.error("<ul>"+Object.values(JSON.parse(errors)).map(e => ("<li>"+e+"</li>"))+"</ul>", 'Error updating')
           }})
         }
+      }
+      window.hcu.createRecord = (record) => {
+        ajax({url: '/create_record/'+record.class_name, type: 'POST', data: {...record}, success: () => {
+          favoriteRecipes.update([...favoriteRecipes, created])
+        }, error: () => {
+        }})
       }
     }
     window.hcu.setters[className] = setState
