@@ -117,6 +117,7 @@ export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, re
     if (fav) {
       window.hcu.updateField(fav, 'list_id', list_id)
     } else if (list_id != 0) {
+      window.hcu.createRecord({class_name: "favorite_recipe", list_id: list_id, recipe_id: recipe.id})
       //ajax({url: favorite_recipes_path(), type: 'POST', data: {favorite_recipe: {list_id, recipe_id: item.id}}, success: (created) => {
       //  favoriteRecipes.update([...favoriteRecipes, created])
       //}, error: () => {

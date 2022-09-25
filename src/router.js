@@ -170,15 +170,44 @@ function mapClassNameToTable(className) {
   }
 }
 
+const ALLOWED_COLUMNS = {
+  'recipes': ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id'],
+  'users': ['name', 'gender'],
+  'favorite_recipes': ['list_id', 'recipe_id']
+}
+const ALLOWED_TABLES = Object.keys(ALLOWED_COLUMNS)
+
+router.post('/create_record/:className', function(req, res, next) {
+  
+  try {
+    console.log('body', req.body)
+    let className = req.params.className
+    let table = mapClassNameToTable(className)
+    let fields = req.body['fields[]'].filter(f => f != 'class_name')
+    if (!ALLOWED_TABLES.includes(table)) {
+      throw new Error("CreateRecord table not allowed")
+    }
+    fields.forEach(field => {
+      if (!ALLOWED_COLUMNS[table].includes(field)) {
+        throw new Error("CreateRecord column not allowed. Field: "+field)
+      }
+    })
+    let query = 'INSERT INTO '+table+' (user_id,created_at,updated_at,'+fields.join(',')+') '
+    query += 'VALUES (?,?,?,'+fields.map(f=>'?').join(',')+')'
+    let args = [req.user.user_id, utils.now(), utils.now()]
+    args = [...args, ...fields.map(f => req.body['record['+f+']'])]
+    db.run(query, args, function(err) {
+      if (err) { return next(err); }
+      res.json({...req.body.record})
+    })
+  } catch(err) {
+    throw new Error(err)
+  }
+})
+
 router.patch('/update_field/:className/:id', function(req, res, next) {
 
   try {
-    const ALLOWED_COLUMNS = {
-      'recipes': ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id'],
-      'users': ['name', 'gender'],
-      'favorite_recipes': ['list_id']
-    }
-    const ALLOWED_TABLES = Object.keys(ALLOWED_COLUMNS)
     let id = req.params.id
     let className = req.params.className
     let table = mapClassNameToTable(className)

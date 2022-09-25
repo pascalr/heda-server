@@ -40,6 +40,7 @@ export const useRegisteredState = (name, initial, callback=null) => {
 //window.hcu.update(recipe)
 //window.hcu.updateField(recipe)
 export const useHcuState = (initial, options, callback=null) => {
+  if (!Array.isArray(initial)) { throw "Error: useHcuState requires an array as input" }
   const [state, setState] = useState(initial)
 
   const {className} = options;
@@ -59,7 +60,7 @@ export const useHcuState = (initial, options, callback=null) => {
             let record = {...model}
             record[field] = value
             let old = window.hcu.getters[record.class_name]
-            updated = [...old].map(r => r.id == record.id ? record : r)
+            let updated = [...old].map(r => r.id == record.id ? record : r)
             window.hcu.setters[record.class_name](updated)
             //if (successCallback) {successCallback()}
           }, error: (errors) => {
@@ -70,9 +71,16 @@ export const useHcuState = (initial, options, callback=null) => {
         }
       }
       window.hcu.createRecord = (record) => {
-        ajax({url: '/create_record/'+record.class_name, type: 'POST', data: {...record}, success: () => {
-          favoriteRecipes.update([...favoriteRecipes, created])
-        }, error: () => {
+        if (!record.class_name) { throw "Error: hcu.createRecord record must have valid class_name" }
+        let fields = Object.keys(record)
+        let url = '/create_record/'+record.class_name
+        ajax({url: url, type: 'POST', data: {record, fields}, success: (created) => {
+          let old = window.hcu.getters[record.class_name]
+          let updated = [...old, {...created}]
+          window.hcu.setters[record.class_name](updated)
+        }, error: (errors) => {
+          console.log('ERROR AJAX CREATING...', errors.responseText)
+          toastr.error(errors.responseText)
         }})
       }
     }
