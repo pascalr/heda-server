@@ -1,17 +1,16 @@
+DNS hedacuisine.com
+Pouvoir changer les recettes de liste. À essayer, à cuisinner prochainement...
 Demo user
-Store images on volume.
+Store images on volume or backblaze.
 Backblaze? https://www.npmjs.com/package/backblaze
-Show tiptap editor.
-Add the recipes from favorite_recipes in recipes.
-Change the sorry mess that favorite_recipes is handled inside react...
-image_used_in
 Utiliser la base de donnée du disque volume.
 Ajouter var dans .flyignore (Il s'appelle comme ça???)
-Copier les routes et les utiliser des 2 côtés, serveur et client.
-Pouvoir voir les recettes
-Pouvoir modifier les recettes
 Pouvoir rechercher
 Mettre un peu de couleur!
+Clean le data. Des bonnes recettes seulement pour le user Pascal.
+Pouvoir transférer des recettes d'un utilisateur à l'autre.
+Ou bien pouvoir modifier une recette si la recette appartient à un utilisateur dans le même compte.
+Ça devient comme une recette partagé.
 
 Later (other users):
 Create default user for account
