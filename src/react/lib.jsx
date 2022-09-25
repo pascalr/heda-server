@@ -68,7 +68,7 @@ export const useHcuState = (initial, options, callback=null) => {
             window.hcu.setters[record.class_name](updated)
             //if (successCallback) {successCallback()}
           }, error: (errors) => {
-            console.log('ERROR AJAX UPDATING...', errors)
+            console.log('ERROR AJAX UPDATING...', errors.responseText)
             toastr.error(errors.responseText)
             //toastr.error("<ul>"+Object.values(JSON.parse(errors)).map(e => ("<li>"+e+"</li>"))+"</ul>", 'Error updating')
           }})

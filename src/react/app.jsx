@@ -865,7 +865,7 @@ const App = () => {
   const recipeFilters = useUpdatableState('recipeFilters', gon.recipe_filters)
   const suggestions = useUpdatableState('suggestions', gon.suggestions)
   const userTags = useUpdatableState('userTags', gon.user_tags)
-  const favoriteRecipes = useUpdatableState('favoriteRecipes', gon.favorite_recipes)
+  const favoriteRecipes = useHcuState(gon.favorite_recipes, {className: 'favorite_recipe'})
   const machines = useUpdatableState('machines', gon.machines)
   const machineFoods = useUpdatableState('machineFoods', gon.machine_foods)
   const containerQuantities = useUpdatableState('containerQuantities', gon.container_quantities)

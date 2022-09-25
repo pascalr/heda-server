@@ -164,6 +164,7 @@ function mapClassNameToTable(className) {
   switch(className) {
     case 'recipe': return 'recipes'; break;
     case 'user': return 'users'; break;
+    case 'favorite_recipe': return 'favorite_recipes'; break;
     default:
       throw "Missing table for className " + className
   }
@@ -172,11 +173,12 @@ function mapClassNameToTable(className) {
 router.patch('/update_field/:className/:id', function(req, res, next) {
 
   try {
-    const ALLOWED_TABLES = ['recipes', 'users']
     const ALLOWED_COLUMNS = {
-      'recipes': ['name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id'],
-      'users': ['name', 'gender']
+      'recipes': ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id'],
+      'users': ['name', 'gender'],
+      'favorite_recipes': ['list_id']
     }
+    const ALLOWED_TABLES = Object.keys(ALLOWED_COLUMNS)
     let id = req.params.id
     let className = req.params.className
     let table = mapClassNameToTable(className)

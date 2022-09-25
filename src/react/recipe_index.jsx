@@ -115,10 +115,7 @@ export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, re
   
   let updateFavoriteRecipe = (item, list_id) =>{
     if (item.class_name == "favorite_recipe") {
-      ajax({url: favorite_recipe_path(item), type: 'PATCH', data: {favorite_recipe: {list_id}}, success: (updated) => {
-        favoriteRecipes.update(favoriteRecipes.map(f => f.id == item.id ? updated : f))
-      }, error: () => {
-      }})
+      window.hcu.updateField(item, 'list_id', list_id)
     } else if (item.class_name == "recipe") {
       ajax({url: favorite_recipes_path(), type: 'POST', data: {favorite_recipe: {list_id, recipe_id: item.id}}, success: (created) => {
         favoriteRecipes.update([...favoriteRecipes, created])
