@@ -42,4 +42,22 @@ export const initHcu = () => {
       toastr.error(errors.responseText)
     }})
   }
+  // Remove record in memory only
+  window.hcu.removeRecord = (record, successCallback=null) => {
+    let old = window.hcu.getters[record.class_name]
+    let updated = old.filter(e => e.id != record.id)
+    window.hcu.setters[record.class_name](updated)
+    if (successCallback) {successCallback()}
+  }
+  // Destroy record definitely in database
+  window.hcu.destroyRecord = (record, successCallback=null) => {
+    if (!record.class_name) { throw "Error: hcu.destroyRecord record must have valid class_name" }
+    let url = '/destroy_record/'+record.class_name+'/'+record.id
+    ajax({url: url, type: 'DELETE', success: (status) => {
+      window.hcu.removeRecord(record, successCallback)
+    }, error: (errors) => {
+      console.log('ERROR AJAX CREATING...', errors.responseText)
+      toastr.error(errors.responseText)
+    }})
+  }
 }

@@ -176,6 +176,7 @@ const ALLOWED_COLUMNS = {
   'favorite_recipes': ['list_id', 'recipe_id']
 }
 const ALLOWED_TABLES = Object.keys(ALLOWED_COLUMNS)
+const ALLOWED_TABLES_DESTROY = ['favorite_recipes']
 
 router.post('/create_record/:className', function(req, res, next) {
   
@@ -256,6 +257,29 @@ router.patch('/update_field/:className/:id', function(req, res, next) {
       })
     } else {
       throw new Error("UpdateField not allowed")
+    }
+  } catch(err) {
+    throw new Error(err)
+  }
+});
+
+router.delete('/destroy_record/:className/:id', function(req, res, next) {
+
+  try {
+    let id = req.params.id
+    let className = req.params.className
+    let table = mapClassNameToTable(className)
+    if (ALLOWED_TABLES_DESTROY.includes(table)) {
+      let query = ''
+      let args = []
+      query = 'DELETE FROM '+table+' WHERE id = ? AND user_id = ?'
+      args = [id, req.user.user_id]
+      db.run(query, args, function(err) {
+        if (err) { return next(err); }
+        res.json({status: 'ok'})
+      })
+    } else {
+      throw new Error("DestroyRecord not allowed")
     }
   } catch(err) {
     throw new Error(err)
