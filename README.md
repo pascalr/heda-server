@@ -23,4 +23,4 @@ sudo apt install wireguard
 ln -s /usr/bin/resolvectl /usr/local/bin/resolvconf # S'il y a une erreur avec resolvconf
 fly wireguard create # Entrer le nom de fichier: var/heda-server.conf. LE FICHIER DOIT ETRE DANS VAR POUR ETRE SUR DE NE PAS SE RETROUVER DANS GIT!!!
 wg-quick up var/heda-server.conf
-cp var/db/dev.db root@heda-server.internal:/mnt/heda_volume/prod.db
+scp root@heda-server.internal:/mnt/heda_volume/prod.db var/db/dev.db
