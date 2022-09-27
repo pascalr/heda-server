@@ -22,6 +22,8 @@ echo "ls && exit" | fly ssh console
 fly releases --image
 fly deploy -i registry.fly.io/heda-server@sha256:67super-long-hash-super-long-hash-super-long-hash
 chown heroku prod.db
+chgrp heroku prod.db
+chmod 666 prod.db
 
 ## Wireguard
 sudo apt install wireguard
