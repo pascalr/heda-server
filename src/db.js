@@ -13,6 +13,7 @@ if (fs.existsSync(dbPath)) {
 var db = null;
 try {
   db = new sqlite3.Database(dbPath);
+  console.log('Opening database successful!')
 } catch (err) {
   console.log('Error opening sqlite3 Database:', err)
   console.log('Opening temp file')

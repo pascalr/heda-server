@@ -12,6 +12,7 @@ import { fileURLToPath } from 'url';
 import pluralize from 'pluralize';
 import http from 'http';
 import debugModule from 'debug';
+import fs from 'fs';
 const debug = debugModule('todos:server');
 
 // pass the session to the connect sqlite3 module
@@ -41,6 +42,12 @@ app.use(express.static(path.join(__dirname, '../node_modules/bootstrap/dist/')))
 app.use(express.static(path.join(__dirname, '../node_modules/@popperjs/core/dist/')));
 app.use(express.static(path.join(__dirname, '../node_modules/toastr/')));
 app.use(express.static(path.join(__dirname, '../public')));
+if (!fs.existsSync('./var')) {
+  fs.mkdirSync('./var')
+  fs.mkdirSync('./var/db')
+} else if (!fs.existsSync('./var/db')) {
+  fs.mkdirSync('./var/db')
+}
 app.use(session({
   secret: 'keyboard cat',
   resave: false, // don't save session if unmodified

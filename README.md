@@ -18,6 +18,7 @@ SQlite3 tool: sqlitebrowser
 fly doctor // Si je n'arrive pas à me connecter avec fly ssh console, fly doctor diagnostique le problème
 fly ssh console
 echo "ls && exit" | fly ssh console
+chown -R heroku:heroku /mnt
 #### Rollback
 fly releases --image
 fly deploy -i registry.fly.io/heda-server@sha256:67super-long-hash-super-long-hash-super-long-hash
