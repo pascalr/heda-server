@@ -85,15 +85,17 @@ export const RecipeViewer = ({recipe, page, userRecipes, favoriteRecipes, machin
         <div style={{width: '100%'}}>
           <h1>
             <span className="recipe-title">{recipe.name}</span>
-            <span className="dropdown" style={{padding: "0 1rem"}}>
-              <img className="clickable" data-bs-toggle="dropdown" src="/icons/list.svg"/>
-              <div className="dropdown-menu">
-                <LinkToPage page={{...page, page: 16}} className="dropdown-item" active={page.page == 16}>Modifier</LinkToPage>
-              </div>
-            </span>
+            {user.id != recipe.user_id ? '' :
+              <span className="dropdown" style={{padding: "0 1rem"}}>
+                <img className="clickable" data-bs-toggle="dropdown" src="/icons/list.svg"/>
+                <div className="dropdown-menu">
+                  <LinkToPage page={{...page, page: 16}} className="dropdown-item" active={page.page == 16}>Modifier</LinkToPage>
+                </div>
+              </span>
+            }
           </h1>
           <div style={{marginTop: '-1.2em', marginBottom: '1.2em'}}>
-            <span style={{color: 'gray'}}>par {user.name}</span>
+            <span style={{color: 'gray'}}>par user{recipe.user_id}</span>
           </div>
           <div>
             <b>Préparation (minutes): </b>
