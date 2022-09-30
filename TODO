@@ -1,7 +1,4 @@
-Ne pas pouvoir modifier une recette qui n'est pas à soi...
-Dans l'éditeur, je ne vois plus la toolbar...
-1 de courge poivrée
-de sel et poivre
+Quand je change de user, rester sur la même page si possible. Mais là après il faut rajouter des validations pour toutes les pages, par exemple si je switch de user en modifiant une recette, rediriger vers le Show.
 Tofu magique
 Remove gon.recipe
 Allow change owner if recipe belongs to any user from the account.

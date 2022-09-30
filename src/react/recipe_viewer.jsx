@@ -6,8 +6,8 @@ import {Block, Inline, InlineBlock, Row, Col, InlineRow, InlineCol, Grid} from '
 import Quantity from './models/quantity'
 import { Tiptap, BubbleTiptap } from './tiptap'
 import { LinkToPage } from "./lib"
-
 import {image_variant_path, recipe_path} from './routes'
+import { Utils } from "./recipe_utils"
 
 
 export const RecipeViewer = ({recipe, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipeIngredients, ingredientSections, recipeKinds, images, user}) => {
@@ -24,8 +24,11 @@ export const RecipeViewer = ({recipe, page, userRecipes, favoriteRecipes, machin
     <div id="ing_list">
       <ul className="list-group">
         {ingredients.map(ing => {
+          let foodName = ing.raw_food
+          let prettyQty = Utils.prettyQuantityFor(ing.raw, foodName)
+          //let food = foods.find(food => food.name == foodName)
           return <li key={ing.id} className="list-group-item">
-            <span>{ing.raw} de <span className="food-name">{ing.raw_food}</span></span>
+            <span>{prettyQty} <span className="food-name">{ing.raw_food}</span></span>
             <div className="dropdown d-inline-block float-end">
                <img className="clickable" data-bs-toggle="dropdown" src="/icons/pencil-square.svg"/>
               <div className="dropdown-menu">
