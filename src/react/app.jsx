@@ -844,7 +844,7 @@ export const RecipeListItem = ({recipe, current, suggestions, tags, recipeKinds,
   )
 }
 
-const SearchBox = ({recipes, recipeKinds, tags, suggestions, page}) => {
+const SearchBox = ({recipes, recipeKinds, tags, suggestions, page, friendsRecipes}) => {
 
   //const height = useTransition('0', shown ? '100vh' : '0', '100vh')
   const height = '100vh'
@@ -862,30 +862,37 @@ const SearchBox = ({recipes, recipeKinds, tags, suggestions, page}) => {
   const filterItems = (items, term) => (isBlank(term) ? [] : items.filter(r => (
     r.name && ~normalizeSearchText(r.name).indexOf(term)
   )))
-  let matchingRecipes = filterItems(recipes, term)
+  let matchingUserRecipes = filterItems(recipes, term)
+  let matchingFriendsRecipes = filterItems(friendsRecipes, term)
+  let allMatching = [...matchingUserRecipes, ...matchingFriendsRecipes]
 
   let select = (pos) => {
     setSelected(pos)
-    setSearch(matchingRecipes[pos].name)
+    setSearch(allMatching[pos].name)
   }
 
   let onKeyDown = ({key}) => {
-    if (key == "ArrowDown") {select(selected >= matchingRecipes.length-1 ? -1 : selected+1)}
-    if (key == "ArrowUp") {select(selected < 0 ? matchingRecipes.length-1 : selected-1)}
+    if (key == "ArrowDown") {select(selected >= allMatching.length-1 ? -1 : selected+1)}
+    if (key == "ArrowUp") {select(selected < 0 ? allMatching.length-1 : selected-1)}
     if (key == "Escape") {setSearch(''); setTerm('')}
-    if (key == "Enter") {changePage({...page, page: PAGE_15, recipeId: matchingRecipes[selected].id})}
+    if (key == "Enter") {changePage({...page, page: PAGE_15, recipeId: allMatching[selected].id})}
   }
 
   return (<>
-    <div style={{height: height, transition: 'height 1s'}}>
+    <div style={{minHeight: height, transition: 'height 1s'}}>
       <input ref={inputField} type="search" placeholder="Rechercher..." onChange={(e) => {setTerm(e.target.value); setSearch(e.target.value)}} autoComplete="off" style={{width: "100%"}} onKeyDown={onKeyDown} value={search}/>
-      {matchingRecipes.length >= 1 ? <h2 className="h001">Mes recettes</h2> : ''}
-      <ul id="recipes" className="recipe-list">
-        {matchingRecipes.map((recipe, current) => (
+      {matchingUserRecipes.length >= 1 ? <h2 className="h001">Mes recettes</h2> : ''}
+      <ul className="recipe-list">
+        {matchingUserRecipes.map((recipe, current) => (
           <RecipeListItem key={recipe.id} {...{recipe, current, suggestions, tags, recipeKinds, page, selected}}/>
         ))}
       </ul>
-      {matchingRecipes.length >= 1 ? <h2 className="h001">Suggestions</h2> : ''}
+      {matchingFriendsRecipes.length >= 1 ? <h2 className="h001">Suggestions</h2> : ''}
+      <ul className="recipe-list">
+        {matchingFriendsRecipes.map((recipe, current) => (
+          <RecipeListItem key={recipe.id} {...{recipe, current: current+matchingUserRecipes.length, suggestions, tags, recipeKinds, page, selected}}/>
+        ))}
+      </ul>
     </div>
   </>)
 }
@@ -948,12 +955,14 @@ const App = () => {
   const mixes = useUpdatableState('mixes', gon.mixes)
   const foods = useUpdatableState('foods', gon.foods)
   const recipes = useHcuState(gon.recipes, {className: 'recipe'})
+  const recipeIds = recipes.map(r => r.id)
   const recipeKinds = gon.recipe_kinds //useUpdatableState('recipe_kinds', gon.recipe_kinds)
   const ingredientSections = gon.ingredient_sections
   const recipeIngredients = gon.recipe_ingredients
   const images = gon.images
   const user = gon.user
   const users = gon.users
+  const friendsRecipes = gon.friends_recipes.filter(r => !recipeIds.includes(r.id))
 
   const all = {page, recipeFilters, suggestions, userTags, favoriteRecipes, machines, machineFoods, containerQuantities, mixes, recipes, foods}
 
@@ -1018,7 +1027,7 @@ const App = () => {
       <img className="clickable" src={icon_path("search_black.svg")} width="24" onClick={() => {setIsSearching(!isSearching)}}/>
     </div>
     <hr style={{color: "#aaa", marginTop: "0"}}/>
-    {isSearching ? <SearchBox {...{page, recipes, recipeKinds, tags: recipeFilters, suggestions}} /> : ''}
+    {isSearching ? <SearchBox {...{page, recipes, recipeKinds, tags: recipeFilters, suggestions, friendsRecipes}} /> : ''}
     {pages[page.page || 1]}
   </>)
 }
