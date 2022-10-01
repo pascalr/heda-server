@@ -89,21 +89,9 @@ export const RecipeList = ({page, list, original, selected, suggestions, tags, e
 
 export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, recipes, recipeKinds}) => {
   
-  const inputField = useRef(null);
-  const [search, setSearch] = useState('')
-  const [selected, setSelected] = useState(-1)
   const [showModal, setShowModal] = useState(true)
   const [recipeToEdit, setRecipeToEdit] = useState(null)
  
-  let term = normalizeSearchText(search)
-
-  const filterList = (list) => {
-    if (!list) {return []}
-    return list.filter(r => (
-      r.name && ~normalizeSearchText(r.name).indexOf(term)
-    ))
-  }
-
   let ids = favoriteRecipes.map(f => f.recipe_id)
   let filteredUserRecipes = []
   let toCookList = []
@@ -118,31 +106,13 @@ export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, re
     else { otherList.push({recipe: recipe, fav: f}) }
   })
   let all = [...recipes, ...toCookList, ...toTryList, ...otherList]
-  
-  //let ids = favoriteRecipes.map(f => f.recipe_id)
-  //let filteredUserRecipes = filterList(recipes.filter(r => !ids.includes(r.id)))
-  //let toCookList = filterList(favoriteRecipes.filter(r => r.list_id == 1))
-  //let toTryList = filterList(favoriteRecipes.filter(r => r.list_id == 2))
-  //let otherList = filterList(favoriteRecipes.filter(r => !r.list_id || r.list_id >= 3))
-  //let all = [...recipes, ...toCookList, ...toTryList, ...otherList]
-
-  let select = (pos) => {
-    setSelected(pos)
-    inputField.current.value = pos < 0 ? '' : all[pos].name
-  }
-
-  let onKeyDown = ({key}) => {
-    if (key == "ArrowDown") {select(selected >= all.length-1 ? -1 : selected+1)}
-    if (key == "ArrowUp") {select(selected < 0 ? all.length-1 : selected-1)}
-    if (key == "Enter") {window.location.href = recipe_path(recipeForItem(all[selected]))}
-  }
 
   let editUserRecipe = (recipe) => {
     setRecipeToEdit(recipe)
     setShowModal(true)
   }
 
-  let listArgs = {page, selected, suggestions, tags, editUserRecipe, mixes, recipes, recipeKinds}
+  let listArgs = {page, suggestions, tags, editUserRecipe, mixes, recipes, recipeKinds}
 
   return (<>
     <EditUserRecipeModal showModal={showModal} setShowModal={setShowModal} recipe={recipeToEdit} tags={tags} suggestions={suggestions} />
