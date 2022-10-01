@@ -859,9 +859,10 @@ const SearchBox = ({recipes, recipeKinds, tags, suggestions, page}) => {
     inputField.current.focus()
   }, [])
 
-  let matchingRecipes = (isBlank(term) ? [] : recipes.filter(r => (
+  const filterItems = (items, term) => (isBlank(term) ? [] : items.filter(r => (
     r.name && ~normalizeSearchText(r.name).indexOf(term)
   )))
+  let matchingRecipes = filterItems(recipes, term)
 
   let select = (pos) => {
     setSelected(pos)
@@ -871,6 +872,7 @@ const SearchBox = ({recipes, recipeKinds, tags, suggestions, page}) => {
   let onKeyDown = ({key}) => {
     if (key == "ArrowDown") {select(selected >= matchingRecipes.length-1 ? -1 : selected+1)}
     if (key == "ArrowUp") {select(selected < 0 ? matchingRecipes.length-1 : selected-1)}
+    if (key == "Escape") {setSearch(''); setTerm('')}
     if (key == "Enter") {changePage({...page, page: PAGE_15, recipeId: matchingRecipes[selected].id})}
   }
 
