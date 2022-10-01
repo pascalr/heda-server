@@ -6,19 +6,6 @@ import { recipe_path, favorite_recipe_path, favorite_recipes_path, image_variant
 import {EditUserRecipeModal} from './modals/edit_user_recipe'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import { LinkToPage } from "./lib"
-
-export const RecipeListItem = ({recipe, current, suggestions, tags, recipeKinds, page, selected}) => {
-  let kind = recipe.recipe_kind_id ? recipeKinds.find(k => k.id == recipe.recipe_kind_id) : null
-  let image_used_id = recipe.image_id || (kind && kind.image_id)
-  let recipeTags = suggestions.filter(suggestion => suggestion.recipe_id == recipe.id).map(suggestion => tags.find(t => t.id == suggestion.filter_id))
-  return (
-    <li key={recipe.id}>
-      <img src={image_used_id ? image_variant_path({id: image_used_id}, "thumb") : "/img/default_recipe_01_thumb.png"} width="71" height="48" style={{marginRight: '0.5em'}} />
-      <LinkToPage page={{...page, page: 15, recipeId: recipe.id}} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={current == selected ? "selected" : undefined}>{recipe.name}</LinkToPage>
-      <span style={{color: 'gray', fontSize: '0.78em'}}>{recipeTags.map(tag => ` #${tag.name}`)} </span>
-    </li>
-  )
-}
   
 const updateFavoriteRecipe = (fav, list_id, recipe) => {
   if (fav) {
