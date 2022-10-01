@@ -1,4 +1,5 @@
 Quand je change de user, rester sur la même page si possible. Mais là après il faut rajouter des validations pour toutes les pages, par exemple si je switch de user en modifiant une recette, rediriger vers le Show.
+L'icone recherche devrait devenir un X quand il est en mode recherche.
 Tofu magique => machineFoods...
 Remove gon.recipe
 Allow change owner if recipe belongs to any user from the account.

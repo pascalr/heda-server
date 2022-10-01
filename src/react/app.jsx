@@ -831,6 +831,19 @@ const useTransition = (initial, current, final) => {
   return state
 }
 
+const RecipeListItem = ({recipe, current, suggestions, tags, recipeKinds, page, selected}) => {
+  let kind = recipe.recipe_kind_id ? recipeKinds.find(k => k.id == recipe.recipe_kind_id) : null
+  let image_used_id = recipe.image_id || (kind && kind.image_id)
+  let recipeTags = suggestions.filter(suggestion => suggestion.recipe_id == recipe.id).map(suggestion => tags.find(t => t.id == suggestion.filter_id))
+  return (
+    <li key={recipe.id}>
+      <img src={image_used_id ? image_variant_path({id: image_used_id}, "thumb") : "/img/default_recipe_01_thumb.png"} width="71" height="48" style={{marginRight: '0.5em'}} />
+      <LinkToPage page={{...page, page: 15, recipeId: recipe.id}} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={current == selected ? "selected" : undefined}>{recipe.name}</LinkToPage>
+      <span style={{color: 'gray', fontSize: '0.78em'}}>{recipeTags.map(tag => ` #${tag.name}`)} </span>
+    </li>
+  )
+}
+
 const SearchBox = ({recipes, recipeKinds, tags, suggestions, page, setIsSearching}) => {
 
   //const height = useTransition('0', shown ? '100vh' : '0', '100vh')
@@ -866,21 +879,11 @@ const SearchBox = ({recipes, recipeKinds, tags, suggestions, page, setIsSearchin
       <input ref={inputField} type="search" placeholder="Rechercher..." onChange={(e) => {setTerm(e.target.value); setSearch(e.target.value)}} autoComplete="off" style={{width: "100%"}} onKeyDown={onKeyDown} value={search}/>
       <h2>Mes recettes</h2>
       <ul id="recipes" className="recipe-list">
-        {matchingRecipes.map((recipe, current) => {
-          let kind = recipe.recipe_kind_id ? recipeKinds.find(k => k.id == recipe.recipe_kind_id) : null
-          let image_used_id = recipe.image_id || (kind && kind.image_id)
-          let recipeTags = suggestions.filter(suggestion => suggestion.recipe_id == recipe.id).map(suggestion => tags.find(t => t.id == suggestion.filter_id))
-          return (
-            <li key={recipe.id}>
-              <img src={image_used_id ? image_variant_path({id: image_used_id}, "thumb") : "/img/default_recipe_01_thumb.png"} width="71" height="48" style={{marginRight: '0.5em'}} />
-              <LinkToPage page={{...page, page: 15, recipeId: recipe.id}} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={current == selected ? "selected" : undefined}>{recipe.name}</LinkToPage>
-              <span style={{color: 'gray', fontSize: '0.78em'}}>{recipeTags.map(tag => ` #${tag.name}`)} </span>
-            </li>
-          )
-        })}
+        {matchingRecipes.map((recipe, current) => (
+          <RecipeListItem key={recipe.id} {...{recipe, current, suggestions, tags, recipeKinds, page, selected}}/>
+        ))}
       </ul>
-      <h2>Recettes du même compte</h2>
-      <h2>Recettes publiques</h2>
+      <h2>Suggestions</h2>
     </div>
   </>)
 }

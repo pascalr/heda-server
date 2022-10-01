@@ -65,6 +65,13 @@ function fetchRecipes(req, res, next) {
   })
 }
 
+function fetchFriendsRecipes(req, res, next) {
+  let ids = res.locals.gon.users.map(u => u.id).filter(id => id != req.user.id)
+  fetchTable('recipes', {user_id: ids}, ['name', 'user_id', 'image_id', 'recipe_kind_id'], next, (records) => {
+    res.locals.gon.friends_recipes = utils.sortBy(records, 'name')
+  })
+}
+
 function fetchRecipeIngredients(req, res, next) {
   let attrs = ['item_nb', 'raw', 'comment_json', 'food_id', 'raw_food', 'recipe_id']
   let ids = res.locals.gon.recipes.map(r=>r.id)
@@ -233,7 +240,7 @@ export function initGon(req, res, next) {
 }
 
 // WARNING: LIST ORDER IS IMPORTANT
-const fetchAll = [initGon, fetchAccountUsers, fetchRecipes, fetchFavoriteRecipes, fetchFavoriteRecipesRecipe, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchSuggestions, fetchUserRecipeFilters, fetchPublicRecipeFilters, fetchFoods, fetchUnits, fetchNotes, fetchIngredientSections, fetchImages, fetchMachineFoods]
+const fetchAll = [initGon, fetchAccountUsers, fetchRecipes, fetchFavoriteRecipes, fetchFavoriteRecipesRecipe, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchSuggestions, fetchUserRecipeFilters, fetchPublicRecipeFilters, fetchFoods, fetchUnits, fetchNotes, fetchIngredientSections, fetchImages, fetchMachineFoods, fetchFriendsRecipes]
 
 const gon = {fetchAll, fetchAccountUsers};
 export default gon;
