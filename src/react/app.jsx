@@ -6,7 +6,7 @@ import { createRoot } from 'react-dom/client';
 
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, LinkToPage, useUpdatableState, getStateProperties, register, getRegister, useRegisteredState, useHcuState } from "./lib"
-import {RecipeList, RecipeIndex} from './recipe_index'
+import {RecipeList, RecipeIndex, RecipeListItem} from './recipe_index'
 import { ajax, isBlank, normalizeSearchText, preloadImage, getUrlParams, join, bindSetter, sortBy, capitalize } from "./utils"
 import { icon_path, recipe_kind_path, suggestions_path, image_variant_path, send_data_suggestions_path, batch_update_filtered_recipes_path, batch_create_filtered_recipes_path, batch_destroy_filtered_recipes_path, recipe_filters_path, recipe_filter_path, missing_filtered_recipes_path, user_recipes_recipes_path, new_recipe_path, new_book_path, user_books_books_path, my_books_path, all_recipe_kinds_recipe_filters_path, recipe_path, user_tags_path, user_tag_path, containers_path, grocery_list_path, calendar_path, inventory_path, mixes_path, mix_path, inline_recipe_path, recipe_recipe_ingredients_path } from './routes'
 import {TextField, AutocompleteInput, TextInput, CollectionSelect} from './form'
@@ -831,20 +831,7 @@ const useTransition = (initial, current, final) => {
   return state
 }
 
-const RecipeListItem = ({recipe, current, suggestions, tags, recipeKinds, page, selected}) => {
-  let kind = recipe.recipe_kind_id ? recipeKinds.find(k => k.id == recipe.recipe_kind_id) : null
-  let image_used_id = recipe.image_id || (kind && kind.image_id)
-  let recipeTags = suggestions.filter(suggestion => suggestion.recipe_id == recipe.id).map(suggestion => tags.find(t => t.id == suggestion.filter_id))
-  return (
-    <li key={recipe.id}>
-      <img src={image_used_id ? image_variant_path({id: image_used_id}, "thumb") : "/img/default_recipe_01_thumb.png"} width="71" height="48" style={{marginRight: '0.5em'}} />
-      <LinkToPage page={{...page, page: 15, recipeId: recipe.id}} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={current == selected ? "selected" : undefined}>{recipe.name}</LinkToPage>
-      <span style={{color: 'gray', fontSize: '0.78em'}}>{recipeTags.map(tag => ` #${tag.name}`)} </span>
-    </li>
-  )
-}
-
-const SearchBox = ({recipes, recipeKinds, tags, suggestions, page, setIsSearching}) => {
+const SearchBox = ({recipes, recipeKinds, tags, suggestions, page}) => {
 
   //const height = useTransition('0', shown ? '100vh' : '0', '100vh')
   const height = '100vh'
@@ -871,7 +858,7 @@ const SearchBox = ({recipes, recipeKinds, tags, suggestions, page, setIsSearchin
   let onKeyDown = ({key}) => {
     if (key == "ArrowDown") {select(selected >= matchingRecipes.length-1 ? -1 : selected+1)}
     if (key == "ArrowUp") {select(selected < 0 ? matchingRecipes.length-1 : selected-1)}
-    if (key == "Enter") {changePage({...page, page: PAGE_15, recipeId: matchingRecipes[selected].id}); setIsSearching(false)}
+    if (key == "Enter") {changePage({...page, page: PAGE_15, recipeId: matchingRecipes[selected].id})}
   }
 
   return (<>
@@ -925,10 +912,13 @@ const App = () => {
   //  window.history.replaceState(s, '', '?'+new URLSearchParams(s).toString())
   //})
 
+  const [isSearching, setIsSearching] = useState(false)
+
   const [page, setPage] = useState(getUrlParams())
   if (!window.hcu) {initHcu()}
   window.hcu.changePage = (updated) => {
     setPage(updated)
+    setIsSearching(false)
     let s = getStateProperties(updated)
     window.history.replaceState(s, '', '?'+new URLSearchParams(s).toString())
   }
@@ -951,8 +941,6 @@ const App = () => {
   const users = gon.users
 
   const all = {page, recipeFilters, suggestions, userTags, favoriteRecipes, machines, machineFoods, containerQuantities, mixes, recipes, foods}
-
-  const [isSearching, setIsSearching] = useState(false)
 
   const parentPages = {
     [PAGE_2]: PAGE_1,
@@ -1015,7 +1003,7 @@ const App = () => {
       <img className="clickable" src={icon_path("search_black.svg")} width="24" onClick={() => {setIsSearching(!isSearching)}}/>
     </div>
     <hr style={{color: "#aaa", marginTop: "0"}}/>
-    {isSearching ? <SearchBox {...{page, setIsSearching, recipes, recipeKinds, tags: recipeFilters, suggestions}} /> : ''}
+    {isSearching ? <SearchBox {...{page, recipes, recipeKinds, tags: recipeFilters, suggestions}} /> : ''}
     {pages[page.page || 1]}
   </>)
 }
