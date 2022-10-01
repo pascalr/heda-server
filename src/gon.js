@@ -5,7 +5,6 @@ import utils from './utils.js';
 //  def index
 //    gon.current_user_admin = current_user_admin?
 //    gon.containers = current_user.containers.map {|c| c.to_obj}
-//    gon.machine_foods = current_user.machine_foods.includes(:food).sort_by(&:name).map {|f| f.to_obj}
 //    gon.container_quantities = current_user.container_quantities.includes(:container_format).map {|c| c.to_obj}
 //    gon.ingredient_sections = IngredientSection.where(recipe_id: gon.recipes.map{|e|e[:id]}).map {|e| e.to_obj}
 //    gon.images = Image.where(id: gon.recipes.map{|e|e[:image_id]}+gon.recipe_kinds.map{|e|e[:image_id]}).map {|e| e.to_obj }
@@ -79,6 +78,12 @@ function fetchRecipeIngredients(req, res, next) {
 function fetchRecipeKinds(req, res, next) {
   fetchTable('recipe_kinds', {}, ['name', 'description_json', 'image_id'], next, (records) => {
     res.locals.gon.recipe_kinds = utils.sortBy(records, 'name')
+  })
+}
+
+function fetchMachineFoods(req, res, next) {
+  fetchTable('machine_foods', {}, ['food_id', 'machine_id'], next, (records) => {
+    res.locals.gon.machine_foods = records
   })
 }
 
@@ -228,7 +233,7 @@ export function initGon(req, res, next) {
 }
 
 // WARNING: LIST ORDER IS IMPORTANT
-const fetchAll = [initGon, fetchAccountUsers, fetchRecipes, fetchFavoriteRecipes, fetchFavoriteRecipesRecipe, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchSuggestions, fetchUserRecipeFilters, fetchPublicRecipeFilters, fetchFoods, fetchUnits, fetchNotes, fetchIngredientSections, fetchImages]
+const fetchAll = [initGon, fetchAccountUsers, fetchRecipes, fetchFavoriteRecipes, fetchFavoriteRecipesRecipe, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchSuggestions, fetchUserRecipeFilters, fetchPublicRecipeFilters, fetchFoods, fetchUnits, fetchNotes, fetchIngredientSections, fetchImages, fetchMachineFoods]
 
 const gon = {fetchAll, fetchAccountUsers};
 export default gon;

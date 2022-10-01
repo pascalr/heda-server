@@ -399,10 +399,10 @@ const TagIndex = ({page, machines, recipeFilters, addRecipeFilter, userTags}) =>
   })
 
   // Pour recevoir des invités => (page suivantes, quelles restrictions => véganes)
+  //<TagButton winWidth={winWidth} image="/img/recipes.jpg" title="Mes livres" handleClick={() => {window.location.href = my_books_path()}} />
   return (<>
     <div style={{maxWidth: "100vw", width: "400px", margin: "auto"}}>
       <TagButton winWidth={winWidth} image="/img/cooking.jpg" title="Mes recettes" handleClick={() => changePage({page: PAGE_6})} />
-      <TagButton winWidth={winWidth} image="/img/recipes.jpg" title="Mes livres" handleClick={() => {window.location.href = my_books_path()}} />
       {machineButtons}
       {buttons}
       <TagButton winWidth={winWidth} image="/icons/gear-gray.svg" title="Paramètres" handleClick={() => changePage({page: PAGE_4})} />
@@ -935,7 +935,7 @@ const App = () => {
   const userTags = useUpdatableState('userTags', gon.user_tags)
   const favoriteRecipes = useHcuState(gon.favorite_recipes, {className: 'favorite_recipe'})
   const machines = useUpdatableState('machines', gon.machines)
-  const machineFoods = useUpdatableState('machineFoods', gon.machine_foods)
+  const machineFoods = useHcuState(gon.machine_foods, {className: 'machine_food'})
   const containerQuantities = useUpdatableState('containerQuantities', gon.container_quantities)
   const mixes = useUpdatableState('mixes', gon.mixes)
   const foods = useUpdatableState('foods', gon.foods)
