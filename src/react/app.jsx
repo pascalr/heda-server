@@ -1024,11 +1024,10 @@ const App = () => {
       <div className="flex-grow-1"/>
       <h1 style={{marginBottom: "0"}} className="clickable" onClick={() => changePage(1)}>Qu'est-ce qu'on mange?</h1>
       <div className="flex-grow-1"/>
-      <img className="clickable" src={icon_path("search_black.svg")} width="24" onClick={() => {setIsSearching(!isSearching)}}/>
+      <img className="clickable" src={isSearching ? icon_path("x-lg.svg") : icon_path("search_black.svg")} width="24" onClick={() => {setIsSearching(!isSearching)}}/>
     </div>
     <hr style={{color: "#aaa", marginTop: "0"}}/>
-    {isSearching ? <SearchBox {...{page, recipes, recipeKinds, tags: recipeFilters, suggestions, friendsRecipes}} /> : ''}
-    {pages[page.page || 1]}
+    {isSearching ? <SearchBox {...{page, recipes, recipeKinds, tags: recipeFilters, suggestions, friendsRecipes}} /> : pages[page.page || 1]}
   </>)
 }
 
