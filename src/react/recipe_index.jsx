@@ -19,13 +19,43 @@ export const RecipeListItem = ({recipe, current, suggestions, tags, recipeKinds,
     </li>
   )
 }
-
-export const RecipeList = ({page, list, original, selected, suggestions, tags, editUserRecipe, updateFavoriteRecipe, mixes, recipes, recipeKinds}) => {
-
-  let removeFavorite = (fav, recipe) => {
-    window.hcu.destroyRecord(fav)
-    window.hcu.removeRecord(recipe)
+  
+const updateFavoriteRecipe = (fav, list_id, recipe) => {
+  if (fav) {
+    window.hcu.updateField(fav, 'list_id', list_id)
+  } else if (list_id != 0) {
+    window.hcu.createRecord({class_name: "favorite_recipe", list_id: list_id, recipe_id: recipe.id})
   }
+}
+
+const removeFavorite = (fav, recipe) => {
+  window.hcu.destroyRecord(fav)
+  window.hcu.removeRecord(recipe)
+}
+
+const RecipeListItemMenu = ({fav, recipe, editUserRecipe}) => {
+
+  let toCook = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 1, recipe)}>À cuisiner</button>
+  let toTry = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 2, recipe)}>À essayer</button>
+  let toNotCook = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 0, recipe)}>Ne plus cuisiner</button>
+  let toNotTry = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 0, recipe)}>Ne plus essayer</button>
+
+  return <>
+    <span className="dropdown m-auto">
+      <button className="plain-btn" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+        <img src="icons/three-dots.svg"/>
+      </button>
+      <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+        <li>{fav && fav.list_id == 1 ? toNotCook : toCook }</li>
+        <li>{fav && fav.list_id == 2 ? toNotTry : toTry }</li>
+        <li><button type="button" className="dropdown-item" onClick={() => editUserRecipe(recipe)}>Tagger</button></li>
+        {fav ? <li><button type="button" className="dropdown-item" onClick={() => removeFavorite(fav, recipe)}>Retirer de mes favoris</button></li> : ''}
+      </ul>
+    </span>
+  </>
+}
+
+export const RecipeList = ({page, list, original, selected, suggestions, tags, editUserRecipe, mixes, recipes, recipeKinds}) => {
 
   //{!showPercentCompleted ? '' : <span>&nbsp;(<PercentageCompleted recipe={recipe}/>)</span>}
   return (<>
@@ -38,10 +68,6 @@ export const RecipeList = ({page, list, original, selected, suggestions, tags, e
         let recipeTags = suggestions.filter(suggestion => suggestion.recipe_id == recipe.id).map(suggestion => tags.find(t => t.id == suggestion.filter_id))
         let mix = mixes.find(e => e.recipe_id == recipe.id)
 
-        let toCook = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 1, recipe)}>À cuisiner</button>
-        let toTry = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 2, recipe)}>À essayer</button>
-        let toNotCook = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 0, recipe)}>Ne plus cuisiner</button>
-        let toNotTry = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 0, recipe)}>Ne plus essayer</button>
         return (
           <li key={recipe.id} className='d-flex'>
             <span>
@@ -53,17 +79,7 @@ export const RecipeList = ({page, list, original, selected, suggestions, tags, e
               <span style={{color: 'gray', fontSize: '0.78em'}}>{recipeTags.map(tag => ` #${tag.name}`)} </span>
             </span>
             <span className="flex-grow-1"/>
-            <span className="dropdown m-auto">
-              <button className="plain-btn" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="icons/three-dots.svg"/>
-              </button>
-              <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li>{fav && fav.list_id == 1 ? toNotCook : toCook }</li>
-                <li>{fav && fav.list_id == 2 ? toNotTry : toTry }</li>
-                <li><button type="button" className="dropdown-item" onClick={() => editUserRecipe(recipe)}>Tagger</button></li>
-                {fav ? <li><button type="button" className="dropdown-item" onClick={() => removeFavorite(fav, recipe)}>Retirer de mes favoris</button></li> : ''}
-              </ul>
-            </span>
+            <RecipeListItemMenu {...{fav, recipe, editUserRecipe}} />
           </li>
         )
       })}
@@ -120,25 +136,13 @@ export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, re
     if (key == "ArrowUp") {select(selected < 0 ? all.length-1 : selected-1)}
     if (key == "Enter") {window.location.href = recipe_path(recipeForItem(all[selected]))}
   }
-  
-  let updateFavoriteRecipe = (fav, list_id, recipe) =>{
-    if (fav) {
-      window.hcu.updateField(fav, 'list_id', list_id)
-    } else if (list_id != 0) {
-      window.hcu.createRecord({class_name: "favorite_recipe", list_id: list_id, recipe_id: recipe.id})
-      //ajax({url: favorite_recipes_path(), type: 'POST', data: {favorite_recipe: {list_id, recipe_id: item.id}}, success: (created) => {
-      //  favoriteRecipes.update([...favoriteRecipes, created])
-      //}, error: () => {
-      //}})
-    }
-  }
 
   let editUserRecipe = (recipe) => {
     setRecipeToEdit(recipe)
     setShowModal(true)
   }
 
-  let listArgs = {page, selected, suggestions, tags, editUserRecipe, updateFavoriteRecipe, mixes, recipes, recipeKinds}
+  let listArgs = {page, selected, suggestions, tags, editUserRecipe, mixes, recipes, recipeKinds}
 
   return (<>
     <EditUserRecipeModal showModal={showModal} setShowModal={setShowModal} recipe={recipeToEdit} tags={tags} suggestions={suggestions} />
