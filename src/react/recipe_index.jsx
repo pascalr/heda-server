@@ -103,13 +103,13 @@ export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, re
 
   return (<>
     <EditUserRecipeModal showModal={showModal} setShowModal={setShowModal} recipe={recipeToEdit} tags={tags} suggestions={suggestions} />
-    <h3>À cuisinner prochainement</h3>
+    <h3 className="h001">À cuisinner prochainement</h3>
     <RecipeList original={recipes} list={toCookList} {...listArgs} />
-    <h3>À essayer</h3>
+    <h3 className="h001">À essayer</h3>
     <RecipeList original={recipes} list={toTryList} {...listArgs} />
-    <h3>Mes recettes personnelles</h3>
+    <h3 className="h001">Mes recettes personnelles</h3>
     <RecipeList original={recipes} list={filteredUserRecipes} {...listArgs} />
-    <h3>Mes recettes favorites</h3>
+    <h3 className="h001">Mes recettes favorites</h3>
     <RecipeList original={recipes} list={otherList} {...listArgs} />
   </>)
 }

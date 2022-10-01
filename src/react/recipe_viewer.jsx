@@ -10,7 +10,7 @@ import {image_variant_path, recipe_path} from './routes'
 import { Utils } from "./recipe_utils"
 
 
-export const RecipeViewer = ({recipe, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipeIngredients, ingredientSections, recipeKinds, images, user}) => {
+export const RecipeViewer = ({recipe, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipeIngredients, ingredientSections, recipeKinds, images, user, users}) => {
 
   const recipe_kind = recipeKinds.find(k => k.id == recipe.recipe_kind_id)
   const image_used_id = recipe.use_personalised_image ? recipe.image_id : recipe_kind && recipe_kind.image_id
@@ -72,6 +72,9 @@ export const RecipeViewer = ({recipe, page, userRecipes, favoriteRecipes, machin
   //console.log(model)
   const mix = mixes.find(m => m.recipe_id == recipe.id)
 
+  const recipeUser = users.find(u => u.id == recipe.user_id)
+  const userName = recipeUser ? recipeUser.name : `user${recipe.user_id}`
+
   return (<>
     <div className="recipe">
       <div className="d-block d-md-flex gap-20">
@@ -98,7 +101,7 @@ export const RecipeViewer = ({recipe, page, userRecipes, favoriteRecipes, machin
             }
           </h1>
           <div style={{marginTop: '-1.2em', marginBottom: '1.2em'}}>
-            <span style={{color: 'gray'}}>par user{recipe.user_id}</span>
+            <span style={{color: 'gray'}}>par {userName}</span>
           </div>
           <div>
             <b>Préparation (minutes): </b>

@@ -70,3 +70,8 @@
 .inline-block {
   display: inline-block;
 }
+
+/* hxxx is a styling used for headers. The number is just an id, it does not have any meaning. */
+.h001 {
+  font-size: 1.2rem;
+}
