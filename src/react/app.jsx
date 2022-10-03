@@ -831,20 +831,27 @@ const useTransition = (initial, current, final) => {
   return state
 }
 
-export const RecipeListItem = ({recipe, current, suggestions, tags, recipeKinds, page, selected}) => {
+const RecipeListItem = ({recipe, current, tags, recipeKinds, page, selected, users, user}) => {
   let kind = recipe.recipe_kind_id ? recipeKinds.find(k => k.id == recipe.recipe_kind_id) : null
   let image_used_id = recipe.image_id || (kind && kind.image_id)
-  let recipeTags = suggestions.filter(suggestion => suggestion.recipe_id == recipe.id).map(suggestion => tags.find(t => t.id == suggestion.filter_id))
+  let userName = null
+  if (user.id != recipe.user_id) {
+    const recipeUser = users.find(u => u.id == recipe.user_id)
+    userName = recipeUser ? recipeUser.name : `user${recipe.user_id}`
+  }
   return (
     <li key={recipe.id}>
-      <img src={image_used_id ? image_variant_path({id: image_used_id}, "thumb") : "/img/default_recipe_01_thumb.png"} width="71" height="48" style={{marginRight: '0.5em'}} />
-      <LinkToPage page={{...page, page: 15, recipeId: recipe.id}} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={current == selected ? "selected" : undefined}>{recipe.name}</LinkToPage>
-      <span style={{color: 'gray', fontSize: '0.78em'}}>{recipeTags.map(tag => ` #${tag.name}`)} </span>
+      <LinkToPage page={{...page, page: 15, recipeId: recipe.id}} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={current == selected ? "selected" : undefined}>
+        <div className="d-flex align-items-center">
+          <img src={image_used_id ? image_variant_path({id: image_used_id}, "thumb") : "/img/default_recipe_01_thumb.png"} width="71" height="48" style={{marginRight: '0.5em'}} />
+          {userName ? <div><div>{recipe.name}</div><div className="h002">de {userName}</div></div> : recipe.name}
+        </div>
+      </LinkToPage>
     </li>
   )
 }
 
-const SearchBox = ({recipes, recipeKinds, tags, suggestions, page, friendsRecipes}) => {
+const SearchBox = ({recipes, recipeKinds, tags, page, friendsRecipes, users, user}) => {
 
   //const height = useTransition('0', shown ? '100vh' : '0', '100vh')
   const height = '100vh'
@@ -853,13 +860,14 @@ const SearchBox = ({recipes, recipeKinds, tags, suggestions, page, friendsRecipe
   const [search, setSearch] = useState('')
   const [term, setTerm] = useState('')
   const [selected, setSelected] = useState(-1)
-  const inputField = useRef(null);
+  const inputField = useRef(null)
+  const minChars = 3
 
   useEffect(() => {
     inputField.current.focus()
   }, [])
 
-  const filterItems = (items, term) => (isBlank(term) ? [] : items.filter(r => (
+  const filterItems = (items, term) => ((isBlank(term) || term.length < minChars) ? [] : items.filter(r => (
     r.name && ~normalizeSearchText(r.name).indexOf(term)
   )))
   let matchingUserRecipes = filterItems(recipes, term)
@@ -868,7 +876,7 @@ const SearchBox = ({recipes, recipeKinds, tags, suggestions, page, friendsRecipe
 
   let select = (pos) => {
     setSelected(pos)
-    setSearch(allMatching[pos].name)
+    setSearch(pos == -1 ? '' : allMatching[pos].name)
   }
 
   let onKeyDown = ({key}) => {
@@ -884,13 +892,13 @@ const SearchBox = ({recipes, recipeKinds, tags, suggestions, page, friendsRecipe
       {matchingUserRecipes.length >= 1 ? <h2 className="h001">Mes recettes</h2> : ''}
       <ul className="recipe-list">
         {matchingUserRecipes.map((recipe, current) => (
-          <RecipeListItem key={recipe.id} {...{recipe, current, suggestions, tags, recipeKinds, page, selected}}/>
+          <RecipeListItem key={recipe.id} {...{recipe, current, tags, recipeKinds, page, selected, users, user}}/>
         ))}
       </ul>
       {matchingFriendsRecipes.length >= 1 ? <h2 className="h001">Suggestions</h2> : ''}
       <ul className="recipe-list">
         {matchingFriendsRecipes.map((recipe, current) => (
-          <RecipeListItem key={recipe.id} {...{recipe, current: current+matchingUserRecipes.length, suggestions, tags, recipeKinds, page, selected}}/>
+          <RecipeListItem key={recipe.id} {...{recipe, current: current+matchingUserRecipes.length, tags, recipeKinds, page, selected, users, user}}/>
         ))}
       </ul>
     </div>
@@ -1027,7 +1035,7 @@ const App = () => {
       <img className="clickable" src={isSearching ? icon_path("x-lg.svg") : icon_path("search_black.svg")} width="24" onClick={() => {setIsSearching(!isSearching)}}/>
     </div>
     <hr style={{color: "#aaa", marginTop: "0"}}/>
-    {isSearching ? <SearchBox {...{page, recipes, recipeKinds, tags: recipeFilters, suggestions, friendsRecipes}} /> : pages[page.page || 1]}
+    {isSearching ? <SearchBox {...{page, recipes, recipeKinds, tags: recipeFilters, friendsRecipes, users, user}} /> : pages[page.page || 1]}
   </>)
 }
 

@@ -1,5 +1,4 @@
-Quand je change de user, rester sur la même page si possible. Mais là après il faut rajouter des validations pour toutes les pages, par exemple si je switch de user en modifiant une recette, rediriger vers le Show.
-L'icone recherche devrait devenir un X quand il est en mode recherche.
+Afficher de qui est la recette dans les suggestions dans les recherches.
 Tofu magique => machineFoods...
 Remove gon.recipe
 Allow change owner if recipe belongs to any user from the account.
@@ -8,6 +7,7 @@ Pouvoir retirer une recette de mes favoris.
 Nouvel utilisateur
 DNS hedacuisine.com
 Demo user
+Thumbnails images
 Store images on volume or backblaze.
 Backblaze? https://www.npmjs.com/package/backblaze
 Pouvoir rechercher
