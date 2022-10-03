@@ -244,25 +244,6 @@ export class RecipeEditor extends React.Component {
       instructionsSlave: gon.recipe.complete_instructions,
       showImageModal: false,
     };
-    //this.state.recipe.recipe_image.onUpdate = () => {
-    //  throw "TODO: Image onUpdate"
-    //  recipe = {...this.state.recipe}
-    //  recipe.recipe_image 
-    //  this.setStete
-    //}
-    this.state.recipe.onUpdate = (recipe) => {this.setState({recipe})}
-    this.state.recipe.onServerUpdate = ({recipe, recipe_image}) => {
-      //console.log("recipe", recipe)
-      //console.log("recipe_image", recipe_image)
-      //if (!this.state.recipe_image.url && recipe_image && recipe_image.url) {
-      //  this.setState({recipe_image: {...this.state.recipe_image, ...recipe_image}})
-        this.setState({recipe_image: updateRecord(this.state.recipe_image, recipe_image)})
-      //}
-    }
-    this.state.recipe_image.onUpdate = (recipe_image) => {this.setState({recipe_image})}
-    this.state.recipe_image.onServerUpdate = (image) => {
-      this.setState({recipe_image: updateRecord(this.state.recipe_image, image)})
-    }
     this.handleDropIng = this.handleDropIng.bind(this);
     this.appendIngredientSection = this.appendIngredientSection.bind(this)
     this.addIng = this.addIng.bind(this)
