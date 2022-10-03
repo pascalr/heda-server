@@ -9,7 +9,7 @@ import { ajax } from "./utils"
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import { Tiptap, BubbleTiptap } from './tiptap'
 import {AutocompleteInput, updateRecord, TextField, CollectionSelect} from './form'
-import { combineOrderedListWithHeaders } from './lib'
+import { combineOrderedListWithHeaders, parseIngredients, parseIngredientsOldFormat } from './lib'
 import {EditRecipeImageModal} from './modals/recipe_image'
 import {PasteIngredientsButton} from './modals/paste_ingredients'
 import {EditMix} from './app'
@@ -177,38 +177,39 @@ const EditableIngredientComment = (props) => {
   }
 }
 
-const EditableIngredient = ({ingredient, foods, mixes}) => {
+const EditableIngredient = ({ingredient, itemNb, foods, mixes}) => {
 
   if (ingredient == null) {return null;}
 
-  const ingUrl = recipe_recipe_ingredient_path({id: ingredient.recipe_id}, ingredient)
+  //const ingUrl = recipe_recipe_ingredient_path({id: ingredient.recipe_id}, ingredient)
+  const ingUrl = ''
   const removeIngredient = (evt) => {
-    ajax({url: ingUrl, type: 'DELETE', success: () => {
-      window.recipe_editor.current.removeIng(ingredient)
-    }})
+    //ajax({url: ingUrl, type: 'DELETE', success: () => {
+    //  window.recipe_editor.current.removeIng(ingredient)
+    //}})
   }
 
   let f = ingredient.food_id ? foods.find(e => e.id == ingredient.food_id) : null
   let mix = mixes.find(e => e.recipe_id == gon.recipe.id)
 
   let moveIngToMix = () => {
-    let ins = mix.instructions+';ADD,'+ingredient.raw+','+(f ? f.name : ingredient.name)
-    ajax({url: mix_path(mix), type: 'PATCH', data: {mix: {instructions: ins}}, success: (mix) => {
-      mixes.update(mixes.map(e => e.id == mix.id ? mix : e))
-      removeIngredient()
-    }})
+    //let ins = mix.instructions+';ADD,'+ingredient.raw+','+(f ? f.name : ingredient.name)
+    //ajax({url: mix_path(mix), type: 'PATCH', data: {mix: {instructions: ins}}, success: (mix) => {
+    //  mixes.update(mixes.map(e => e.id == mix.id ? mix : e))
+    //  removeIngredient()
+    //}})
   }
 
   return (
     <Row alignItems="center" gap="5px">
-      <span style={{padding: "0 10px 0 0"}}><b>{ingredient.item_nb}.</b></span>
-      <TextField model={ingredient} field="raw" size="8" className="editable-input" />
+      <span style={{padding: "0 10px 0 0"}}><b>{itemNb}.</b></span>
+      <TextField model={ingredient} field="qty" size="8" className="editable-input" />
       de{/*" de " ou bien " - " si la quantité n'a pas d'unité => _1_____ - oeuf*/}
-      {f ? <a href={food_path(f)}>{f.name}</a> : <div>{ingredient.name}</div>}
+      {f ? <a href={food_path(f)}>{f.name}</a> : <div>{ingredient.label}</div>}
       <EditableIngredientComment ingUrl={ingUrl} commentJson={ingredient.comment_json} />
       <Block flexGrow="1" />
       {mix ? <img className="clickable" style={{marginRight: '0.4em'}} src="/icons/arrow-down-up.svg" width="16" height="16" onClick={moveIngToMix}></img> : '' }
-      <DeleteConfirmButton id={`ing-${ingredient.id}`} onDeleteConfirm={removeIngredient} message="Je veux enlever cet ingrédient?" />
+      <DeleteConfirmButton id={`ing-${ingredient.key}`} onDeleteConfirm={removeIngredient} message="Je veux enlever cet ingrédient?" />
     </Row>
   )
 }
@@ -346,7 +347,7 @@ function removeIngSection(section) {
   //}})
 }
 
-export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipes, recipeIngredients, ingredientSections, recipeKinds, images, users, editable, user}) => {
+export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipes, ingredientSections, recipeKinds, images, users, editable, user}) => {
 
   const [showImageModal, setShowImageModal] = useState(false)
 
@@ -355,7 +356,9 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
 
   if (!recipe || recipe.user_id != user.id) {window.hcu.changePage({page: 15, recipeId: recipeId}); return '';}
 
-  const ingredients = recipeIngredients.filter(e => e.recipe_id == recipeId) || []
+  const ingredients = parseIngredients(recipe.ingredients)
+  gon.recipe_ingredients = parseIngredientsOldFormat(recipe.ingredients)
+  //const ingredients = recipeIngredients.filter(e => e.recipe_id == recipeId) || []
   const ingredient_sections = ingredientSections.filter(e => e.recipe_id == recipeId) || []
   const recipe_kind = recipeKinds.find(k => k.id == recipe.recipe_kind_id)
   const recipe_image = recipe.image_id ? images.find(e => e.id == recipe.image_id) : {}
@@ -384,11 +387,11 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
         )}
       </Draggable>)
     } else {
-      renderedIngItems.push(<Draggable key={item.id} draggableId={item.id.toString()} index={i}>
+      renderedIngItems.push(<Draggable key={item.key} draggableId={item.key} index={i}>
         {(provided) => (
           <div className="item-container" ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
             <li className="list-group-item">
-              {<EditableIngredient ingredient={item} {...{mixes, foods}} />}
+              {<EditableIngredient ingredient={item} itemNb={i+1} {...{mixes, foods}} />}
             </li>
           </div>
         )}

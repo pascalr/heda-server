@@ -52,7 +52,7 @@ export const IngredientButton = ({editor, width, height, ingredients}) => (
       <li key="99999999999999"><a className="dropdown-item" style={{cursor: 'pointer'}}>Ajouter une liste...</a></li>
       {Object.values(ingredients || {}).map(ing => {
         let text = Utils.prettyQuantityFor(ing.raw, ing.name)
-        return <li key={ing.id}><a className="dropdown-item" style={{cursor: 'pointer'}} onClick={() => editor.chain().focus().insertIngredient(ing.item_nb).run()}>{text}<Inline color="#0d6efd">{ing.name}</Inline></a></li>
+        return <li key={ing.key}><a className="dropdown-item" style={{cursor: 'pointer'}} onClick={() => editor.chain().focus().insertIngredient(ing.item_nb).run()}>{text}<Inline color="#0d6efd">{ing.name}</Inline></a></li>
       })}
     </ul>
   </span>

@@ -5,7 +5,7 @@ import {Block, Inline, InlineBlock, Row, Col, InlineRow, InlineCol, Grid} from '
 
 import Quantity from './models/quantity'
 import { Tiptap, BubbleTiptap } from './tiptap'
-import { LinkToPage } from "./lib"
+import { LinkToPage, parseIngredients, parseIngredientsOldFormat } from "./lib"
 import {image_variant_path, recipe_path} from './routes'
 import { Utils } from "./recipe_utils"
 
@@ -30,22 +30,6 @@ const MixIngredients = ({mix}) => {
       }
     })}
   </>
-}
-
-function parseIngredientsOldFormat(text) {
-  return text.split("\n").map((line,i) => {
-    if (line.length <= 0) {return null;}
-    let args = line.split(";")
-    return {item_nb: i+1, raw: args[0].trim(), raw_food: args[1].trim()}
-  }).filter(e => e)
-}
-
-function parseIngredients(text) {
-  return text.split("\n").map(line => {
-    if (line.length <= 0) {return null;}
-    let args = line.split(";")
-    return {qty: args[0].trim(), label: args[1].trim()}
-  }).filter(e => e)
 }
 
 export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, ingredientSections, recipeKinds, images, user, users, recipes}) => {

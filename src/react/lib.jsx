@@ -3,6 +3,23 @@ import React, { useState, useEffect } from 'react';
 import { ajax, omit, join, bindSetter, capitalize } from "./utils"
 import {recipe_recipe_ingredient_path, food_path, recipe_ingredient_section_path, recipe_path, recipe_recipe_note_path, image_path } from './routes'
 
+export function parseIngredientsOldFormat(text) {
+  return text.split("\n").map((line,i) => {
+    if (line.length <= 0) {return null;}
+    let args = line.split(";")
+    return {key: line, item_nb: i+1, raw: args[0].trim(), raw_food: args[1].trim()}
+  }).filter(e => e)
+}
+
+export function parseIngredients(text) {
+  return text.split("\n").map(line => {
+    if (line.length <= 0) {return null;}
+    let args = line.split(";")
+    return {key: line, qty: args[0].trim(), label: args[1].trim()}
+  }).filter(e => e)
+}
+
+
 // I think I should convert updatable state to registered state.
 // The advantage is that it does not modify the model by adding an update method.
 export const register = (id, setter) => {
