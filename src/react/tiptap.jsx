@@ -693,7 +693,7 @@ const IngredientListNode = Node.create({
 
 })
 
-const Toolbar = ({ editor }) => {
+const Toolbar = ({ editor, ingredients }) => {
   if (!editor) {return null}
 
   const width = 24
@@ -725,7 +725,7 @@ const Toolbar = ({ editor }) => {
       </Inline>
       <Inline padding="0 1.5em">
         <StepButton editor={editor} width={width} height={height} />
-        <IngredientButton editor={editor} width={width} height={height} />
+        <IngredientButton editor={editor} width={width} height={height} ingredients={ingredients} />
         <MeasuringButton editor={editor} width={width} height={height} />
         <AddNoteButton editor={editor} width={width} height={height} />
         <LinkButton editor={editor} width={width} height={height} />
@@ -825,7 +825,7 @@ export const recipeEditor = (content, editable=true) => {
     editable
   }
 }
-export const Tiptap = ({content, model, json_field, html_field, url, editable}) => {
+export const Tiptap = ({content, model, json_field, html_field, url, editable, ingredients}) => {
   const editor = useEditor(recipeEditor(content, editable))
 
   useEffect(() => {
@@ -835,7 +835,7 @@ export const Tiptap = ({content, model, json_field, html_field, url, editable}) 
 
   return (
     <div>
-      {editable ? <Toolbar editor={editor} /> : ''}
+      {editable ? <Toolbar editor={editor} ingredients={ingredients} /> : ''}
       <EditorContent editor={editor} />
     </div>
   )

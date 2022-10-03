@@ -644,7 +644,7 @@ const EditRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recip
 
   window.recipe_editor = useRef(null) // FIXME: This is really ugly
   gon.recipe = recipe // FIXME: This is really ugly
-  return <RecipeEditor {...{page, favoriteRecipes, machines, mixes, machineFoods, foods, ingredientSections, user, users}} ref={window.recipe_editor}/>
+  return <RecipeEditor {...{page, favoriteRecipes, machines, mixes, machineFoods, foods, ingredientSections, user, users, recipes}} ref={window.recipe_editor}/>
 }
   
 const ShowMix = ({page, recipes, favoriteRecipes, machines, mixes, machineFoods}) => {
@@ -967,6 +967,7 @@ const App = () => {
   const user = gon.user
   const users = gon.users
   const friendsRecipes = gon.friends_recipes.filter(r => !recipeIds.includes(r.id))
+  const notes = gon.notes
 
   const all = {page, recipeFilters, suggestions, userTags, favoriteRecipes, machines, machineFoods, containerQuantities, mixes, recipes, foods}
 

@@ -25,7 +25,7 @@ export const StepButton = ({editor, width, height}) => (
     </svg>
   </button> 
 )
-export const IngredientButton = ({editor, width, height}) => (
+export const IngredientButton = ({editor, width, height, ingredients}) => (
   <span className="dropdown">
     <button type="button" title="Ajouter un ingrédient ou une liste d'ingrédient" className="dropdown-toggle" id="ingDropdown" data-bs-toggle="dropdown" aria-expanded="false">
       <svg className="bi bi-egg" width={width} height={height} fill="currentColor" version="1.1" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
@@ -50,7 +50,7 @@ export const IngredientButton = ({editor, width, height}) => (
     </button>
     <ul className="dropdown-menu" aria-labelledby="ingDropdown">
       <li key="99999999999999"><a className="dropdown-item" style={{cursor: 'pointer'}}>Ajouter une liste...</a></li>
-      {Object.values(gon.recipe.ingredients || {}).map(ing => {
+      {Object.values(ingredients || {}).map(ing => {
         let text = Utils.prettyQuantityFor(ing.raw, ing.name)
         return <li key={ing.id}><a className="dropdown-item" style={{cursor: 'pointer'}} onClick={() => editor.chain().focus().insertIngredient(ing.item_nb).run()}>{text}<Inline color="#0d6efd">{ing.name}</Inline></a></li>
       })}

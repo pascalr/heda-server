@@ -370,7 +370,7 @@ export class RecipeEditor extends React.Component {
 
   render() {
 
-    const {page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods} = this.props
+    const {page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipes} = this.props
 
     let ingItems = combineOrderedListWithHeaders(this.state.ingredients, this.state.ingredient_sections, header => header.before_ing_nb)
     console.log('this.state.ingredients', this.state.ingredients)
@@ -476,7 +476,7 @@ export class RecipeEditor extends React.Component {
       }})
     }
   
-    let mixEditor = mix ? <EditMix {...{page, userRecipes, favoriteRecipes, machines, mixes, machineFoods}} /> : (<>
+    let mixEditor = mix ? <EditMix {...{page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, recipes}} /> : (<>
       <p>Vous pouvez ajouter des instructions pour automatiser cette recette.</p>
       <button type="button" className="btn btn-primary" onClick={createMix}>Ajouter</button>
     </>)
@@ -569,7 +569,7 @@ export class RecipeEditor extends React.Component {
           {IngredientList}
         
           <h2>Instructions</h2>
-          <Tiptap model={recipe} json_field="json" html_field="html" url={recipe_path(gon.recipe)} content={gon.recipe.json ? JSON.parse(gon.recipe.json) : null} editable={true} />
+          <Tiptap model={recipe} json_field="json" html_field="html" url={recipe_path(gon.recipe)} content={gon.recipe.json ? JSON.parse(gon.recipe.json) : null} editable={true} ingredients={this.state.ingredients} />
           {this.props.editable ? <InstructionsShortcuts/> : ''}
           
           <h3>Notes</h3>
