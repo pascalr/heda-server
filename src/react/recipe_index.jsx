@@ -7,8 +7,10 @@ import {EditUserRecipeModal} from './modals/edit_user_recipe'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import { LinkToPage } from "./lib"
   
-const updateFavoriteRecipe = (fav, list_id, recipe) => {
-  if (fav) {
+const updateFavoriteRecipe = (fav, list_id, recipe, user) => {
+  if (fav && recipe.user_id == user.id) {
+    window.hcu.destroyRecord(fav)
+  } else if (fav) {
     window.hcu.updateField(fav, 'list_id', list_id)
   } else if (list_id != 0) {
     window.hcu.createRecord({table_name: "favorite_recipes", list_id: list_id, recipe_id: recipe.id})
@@ -20,12 +22,12 @@ const removeFavorite = (fav, recipe) => {
   window.hcu.removeRecord(recipe)
 }
 
-const RecipeListItemMenu = ({fav, recipe, editUserRecipe}) => {
+const RecipeListItemMenu = ({fav, recipe, editUserRecipe, user}) => {
 
-  let toCook = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 1, recipe)}>À cuisiner</button>
-  let toTry = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 2, recipe)}>À essayer</button>
-  let toNotCook = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 0, recipe)}>Ne plus cuisiner</button>
-  let toNotTry = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 0, recipe)}>Ne plus essayer</button>
+  let toCook = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 1, recipe, user)}>À cuisiner</button>
+  let toTry = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 2, recipe, user)}>À essayer</button>
+  let toNotCook = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 0, recipe, user)}>Ne plus cuisiner</button>
+  let toNotTry = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 0, recipe, user)}>Ne plus essayer</button>
 
   return <>
     <span className="dropdown m-auto">
@@ -42,7 +44,7 @@ const RecipeListItemMenu = ({fav, recipe, editUserRecipe}) => {
   </>
 }
 
-export const RecipeList = ({page, list, original, selected, suggestions, tags, editUserRecipe, mixes, recipes, recipeKinds}) => {
+export const RecipeList = ({page, list, original, selected, suggestions, tags, editUserRecipe, mixes, recipes, recipeKinds, user}) => {
 
   //{!showPercentCompleted ? '' : <span>&nbsp;(<PercentageCompleted recipe={recipe}/>)</span>}
   return (<>
@@ -66,7 +68,7 @@ export const RecipeList = ({page, list, original, selected, suggestions, tags, e
               <span style={{color: 'gray', fontSize: '0.78em'}}>{recipeTags.map(tag => ` #${tag.name}`)} </span>
             </span>
             <span className="flex-grow-1"/>
-            <RecipeListItemMenu {...{fav, recipe, editUserRecipe}} />
+            <RecipeListItemMenu {...{fav, recipe, editUserRecipe, user}} />
           </li>
         )
       })}
@@ -74,7 +76,7 @@ export const RecipeList = ({page, list, original, selected, suggestions, tags, e
   </>)
 }
 
-export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, recipes, recipeKinds}) => {
+export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, recipes, recipeKinds, user}) => {
   
   const [showModal, setShowModal] = useState(true)
   const [recipeToEdit, setRecipeToEdit] = useState(null)
@@ -99,7 +101,7 @@ export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, re
     setShowModal(true)
   }
 
-  let listArgs = {page, suggestions, tags, editUserRecipe, mixes, recipes, recipeKinds}
+  let listArgs = {page, suggestions, tags, editUserRecipe, mixes, recipes, recipeKinds, user}
 
   return (<>
     <EditUserRecipeModal showModal={showModal} setShowModal={setShowModal} recipe={recipeToEdit} tags={tags} suggestions={suggestions} />

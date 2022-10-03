@@ -903,14 +903,14 @@ const SearchBox = ({recipes, recipeKinds, tags, page, friendsRecipes, users, use
   </>)
 }
 
-const MyRecipes = ({page, suggestions, tags, favoriteRecipes, recipes, mixes, recipeKinds}) => {
+const MyRecipes = (props) => {
 
   return (<>
     <div className="d-flex gap-20 align-items-center">
       <h2>Mes recettes</h2>
-      <LinkToPage page={{...page, page: 17}} className="btn btn-outline-primary btn-sm">Nouvelle recette</LinkToPage>
+      <LinkToPage page={{...props.page, page: 17}} className="btn btn-outline-primary btn-sm">Nouvelle recette</LinkToPage>
     </div>
-    <RecipeIndex page={page} favoriteRecipes={favoriteRecipes} loading={false} suggestions={suggestions} tags={tags} mixes={mixes} recipes={recipes} recipeKinds={recipeKinds} />
+    <RecipeIndex {...props} loading={false} />
   </>)
 }
 
@@ -998,7 +998,7 @@ const App = () => {
     [PAGE_3]: <EditFilter page={page} recipeFilters={recipeFilters} />,
     [PAGE_4]: <EditUserTags recipeFilters={recipeFilters}userTags={userTags} page={page} />,
     //5: <TrainFilter page={page} recipeFilters={recipeFilters} />,
-    [PAGE_6]: <MyRecipes {...{page, recipes, suggestions, recipeFilters, favoriteRecipes, tags: recipeFilters, mixes, recipeKinds}} />,
+    [PAGE_6]: <MyRecipes {...{page, recipes, suggestions, recipeFilters, favoriteRecipes, tags: recipeFilters, mixes, recipeKinds, user}} />,
     [PAGE_7]: <MyBooks page={page} />,
     [PAGE_8]: <TagEditAllCategories page={page} recipeFilters={recipeFilters} />,
     [PAGE_9]: <TagSuggestions page={page} suggestions={suggestions} tags={recipeFilters} recipes={recipes} />,
