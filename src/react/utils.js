@@ -40,7 +40,8 @@ export function getUrlParams(url=null) {
   var r = {};
   if (!url) {url = window.location.href}
   let s = url.split('?', 2)
-  let params = s[s.length-1]
+  if (s.length < 2) {return []}
+  let params = s[1]
   for (let pair of new URLSearchParams(params).entries()) {
     r[pair[0]] = stringToPrimitive(pair[1])
   }
