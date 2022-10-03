@@ -902,19 +902,14 @@ export const DescriptionTiptap = ({content, model, json_field, html_field, url})
 // Returns the interval
 const registerEditorWithEffect = (editor, model, json_field, html_field, url) => {
   if (!editor) {return null}
-  console.log('registeringEditorWithEffect')
-  console.log('model', model)
   editor.on('update', ({ editor }) => {
     editor.isDirty = true
   })
   return setInterval(function() {
-    console.log('here')
     if (!editor.isDirty) {return;}
-    console.log('there')
     editor.isDirty = false
     let json = JSON.stringify(editor.getJSON())
     if (json != model[json_field]) {
-      console.log('here!')
       console.log('Saving changes for '+model.table_name+' '+json_field);
 
       let data = {field: json_field, value: json}

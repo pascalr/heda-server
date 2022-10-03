@@ -860,9 +860,13 @@ const SearchBox = ({recipes, recipeKinds, tags, page, friendsRecipes, users, use
     inputField.current.focus()
   }, [])
 
-  const filterItems = (items, term) => ((isBlank(term) || term.length < minChars) ? [] : items.filter(r => (
-    r.name && ~normalizeSearchText(r.name).indexOf(term)
-  )))
+  const filterItems = (items, term) => {
+    if (isBlank(term) || term.length < minChars) {return []}
+    const normalized = normalizeSearchText(term)
+    return items.filter(r => (
+      r.name && ~normalizeSearchText(r.name).indexOf(normalized)
+    ))
+  }
   let matchingUserRecipes = filterItems(recipes, term)
   let matchingFriendsRecipes = filterItems(friendsRecipes, term)
   let allMatching = [...matchingUserRecipes, ...matchingFriendsRecipes]

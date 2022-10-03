@@ -27,7 +27,7 @@ const PasteIngredientsModal = ({ingredients, show, handleClose, handleSubmit}) =
       <Modal.Body>
         <button style={{float: "right"}} type="button" className="btn-close" onClick={handleClose}></button>
         <h5 className="modal-title">Ingrédients</h5>
-        <textarea name='pasted-ingredients' defaultValue={ingText} placeholder="Par exemple...&#10;1 1/2 t farine tout usage&#10;250 mL d'eau&#10;4 oeufs&#10;" cols={45} rows={15} ref={inputRef} />
+        <textarea name='pasted-ingredients' defaultValue={ingText} placeholder="Par exemple...&#10;1 1/2 t farine tout usage&#10;250 mL d'eau&#10;4 oeufs&#10;" cols={40} rows={15} ref={inputRef} />
         <button type="button" className="btn btn-outline-primary d-block" onClick={() => {
             handleSubmit(inputRef.current.value)
             handleClose()

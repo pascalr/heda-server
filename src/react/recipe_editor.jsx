@@ -248,7 +248,6 @@ const Toggleable = ({children, ...props}) => {
 //    this.removeIng = this.removeIng.bind(this)
 //    this.removeIngSection = this.removeIngSection.bind(this)
 //    this.appendNote = this.appendNote.bind(this)
-//    this.pasteIngredients = this.pasteIngredients.bind(this)
 //  }
 
   //componentDidUpdate(prevProps, prevState) {
@@ -462,9 +461,9 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
   let changeOwner = (e) => {
     let data = {recipeId: recipe.id, newOwnerId: e.target.id}
     ajax({url: '/change_recipe_owner', type: 'PATCH', data, success: () => {
-      let old = window.hcu.getters['recipe']
+      let old = window.hcu.getters['recipes']
       let updated = [...old].map(r => r.id == recipe.id ? {...r, user_id: e.target.id} : r)
-      window.hcu.setters['recipe'](updated)
+      window.hcu.setters['recipes'](updated)
     }, error: (errors) => {
       console.log('ERROR AJAX UPDATING...', errors.responseText)
     }})

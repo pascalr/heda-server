@@ -41,7 +41,7 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
   useEffect(() => {
     let recipe = recipes.find(e => e.id == recipeId)
     if (!recipe) {
-      window.hcu.fetchRecord('recipe', recipeId)
+      window.hcu.fetchRecord('recipes', recipeId)
     }
   }, [recipeId])
   if (!recipe) {return ''}
