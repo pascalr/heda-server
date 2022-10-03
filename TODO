@@ -17,6 +17,9 @@ Pouvoir transférer des recettes d'un utilisateur à l'autre.
 Ou bien pouvoir modifier une recette si la recette appartient à un utilisateur dans le même compte.
 Ça devient comme une recette partagé.
 
+Later:
+Rajouter conversion d'unités
+
 Later (other users):
 Create default user for account
 Pouvoir modifier le mot de passe des utilisateurs: https://stackoverflow.com/questions/20277020/how-to-reset-change-password-in-node-js-with-passport-js

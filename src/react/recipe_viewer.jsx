@@ -9,6 +9,29 @@ import { LinkToPage } from "./lib"
 import {image_variant_path, recipe_path} from './routes'
 import { Utils } from "./recipe_utils"
 
+const MixIngredients = ({mix}) => {
+  if (!mix) {return ''}
+
+  return <>
+    {mix.instructions.split(';').map((line,n) => {
+      if (line.startsWith('CONTAINER')) {
+        let id = line.split(',')[1]
+        return <h3 key={n} style={{marginTop: '0.8em', marginBottom: '0.2em'}}>{isNaN(id) ? id : 'Contenant '+id}</h3>
+      } else if (line.startsWith('ADD')) {
+        let args = line.split(',')
+        let qty = args[1]
+        let i = args[2].indexOf('-')
+        let machineFoodId = i ? args[2].substr(0, i) : null
+        let machineFoodName = i ? args[2].substr(i+1) : args[2]
+        let prettyQty = Utils.prettyQuantityFor(qty, machineFoodName)
+        return <li key={n} className="list-group-item">
+          <span>{prettyQty} <span className="food-name">{machineFoodName}</span></span>
+        </li>
+      }
+    })}
+  </>
+}
+
 
 export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipeIngredients, ingredientSections, recipeKinds, images, user, users, recipes}) => {
 
@@ -30,6 +53,7 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
   const ingredients = recipeIngredients.filter(e => e.recipe_id == recipe.id) || []
   const ingredient_sections = ingredientSections.filter(e => e.recipe_id == recipe.id) || []
   const toolIds = []
+  const mix = mixes.find(m => m.recipe_id == recipe.id)
 
   const IngredientList = 
     <div id="ing_list">
@@ -48,6 +72,7 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
             </div>
           </li>
         })}
+        <MixIngredients mix={mix} />
       </ul>
     </div>
 
@@ -81,7 +106,6 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
   
   const imagePath = image ? image_variant_path(image, 'medium') : "/img/default_recipe_01.png"
   //console.log(model)
-  const mix = mixes.find(m => m.recipe_id == recipe.id)
 
   const recipeUser = users.find(u => u.id == recipe.user_id)
   const userName = recipeUser ? recipeUser.name : `user${recipe.user_id}`

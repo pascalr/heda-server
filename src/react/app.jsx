@@ -473,6 +473,7 @@ const labelForCmdType = (cmdType) => {
   return t ? t.label.fr : cmdType.id
 }
 
+// This is not a page anymore. It is a subset of the RecipeEditor.
 export const EditMix = ({page, recipes, favoriteRecipes, machines, mixes, machineFoods}) => {
 
   const context = {recipes, favoriteRecipes, machines, mixes, machineFoods}
