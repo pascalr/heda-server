@@ -227,357 +227,354 @@ const Toggleable = ({children, ...props}) => {
   </div>)
 }
 
-export class RecipeEditor extends React.Component {
-  
-  constructor(props) {
-    super(props);
-    let noteIds = gon.recipe.notes ? Object.values(gon.recipe.notes).sort((a,b) => a.item_nb - b.item_nb).map(ing => ing.id) : []
-    let recipe_image = gon.recipe.image_id ? gon.images.find(e => e.id == gon.recipe.image_id) : {}
-    this.state = {
-      recipe: gon.recipe,
-      recipe_image: recipe_image,
-      name: gon.recipe.name,
-      ingredients: gon.recipe_ingredients.filter(e => e.recipe_id == gon.recipe.id) || [],
-      noteIds: noteIds,
-      ingredient_sections: props.ingredientSections.filter(e => e.recipe_id == gon.recipe.id) || [],
-      toolIds: Object.keys(gon.recipe.tools || []),
-      instructionsSlave: gon.recipe.complete_instructions,
-      showImageModal: false,
-    };
-    this.handleDropIng = this.handleDropIng.bind(this);
-    this.appendIngredientSection = this.appendIngredientSection.bind(this)
-    this.addIng = this.addIng.bind(this)
-    this.removeIng = this.removeIng.bind(this)
-    this.removeIngSection = this.removeIngSection.bind(this)
-    this.appendNote = this.appendNote.bind(this)
-    this.pasteIngredients = this.pasteIngredients.bind(this)
-  }
+//  constructor(props) {
+//    super(props);
+//    let noteIds = gon.recipe.notes ? Object.values(gon.recipe.notes).sort((a,b) => a.item_nb - b.item_nb).map(ing => ing.id) : []
+//    let recipe_image = gon.recipe.image_id ? gon.images.find(e => e.id == gon.recipe.image_id) : {}
+//    this.state = {
+//      recipe: gon.recipe,
+//      recipe_image: recipe_image,
+//      name: gon.recipe.name,
+//      ingredients: gon.recipe_ingredients.filter(e => e.recipe_id == gon.recipe.id) || [],
+//      noteIds: noteIds,
+//      ingredient_sections: props.ingredientSections.filter(e => e.recipe_id == gon.recipe.id) || [],
+//      toolIds: Object.keys(gon.recipe.tools || []),
+//      instructionsSlave: gon.recipe.complete_instructions,
+//      showImageModal: false,
+//    };
+//    this.handleDropIng = this.handleDropIng.bind(this);
+//    this.appendIngredientSection = this.appendIngredientSection.bind(this)
+//    this.addIng = this.addIng.bind(this)
+//    this.removeIng = this.removeIng.bind(this)
+//    this.removeIngSection = this.removeIngSection.bind(this)
+//    this.appendNote = this.appendNote.bind(this)
+//    this.pasteIngredients = this.pasteIngredients.bind(this)
+//  }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.ingredients !== this.state.ingredients) {
-      gon.recipe_ingredients = this.state.ingredients
-    }
-  }
+  //componentDidUpdate(prevProps, prevState) {
+  //  if (prevState.ingredients !== this.state.ingredients) {
+  //    gon.recipe_ingredients = this.state.ingredients
+  //  }
+  //}
 
   //swapIng(dragIndex, dropIndex) {
   //  let swappedIngs = swapArrayPositions(this.state.ings, dragIndex, dropIndex);
   //  this.setState({ings: swappedIngs})
   //}
 
-  addIng(ingredient) {
-    console.log("added ingredient ", ingredient)
-    this.setState({ingredients: [...this.state.ingredients, ingredient]})
-  }
-  removeIng(ing) {
-    console.log("this.state.ingredients", this.state.ingredients)
-    let ings = this.state.ingredients.filter(item => item.id != ing.id)
-    console.log("ings", ings)
-    this.setState({ingredients: ings})
-  }
+function addIng(ingredient) {
+  //console.log("added ingredient ", ingredient)
+  //this.setState({ingredients: [...this.state.ingredients, ingredient]})
+}
+function removeIng(ing) {
+  //console.log("this.state.ingredients", this.state.ingredients)
+  //let ings = this.state.ingredients.filter(item => item.id != ing.id)
+  //console.log("ings", ings)
+  //this.setState({ingredients: ings})
+}
 
-  appendIngredientSection() {
-    ajax({url: recipe_ingredient_sections_path(gon.recipe), type: 'POST', data: {}, success: (section) => {
-      this.setState({ingredient_sections: [...this.state.ingredient_sections, section]})
-    }})
-  }
+function appendIngredientSection() {
+  //ajax({url: recipe_ingredient_sections_path(gon.recipe), type: 'POST', data: {}, success: (section) => {
+  //  this.setState({ingredient_sections: [...this.state.ingredient_sections, section]})
+  //}})
+}
 
-  pasteIngredients(text) {
-    ajax({url: paste_ingredients_recipes_path(this.state.recipe), type: 'PATCH',
-          data: {pasted: text}, success: ({ingredients}) => {
-      this.setState({ingredients})
-    }})
-  }
+function pasteIngredients(text) {
+  //ajax({url: paste_ingredients_recipes_path(this.state.recipe), type: 'PATCH',
+  //      data: {pasted: text}, success: ({ingredients}) => {
+  //  this.setState({ingredients})
+  //}})
+}
 
-  appendNote() {
-    ajax({url: recipe_recipe_notes_path(gon.recipe), type: 'POST', data: {}, success: (recipe_note) => {
-      if (!gon.recipe.notes) {gon.recipe.notes = {}}
-      gon.recipe.notes[recipe_note.id] = recipe_note
-      this.setState({noteIds: [...this.state.noteIds, recipe_note.id]})
-    }})
-  }
+function appendNote() {
+  //ajax({url: recipe_recipe_notes_path(gon.recipe), type: 'POST', data: {}, success: (recipe_note) => {
+  //  if (!gon.recipe.notes) {gon.recipe.notes = {}}
+  //  gon.recipe.notes[recipe_note.id] = recipe_note
+  //  this.setState({noteIds: [...this.state.noteIds, recipe_note.id]})
+  //}})
+}
 
-  handleDropIng(ingItems, droppedItem) {
+function handleDropIng(ingItems, droppedItem) {
 
-    const getClosestItemNb = (index) => {
-      for (let i = index; i < ingItems.length; i++) {
-        if (ingItems[i].table_name == "recipe_ingredients") {
-          return ingItems[i].item_nb
-        }
-      }
-      return this.state.ingredients.length
-    }
-
-    console.log('Handle drop ing')
-    // Ignore drop outside droppable container
-    if (!droppedItem.destination) return;
-    let source = getClosestItemNb(droppedItem.source.index)-1
-    let destination = getClosestItemNb(droppedItem.destination.index)-1
-    let droppedRecord = ingItems[droppedItem.source.index]
-    //console.log("droppedRecord", droppedRecord)
-    //console.log("droppedItem", droppedItem)
-    //console.log("source", source)
-    //console.log("destination", destination)
-    if (droppedRecord.table_name == "recipe_ingredients") {
-      console.log("dropping recipe ingredient")
-      var updatedList = [...this.state.ingredients];
-      const [reorderedItem] = updatedList.splice(source, 1);
-      updatedList.splice(destination, 0, reorderedItem);
-
-      let data = new FormData()
-      data.append('ing_id', droppedRecord.id)
-      data.append('position', destination+1)
-      ajax({url: move_ing_recipe_path(gon.recipe), type: 'PATCH', data: data})
-      for (let i = 0; i < updatedList.length; i++) {
-        updatedList[i].item_nb = i+1
-      }
-      this.setState({ingredients: updatedList})
-    } else {
-      var others = [...this.state.ingredient_sections].filter(i => i.id != droppedRecord.id);
-      droppedRecord.before_ing_nb = droppedItem.source.index < droppedItem.destination.index ? destination+2 : destination+1
-      console.log("dropping ingredient section at ", droppedRecord.before_ing_nb)
-      let data = new FormData()
-      data.append('ingredient_section[before_ing_nb]', droppedRecord.before_ing_nb)
-      ajax({url: recipe_ingredient_section_path({id: droppedRecord.recipe_id}, droppedRecord), type: 'PATCH', data: data})
-      this.setState({ingredient_sections: [...others, droppedRecord]})
-    }
-  }
-
-  removeIngSection(section) {
-    ajax({url: recipe_ingredient_section_path({id: section.recipe_id}, section), type: 'DELETE', success: () => {
-      let sections = this.state.ingredient_sections.filter(i => i.id != section.id)
-      this.setState({ingredient_sections: sections})
-    }})
-  }
-
-  render() {
-
-    const {page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipes} = this.props
-
-    let ingItems = combineOrderedListWithHeaders(this.state.ingredients, this.state.ingredient_sections, header => header.before_ing_nb)
-    console.log('this.state.ingredients', this.state.ingredients)
-    ingItems = ingItems.concat(this.state.ingredient_sections.filter(s => s.before_ing_nb > this.state.ingredients.length))
-    const renderedIngItems = []
-    for (let i=0; i < ingItems.length; i++) {
-      let item = ingItems[i]
-      if (item.table_name == "ingredient_sections") {
-        let sectionId = 'section-'+item.id
-        renderedIngItems.push(<Draggable key={sectionId} draggableId={sectionId} index={i}>
-          {(provided) => (
-            <div className="item-container" ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
-              <h3 style={{margin: "0", padding: "0.5em 0 0.2em 0"}}>
-                <TextField model={item} field="name" className="plain-input" url={recipe_ingredient_section_path({id: item.recipe_id}, {id: item.id})} />
-                <span style={{margin: "0 0.2em"}}>
-                  <DeleteConfirmButton id={`del-${sectionId}`} onDeleteConfirm={() => this.removeIngSection(item)} message="Je veux enlever ce titre?" />
-                </span>
-              </h3>
-            </div>
-          )}
-        </Draggable>)
-      } else {
-        renderedIngItems.push(<Draggable key={item.id} draggableId={item.id.toString()} index={i}>
-          {(provided) => (
-            <div className="item-container" ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
-              <li className="list-group-item">
-                {<EditableIngredient ingredient={item} {...{mixes, foods}} />}
-              </li>
-            </div>
-          )}
-        </Draggable>)
+  const getClosestItemNb = (index) => {
+    for (let i = index; i < ingItems.length; i++) {
+      if (ingItems[i].table_name == "recipe_ingredients") {
+        return ingItems[i].item_nb
       }
     }
+    return this.state.ingredients.length
+  }
 
-    const IngredientList = 
-      <ul className="list-group" style={{maxWidth: "800px"}}>
-        <DragDropContext onDragEnd={(droppedItem) => this.handleDropIng(ingItems, droppedItem)}>
-          <Droppable droppableId="list-container">
-            {(provided) => (
-              <div className="list-container" {...provided.droppableProps} ref={provided.innerRef}>
-                {renderedIngItems}
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </DragDropContext>
-        <Row>
-          <Toggleable style={{float: "left"}}>
-            <li key={99999} className="list-group-item" style={{height: "37.2px"}}>
-              <NewIngInputField {...{foods}} />
-            </li>
-            <img src="/icons/plus-circle.svg" style={{width: "2.5rem", padding: "0.5rem"}}/>
-            <img src="/icons/minus-circle.svg" style={{width: "2.5rem", padding: "0.5rem"}}/>
-          </Toggleable>
-          <PasteIngredientsButton ingredients={this.state.ingredients} handleSubmit={this.pasteIngredients} />
-        </Row>
-      </ul>
+  console.log('Handle drop ing')
+  // Ignore drop outside droppable container
+  if (!droppedItem.destination) return;
+  let source = getClosestItemNb(droppedItem.source.index)-1
+  let destination = getClosestItemNb(droppedItem.destination.index)-1
+  let droppedRecord = ingItems[droppedItem.source.index]
+  //console.log("droppedRecord", droppedRecord)
+  //console.log("droppedItem", droppedItem)
+  //console.log("source", source)
+  //console.log("destination", destination)
+  if (droppedRecord.table_name == "recipe_ingredients") {
+    console.log("dropping recipe ingredient")
+    var updatedList = [...this.state.ingredients];
+    const [reorderedItem] = updatedList.splice(source, 1);
+    updatedList.splice(destination, 0, reorderedItem);
 
-    const NoteList = this.state.noteIds.map(id => {
-      const note = gon.recipe.notes[id]
-
-      const removeNote = (evt) => {
-        ajax({url: recipe_recipe_note_path(gon.recipe, note), type: 'DELETE', success: () => {
-          let ids = this.state.noteIds.filter(item => item != note.id)
-          this.setState({noteIds: ids})
-          delete gon.recipe.notes[note.id]
-        }})
-      }
-
-      return (
-        <Row key={id} gap="5px" marginBottom="5px">
-          [{note.item_nb}]
-          <Block flexGrow="1">
-            <BubbleTiptap content={JSON.parse(note.json)} model="recipe_note" json_field="json" html_field="html" url={recipe_recipe_note_path(gon.recipe, note)} />
-          </Block>
-          <DeleteConfirmButton id={`note-${note.id}`} onDeleteConfirm={removeNote} message="Je veux enlever cette note?" />
-        </Row>
-      )
-    })
-
-    const Tools = this.state.toolIds.map(id => (
-      <li key={id}>
-        {gon.recipe.tools[id].name}
-      </li>
-    ))
-
-    const recipe = this.state.recipe
-    const recipe_kind = gon.recipe_kinds.find(k => k.id == recipe.recipe_kind_id)
-    const recipe_image = this.state.recipe_image
-    let recipeKindImage = recipe_kind && recipe_kind.image_id ? gon.images.find(e => e.id == recipe_kind.image_id) : null
-    const image = recipe.use_personalised_image ? recipe_image : recipeKindImage
-    //console.log('use_personalised_image', recipe.use_personalised_image)
-    //console.log('recipe kind image', recipeKindImage)
-    //console.log('recipe kind', recipe_kind)
-    //console.log('recipe image', recipe_image)
-    const imagePath = image ? image_variant_path(image, 'medium') : "/img/default_recipe_01.png"
-    //console.log(model)
-    const mix = mixes.find(m => m.recipe_id == recipe.id)
-
-    const createMix = () => {
-      ajax({url: mixes_path(), type: 'POST', data: {mix: {recipe_id: recipe.id}}, success: (mix) => {
-        mixes.update([...mixes, mix])
-      }})
+    let data = new FormData()
+    data.append('ing_id', droppedRecord.id)
+    data.append('position', destination+1)
+    ajax({url: move_ing_recipe_path(gon.recipe), type: 'PATCH', data: data})
+    for (let i = 0; i < updatedList.length; i++) {
+      updatedList[i].item_nb = i+1
     }
-  
-    let mixEditor = mix ? <EditMix {...{page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, recipes}} /> : (<>
-      <p>Vous pouvez ajouter des instructions pour automatiser cette recette.</p>
-      <button type="button" className="btn btn-primary" onClick={createMix}>Ajouter</button>
-    </>)
-
-    let changeOwner = (e) => {
-      let data = {recipeId: recipe.id, newOwnerId: e.target.id}
-      ajax({url: '/change_recipe_owner', type: 'PATCH', data, success: () => {
-        let old = window.hcu.getters['recipe']
-        let updated = [...old].map(r => r.id == recipe.id ? {...r, user_id: e.target.id} : r)
-        window.hcu.setters['recipe'](updated)
-      }, error: (errors) => {
-        console.log('ERROR AJAX UPDATING...', errors.responseText)
-      }})
-    }
-
-    return (<>
-      <div className="recipe">
-        <div className="d-block d-md-flex gap-20">
-          <div>
-            <div className="over-container">
-              <EditRecipeImageModal recipe={recipe} show={this.state.showImageModal}
-                                    handleClose={() => this.setState({showImageModal: false})}
-                                    recipeImage={recipe_image} recipeKindImage={recipeKindImage} />
-              <div style={{cursor: "pointer"}} onClick={() => this.setState({showImageModal: true})}>
-                <img style={{maxWidth: "100vh", height: "auto"}} src={imagePath} width="452" height="304"/>
-                <div className="bottom-right" style={{color: 'white', fontSize: '2em'}}>
-                  <img src="/icons/pencil-circle.svg" style={{width: "5rem", padding: "0.5rem"}}/>
-                </div>
-              </div>
-            </div> 
-          </div>
-          <div style={{width: '100%'}}>
-            <h1>
-              <span className="recipe-title">
-                <TextField model={recipe} field="name" className="plain-input" />
-              </span>
-            </h1>
-            <div style={{marginTop: '-1.2em', marginBottom: '1.2em', color: 'gray'}}>
-              <div className="dropdown dropdown-toggle clickable" style={{padding: "0 1em"}}>
-                <span data-bs-toggle="dropdown">par user{recipe.user_id}</span>
-                <div className="dropdown-menu">
-                  {this.props.users.filter(u => u.id != recipe.user_id).map(usr => {
-                    return <a key={usr.id} id={usr.id} className="dropdown-item clickable" onClick={changeOwner}>{usr.name}</a>
-                  })}
-                </div>
-              </div>
-            </div>
-            <div>
-              <b>Préparation (minutes): </b>
-              <span style={{color: 'gray'}}>
-                <TextField model={recipe} field="preparation_time" className="editable-input" />
-              </span>
-            </div>
-            <div>
-              <b>Cuisson (minutes): </b>
-              <span style={{color: 'gray'}}>
-                <TextField model={recipe} field="cooking_time" className="editable-input" />
-              </span>
-            </div>
-            <div>
-              <b>Total (minutes): </b>
-              <span style={{color: 'gray'}}>
-                <TextField model={recipe} field="total_time" className="editable-input" />
-              </span>
-            </div>
-            <div>
-              <b>Portions: </b>
-              <span style={{color: 'gray'}}>
-                <TextField model={recipe} field="raw_servings" className="editable-input" />
-              </span>
-            </div>
-          </div>
-        </div>
-        <div className="recipe-body">
-          
-          <h2>Commandes</h2>
-          {mixEditor}
-
-          <div style={{display: 'flex', alignItems: 'baseline'}}>
-            <h2 style={{flexGrow: '1'}}>Ingrédients</h2>
-            <div className="dropstart" style={{padding: "0 1em"}}>
-              <img data-bs-toggle="dropdown" style={{cursor: "pointer"}} src="/icons/list.svg"/>
-              <div className="dropdown-menu">
-                <button className="dropdown-item" type="button" onClick={this.appendIngredientSection}>
-                  Ajouter une section
-                </button>
-              </div>
-            </div>
-          </div>
-          {IngredientList}
-        
-          <h2>Instructions</h2>
-          <Tiptap model={recipe} json_field="json" html_field="html" url={recipe_path(gon.recipe)} content={gon.recipe.json ? JSON.parse(gon.recipe.json) : null} editable={true} ingredients={this.state.ingredients} />
-          {this.props.editable ? <InstructionsShortcuts/> : ''}
-          
-          <h3>Notes</h3>
-          {NoteList}
-          <button type="button" className="plain-btn" onClick={() => this.appendNote()}>
-            <img src="/icons/plus-circle.svg" style={{width: "2.5rem", padding: "0.5rem"}}/>
-          </button>
-          
-          <h2>Outils</h2>
-          <ul style={{fontSize: "1.1rem"}}>
-            {Tools}
-          </ul>
-          
-          <h2>Informations</h2>
-          <table className="table table-light">
-            <tbody>
-              <tr>
-                <th>Ingrédient principal</th>
-                <td><CollectionSelect model={recipe} field="main_ingredient_id" options={this.state.ingredients.map(i => i.id)} showOption={(ingId) => this.state.ingredients.filter(i => i.id == ingId).name} includeBlank="true"></CollectionSelect></td>
-              </tr>
-            </tbody>
-          </table>
-
-          <h2>Références</h2>
-
-        </div>
-      </div>
-    </>)
+    this.setState({ingredients: updatedList})
+  } else {
+    var others = [...this.state.ingredient_sections].filter(i => i.id != droppedRecord.id);
+    droppedRecord.before_ing_nb = droppedItem.source.index < droppedItem.destination.index ? destination+2 : destination+1
+    console.log("dropping ingredient section at ", droppedRecord.before_ing_nb)
+    let data = new FormData()
+    data.append('ingredient_section[before_ing_nb]', droppedRecord.before_ing_nb)
+    ajax({url: recipe_ingredient_section_path({id: droppedRecord.recipe_id}, droppedRecord), type: 'PATCH', data: data})
+    this.setState({ingredient_sections: [...others, droppedRecord]})
   }
 }
+
+function removeIngSection(section) {
+  //ajax({url: recipe_ingredient_section_path({id: section.recipe_id}, section), type: 'DELETE', success: () => {
+  //  let sections = this.state.ingredient_sections.filter(i => i.id != section.id)
+  //  this.setState({ingredient_sections: sections})
+  //}})
+}
+
+export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipes, recipeIngredients, ingredientSections, recipeKinds, images, users, editable}) => {
+
+  const [showImageModal, setShowImageModal] = useState(false)
+
+  const recipe = recipes.find(e => e.id == recipeId)
+  gon.recipe = recipe // FIXME: This is really ugly
+  const ingredients = recipeIngredients.filter(e => e.recipe_id == recipeId) || []
+  const ingredient_sections = ingredientSections.filter(e => e.recipe_id == recipeId) || []
+  const recipe_kind = recipeKinds.find(k => k.id == recipe.recipe_kind_id)
+  const recipe_image = recipe.image_id ? images.find(e => e.id == recipe.image_id) : {}
+  let recipeKindImage = recipe_kind && recipe_kind.image_id ? images.find(e => e.id == recipe_kind.image_id) : null
+  const image = recipe.use_personalised_image ? recipe_image : recipeKindImage
+  const imagePath = image ? image_variant_path(image, 'medium') : "/img/default_recipe_01.png"
+  const mix = mixes.find(m => m.recipe_id == recipe.id)
+
+  let ingItems = combineOrderedListWithHeaders(ingredients, ingredient_sections, header => header.before_ing_nb)
+  ingItems = ingItems.concat(ingredient_sections.filter(s => s.before_ing_nb > ingredients.length))
+  const renderedIngItems = []
+  for (let i=0; i < ingItems.length; i++) {
+    let item = ingItems[i]
+    if (item.table_name == "ingredient_sections") {
+      let sectionId = 'section-'+item.id
+      renderedIngItems.push(<Draggable key={sectionId} draggableId={sectionId} index={i}>
+        {(provided) => (
+          <div className="item-container" ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
+            <h3 style={{margin: "0", padding: "0.5em 0 0.2em 0"}}>
+              <TextField model={item} field="name" className="plain-input" url={recipe_ingredient_section_path({id: item.recipe_id}, {id: item.id})} />
+              <span style={{margin: "0 0.2em"}}>
+                <DeleteConfirmButton id={`del-${sectionId}`} onDeleteConfirm={() => removeIngSection(item)} message="Je veux enlever ce titre?" />
+              </span>
+            </h3>
+          </div>
+        )}
+      </Draggable>)
+    } else {
+      renderedIngItems.push(<Draggable key={item.id} draggableId={item.id.toString()} index={i}>
+        {(provided) => (
+          <div className="item-container" ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
+            <li className="list-group-item">
+              {<EditableIngredient ingredient={item} {...{mixes, foods}} />}
+            </li>
+          </div>
+        )}
+      </Draggable>)
+    }
+  }
+
+  const IngredientList = 
+    <ul className="list-group" style={{maxWidth: "800px"}}>
+      <DragDropContext onDragEnd={(droppedItem) => handleDropIng(ingItems, droppedItem)}>
+        <Droppable droppableId="list-container">
+          {(provided) => (
+            <div className="list-container" {...provided.droppableProps} ref={provided.innerRef}>
+              {renderedIngItems}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+      <Row>
+        <Toggleable style={{float: "left"}}>
+          <li key={99999} className="list-group-item" style={{height: "37.2px"}}>
+            <NewIngInputField {...{foods}} />
+          </li>
+          <img src="/icons/plus-circle.svg" style={{width: "2.5rem", padding: "0.5rem"}}/>
+          <img src="/icons/minus-circle.svg" style={{width: "2.5rem", padding: "0.5rem"}}/>
+        </Toggleable>
+        <PasteIngredientsButton ingredients={ingredients} handleSubmit={pasteIngredients} />
+      </Row>
+    </ul>
+
+  //const NoteList = this.state.noteIds.map(id => {
+  const NoteList = [].map(id => {
+    const note = gon.recipe.notes[id]
+
+    const removeNote = (evt) => {
+      ajax({url: recipe_recipe_note_path(gon.recipe, note), type: 'DELETE', success: () => {
+        let ids = this.state.noteIds.filter(item => item != note.id)
+        this.setState({noteIds: ids})
+        delete gon.recipe.notes[note.id]
+      }})
+    }
+
+    return (
+      <Row key={id} gap="5px" marginBottom="5px">
+        [{note.item_nb}]
+        <Block flexGrow="1">
+          <BubbleTiptap content={JSON.parse(note.json)} model="recipe_note" json_field="json" html_field="html" url={recipe_recipe_note_path(gon.recipe, note)} />
+        </Block>
+        <DeleteConfirmButton id={`note-${note.id}`} onDeleteConfirm={removeNote} message="Je veux enlever cette note?" />
+      </Row>
+    )
+  })
+
+  //const Tools = this.state.toolIds.map(id => (
+  const Tools = [].map(id => (
+    <li key={id}>
+      {gon.recipe.tools[id].name}
+    </li>
+  ))
+
+  const createMix = () => {
+    ajax({url: mixes_path(), type: 'POST', data: {mix: {recipe_id: recipe.id}}, success: (mix) => {
+      mixes.update([...mixes, mix])
+    }})
+  }
+
+  let mixEditor = mix ? <EditMix {...{page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, recipes}} /> : (<>
+    <p>Vous pouvez ajouter des instructions pour automatiser cette recette.</p>
+    <button type="button" className="btn btn-primary" onClick={createMix}>Ajouter</button>
+  </>)
+
+  let changeOwner = (e) => {
+    let data = {recipeId: recipe.id, newOwnerId: e.target.id}
+    ajax({url: '/change_recipe_owner', type: 'PATCH', data, success: () => {
+      let old = window.hcu.getters['recipe']
+      let updated = [...old].map(r => r.id == recipe.id ? {...r, user_id: e.target.id} : r)
+      window.hcu.setters['recipe'](updated)
+    }, error: (errors) => {
+      console.log('ERROR AJAX UPDATING...', errors.responseText)
+    }})
+  }
+
+  return (<>
+    <div className="recipe">
+      <div className="d-block d-md-flex gap-20">
+        <div>
+          <div className="over-container">
+            <EditRecipeImageModal recipe={recipe} show={showImageModal}
+                                  handleClose={() => setShowImageModal(false)}
+                                  recipeImage={recipe_image} recipeKindImage={recipeKindImage} />
+            <div style={{cursor: "pointer"}} onClick={() => setShowImageModal(false)}>
+              <img style={{maxWidth: "100vh", height: "auto"}} src={imagePath} width="452" height="304"/>
+              <div className="bottom-right" style={{color: 'white', fontSize: '2em'}}>
+                <img src="/icons/pencil-circle.svg" style={{width: "5rem", padding: "0.5rem"}}/>
+              </div>
+            </div>
+          </div> 
+        </div>
+        <div style={{width: '100%'}}>
+          <h1>
+            <span className="recipe-title">
+              <TextField model={recipe} field="name" className="plain-input" />
+            </span>
+          </h1>
+          <div style={{marginTop: '-1.2em', marginBottom: '1.2em', color: 'gray'}}>
+            <div className="dropdown dropdown-toggle clickable" style={{padding: "0 1em"}}>
+              <span data-bs-toggle="dropdown">par user{recipe.user_id}</span>
+              <div className="dropdown-menu">
+                {users.filter(u => u.id != recipe.user_id).map(usr => {
+                  return <a key={usr.id} id={usr.id} className="dropdown-item clickable" onClick={changeOwner}>{usr.name}</a>
+                })}
+              </div>
+            </div>
+          </div>
+          <div>
+            <b>Préparation (minutes): </b>
+            <span style={{color: 'gray'}}>
+              <TextField model={recipe} field="preparation_time" className="editable-input" />
+            </span>
+          </div>
+          <div>
+            <b>Cuisson (minutes): </b>
+            <span style={{color: 'gray'}}>
+              <TextField model={recipe} field="cooking_time" className="editable-input" />
+            </span>
+          </div>
+          <div>
+            <b>Total (minutes): </b>
+            <span style={{color: 'gray'}}>
+              <TextField model={recipe} field="total_time" className="editable-input" />
+            </span>
+          </div>
+          <div>
+            <b>Portions: </b>
+            <span style={{color: 'gray'}}>
+              <TextField model={recipe} field="raw_servings" className="editable-input" />
+            </span>
+          </div>
+        </div>
+      </div>
+      <div className="recipe-body">
+        
+        <h2>Commandes</h2>
+        {mixEditor}
+
+        <div style={{display: 'flex', alignItems: 'baseline'}}>
+          <h2 style={{flexGrow: '1'}}>Ingrédients</h2>
+          <div className="dropstart" style={{padding: "0 1em"}}>
+            <img data-bs-toggle="dropdown" style={{cursor: "pointer"}} src="/icons/list.svg"/>
+            <div className="dropdown-menu">
+              <button className="dropdown-item" type="button" onClick={appendIngredientSection}>
+                Ajouter une section
+              </button>
+            </div>
+          </div>
+        </div>
+        {IngredientList}
+      
+        <h2>Instructions</h2>
+        <Tiptap model={recipe} json_field="json" html_field="html" url={recipe_path(gon.recipe)} content={gon.recipe.json ? JSON.parse(gon.recipe.json) : null} editable={true} ingredients={ingredients} />
+        {editable ? <InstructionsShortcuts/> : ''}
+        
+        <h3>Notes</h3>
+        {NoteList}
+        <button type="button" className="plain-btn" onClick={() => appendNote()}>
+          <img src="/icons/plus-circle.svg" style={{width: "2.5rem", padding: "0.5rem"}}/>
+        </button>
+        
+        <h2>Outils</h2>
+        <ul style={{fontSize: "1.1rem"}}>
+          {Tools}
+        </ul>
+        
+        <h2>Informations</h2>
+        <table className="table table-light">
+          <tbody>
+            <tr>
+              <th>Ingrédient principal</th>
+              <td><CollectionSelect model={recipe} field="main_ingredient_id" options={ingredients.map(i => i.id)} showOption={(ingId) => ingredients.filter(i => i.id == ingId).name} includeBlank="true"></CollectionSelect></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Références</h2>
+
+      </div>
+    </div>
+  </>)
+}
+

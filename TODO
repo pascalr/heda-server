@@ -1,4 +1,6 @@
 Remove gon.recipe
+Remove window.recipe_editor = useRef(null) // FIXME: This is really ugly
+Remove gon from everywhere except app
 Allow change owner if recipe belongs to any user from the account.
 Pouvoir cliquer sur un utilisateur et voir ses recettes.
 Pouvoir retirer une recette de mes favoris.

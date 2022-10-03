@@ -640,13 +640,10 @@ const ShowRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recip
   return <RecipeViewer {...{recipeId: page.recipeId, page, favoriteRecipes, machines, mixes, machineFoods, foods, ingredientSections, recipeIngredients, recipeKinds, images, user, users, recipes}} />
 }
 
-const EditRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recipes, foods, ingredientSections, user, users}) => {
+const EditRecipe = (props) => {
   
-  const recipe = recipes.find(e => e.id == page.recipeId)
-
   window.recipe_editor = useRef(null) // FIXME: This is really ugly
-  gon.recipe = recipe // FIXME: This is really ugly
-  return <RecipeEditor {...{page, favoriteRecipes, machines, mixes, machineFoods, foods, ingredientSections, user, users, recipes}} ref={window.recipe_editor}/>
+  return <RecipeEditor {...{recipeId: props.page.recipeId, ...props}} ref={window.recipe_editor}/>
 }
   
 const ShowMix = ({page, recipes, favoriteRecipes, machines, mixes, machineFoods}) => {
@@ -1008,7 +1005,7 @@ const App = () => {
     [PAGE_13]: <ShowMix {...all} />,
     [PAGE_14]: <EditMix {...all} />,
     [PAGE_15]: <ShowRecipe {...{...all, ingredientSections, recipeIngredients, recipeKinds, images, user, users}} />,
-    [PAGE_16]: <EditRecipe {...{...all, ingredientSections, user, users}} />,
+    [PAGE_16]: <EditRecipe {...{...all, ingredientSections, user, users, recipeIngredients, recipeKinds, images}} />,
     [PAGE_17]: <NewRecipe {...{page}} />
   }
 
