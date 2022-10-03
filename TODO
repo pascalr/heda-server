@@ -1,3 +1,6 @@
+Use proseMirror directly in order to avoid using gon... in Tiptap?
+TODO: Add ingredient_sections inside the ingredients text. Start with a #.
+TODO: Migrer la database avec les ingrédients lorsque ça va bien fonctionner
 L'image de pate chinois
 Remove gon.recipe
 Remove gon from everywhere except app

@@ -32,8 +32,23 @@ const MixIngredients = ({mix}) => {
   </>
 }
 
+function parseIngredientsOldFormat(text) {
+  return text.split("\n").map((line,i) => {
+    if (line.length <= 0) {return null;}
+    let args = line.split(";")
+    return {item_nb: i+1, raw: args[0].trim(), raw_food: args[1].trim()}
+  }).filter(e => e)
+}
 
-export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipeIngredients, ingredientSections, recipeKinds, images, user, users, recipes}) => {
+function parseIngredients(text) {
+  return text.split("\n").map(line => {
+    if (line.length <= 0) {return null;}
+    let args = line.split(";")
+    return {qty: args[0].trim(), label: args[1].trim()}
+  }).filter(e => e)
+}
+
+export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, ingredientSections, recipeKinds, images, user, users, recipes}) => {
 
   let recipe = recipes.find(e => e.id == recipeId)
   gon.recipe = recipe // FIXME: This is really ugly
@@ -50,7 +65,9 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
   const image_used_id = recipe.use_personalised_image ? recipe.image_id : recipe_kind && recipe_kind.image_id
   const image = images.find(i => i.id == image_used_id)
   const noteIds = recipe.notes ? Object.values(recipe.notes).sort((a,b) => a.item_nb - b.item_nb).map(ing => ing.id) : []
-  const ingredients = recipeIngredients.filter(e => e.recipe_id == recipe.id) || []
+  const ingredients = parseIngredients(recipe.ingredients)
+  gon.recipe_ingredients = parseIngredientsOldFormat(recipe.ingredients)
+  console.log('ingredients', ingredients)
   const ingredient_sections = ingredientSections.filter(e => e.recipe_id == recipe.id) || []
   const toolIds = []
   const mix = mixes.find(m => m.recipe_id == recipe.id)
@@ -58,12 +75,10 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
   const IngredientList = 
     <div id="ing_list">
       <ul className="list-group">
-        {ingredients.map(ing => {
-          let foodName = ing.raw_food
-          let prettyQty = Utils.prettyQuantityFor(ing.raw, foodName)
-          //let food = foods.find(food => food.name == foodName)
-          return <li key={ing.id} className="list-group-item">
-            <span>{prettyQty} <span className="food-name">{ing.raw_food}</span></span>
+        {ingredients.map((ing,i) => {
+          let prettyQty = Utils.prettyQuantityFor(ing.qty, ing.label)
+          return <li key={ing.qty + ';' + ing.label} className="list-group-item">
+            <span>{prettyQty} <span className="food-name">{ing.label}</span></span>
             <div className="dropdown d-inline-block float-end">
                <img className="clickable" data-bs-toggle="dropdown" src="/icons/pencil-square.svg"/>
               <div className="dropdown-menu">

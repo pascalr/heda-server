@@ -466,14 +466,14 @@ const parseIngredient = (ingredient) => {
     name = foodName
     // 1 => ingredient nb 1
   } else {
-    let recipe_ingredients = gon.recipe_ingredients.filter(e => e.recipe_id == gon.recipe.id)
+    let recipe_ingredients = gon.recipe_ingredients//.filter(e => e.recipe_id == gon.recipe.id)
     ing = Object.values(recipe_ingredients || {}).find(ing => ing.item_nb == ingredient)
     if (ing) {
       let ingredient = new Ingredient({record: ing})
       prettyQty = ingredient.originalQtyWithPreposition()
       food = ingredient.food
       comment = ing.comment
-      name = ing.name
+      name = ing.name || ing.raw_food
     } else {
       console.log('ERROR MISSING INGREDIENT', ingredient)
     }

@@ -54,7 +54,7 @@ function fetchAccountUsers(req, res, next) {
 }
 
 
-export const RECIPE_ATTRS = ['user_id', 'name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id']
+export const RECIPE_ATTRS = ['user_id', 'name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id', 'ingredients']
 function fetchRecipes(req, res, next) {
   fetchTable('recipes', {user_id: req.user.user_id}, RECIPE_ATTRS, next, (records) => {
     res.locals.gon.recipes = utils.sortBy(records, 'name')
@@ -68,15 +68,15 @@ function fetchFriendsRecipes(req, res, next) {
   })
 }
 
-function fetchRecipeIngredients(req, res, next) {
-  let attrs = ['item_nb', 'raw', 'comment_json', 'food_id', 'raw_food', 'recipe_id']
-  let ids = res.locals.gon.recipes.map(r=>r.id)
-  fetchTable('recipe_ingredients', {recipe_id: ids}, attrs, next, (records) => {
-    res.locals.gon.recipe_ingredients = utils.sortBy(records, 'item_nb').map(r => {
-      r.name = r.raw_food||''; return r;
-    })
-  })
-}
+//function fetchRecipeIngredients(req, res, next) {
+//  let attrs = ['item_nb', 'raw', 'comment_json', 'food_id', 'raw_food', 'recipe_id']
+//  let ids = res.locals.gon.recipes.map(r=>r.id)
+//  fetchTable('recipe_ingredients', {recipe_id: ids}, attrs, next, (records) => {
+//    res.locals.gon.recipe_ingredients = utils.sortBy(records, 'item_nb').map(r => {
+//      r.name = r.raw_food||''; return r;
+//    })
+//  })
+//}
 
 function fetchRecipeKinds(req, res, next) {
   fetchTable('recipe_kinds', {}, ['name', 'description_json', 'image_id'], next, (records) => {
@@ -236,7 +236,7 @@ export function initGon(req, res, next) {
 }
 
 // WARNING: LIST ORDER IS IMPORTANT
-const fetchAll = [initGon, fetchAccountUsers, fetchRecipes, fetchFavoriteRecipes, fetchFavoriteRecipesRecipe, fetchRecipeIngredients, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchSuggestions, fetchUserRecipeFilters, fetchPublicRecipeFilters, fetchFoods, fetchUnits, fetchNotes, fetchIngredientSections, fetchImages, fetchMachineFoods, fetchFriendsRecipes]
+const fetchAll = [initGon, fetchAccountUsers, fetchRecipes, fetchFavoriteRecipes, fetchFavoriteRecipesRecipe, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchSuggestions, fetchUserRecipeFilters, fetchPublicRecipeFilters, fetchFoods, fetchUnits, fetchNotes, fetchIngredientSections, fetchImages, fetchMachineFoods, fetchFriendsRecipes]
 
 const gon = {fetchAll, fetchAccountUsers};
 export default gon;
