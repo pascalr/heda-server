@@ -74,7 +74,7 @@ export const AutocompleteInput = ({minChars, name, defaultValue, choices, placeh
 // onServerUpdate is a callback to handle the data returned by the controllers update method
 
 export const clearRecord = (record) => {
-  return {id: record.id, class_name: record.class_name, onUpdate: record.onUpdate, onServerUpdate: record.onServerUpdate}
+  return {id: record.id, table_name: record.table_name, onUpdate: record.onUpdate, onServerUpdate: record.onServerUpdate}
 }
 export const updateRecord = (oldRecord, newRecord, nested={}) => {
   let obj = {...oldRecord, ...newRecord}
@@ -92,12 +92,12 @@ export const updateRecord = (oldRecord, newRecord, nested={}) => {
 export const asyncUpdateModel = (model, diffs, options={}) => {
 
   if (!model.onUpdate && !model.onServerUpdate) {
-    throw("asyncUpdateModelField requires the model ("+model.class_name+") to handle onUpdate or onServerUpdate")
+    throw("asyncUpdateModelField requires the model ("+model.table_name+") to handle onUpdate or onServerUpdate")
   }
   let data = new FormData()
   for(let field in diffs) {
     model[field] = diffs[field]
-    data.append(model.class_name+"["+field+"]", diffs[field] == null ? '' : diffs[field])
+    data.append(model.table_name+"["+field+"]", diffs[field] == null ? '' : diffs[field])
   }
   if (model.onUpdate) { model.onUpdate(model) }
   console.log('PATCH', urlFor(model))
@@ -114,10 +114,10 @@ const updateModelField = (model, field, value, successCallback=null) => {
   if (value != model[field]) {
 
     let data = new FormData()
-    data.append(model.class_name+"["+field+"]", value)
+    data.append(model.table_name+"["+field+"]", value)
     console.log('PATCH', urlFor(model))
     ajax({url: urlFor(model), type: 'PATCH', data: data, success: () => {
-      console.log(`Updating model ${model.class_name} field ${field} from ${model[field]} to ${value}.`)
+      console.log(`Updating model ${model.table_name} field ${field} from ${model[field]} to ${value}.`)
       model[field] = value
       if (successCallback) {successCallback()}
       if (model.onUpdate) {model.onUpdate(model)}
@@ -161,7 +161,7 @@ export const ImageField = ({model, imageAttr, field, ...props}) => {
   throw "ImageField missing imageAttr"
 }
 export const FileField = ({model, field, maxSizeBytes, onRemove, ...props}) => {
-  let id = `${model.class_name}_${field}`
+  let id = `${model.table_name}_${field}`
   const handleChange = (e) => {
     if (e.target.files.length > 1) {
       alert('Error. You can only upload one file.');
@@ -176,7 +176,7 @@ export const FileField = ({model, field, maxSizeBytes, onRemove, ...props}) => {
   }
   if (!model.filename) {
     return (<>
-      <input type="file" name={`${model.class_name}[${field}]`} id={id} {...props} onChange={handleChange} />
+      <input type="file" name={`${model.table_name}[${field}]`} id={id} {...props} onChange={handleChange} />
     </>)
   } else {
     return (
@@ -189,8 +189,8 @@ export const FileField = ({model, field, maxSizeBytes, onRemove, ...props}) => {
 }
 export const ToggleField = ({model, field, labelOn, labelOff, ...props}) => {
   console.log('rendering')
-  const id = model.class_name+"_"+field
-  const name = model.class_name+"["+field+"]"
+  const id = model.table_name+"_"+field
+  const name = model.table_name+"["+field+"]"
   const on = labelOn || "True"
   const off = labelOff || "False"
   return (<>
@@ -201,9 +201,9 @@ export const ToggleField = ({model, field, labelOn, labelOff, ...props}) => {
 }
 
 export const RadioField = ({model, field, value, label, ...props}) => {
-  let id = `${model.class_name}_${field}_${value}`
+  let id = `${model.table_name}_${field}_${value}`
   return (<>
-    <input type="radio" value={value} name={model.class_name+"["+field+"]"}
+    <input type="radio" value={value} name={model.table_name+"["+field+"]"}
       id={id} {...props} checked={model[field] == value}
       onChange={(e) => {window.hcu.updateField(model, field, value)}}
     />
@@ -212,7 +212,7 @@ export const RadioField = ({model, field, value, label, ...props}) => {
   </>)
 }
 export const updateRecordField = (model, field, value, url, getter, setter) => {
-  ajax({url: url, type: 'PATCH', data: {[model.class_name+"["+field+"]"]: value}, success: (record) => {
+  ajax({url: url, type: 'PATCH', data: {[model.table_name+"["+field+"]"]: value}, success: (record) => {
     let records = getter.map(r => {
       if (r.id == model.id) {
         r = {...r, [field]: value}
@@ -232,7 +232,7 @@ export const TextField = ({model, field, inputRef, onUpdate, url, getter, setter
   if (setter) {throw "Is setter deprecated on TextField? I think so..."}
   
   return (
-    <input type="text" value={value||''} name={model.class_name+"["+field+"]"} id={field} ref={inputRef} {...props}
+    <input type="text" value={value||''} name={model.table_name+"["+field+"]"} id={field} ref={inputRef} {...props}
       onChange={(e) => setValue(e.target.value)}
       onBlur={(e) => {window.hcu.updateField(model, field, value)}} />
   )
@@ -242,14 +242,14 @@ export const TextField = ({model, field, inputRef, onUpdate, url, getter, setter
   //}
 
   //return (
-  //  <input type="text" value={value||''} name={model.class_name+"["+field+"]"} id={field} ref={inputRef} {...props}
+  //  <input type="text" value={value||''} name={model.table_name+"["+field+"]"} id={field} ref={inputRef} {...props}
   //    onChange={(e) => setValue(e.target.value)}
   //    onBlur={(e) => {onUpdate ? onUpdate(model, field, value) : updateModelField(model, field, value)}} />
   //)
 }
 export const EditableField = ({model, field}) => {
   return (
-    <div contentEditable suppressContentEditableWarning={true} name={model.class_name+"["+field+"]"}
+    <div contentEditable suppressContentEditableWarning={true} name={model.table_name+"["+field+"]"}
          id={field} onBlur={(e) => {updateModelField(model, field, e.target.innerText)}} >
       {model[field]||''} 
     </div>
@@ -261,7 +261,7 @@ export const ColorField = ({model, field}) => {
         //onChange={(e) => {let v = e.target.value; console.log(v); updateModelField(model, field, Utils.hexStringToColor(v), () => setValue(v))}} />
         //onChange={(e) => {updateModelField(model, field, Utils.hexStringToColor(e.target.value))}} />
   return (
-    <input type="color" value={value||''} name={model.class_name+"["+field+"]"} id={field}
+    <input type="color" value={value||''} name={model.table_name+"["+field+"]"} id={field}
         onChange={(e) => setValue(e.target.value)}
         onBlur={(e) => {updateModelField(model, field, Utils.hexStringToColor(value))}} />
   )
@@ -288,7 +288,7 @@ export const CollectionSelect = ({model, field, options, showOption, includeBlan
   }
 
   return (
-    <select name={model.class_name+"["+field+"]"} id={field} value={value||''} onChange={updateField}>
+    <select name={model.table_name+"["+field+"]"} id={field} value={value||''} onChange={updateField}>
       {includeBlank ? <option value="" key="1" label=" "></option> : null}
       {options.map((opt, i) => {
         return <option value={opt} key={i+2}>{showOption(opt)}</option>

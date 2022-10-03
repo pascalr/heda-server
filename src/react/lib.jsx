@@ -36,25 +36,6 @@ export const useRegisteredState = (name, initial, callback=null) => {
   return state
 }
 
-//window.hcu.update(recipe)
-//window.hcu.updateField(recipe)
-export const useHcuState = (initial, options, callback=null) => {
-  if (!Array.isArray(initial)) { throw "Error: useHcuState requires an array as input" }
-  const [state, setState] = useState(initial)
-
-  const {className} = options;
-
-  useEffect(() => {
-    window.hcu.setters[className] = setState
-  }, [])
-
-  useEffect(() => {
-    window.hcu.getters[className] = state
-  }, [state])
-
-  return state
-}
-
 export const useUpdatableState = (name, initial, callback=null) => {
   const [state, setState] = useState(initial)
   //useEffect(() => {
@@ -87,16 +68,17 @@ export const getStateProperties = (state) => {
 }
 
 export function urlFor(model) {
-  switch(model.class_name) {
-    case 'recipe': return recipe_path(model); break;
-    case 'food': return food_path(model); break;
-    case 'image': return image_path(model); break;
-    case 'recipe_ingredient': return recipe_recipe_ingredient_path({id: model.recipe_id}, model); break;
-    case 'ingredient_section': return recipe_ingredient_section_path({id: model.recipe_id}, model);break;
-    case 'recipe_note': return recipe_recipe_note_path({id: model.recipe_id}, model); break;
-    //case '': break;
-    default: throw "Cannote find url for model " + model.class_name
-  }
+  throw "Deprecated urlFor"
+//  switch(model.class_name) {
+//    case 'recipe': return recipe_path(model); break;
+//    case 'food': return food_path(model); break;
+//    case 'image': return image_path(model); break;
+//    case 'recipe_ingredient': return recipe_recipe_ingredient_path({id: model.recipe_id}, model); break;
+//    case 'ingredient_section': return recipe_ingredient_section_path({id: model.recipe_id}, model);break;
+//    case 'recipe_note': return recipe_recipe_note_path({id: model.recipe_id}, model); break;
+//    //case '': break;
+//    default: throw "Cannote find url for model " + model.class_name
+//  }
 }
 
 export const LinkToPage = ({page, className, children, active, ...props}) => {

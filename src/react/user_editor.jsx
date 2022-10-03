@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef } from 'react'
 import { createRoot } from 'react-dom/client';
 
 import { TextField, RadioField } from './form'
-import { useHcuState } from "./lib"
+import { useHcuState } from "../hcu"
  
 
 const UserEditor = () => {
 
-  const users = useHcuState([gon.user], {className: 'user'})
+  const users = useHcuState([gon.user], {tableName: 'users'})
   const user = users[0]
 
   return <>

@@ -915,10 +915,10 @@ const registerEditorWithEffect = (editor, model, json_field, html_field, url) =>
     let json = JSON.stringify(editor.getJSON())
     if (json != model[json_field]) {
       console.log('here!')
-      console.log('Saving changes for '+model.class_name+' '+json_field);
+      console.log('Saving changes for '+model.table_name+' '+json_field);
 
       let data = {field: json_field, value: json}
-      ajax({url: '/update_field/'+model.class_name+'/'+model.id, type: 'PATCH', data: data, success: () => {
+      ajax({url: '/update_field/'+model.table_name+'/'+model.id, type: 'PATCH', data: data, success: () => {
         if (window.display) {window.display("Les changements ont étés enregistrés avec succès.")}
         editor.savedJSON = json
       }, error: () => {

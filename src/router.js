@@ -160,15 +160,15 @@ router.get('/images/:id/:variant', function(req, res, next) {
   });
 });
 
-function mapClassNameToTable(className) {
-  switch(className) {
-    case 'recipe': return 'recipes'; break;
-    case 'user': return 'users'; break;
-    case 'favorite_recipe': return 'favorite_recipes'; break;
-    default:
-      throw "Missing table for className " + className
-  }
-}
+//function mapClassNameToTable(className) {
+//  switch(className) {
+//    case 'recipe': return 'recipes'; break;
+//    case 'user': return 'users'; break;
+//    case 'favorite_recipe': return 'favorite_recipes'; break;
+//    default:
+//      throw "Missing table for className " + className
+//  }
+//}
 
 const ALLOWED_COLUMNS_MOD = {
   'recipes': ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id'],
@@ -181,13 +181,12 @@ const ALLOWED_COLUMNS_GET = {
 }
 const ALLOWED_TABLES_DESTROY = ['favorite_recipes']
 
-router.post('/create_record/:className', function(req, res, next) {
+router.post('/create_record/:table', function(req, res, next) {
   
   try {
     console.log('body', req.body)
-    let className = req.params.className
-    let table = mapClassNameToTable(className)
-    let fields = req.body['fields[]'].filter(f => f != 'class_name')
+    let table = req.params.table
+    let fields = req.body['fields[]'].filter(f => f != 'table_name')
     if (!Object.keys(ALLOWED_COLUMNS_MOD).includes(table)) {
       throw new Error("CreateRecord table not allowed")
     }
@@ -203,7 +202,7 @@ router.post('/create_record/:className', function(req, res, next) {
     db.run(query, args, function(err) {
       if (err) { return next(err); }
       let o = fields.reduce((acc, f) => ({ ...acc, [f]: req.body['record['+f+']']}), {}) 
-      res.json({...o, id: this.lastID, class_name: className})
+      res.json({...o, id: this.lastID, table_name: table})
     })
   } catch(err) {
     throw new Error(err)
@@ -236,12 +235,11 @@ router.patch('/change_recipe_owner', gon.fetchAccountUsers, function(req, res, n
   }
 });
 
-router.patch('/update_field/:className/:id', function(req, res, next) {
+router.patch('/update_field/:table/:id', function(req, res, next) {
 
   try {
     let id = req.params.id
-    let className = req.params.className
-    let table = mapClassNameToTable(className)
+    let table = req.params.table
     let field = req.body.field
     let value = req.body.value
     if (Object.keys(ALLOWED_COLUMNS_MOD).includes(table) && ALLOWED_COLUMNS_MOD[table].includes(field)) {
@@ -266,12 +264,11 @@ router.patch('/update_field/:className/:id', function(req, res, next) {
   }
 });
 
-router.get('/fetch_record/:className/:id', function(req, res, next) {
+router.get('/fetch_record/:table/:id', function(req, res, next) {
 
   try {
     let id = req.params.id
-    let className = req.params.className
-    let table = mapClassNameToTable(className)
+    let table = req.params.table
     if (Object.keys(ALLOWED_COLUMNS_GET).includes(table)) {
       //fetchTable(table, {id: id, user_id: req.user.user_id}, ALLOWED_COLUMNS_GET[table], next, (records) => {
       fetchTable(table, {id: id}, ALLOWED_COLUMNS_GET[table], next, (records) => {
@@ -285,12 +282,11 @@ router.get('/fetch_record/:className/:id', function(req, res, next) {
   }
 });
 
-router.delete('/destroy_record/:className/:id', function(req, res, next) {
+router.delete('/destroy_record/:table/:id', function(req, res, next) {
 
   try {
     let id = req.params.id
-    let className = req.params.className
-    let table = mapClassNameToTable(className)
+    let table = req.params.table
     if (ALLOWED_TABLES_DESTROY.includes(table)) {
       let query = ''
       let args = []

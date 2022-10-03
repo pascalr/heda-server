@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 //import history from 'history/hash'
 
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, LinkToPage, useUpdatableState, getStateProperties, register, getRegister, useRegisteredState, useHcuState } from "./lib"
+import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, LinkToPage, useUpdatableState, getStateProperties, register, getRegister, useRegisteredState } from "./lib"
 import { RecipeList, RecipeIndex } from './recipe_index'
 import { ajax, isBlank, normalizeSearchText, preloadImage, getUrlParams, join, bindSetter, sortBy, capitalize } from "./utils"
 import { icon_path, recipe_kind_path, suggestions_path, image_variant_path, send_data_suggestions_path, batch_update_filtered_recipes_path, batch_create_filtered_recipes_path, batch_destroy_filtered_recipes_path, recipe_filters_path, recipe_filter_path, missing_filtered_recipes_path, user_recipes_recipes_path, new_recipe_path, new_book_path, user_books_books_path, my_books_path, all_recipe_kinds_recipe_filters_path, recipe_path, user_tags_path, user_tag_path, containers_path, grocery_list_path, calendar_path, inventory_path, mixes_path, mix_path, inline_recipe_path, recipe_recipe_ingredients_path } from './routes'
@@ -15,7 +15,7 @@ import { DeleteConfirmButton } from './components/delete_confirm_button'
 import {AddUserTagModal} from './modals/add_user_tag'
 import {RecipeEditor} from "./recipe_editor"
 import {RecipeViewer} from "./recipe_viewer"
-import { initHcu } from '../hcu'
+import { initHcu, useHcuState } from '../hcu'
 
 // The advantage of using this instead of the number is if I need to search and to refactor, I can easy
 const PAGE_1 = 1 // TagIndex
@@ -44,7 +44,7 @@ const changePage = (page) => {
   //getRegister('setPage')(page)
 }
   
-const encodeRecord = (record) => (`${record.class_name == "recipe_kind" ? '' : '_'}${record.id}`)
+const encodeRecord = (record) => (`${record.table_name == "recipe_kinds" ? '' : '_'}${record.id}`)
 
 const SuggestionsNav = ({page, tagSuggestions, categorySuggestions}) => {
   return (<>
@@ -260,6 +260,7 @@ const TagEditAllCategories = ({page, recipeFilters}) => {
   const addItems = (its, match) => {
     let f = its.filter(r => selected[r.id])
     let ids = f.map(r => r.id)
+    throw "FIXME NOT IMPLEMENTED: Filterable_type needs the class_name and not the table_name... ex: recipe_ingredient and not recipe_ingredients"
     let data = f.map((d,i) => ({filterable_type: d.class_name, filterable_id: d.id, selected: match}))
     ajax({url: batch_create_filtered_recipes_path(), type: 'POST', data: {recipe_filter_id: filter.id, data: JSON.stringify(data)}, success: () => {
       setItems(items.map(item => {
@@ -918,7 +919,7 @@ const NewRecipe = ({page}) => {
   const [name, setName] = useState('')
 
   const createRecipe = () => {
-    window.hcu.createRecord({class_name: 'recipe', name}, (created) => {
+    window.hcu.createRecord({table_name: 'recipes', name}, (created) => {
       window.hcu.changePage({...page, page: 16, recipeId: created.id})
     })
   }
@@ -953,13 +954,13 @@ const App = () => {
   const recipeFilters = useUpdatableState('recipeFilters', gon.recipe_filters)
   const suggestions = useUpdatableState('suggestions', gon.suggestions)
   const userTags = useUpdatableState('userTags', gon.user_tags)
-  const favoriteRecipes = useHcuState(gon.favorite_recipes, {className: 'favorite_recipe'})
+  const favoriteRecipes = useHcuState(gon.favorite_recipes, {tableName: 'favorite_recipes'})
   const machines = useUpdatableState('machines', gon.machines)
-  const machineFoods = useHcuState(gon.machine_foods, {className: 'machine_food'})
+  const machineFoods = useHcuState(gon.machine_foods, {tableName: 'machine_foods'})
   const containerQuantities = useUpdatableState('containerQuantities', gon.container_quantities)
   const mixes = useUpdatableState('mixes', gon.mixes)
   const foods = useUpdatableState('foods', gon.foods)
-  const recipes = useHcuState(gon.recipes, {className: 'recipe'})
+  const recipes = useHcuState(gon.recipes, {tableName: 'recipes'})
   const recipeIds = recipes.map(r => r.id)
   const recipeKinds = gon.recipe_kinds //useUpdatableState('recipe_kinds', gon.recipe_kinds)
   const ingredientSections = gon.ingredient_sections

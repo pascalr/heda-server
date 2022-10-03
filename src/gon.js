@@ -12,12 +12,6 @@ import utils from './utils.js';
 //  end
 //end
 
-function mapClassName(objs, tableName) {
-  // TODO: Handle exceptions like mixes
-  let className = tableName.substr(0, tableName.length-1)
-  return objs.map(o => {o.class_name = className; return o;})
-}
-
 export function fetchTable(tableName, conditions, attributes, next, callback) {
   let s = 'SELECT '+['id',...attributes].join(', ')+' FROM '+tableName
   let a = []
@@ -44,7 +38,9 @@ export function fetchTable(tableName, conditions, attributes, next, callback) {
   console.log('values', a)
   db.all(s, a, function(err, rows) {
     if (err) { return next(err); }
-    callback(mapClassName(rows, tableName))
+
+    let rowsWithTableName = rows.map(o => {o.table_name = tableName; return o;})
+    callback(rowsWithTableName)
     next();
   })
 }

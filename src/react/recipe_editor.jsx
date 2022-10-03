@@ -319,7 +319,7 @@ export class RecipeEditor extends React.Component {
 
     const getClosestItemNb = (index) => {
       for (let i = index; i < ingItems.length; i++) {
-        if (ingItems[i].class_name == "recipe_ingredient") {
+        if (ingItems[i].table_name == "recipe_ingredients") {
           return ingItems[i].item_nb
         }
       }
@@ -336,7 +336,7 @@ export class RecipeEditor extends React.Component {
     //console.log("droppedItem", droppedItem)
     //console.log("source", source)
     //console.log("destination", destination)
-    if (droppedRecord.class_name == "recipe_ingredient") {
+    if (droppedRecord.table_name == "recipe_ingredients") {
       console.log("dropping recipe ingredient")
       var updatedList = [...this.state.ingredients];
       const [reorderedItem] = updatedList.splice(source, 1);
@@ -378,7 +378,7 @@ export class RecipeEditor extends React.Component {
     const renderedIngItems = []
     for (let i=0; i < ingItems.length; i++) {
       let item = ingItems[i]
-      if (item.class_name == "ingredient_section") {
+      if (item.table_name == "ingredient_sections") {
         let sectionId = 'section-'+item.id
         renderedIngItems.push(<Draggable key={sectionId} draggableId={sectionId} index={i}>
           {(provided) => (
