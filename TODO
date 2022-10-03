@@ -1,6 +1,3 @@
-Tu prends une de tes recettes, tu la mets dans la liste à cuisiner, tu la retires de la liste, il faudrait que ça supprime le lien de recette favorite, pour qu'ainsi ça retourne dans mes recettes personnelles.
-Pouvoir changer les tags des recettes
-Tofu magique => machineFoods...
 Remove gon.recipe
 Allow change owner if recipe belongs to any user from the account.
 Pouvoir cliquer sur un utilisateur et voir ses recettes.
@@ -20,7 +17,8 @@ Ou bien pouvoir modifier une recette si la recette appartient à un utilisateur 
 Ça devient comme une recette partagé.
 
 Later:
-Rajouter conversion d'unités
+Conversions d'unités
+Pouvoir changer les tags des recettes
 
 Later (other users):
 Create default user for account
