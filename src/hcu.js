@@ -42,6 +42,20 @@ export const initHcu = () => {
       toastr.error(errors.responseText)
     }})
   }
+  window.hcu.fetchRecord = (className, id, successCallback=null) => {
+    let url = '/fetch_record/'+className+'/'+id
+    ajax({url: url, type: 'GET', data: {}, success: (fetched) => {
+      console.log('fetched', fetched)
+      let old = window.hcu.getters[className]
+      if (old.find(r => r.id == fetched.id)) {throw "Error: Fetched a record already available"}
+      let updated = [...old, {...fetched}]
+      window.hcu.setters[className](updated)
+      if (successCallback) {successCallback(fetched)}
+    }, error: (errors) => {
+      console.log('ERROR AJAX FETCHING...', errors.responseText)
+      toastr.error(errors.responseText)
+    }})
+  }
   // Remove record in memory only
   window.hcu.removeRecord = (record, successCallback=null) => {
     let old = window.hcu.getters[record.class_name]

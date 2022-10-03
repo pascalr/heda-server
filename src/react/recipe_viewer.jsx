@@ -10,7 +10,18 @@ import {image_variant_path, recipe_path} from './routes'
 import { Utils } from "./recipe_utils"
 
 
-export const RecipeViewer = ({recipe, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipeIngredients, ingredientSections, recipeKinds, images, user, users}) => {
+export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipeIngredients, ingredientSections, recipeKinds, images, user, users, recipes}) => {
+
+  let recipe = recipes.find(e => e.id == recipeId)
+  gon.recipe = recipe // FIXME: This is really ugly
+
+  useEffect(() => {
+    let recipe = recipes.find(e => e.id == recipeId)
+    if (!recipe) {
+      window.hcu.fetchRecord('recipe', recipeId)
+    }
+  }, [recipeId])
+  if (!recipe) {return ''}
 
   const recipe_kind = recipeKinds.find(k => k.id == recipe.recipe_kind_id)
   const image_used_id = recipe.use_personalised_image ? recipe.image_id : recipe_kind && recipe_kind.image_id

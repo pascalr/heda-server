@@ -18,13 +18,12 @@ function mapClassName(objs, tableName) {
   return objs.map(o => {o.class_name = className; return o;})
 }
 
-function fetchTable(tableName, conditions, attributes, next, callback) {
+export function fetchTable(tableName, conditions, attributes, next, callback) {
   let s = 'SELECT '+['id',...attributes].join(', ')+' FROM '+tableName
   let a = []
   let l = Object.keys(conditions).length
   if (l != 0) {s += ' WHERE '}
   Object.keys(conditions).forEach((cond,i) => {
-    if (i < l-1) {s += ' AND '}
     let val = conditions[cond]
     if (val == null) {
       s += cond + ' IS NULL'
@@ -39,6 +38,7 @@ function fetchTable(tableName, conditions, attributes, next, callback) {
       s += cond + ' = ?'
       a.push(val)
     }
+    if (i < l-1) {s += ' AND '}
   })
   console.log('statement:', s)
   console.log('values', a)
@@ -58,7 +58,7 @@ function fetchAccountUsers(req, res, next) {
 }
 
 
-const RECIPE_ATTRS = ['user_id', 'name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id']
+export const RECIPE_ATTRS = ['user_id', 'name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id']
 function fetchRecipes(req, res, next) {
   fetchTable('recipes', {user_id: req.user.user_id}, RECIPE_ATTRS, next, (records) => {
     res.locals.gon.recipes = utils.sortBy(records, 'name')

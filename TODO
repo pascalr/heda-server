@@ -1,4 +1,4 @@
-Afficher de qui est la recette dans les suggestions dans les recherches.
+Fetch recipe suggestion if does not have recipe.
 Tofu magique => machineFoods...
 Remove gon.recipe
 Allow change owner if recipe belongs to any user from the account.
@@ -8,6 +8,7 @@ Nouvel utilisateur
 DNS hedacuisine.com
 Demo user
 Thumbnails images
+Fix les images déformées
 Store images on volume or backblaze.
 Backblaze? https://www.npmjs.com/package/backblaze
 Pouvoir rechercher

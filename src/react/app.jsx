@@ -635,11 +635,7 @@ export const EditMix = ({page, recipes, favoriteRecipes, machines, mixes, machin
 
 //const ShowRecipe = ({page}) => {
 const ShowRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recipes, foods, ingredientSections, recipeIngredients, recipeKinds, images, user, users}) => {
-  //return <LinkToPage page={{...page, page: 16}} className="nav-link" active={page.page == 16}>Modifier</LinkToPage>
-  const recipe = recipes.find(e => e.id == page.recipeId)
-
-  gon.recipe = recipe // FIXME: This is really ugly
-  return <RecipeViewer {...{recipe, page, favoriteRecipes, machines, mixes, machineFoods, foods, ingredientSections, recipeIngredients, recipeKinds, images, user, users}} />
+  return <RecipeViewer {...{recipeId: page.recipeId, page, favoriteRecipes, machines, mixes, machineFoods, foods, ingredientSections, recipeIngredients, recipeKinds, images, user, users, recipes}} />
 }
 
 const EditRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recipes, foods, ingredientSections, user, users}) => {

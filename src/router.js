@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 
 import db from './db.js';
-import gon, {initGon} from './gon.js';
+import gon, {initGon, fetchTable, RECIPE_ATTRS} from './gon.js';
 import passport from './passport.js';
 import utils from './utils.js';
 
@@ -170,12 +170,15 @@ function mapClassNameToTable(className) {
   }
 }
 
-const ALLOWED_COLUMNS = {
+const ALLOWED_COLUMNS_MOD = {
   'recipes': ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id'],
   'users': ['name', 'gender'],
   'favorite_recipes': ['list_id', 'recipe_id']
 }
-const ALLOWED_TABLES = Object.keys(ALLOWED_COLUMNS)
+// WARNING: All users have access to these
+const ALLOWED_COLUMNS_GET = {
+  'recipes': RECIPE_ATTRS
+}
 const ALLOWED_TABLES_DESTROY = ['favorite_recipes']
 
 router.post('/create_record/:className', function(req, res, next) {
@@ -185,11 +188,11 @@ router.post('/create_record/:className', function(req, res, next) {
     let className = req.params.className
     let table = mapClassNameToTable(className)
     let fields = req.body['fields[]'].filter(f => f != 'class_name')
-    if (!ALLOWED_TABLES.includes(table)) {
+    if (!Object.keys(ALLOWED_COLUMNS_MOD).includes(table)) {
       throw new Error("CreateRecord table not allowed")
     }
     fields.forEach(field => {
-      if (!ALLOWED_COLUMNS[table].includes(field)) {
+      if (!ALLOWED_COLUMNS_MOD[table].includes(field)) {
         throw new Error("CreateRecord column not allowed. Field: "+field)
       }
     })
@@ -241,7 +244,7 @@ router.patch('/update_field/:className/:id', function(req, res, next) {
     let table = mapClassNameToTable(className)
     let field = req.body.field
     let value = req.body.value
-    if (ALLOWED_TABLES.includes(table) && ALLOWED_COLUMNS[table].includes(field)) {
+    if (Object.keys(ALLOWED_COLUMNS_MOD).includes(table) && ALLOWED_COLUMNS_MOD[table].includes(field)) {
       let query = ''
       let args = []
       if (table == 'users') {
@@ -257,6 +260,25 @@ router.patch('/update_field/:className/:id', function(req, res, next) {
       })
     } else {
       throw new Error("UpdateField not allowed")
+    }
+  } catch(err) {
+    throw new Error(err)
+  }
+});
+
+router.get('/fetch_record/:className/:id', function(req, res, next) {
+
+  try {
+    let id = req.params.id
+    let className = req.params.className
+    let table = mapClassNameToTable(className)
+    if (Object.keys(ALLOWED_COLUMNS_GET).includes(table)) {
+      //fetchTable(table, {id: id, user_id: req.user.user_id}, ALLOWED_COLUMNS_GET[table], next, (records) => {
+      fetchTable(table, {id: id}, ALLOWED_COLUMNS_GET[table], next, (records) => {
+        res.json({...records[0]})
+      })
+    } else {
+      throw new Error("FetchRecord not allowed")
     }
   } catch(err) {
     throw new Error(err)
