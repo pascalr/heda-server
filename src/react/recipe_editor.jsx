@@ -346,12 +346,15 @@ function removeIngSection(section) {
   //}})
 }
 
-export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipes, recipeIngredients, ingredientSections, recipeKinds, images, users, editable}) => {
+export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipes, recipeIngredients, ingredientSections, recipeKinds, images, users, editable, user}) => {
 
   const [showImageModal, setShowImageModal] = useState(false)
 
   const recipe = recipes.find(e => e.id == recipeId)
   gon.recipe = recipe // FIXME: This is really ugly
+
+  if (!recipe || recipe.user_id != user.id) {window.hcu.changePage({page: 15, recipeId: recipeId}); return '';}
+
   const ingredients = recipeIngredients.filter(e => e.recipe_id == recipeId) || []
   const ingredient_sections = ingredientSections.filter(e => e.recipe_id == recipeId) || []
   const recipe_kind = recipeKinds.find(k => k.id == recipe.recipe_kind_id)
