@@ -641,9 +641,7 @@ const ShowRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recip
 }
 
 const EditRecipe = (props) => {
-  
-  window.recipe_editor = useRef(null) // FIXME: This is really ugly
-  return <RecipeEditor {...{recipeId: props.page.recipeId, ...props}} ref={window.recipe_editor}/>
+  return <RecipeEditor {...{recipeId: props.page.recipeId, ...props}} />
 }
   
 const ShowMix = ({page, recipes, favoriteRecipes, machines, mixes, machineFoods}) => {
