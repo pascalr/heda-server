@@ -615,11 +615,11 @@ export const EditMix = ({page, recipes, favoriteRecipes, machines, mixes, machin
   //  <h3>Aperçu</h3>
   //  {recipeHTML ? <div dangerouslySetInnerHTML={{__html: recipeHTML}} /> : ''}
 
+  // <h1 contentEditable suppressContentEditableWarning={true} onBlur={(e) => {updateName(e.target.innerText)}}>
+  //   {mix.name || 'Sans nom'}
+  // </h1>
+  // <h2>Commandes</h2>
   return (<>
-    <h1 contentEditable suppressContentEditableWarning={true} onBlur={(e) => {updateName(e.target.innerText)}}>
-      {mix.name || 'Sans nom'}
-    </h1>
-    <h2>Commandes</h2>
     <DragDropContext onDragEnd={handleDrop}>
       <Droppable droppableId="instructions-container">
         {(provided) => (<>
