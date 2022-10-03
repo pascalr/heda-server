@@ -44,7 +44,7 @@ const RecipeListItemMenu = ({fav, recipe, editUserRecipe, user}) => {
   </>
 }
 
-export const RecipeList = ({page, list, original, selected, suggestions, tags, editUserRecipe, mixes, recipes, recipeKinds, user}) => {
+export const RecipeList = ({page, list, selected, suggestions, tags, editUserRecipe, mixes, recipes, recipeKinds, user}) => {
 
   //{!showPercentCompleted ? '' : <span>&nbsp;(<PercentageCompleted recipe={recipe}/>)</span>}
   return (<>
@@ -81,20 +81,18 @@ export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, re
   const [showModal, setShowModal] = useState(true)
   const [recipeToEdit, setRecipeToEdit] = useState(null)
  
-  let ids = favoriteRecipes.map(f => f.recipe_id)
-  let filteredUserRecipes = []
+  let userRecipes = []
   let toCookList = []
   let toTryList = []
   let otherList = []
 
   recipes.forEach((recipe) => {
     f = favoriteRecipes.find(r => r.recipe_id == recipe.id)
-    if (!f) { filteredUserRecipes.push({recipe: recipe, fav: f}) }
+    if (!f) { userRecipes.push({recipe: recipe, fav: f}) }
     else if (f.list_id == 1) { toCookList.push({recipe: recipe, fav: f}) }
     else if (f.list_id == 2) { toTryList.push({recipe: recipe, fav: f}) }
     else { otherList.push({recipe: recipe, fav: f}) }
   })
-  let all = [...recipes, ...toCookList, ...toTryList, ...otherList]
 
   let editUserRecipe = (recipe) => {
     setRecipeToEdit(recipe)
@@ -106,12 +104,12 @@ export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, re
   return (<>
     <EditUserRecipeModal showModal={showModal} setShowModal={setShowModal} recipe={recipeToEdit} tags={tags} suggestions={suggestions} />
     <h3 className="h001">À cuisinner prochainement</h3>
-    <RecipeList original={recipes} list={toCookList} {...listArgs} />
+    <RecipeList list={toCookList} {...listArgs} />
     <h3 className="h001">À essayer</h3>
-    <RecipeList original={recipes} list={toTryList} {...listArgs} />
+    <RecipeList list={toTryList} {...listArgs} />
     <h3 className="h001">Mes recettes personnelles</h3>
-    <RecipeList original={recipes} list={filteredUserRecipes} {...listArgs} />
+    <RecipeList list={userRecipes} {...listArgs} />
     <h3 className="h001">Mes recettes favorites</h3>
-    <RecipeList original={recipes} list={otherList} {...listArgs} />
+    <RecipeList list={otherList} {...listArgs} />
   </>)
 }
