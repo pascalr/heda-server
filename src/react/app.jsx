@@ -636,8 +636,8 @@ export const EditMix = ({page, recipes, favoriteRecipes, machines, mixes, machin
 }
 
 //const ShowRecipe = ({page}) => {
-const ShowRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recipes, foods, ingredientSections, recipeKinds, images, user, users}) => {
-  return <RecipeViewer {...{recipeId: page.recipeId, page, favoriteRecipes, machines, mixes, machineFoods, foods, ingredientSections, recipeKinds, images, user, users, recipes}} />
+const ShowRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recipes, foods, recipeKinds, images, user, users}) => {
+  return <RecipeViewer {...{recipeId: page.recipeId, page, favoriteRecipes, machines, mixes, machineFoods, foods, recipeKinds, images, user, users, recipes}} />
 }
 
 const EditRecipe = (props) => {
@@ -962,7 +962,6 @@ const App = () => {
   const recipes = useHcuState(gon.recipes, {tableName: 'recipes'})
   const recipeIds = recipes.map(r => r.id)
   const recipeKinds = gon.recipe_kinds //useUpdatableState('recipe_kinds', gon.recipe_kinds)
-  const ingredientSections = gon.ingredient_sections
   const images = gon.images
   const user = gon.user
   const users = gon.users
@@ -1005,8 +1004,8 @@ const App = () => {
     [PAGE_12]: <MixIndex {...{page, machines, machineFoods, mixes}} />,
     [PAGE_13]: <ShowMix {...all} />,
     [PAGE_14]: <EditMix {...all} />,
-    [PAGE_15]: <ShowRecipe {...{...all, ingredientSections, recipeKinds, images, user, users}} />,
-    [PAGE_16]: <EditRecipe {...{...all, ingredientSections, user, users, recipeKinds, images}} />,
+    [PAGE_15]: <ShowRecipe {...{...all, recipeKinds, images, user, users}} />,
+    [PAGE_16]: <EditRecipe {...{...all, user, users, recipeKinds, images}} />,
     [PAGE_17]: <NewRecipe {...{page}} />
   }
 

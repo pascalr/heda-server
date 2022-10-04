@@ -32,7 +32,7 @@ const MixIngredients = ({mix}) => {
   </>
 }
 
-export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, ingredientSections, recipeKinds, images, user, users, recipes}) => {
+export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipeKinds, images, user, users, recipes}) => {
 
   let recipe = recipes.find(e => e.id == recipeId)
   gon.recipe = recipe // FIXME: This is really ugly
@@ -53,24 +53,30 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
   const ingredients = ingredientsAndHeaders.filter(e => e.label || e.qty)
   gon.recipe_ingredients = parseIngredientsOldFormat(recipe.ingredients)
   console.log('ingredients', ingredients)
-  const ingredient_sections = ingredientSections.filter(e => e.recipe_id == recipe.id) || []
   const toolIds = []
   const mix = mixes.find(m => m.recipe_id == recipe.id)
 
   const IngredientList = 
     <div id="ing_list">
       <ul className="list-group">
-        {ingredients.map((ing,i) => {
-          let prettyQty = Utils.prettyQuantityFor(ing.qty, ing.label)
-          return <li key={ing.qty + ';' + ing.label} className="list-group-item">
-            <span>{prettyQty} <span className="food-name">{ing.label}</span></span>
-            <div className="dropdown d-inline-block float-end">
-               <img className="clickable" data-bs-toggle="dropdown" src="/icons/pencil-square.svg"/>
-              <div className="dropdown-menu">
-                <a className="dropdown-item disabled" href="#">Retirer</a>
+        {ingredientsAndHeaders.map((ingOrHeader,i) => {
+          if (ingOrHeader.qty == null && ingOrHeader.label == null) {
+            return <h3 key={ingOrHeader.key} style={{margin: "0", padding: "0.5em 0 0.2em 0"}}>
+              {ingOrHeader.header}
+            </h3>
+          } else {
+            const ing = ingOrHeader
+            let prettyQty = Utils.prettyQuantityFor(ing.qty, ing.label)
+            return <li key={ing.key} className="list-group-item">
+              <span>{prettyQty} <span className="food-name">{ing.label}</span></span>
+              <div className="dropdown d-inline-block float-end">
+                 <img className="clickable" data-bs-toggle="dropdown" src="/icons/pencil-square.svg"/>
+                <div className="dropdown-menu">
+                  <a className="dropdown-item disabled" href="#">Retirer</a>
+                </div>
               </div>
-            </div>
-          </li>
+            </li>
+          }
         })}
         <MixIngredients mix={mix} />
       </ul>

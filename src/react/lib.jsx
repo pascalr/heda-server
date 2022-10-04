@@ -11,11 +11,13 @@ export function serializeIngredientsAndHeaders(ingredients) {
 }
 
 export function parseIngredientsOldFormat(text) {
-  return text.split("\n").map((line,i) => {
+  let itemNb = 0
+  return text.split("\n").map(line => {
     if (line.length <= 0) {return null;}
     if (line[0] == '#') {return null;}
     let args = line.split(";")
-    return {key: `${i}-${line}`, item_nb: i+1, raw: args[0].trim(), raw_food: args[1].trim()}
+    itemNb += 1
+    return {key: `${itemNb}-${line}`, item_nb: itemNb, raw: args[0].trim(), raw_food: args[1].trim()}
   }).filter(e => e)
 }
 
