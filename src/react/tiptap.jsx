@@ -57,7 +57,6 @@ function elementFromJSX(value) {
 // MINE
 import Quantity from './models/quantity'
 import { Utils } from "./recipe_utils"
-import Ingredient from "./ingredient"
 import { ajax } from "./utils"
 
 const PageComponent = () => {
@@ -469,9 +468,13 @@ const parseIngredient = (ingredient) => {
     let recipe_ingredients = gon.recipe_ingredients//.filter(e => e.recipe_id == gon.recipe.id)
     ing = Object.values(recipe_ingredients || {}).find(ing => ing.item_nb == ingredient)
     if (ing) {
-      let ingredient = new Ingredient({record: ing})
-      prettyQty = ingredient.originalQtyWithPreposition()
-      food = ingredient.food
+      prettyQty = function() {
+        if (!ing.raw) {return ''}
+        let quantity = new Quantity({raw: ing.raw})
+        if (quantity.nb == null) {return ''}
+        if (quantity.label) {return ing.raw + ' ' + Utils.prettyPreposition(ing.raw_food)}
+        return ing.raw+' '
+      }()
       comment = ing.comment
       name = ing.name || ing.raw_food
     } else {
