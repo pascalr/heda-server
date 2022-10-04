@@ -126,39 +126,23 @@ function convertFormDataValue(val) {
 export function ajax(params) {
 
   console.log('ajax', params)
-
   if (!params.url) {throw "ajax missing params url"}
 
-  // I think using FormData is better in order to be able to send files.
   if (params.data instanceof FormData) {
-
     throw('FIXME: Rails ujs not supported anymore here not using rails anymore...')
-
-    //let c = new FormData()
-    //for (let [k, v] of params.data) {
-    //  let v1 = convertFormDataValue(v)
-    //  c.append(k, convertFormDataValue(v))
-    //}
-    //params.data = c
-
-    //params.url = addExtensionToPath("json", params.url)
-    //Rails.ajax(params)
-
-  } else {
-
-    //let _csrf = $('[name="csrf-token"]').content
-    let _csrf = document.querySelector('[name="csrf-token"]').content
-    $.ajax({
-      type: params.type,
-      url: params.url, //addExtensionToPath("json", params.url),
-      data: {_csrf, ...params.data},
-      //contentType: "application/json",
-      //data: JSON.stringify(data),
-      success: params.success,
-      error: params.error,
-    });
-
   }
+
+  //let _csrf = $('[name="csrf-token"]').content
+  let _csrf = document.querySelector('[name="csrf-token"]').content
+  $.ajax({
+    type: params.type,
+    url: params.url, //addExtensionToPath("json", params.url),
+    data: {_csrf, ...params.data},
+    //contentType: "application/json",
+    //data: JSON.stringify(data),
+    success: params.success,
+    error: params.error,
+  });
 }
 
 // https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
