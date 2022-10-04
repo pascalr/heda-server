@@ -356,8 +356,8 @@ const EditUserTags = ({userTags, recipeFilters, page}) => {
   return (<>
     <AddUserTagModal showModal={showAddModal} setShowModal={setShowAddModal} tags={recipeFilters} userTags={userTags} />
     <div className="d-flex gap-15 align-items-center">
-      <h2>Étiquettes</h2>
-      <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => setShowAddModal(true)}>Ajouter une étiquette</button>
+      <h2>Tags</h2>
+      <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => setShowAddModal(true)}>Ajouter un tag</button>
     </div>
     <DragDropContext onDragEnd={handleDrop}>
       <Droppable droppableId="user-tags-container">
@@ -1023,7 +1023,7 @@ const App = () => {
     <div className="d-flex align-items-center">
       {moveBtn}
       <div className="flex-grow-1"/>
-      <h1 style={{marginBottom: "0"}} className="clickable" onClick={() => changePage(1)}>HedaCuisine</h1>
+      <h1 style={{marginBottom: "0", fontSize: '2rem'}} className="clickable" onClick={() => changePage(1)}>HedaCuisine</h1>
       <div className="flex-grow-1"/>
       <img className="clickable" src={isSearching ? icon_path("x-lg.svg") : icon_path("search_black.svg")} width="24" onClick={() => {setIsSearching(!isSearching)}}/>
     </div>
