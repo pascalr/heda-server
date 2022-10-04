@@ -13,14 +13,7 @@ export const PasteIngredientsButton = (props) => {
   </>)
 }
 
-const PasteIngredientsModal = ({recipe, ingredients, show, handleClose}) => {
-  let ingText = ''
-  ingredients.forEach(ing => {
-    if (ing.raw) {ingText += ing.raw} // raw quantity
-    if (ing.raw && ing.raw_food) {ingText += '; '}
-    if (ing.raw_food) {ingText += ing.raw_food}
-    ingText += '\n'
-  })
+const PasteIngredientsModal = ({recipe, show, handleClose}) => {
   return (<>
     <Modal show={show} onHide={handleClose}>
       <Modal.Body>

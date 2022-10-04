@@ -9,7 +9,7 @@ import { ajax } from "./utils"
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import { Tiptap, BubbleTiptap } from './tiptap'
 import {AutocompleteInput, updateRecord, TextField, CollectionSelect} from './form'
-import { combineOrderedListWithHeaders, parseIngredients, parseIngredientsOldFormat } from './lib'
+import { parseIngredientsAndHeaders, parseIngredientsOldFormat } from './lib'
 import {EditRecipeImageModal} from './modals/recipe_image'
 import {PasteIngredientsButton} from './modals/paste_ingredients'
 import {EditMix} from './app'
@@ -301,7 +301,8 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
 
   if (!recipe || recipe.user_id != user.id) {window.hcu.changePage({page: 15, recipeId: recipeId}); return '';}
 
-  const ingredients = parseIngredients(recipe.ingredients)
+  const ingredientsAndHeaders = parseIngredientsAndHeaders(recipe.ingredients)
+  const ingredients = ingredientsAndHeaders.filter(e => e.label || e.qty)
   gon.recipe_ingredients = parseIngredientsOldFormat(recipe.ingredients)
   //const ingredients = recipeIngredients.filter(e => e.recipe_id == recipeId) || []
   const ingredient_sections = ingredientSections.filter(e => e.recipe_id == recipeId) || []
@@ -312,37 +313,30 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
   const imagePath = image ? image_variant_path(image, 'medium') : "/img/default_recipe_01.png"
   const mix = mixes.find(m => m.recipe_id == recipe.id)
 
-  let ingItems = combineOrderedListWithHeaders(ingredients, ingredient_sections, header => header.before_ing_nb)
-  ingItems = ingItems.concat(ingredient_sections.filter(s => s.before_ing_nb > ingredients.length))
-  const renderedIngItems = []
-  for (let i=0; i < ingItems.length; i++) {
-    let item = ingItems[i]
-    if (item.table_name == "ingredient_sections") {
-      let sectionId = 'section-'+item.id
-      renderedIngItems.push(<Draggable key={sectionId} draggableId={sectionId} index={i}>
-        {(provided) => (
-          <div className="item-container" ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
-            <h3 style={{margin: "0", padding: "0.5em 0 0.2em 0"}}>
-              <TextField model={item} field="name" className="plain-input" url={recipe_ingredient_section_path({id: item.recipe_id}, {id: item.id})} />
-              <span style={{margin: "0 0.2em"}}>
-                <DeleteConfirmButton id={`del-${sectionId}`} onDeleteConfirm={() => removeIngSection(item)} message="Je veux enlever ce titre?" />
-              </span>
-            </h3>
-          </div>
-        )}
-      </Draggable>)
-    } else {
-      renderedIngItems.push(<Draggable key={item.key} draggableId={item.key} index={i}>
-        {(provided) => (
-          <div className="item-container" ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
-            <li className="list-group-item">
-              {<EditableIngredient ingredient={item} itemNb={i+1} {...{mixes, foods}} />}
-            </li>
-          </div>
-        )}
-      </Draggable>)
-    }
-  }
+  const renderedIngItems = ingredientsAndHeaders.map((ingOrHeader, i) => {
+    return <Draggable key={ingOrHeader.key} draggableId={'drag-'+i} index={i}>
+      {(provided) => (
+        <div className="item-container" ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
+          {function() {
+            if (ingOrHeader.qty || ingOrHeader.label) {
+              const ing = ingOrHeader
+              return <li className="list-group-item">
+                {<EditableIngredient ingredient={ingOrHeader} itemNb={i+1} {...{mixes, foods}} />}
+              </li>
+            } else {
+                //<TextField model={item} field="name" className="plain-input" url={recipe_ingredient_section_path({id: item.recipe_id}, {id: item.id})} />
+                //<span style={{margin: "0 0.2em"}}>
+                //  <DeleteConfirmButton id={`del-${sectionId}`} onDeleteConfirm={() => removeIngSection(item)} message="Je veux enlever ce titre?" />
+                //</span>
+              return <h3 style={{margin: "0", padding: "0.5em 0 0.2em 0"}}>
+                {ingOrHeader.header}
+              </h3>
+            }
+          }()}
+        </div>
+      )}
+    </Draggable>
+  })
 
   const IngredientList = 
     <ul className="list-group" style={{maxWidth: "800px"}}>
@@ -364,7 +358,7 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
           <img src="/icons/plus-circle.svg" style={{width: "2.5rem", padding: "0.5rem"}}/>
           <img src="/icons/minus-circle.svg" style={{width: "2.5rem", padding: "0.5rem"}}/>
         </Toggleable>
-        <PasteIngredientsButton recipe={recipe} ingredients={ingredients} />
+        <PasteIngredientsButton recipe={recipe} />
       </Row>
     </ul>
 

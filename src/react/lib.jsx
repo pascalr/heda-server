@@ -12,14 +12,19 @@ export function serializeIngredients(ingredients) {
 export function parseIngredientsOldFormat(text) {
   return text.split("\n").map((line,i) => {
     if (line.length <= 0) {return null;}
+    if (line[0] == '#') {return null;}
     let args = line.split(";")
     return {key: line, item_nb: i+1, raw: args[0].trim(), raw_food: args[1].trim()}
   }).filter(e => e)
 }
 
-export function parseIngredients(text) {
+export function parseIngredientsAndHeaders(text) {
   return text.split("\n").map(line => {
     if (line.length <= 0) {return null;}
+    // An ingredient section
+    if (line[0] == '#') {
+      return {key: line, header: line.substr(1).trim()}
+    }
     let args = line.split(";")
     return {key: line, qty: args[0].trim(), label: args[1].trim()}
   }).filter(e => e)

@@ -5,7 +5,7 @@ import {Block, Inline, InlineBlock, Row, Col, InlineRow, InlineCol, Grid} from '
 
 import Quantity from './models/quantity'
 import { Tiptap, BubbleTiptap } from './tiptap'
-import { LinkToPage, parseIngredients, parseIngredientsOldFormat } from "./lib"
+import { LinkToPage, parseIngredientsAndHeaders, parseIngredientsOldFormat } from "./lib"
 import {image_variant_path, recipe_path} from './routes'
 import { Utils } from "./recipe_utils"
 
@@ -49,7 +49,8 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
   const image_used_id = recipe.use_personalised_image ? recipe.image_id : recipe_kind && recipe_kind.image_id
   const image = images.find(i => i.id == image_used_id)
   const noteIds = recipe.notes ? Object.values(recipe.notes).sort((a,b) => a.item_nb - b.item_nb).map(ing => ing.id) : []
-  const ingredients = parseIngredients(recipe.ingredients)
+  const ingredientsAndHeaders = parseIngredientsAndHeaders(recipe.ingredients)
+  const ingredients = ingredientsAndHeaders.filter(e => e.label || e.qty)
   gon.recipe_ingredients = parseIngredientsOldFormat(recipe.ingredients)
   console.log('ingredients', ingredients)
   const ingredient_sections = ingredientSections.filter(e => e.recipe_id == recipe.id) || []
