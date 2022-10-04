@@ -5,10 +5,10 @@ import { createRoot } from 'react-dom/client';
 //import history from 'history/hash'
 
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, LinkToPage, useUpdatableState, getStateProperties, register, getRegister, useRegisteredState } from "./lib"
+import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, LinkToPage } from "./lib"
 import { RecipeList, RecipeIndex } from './recipe_index'
 import { ajax, isBlank, normalizeSearchText, preloadImage, getUrlParams, join, bindSetter, sortBy, capitalize } from "./utils"
-import { icon_path } from './routes'
+import { icon_path, image_variant_path } from './routes'
 import {TextField, AutocompleteInput, TextInput, CollectionSelect} from './form'
 import {PublicImageField} from './modals/public_image'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
@@ -887,11 +887,6 @@ const NewRecipe = ({page}) => {
 
 const App = () => {
   
-  //const page = useRegisteredState('page', getUrlParams(), (updated) => {
-  //  let s = getStateProperties(updated)
-  //  window.history.replaceState(s, '', '?'+new URLSearchParams(s).toString())
-  //})
-
   const [isSearching, setIsSearching] = useState(false)
 
   const [page, setPage] = useState(getUrlParams())
@@ -899,22 +894,21 @@ const App = () => {
   window.hcu.changePage = (updated) => {
     setPage(updated)
     setIsSearching(false)
-    let s = getStateProperties(updated)
-    window.history.replaceState(s, '', '?'+new URLSearchParams(s).toString())
+    window.history.replaceState(updated, '', '?'+new URLSearchParams(updated).toString())
   }
 
-  const recipeFilters = useUpdatableState('recipeFilters', gon.recipe_filters)
-  const suggestions = useUpdatableState('suggestions', gon.suggestions)
-  const userTags = useUpdatableState('userTags', gon.user_tags)
+  const recipeFilters = gon.recipe_filters
+  const suggestions = gon.suggestions
+  const userTags = gon.user_tags
   const favoriteRecipes = useHcuState(gon.favorite_recipes, {tableName: 'favorite_recipes'})
-  const machines = useUpdatableState('machines', gon.machines)
+  const machines = gon.machines
   const machineFoods = useHcuState(gon.machine_foods, {tableName: 'machine_foods'})
-  const containerQuantities = useUpdatableState('containerQuantities', gon.container_quantities)
-  const mixes = useUpdatableState('mixes', gon.mixes)
-  const foods = useUpdatableState('foods', gon.foods)
+  const containerQuantities = gon.container_quantities
+  const mixes = gon.mixes
+  const foods = gon.foods
   const recipes = useHcuState(gon.recipes, {tableName: 'recipes'})
   const recipeIds = recipes.map(r => r.id)
-  const recipeKinds = gon.recipe_kinds //useUpdatableState('recipe_kinds', gon.recipe_kinds)
+  const recipeKinds = gon.recipe_kinds
   const images = gon.images
   const user = gon.user
   const users = gon.users
@@ -963,7 +957,7 @@ const App = () => {
   // I don't want a back system, I want a up system. So if you are given a nested link, you can go up.
   const goUp = () => {
     if (page.page && parentPages[page.page]) {
-      changePage({...getStateProperties(page), page: parentPages[page.page]})
+      changePage({...page, page: parentPages[page.page]})
     }
   }
 

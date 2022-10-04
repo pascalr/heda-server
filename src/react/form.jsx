@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import autocomplete from 'js-autocomplete';
 
-import { urlFor } from './lib'
 import { normalizeSearchText, colorToHexString, hexStringToColor, Utils, ajax } from './utils'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 
