@@ -293,7 +293,7 @@ function removeIngSection(section) {
   //}})
 }
 
-export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipes, ingredientSections, recipeKinds, images, users, editable, user}) => {
+export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipes, recipeKinds, images, users, editable, user}) => {
 
   const [showImageModal, setShowImageModal] = useState(false)
 
@@ -306,7 +306,6 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
   const ingredients = ingredientsAndHeaders.filter(e => e.label != null || e.qty != null)
   gon.recipe_ingredients = parseIngredientsOldFormat(recipe.ingredients)
   //const ingredients = recipeIngredients.filter(e => e.recipe_id == recipeId) || []
-  const ingredient_sections = ingredientSections.filter(e => e.recipe_id == recipeId) || []
   const recipe_kind = recipeKinds.find(k => k.id == recipe.recipe_kind_id)
   const recipe_image = recipe.image_id ? images.find(e => e.id == recipe.image_id) : {}
   let recipeKindImage = recipe_kind && recipe_kind.image_id ? images.find(e => e.id == recipe_kind.image_id) : null
