@@ -49,101 +49,11 @@ const InstructionsShortcuts = props => (
   </>
 )
 
-const NewIngInputField = props => {
-
-  const [value, setValue] = useState('')
-  const [qty, setQty] = useState('')
-  const [newlyAdded, setNewlyAdded] = useState(true);
-
-  //const foodInputField = useRef(null);
-  const quantityInputField = useRef(null);
-
-  const id = "autocomplete-form"
-
-  useEffect(() => {
-    if (newlyAdded) {
-      quantityInputField.current.focus()
-      setNewlyAdded(false)
-    }
-  }, [newlyAdded]);
-
-  const inputFieldProps = {
-    placeholder: 'Sélectionner un aliment',
-    value,
-    id: 'newRecipeIngredientRawFood',
-    onChange: (e, {newValue}) => setValue(newValue),
-    //ref: foodInputField,
-  };
-
-  const postNewIngredient = (data) => {
-      
-    ajax({url: recipe_recipe_ingredients_path(gon.recipe), type: 'POST', data: data, success: (ingredient) => {
-      window.recipe_editor.current.addIng(ingredient)
-      setValue(''); setQty('');
-      quantityInputField.current.focus()
-    }})
-  }
-
-  //const addIngredient = (event, {suggestion, suggestionValue, suggestionIndex, sectionIndex, method}) => {
-  //  let data = new FormData()
-  //  data.append('recipe_ingredient[raw]', qty)
-  //  data.append('recipe_ingredient[food_id]', suggestion.id)
-  //  postNewIngredient(data)
-  //}
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    let data = new FormData()
-    data.append('recipe_ingredient[raw]', qty)
-    data.append('recipe_ingredient[raw_food]', e.currentTarget.elements.raw_food.value)
-    postNewIngredient(data)
-  }
-
-  const onSelect = (e, term, item) => {
-    e.preventDefault()
-    let data = new FormData()
-    let form = document.getElementById(id)
-    data.append('recipe_ingredient[raw]', form.elements.raw.value)
-    let f = props.foods.find(e => e.id == item.dataset.id)
-    data.append('recipe_ingredient[raw_food]', f.name)
-    postNewIngredient(data)
-  }
-
-  return (<>
-    <form id={id} onSubmit={handleSubmit}>
-      <Row gap="0.5em;">
-        <input type="text" name="raw" size="8" style={{border: "none", borderBottom: "1px dashed #444"}} value={qty} onChange={(e) => setQty(e.target.value)} ref={quantityInputField} />
-        {' '}
-        de
-        {' '}
-        <input type="hidden" name="food_id" value="" />
-        <AutocompleteInput name="raw_food" choices={props.foods} onSelect={onSelect} />
-        <input type="submit" value="Ajouter" />
-      </Row>
-    </form>
-  </>)
-}
-
-const VisualState = {
-  CLOSED: 1,
-  EXPANDING: 2,
-  EXPANDED: 3,
-}
-
 const EditableIngredient = ({ingredient, itemNb, foods, mixes, updateIngredients, removeIngredientOrHeader}) => {
   
   const [qty, setQty] = useState(ingredient.qty)
   const [label, setLabel] = useState(ingredient.label)
 
-  //const ingUrl = recipe_recipe_ingredient_path({id: ingredient.recipe_id}, ingredient)
-  const ingUrl = ''
-  const removeIngredient = (evt) => {
-    //ajax({url: ingUrl, type: 'DELETE', success: () => {
-    //  window.recipe_editor.current.removeIng(ingredient)
-    //}})
-  }
-
-  let f = ingredient.food_id ? foods.find(e => e.id == ingredient.food_id) : null
   let mix = mixes.find(e => e.recipe_id == gon.recipe.id)
 
   let moveIngToMix = () => {
@@ -167,77 +77,18 @@ const EditableIngredient = ({ingredient, itemNb, foods, mixes, updateIngredients
   )
 }
 
-const Toggleable = ({children, ...props}) => {
-  const [showToggled, setShowToggled] = useState(false)
+const EditableIngredientSection = ({item, index, updateIngredients, removeIngredientOrHeader}) => {
 
-  if (children.length <= 1) {throw "Toggleable requires 2 or 3 children. The first is the toggled. The second is the toggler. The third, if present, is the toggler active."}
+  const [header, setHeader] = useState(item.header)
+                
+  //<TextField model={item} field="name" className="plain-input" url={recipe_ingredient_section_path({id: item.recipe_id}, {id: item.id})} />
 
-  // TODO: Allow to be a div or link instead of a button? Who cares for now.
-  return (<div {...props}>
-    {showToggled ? children[0] : null}
-    <button className="plain-btn" onClick={() => setShowToggled(!showToggled)}>
-      {!showToggled ? children[1] : (children.length >= 2 ? children[2] : children[1])}
-    </button>
-  </div>)
-}
-
-//  constructor(props) {
-//    super(props);
-//    let noteIds = gon.recipe.notes ? Object.values(gon.recipe.notes).sort((a,b) => a.item_nb - b.item_nb).map(ing => ing.id) : []
-//    let recipe_image = gon.recipe.image_id ? gon.images.find(e => e.id == gon.recipe.image_id) : {}
-//    this.state = {
-//      recipe: gon.recipe,
-//      recipe_image: recipe_image,
-//      name: gon.recipe.name,
-//      ingredients: gon.recipe_ingredients.filter(e => e.recipe_id == gon.recipe.id) || [],
-//      noteIds: noteIds,
-//      ingredient_sections: props.ingredientSections.filter(e => e.recipe_id == gon.recipe.id) || [],
-//      toolIds: Object.keys(gon.recipe.tools || []),
-//      instructionsSlave: gon.recipe.complete_instructions,
-//      showImageModal: false,
-//    };
-//    this.handleDropIng = this.handleDropIng.bind(this);
-//    this.appendIngredientSection = this.appendIngredientSection.bind(this)
-//    this.addIng = this.addIng.bind(this)
-//    this.removeIng = this.removeIng.bind(this)
-//    this.removeIngSection = this.removeIngSection.bind(this)
-//    this.appendNote = this.appendNote.bind(this)
-//  }
-
-  //componentDidUpdate(prevProps, prevState) {
-  //  if (prevState.ingredients !== this.state.ingredients) {
-  //    gon.recipe_ingredients = this.state.ingredients
-  //  }
-  //}
-
-  //swapIng(dragIndex, dropIndex) {
-  //  let swappedIngs = swapArrayPositions(this.state.ings, dragIndex, dropIndex);
-  //  this.setState({ings: swappedIngs})
-  //}
-
-function addIng(ingredient) {
-  //console.log("added ingredient ", ingredient)
-  //this.setState({ingredients: [...this.state.ingredients, ingredient]})
-}
-function removeIng(ing) {
-  //console.log("this.state.ingredients", this.state.ingredients)
-  //let ings = this.state.ingredients.filter(item => item.id != ing.id)
-  //console.log("ings", ings)
-  //this.setState({ingredients: ings})
-}
-
-function appendIngredientSection() {
-  //ajax({url: recipe_ingredient_sections_path(gon.recipe), type: 'POST', data: {}, success: (section) => {
-  //  this.setState({ingredient_sections: [...this.state.ingredient_sections, section]})
-  //}})
-}
-
-function appendNote() {
-  //ajax({url: recipe_recipe_notes_path(gon.recipe), type: 'POST', data: {}, success: (recipe_note) => {
-  //  if (!gon.recipe.notes) {gon.recipe.notes = {}}
-  //  gon.recipe.notes[recipe_note.id] = recipe_note
-  //  this.setState({noteIds: [...this.state.noteIds, recipe_note.id]})
-  //}})
+  return <h3 style={{margin: "0", padding: "0.5em 0 0.2em 0"}}>
+    <input type="text" size="24" className="plain-input" value={header||''} name="header" onChange={(e) => setHeader(e.target.value)} onBlur={(e) => {item.header = header; updateIngredients()}} />
+    <span style={{margin: "0 0.2em"}}>
+      <DeleteConfirmButton id={`del-${index}`} onDeleteConfirm={() => removeIngredientOrHeader(index)} message="Je veux enlever ce titre?" />
+    </span>
+  </h3>
 }
 
 function handleDropIng(ingItems, droppedItem) {
@@ -327,6 +178,11 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
     window.hcu.updateField(recipe, 'ingredients', serializeIngredientsAndHeaders(ingredientsAndHeaders))
   }
 
+  function addIngredientSection() {
+    ingredientsAndHeaders.push({key: `${ingredientsAndHeaders.length}-`, header: ''})
+    window.hcu.updateField(recipe, 'ingredients', serializeIngredientsAndHeaders(ingredientsAndHeaders))
+  }
+
   const renderedIngItems = ingredientsAndHeaders.map((ingOrHeader, i) => {
     return <Draggable key={ingOrHeader.key} draggableId={'drag-'+i} index={i}>
       {(provided) => (
@@ -338,13 +194,7 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
                 {<EditableIngredient ingredient={ingOrHeader} itemNb={i+1} {...{mixes, foods, updateIngredients, removeIngredientOrHeader}} />}
               </li>
             } else {
-                //<TextField model={item} field="name" className="plain-input" url={recipe_ingredient_section_path({id: item.recipe_id}, {id: item.id})} />
-                //<span style={{margin: "0 0.2em"}}>
-                //  <DeleteConfirmButton id={`del-${sectionId}`} onDeleteConfirm={() => removeIngSection(item)} message="Je veux enlever ce titre?" />
-                //</span>
-              return <h3 style={{margin: "0", padding: "0.5em 0 0.2em 0"}}>
-                {ingOrHeader.header}
-              </h3>
+              return <EditableIngredientSection item={ingOrHeader} index={i} {...{updateIngredients, removeIngredientOrHeader}} />
             }
           }()}
         </div>
@@ -490,7 +340,7 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
           <div className="dropstart" style={{padding: "0 1em"}}>
             <img data-bs-toggle="dropdown" style={{cursor: "pointer"}} src="/icons/list.svg"/>
             <div className="dropdown-menu">
-              <button className="dropdown-item" type="button" onClick={appendIngredientSection}>
+              <button className="dropdown-item" type="button" onClick={addIngredientSection}>
                 Ajouter une section
               </button>
             </div>
