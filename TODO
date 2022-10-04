@@ -3,10 +3,8 @@ Pouvoir faire tab pour éditer un ingrédient...
 Modifier un ingrédient ne se réflète pas en direct dans Tiptap...
 Use proseMirror directly in order to avoid using gon... in Tiptap?
 https://prosemirror.net/examples/basic/
-L'image de pate chinois
 Remove gon.recipe
 Remove gon from everywhere except app
-DNS hedacuisine.com
 Demo user
 Thumbnails images
 Fix les images déformées (biscuits bonshommes en pain d'épices)

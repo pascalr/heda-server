@@ -31,7 +31,7 @@ const MixIngredients = ({mix}) => {
   </>
 }
 
-export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipeKinds, images, user, users, recipes}) => {
+export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipeKinds, images, user, users, recipes, suggestions, tags}) => {
 
   let recipe = recipes.find(e => e.id == recipeId)
   gon.recipe = recipe // FIXME: This is really ugly
@@ -54,6 +54,7 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
   console.log('ingredients', ingredients)
   const toolIds = []
   const mix = mixes.find(m => m.recipe_id == recipe.id)
+  const recipeTags = suggestions.filter(s => s.recipe_id == recipe.id).map(s => tags.find(t => t.id == s.filter_id))
 
   const IngredientList = 
     <div id="ing_list">
@@ -116,6 +117,14 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
   const userName = recipeUser ? recipeUser.name : `user${recipe.user_id}`
 
   return (<>
+    <div style={{fontSize: '0.8em', marginBottom: '0.5em'}}>
+      <b>Tags:</b>&nbsp;
+      <span>
+        {!recipeTags || recipeTags.length == 0 ? 'Aucun' : recipeTags.map(tag => 
+          <LinkToPage key={tag.id} page={{page: 9, filterId: tag.id}} className="plain-link h002">#{tag.name}&nbsp;</LinkToPage>
+        )}
+      </span>
+    </div>
     <div className="recipe">
       <div className="d-block d-md-flex gap-20">
         <div>
@@ -135,7 +144,7 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
               <span className="dropdown" style={{padding: "0 1rem"}}>
                 <img className="clickable" data-bs-toggle="dropdown" src="/icons/list.svg"/>
                 <div className="dropdown-menu">
-                  <LinkToPage page={{...page, page: 16}} className="dropdown-item" active={page.page == 16}>Modifier</LinkToPage>
+                  <LinkToPage page={{...page, page: 16}} className="dropdown-item">Modifier</LinkToPage>
                 </div>
               </span>
             }

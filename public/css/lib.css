@@ -8,6 +8,19 @@
   width: auto;
 }
 
+.plain-link {
+  text-decoration: none;
+}
+.plain-link:visited {
+  text-decoration: none;
+}
+.plain-link:hover {
+  text-decoration: none;
+}
+.plain-link:active {
+  text-decoration: none;
+}
+
 .plain-btn, .btn-image {
   background: none;
   color: inherit;

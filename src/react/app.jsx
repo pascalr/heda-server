@@ -635,9 +635,8 @@ export const EditMix = ({page, recipes, favoriteRecipes, machines, mixes, machin
   </>)
 }
 
-//const ShowRecipe = ({page}) => {
-const ShowRecipe = ({page, favoriteRecipes, machines, mixes, machineFoods, recipes, foods, recipeKinds, images, user, users}) => {
-  return <RecipeViewer {...{recipeId: page.recipeId, page, favoriteRecipes, machines, mixes, machineFoods, foods, recipeKinds, images, user, users, recipes}} />
+const ShowRecipe = (props) => {
+  return <RecipeViewer {...{recipeId: props.page.recipeId, ...props}} />
 }
 
 const EditRecipe = (props) => {
@@ -1004,7 +1003,7 @@ const App = () => {
     [PAGE_12]: <MixIndex {...{page, machines, machineFoods, mixes}} />,
     [PAGE_13]: <ShowMix {...all} />,
     [PAGE_14]: <EditMix {...all} />,
-    [PAGE_15]: <ShowRecipe {...{...all, recipeKinds, images, user, users}} />,
+    [PAGE_15]: <ShowRecipe {...{...all, recipeKinds, images, user, users, suggestions, tags: recipeFilters}} />,
     [PAGE_16]: <EditRecipe {...{...all, user, users, recipeKinds, images}} />,
     [PAGE_17]: <NewRecipe {...{page}} />
   }
@@ -1026,7 +1025,7 @@ const App = () => {
     <div className="d-flex align-items-center">
       {moveBtn}
       <div className="flex-grow-1"/>
-      <h1 style={{marginBottom: "0"}} className="clickable" onClick={() => changePage(1)}>Qu'est-ce qu'on mange?</h1>
+      <h1 style={{marginBottom: "0"}} className="clickable" onClick={() => changePage(1)}>HedaCuisine</h1>
       <div className="flex-grow-1"/>
       <img className="clickable" src={isSearching ? icon_path("x-lg.svg") : icon_path("search_black.svg")} width="24" onClick={() => {setIsSearching(!isSearching)}}/>
     </div>
