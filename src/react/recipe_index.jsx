@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
 
-import {PercentageCompleted} from './helpers/recipes_helper'
 import { ajax, isBlank, normalizeSearchText } from "./utils"
 import { recipe_path, favorite_recipe_path, favorite_recipes_path, image_variant_path } from "./routes"
 import {EditUserRecipeModal} from './modals/edit_user_recipe'
@@ -46,7 +45,6 @@ const RecipeListItemMenu = ({fav, recipe, editUserRecipe, user}) => {
 
 export const RecipeList = ({page, list, selected, suggestions, tags, editUserRecipe, mixes, recipes, recipeKinds, user}) => {
 
-  //{!showPercentCompleted ? '' : <span>&nbsp;(<PercentageCompleted recipe={recipe}/>)</span>}
   return (<>
     <ul id="recipes" className="recipe-list">
       {list.map((item, current) => {

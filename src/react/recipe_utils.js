@@ -1,5 +1,4 @@
 import Quantity from './models/quantity'
-import Ingredient from './ingredient'
 
 export const Utils = {
 

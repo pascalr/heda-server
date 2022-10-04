@@ -4,7 +4,6 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Autosuggest from 'react-autosuggest'
 import {Block, Inline, InlineBlock, Row, Col, InlineRow, InlineCol, Grid} from 'jsxstyle'
 
-import Quantity from './models/quantity'
 import { ajax } from "./utils"
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import { Tiptap, BubbleTiptap } from './tiptap'
@@ -144,6 +143,7 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
     window.hcu.updateField(recipe, 'ingredients', serializeIngredientsAndHeaders(ingredientsAndHeaders))
   }
 
+  let itemNb = 0
   const renderedIngItems = ingredientsAndHeaders.map((ingOrHeader, i) => {
     return <Draggable key={ingOrHeader.key} draggableId={'drag-'+i} index={i}>
       {(provided) => (
@@ -151,8 +151,9 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
           {function() {
             if (ingOrHeader.qty != null || ingOrHeader.label != null) {
               const ing = ingOrHeader
+              itemNb += 1
               return <li className="list-group-item">
-                {<EditableIngredient ingredient={ingOrHeader} itemNb={i+1} {...{mixes, foods, updateIngredients, removeIngredientOrHeader}} />}
+                {<EditableIngredient ingredient={ingOrHeader} itemNb={itemNb} {...{mixes, foods, updateIngredients, removeIngredientOrHeader}} />}
               </li>
             } else {
               return <EditableIngredientSection item={ingOrHeader} index={i} {...{updateIngredients, removeIngredientOrHeader}} />

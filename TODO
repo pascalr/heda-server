@@ -1,19 +1,7 @@
-Pate chinois
-4 lbs patates
-500 mL blé d'inde
-1 t lentille sèches
-1 t pvt sec
-1 t eau
-2 c. à soupe sauce huitre
-1 c. à soupe sauce soja
-1 très gros oignon
-2 gousse d'ail
-sel et poivre
-
+Pouvoir faire tab pour éditer un ingrédient...
 Modifier un ingrédient ne se réflète pas en direct dans Tiptap...
 Use proseMirror directly in order to avoid using gon... in Tiptap?
-TODO: Add ingredient_sections inside the ingredients text. Start with a #.
-TODO: Migrer la database avec les ingrédients lorsque ça va bien fonctionner
+https://prosemirror.net/examples/basic/
 L'image de pate chinois
 Remove gon.recipe
 Remove gon from everywhere except app
