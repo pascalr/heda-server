@@ -4,7 +4,6 @@ import Modal from 'react-bootstrap/Modal'
 import {ajax} from '../utils'
 import {mapModels} from '../lib'
 import {AutocompleteInput} from '../form'
-import {user_tags_path} from '../routes'
 
 //import {ajax} from '../utils'
 

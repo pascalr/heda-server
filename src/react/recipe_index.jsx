@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 
 import { ajax, isBlank, normalizeSearchText } from "./utils"
-import { recipe_path, favorite_recipe_path, favorite_recipes_path, image_variant_path } from "./routes"
+import { image_variant_path } from "./routes"
 import {EditUserRecipeModal} from './modals/edit_user_recipe'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import { LinkToPage } from "./lib"

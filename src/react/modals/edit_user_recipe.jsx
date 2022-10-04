@@ -3,7 +3,6 @@ import Modal from 'react-bootstrap/Modal'
 
 import {ajax} from '../utils'
 import {mapModels} from '../lib'
-import {update_tags_recipe_path} from '../routes'
 
 //import {ajax} from '../utils'
 

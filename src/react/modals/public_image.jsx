@@ -3,7 +3,6 @@ import Modal from 'react-bootstrap/Modal'
 
 import { updateRecordField } from "../form"
 import { useFetch } from "../lib"
-import { public_images_path } from '../routes'
 
 //import {asyncUpdateModel, TextField, FileField, RadioField} from '../form'
 

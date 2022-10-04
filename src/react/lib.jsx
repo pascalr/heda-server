@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
 import { ajax, omit, join, bindSetter, capitalize } from "./utils"
-import {recipe_recipe_ingredient_path, food_path, recipe_ingredient_section_path, recipe_path, recipe_recipe_note_path, image_path } from './routes'
 
 export function serializeIngredientsAndHeaders(ingredients) {
   return ingredients.map(ing => {

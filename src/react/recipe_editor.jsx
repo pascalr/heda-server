@@ -13,7 +13,7 @@ import {EditRecipeImageModal} from './modals/recipe_image'
 import {PasteIngredientsButton} from './modals/paste_ingredients'
 import {EditMix} from './app'
 
-import {paste_ingredients_recipes_path, recipe_recipe_ingredients_path, recipe_recipe_ingredient_path, food_path, recipe_ingredient_sections_path, recipe_ingredient_section_path, recipe_recipe_notes_path, move_ing_recipe_path, recipe_path, recipe_recipe_note_path, image_variant_path, mixes_path, mix_path } from './routes'
+import { image_variant_path } from './routes'
 
 const InstructionsShortcuts = props => (
   <>
@@ -311,7 +311,7 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
         {IngredientList}
       
         <h2>Instructions</h2>
-        <Tiptap model={recipe} json_field="json" html_field="html" url={recipe_path(gon.recipe)} content={gon.recipe.json ? JSON.parse(gon.recipe.json) : null} editable={true} ingredients={ingredients} />
+        <Tiptap model={recipe} json_field="json" html_field="html" content={gon.recipe.json ? JSON.parse(gon.recipe.json) : null} editable={true} ingredients={ingredients} />
         {editable ? <InstructionsShortcuts/> : ''}
         
         <h3>Notes</h3>

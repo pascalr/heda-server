@@ -5,7 +5,7 @@ import {Block, Inline, InlineBlock, Row, Col, InlineRow, InlineCol, Grid} from '
 
 import { Tiptap, BubbleTiptap } from './tiptap'
 import { LinkToPage, parseIngredientsAndHeaders, parseIngredientsOldFormat } from "./lib"
-import {image_variant_path, recipe_path} from './routes'
+import {image_variant_path} from './routes'
 import { Utils } from "./recipe_utils"
 
 const MixIngredients = ({mix}) => {
@@ -190,7 +190,7 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
         {IngredientList}
       
         <h2>Instructions</h2>
-        <Tiptap model="recipe" json_field="json" html_field="html" url={recipe_path(recipe)} content={JSON.parse(recipe.json)} editable={false} />
+        <Tiptap model="recipe" json_field="json" html_field="html" content={JSON.parse(recipe.json)} editable={false} />
        
         {noteIds.length <= 0 ? '' : <>
           <h3>Notes</h3>
