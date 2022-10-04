@@ -90,3 +90,7 @@ body {
 .selected * {
   background-color: #eee;
 }
+
+input[type="radio"] {
+  margin-right: 0.3em;
+}

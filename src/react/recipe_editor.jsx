@@ -242,7 +242,7 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
             <EditRecipeImageModal recipe={recipe} show={showImageModal}
                                   handleClose={() => setShowImageModal(false)}
                                   recipeImage={recipe_image} recipeKindImage={recipeKindImage} />
-            <div style={{cursor: "pointer"}} onClick={() => setShowImageModal(false)}>
+            <div style={{cursor: "pointer"}} onClick={() => setShowImageModal(true)}>
               <img style={{maxWidth: "100vh", height: "auto"}} src={imagePath} width="452" height="304"/>
               <div className="bottom-right" style={{color: 'white', fontSize: '2em'}}>
                 <img src="/icons/pencil-circle.svg" style={{width: "5rem", padding: "0.5rem"}}/>
