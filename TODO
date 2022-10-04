@@ -1,10 +1,18 @@
-Pouvoir ajouter une recette d'un autre utilisateur à ses favoris.
+Modifier pour CV pour ajouter un lien vers mon site internet. Ajouter un code QR vers l'url de mon site? Un lien dans le pdf?
+
+Faire une page de vente pour l'application.
+    Faire une vidéo ou bien ou simulation live de l'éditeur de recette (Créer une recette n'aura jamais été aussi facile)
+    Tu ne sais pas quoi manger? HedaCuisine te suggère des recettes selon des thèmes.
+
+Longer sessions (1 month!)
+Quand tu crées une nouvelle recette, afficher en direct le recipe_kind qui lui est affecté et demander si tu veux que l'image soit celle choisie.
 Pouvoir faire tab pour éditer un ingrédient...
 Modifier un ingrédient ne se réflète pas en direct dans Tiptap...
 Use proseMirror directly in order to avoid using gon... in Tiptap?
 https://prosemirror.net/examples/basic/
 Remove gon.recipe
 Remove gon from everywhere except app
+Quand tu regardes une recette qui n'est pas à toi, et ensuite tu fais une recherche, elle est dans "Mes recettes" parce qu'elle a été ajouté à gon.recipes. Il faudrait filtrer ces recettes.
 Demo user
 Thumbnails images
 Fix les images déformées (biscuits bonshommes en pain d'épices)
