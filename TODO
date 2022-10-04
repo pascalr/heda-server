@@ -10,6 +10,7 @@ Pate chinois
 2 gousse d'ail
 sel et poivre
 
+Modifier un ingrédient ne se réflète pas en direct dans Tiptap...
 Use proseMirror directly in order to avoid using gon... in Tiptap?
 TODO: Add ingredient_sections inside the ingredients text. Start with a #.
 TODO: Migrer la database avec les ingrédients lorsque ça va bien fonctionner

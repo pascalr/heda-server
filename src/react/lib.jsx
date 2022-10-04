@@ -3,8 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { ajax, omit, join, bindSetter, capitalize } from "./utils"
 import {recipe_recipe_ingredient_path, food_path, recipe_ingredient_section_path, recipe_path, recipe_recipe_note_path, image_path } from './routes'
 
-export function serializeIngredients(ingredients) {
+export function serializeIngredientsAndHeaders(ingredients) {
   return ingredients.map(ing => {
+    if (ing.header) {return '#'+ing.header}
     return ing.qty + '; ' + ing.label
   }).join("\n")
 }
@@ -14,19 +15,20 @@ export function parseIngredientsOldFormat(text) {
     if (line.length <= 0) {return null;}
     if (line[0] == '#') {return null;}
     let args = line.split(";")
-    return {key: line, item_nb: i+1, raw: args[0].trim(), raw_food: args[1].trim()}
+    return {key: `${i}-${line}`, item_nb: i+1, raw: args[0].trim(), raw_food: args[1].trim()}
   }).filter(e => e)
 }
 
 export function parseIngredientsAndHeaders(text) {
-  return text.split("\n").map(line => {
+  return text.split("\n").map((line,i) => {
     if (line.length <= 0) {return null;}
+    const key = `${i}-${line}`
     // An ingredient section
     if (line[0] == '#') {
-      return {key: line, header: line.substr(1).trim()}
+      return {key: key, header: line.substr(1).trim()}
     }
     let args = line.split(";")
-    return {key: line, qty: args[0].trim(), label: args[1].trim()}
+    return {key: key, qty: args[0].trim(), label: args[1].trim()}
   }).filter(e => e)
 }
 

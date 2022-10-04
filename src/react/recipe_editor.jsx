@@ -9,7 +9,7 @@ import { ajax } from "./utils"
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import { Tiptap, BubbleTiptap } from './tiptap'
 import {AutocompleteInput, updateRecord, TextField, CollectionSelect} from './form'
-import { parseIngredientsAndHeaders, parseIngredientsOldFormat } from './lib'
+import { parseIngredientsAndHeaders, parseIngredientsOldFormat, serializeIngredientsAndHeaders } from './lib'
 import {EditRecipeImageModal} from './modals/recipe_image'
 import {PasteIngredientsButton} from './modals/paste_ingredients'
 import {EditMix} from './app'
@@ -130,9 +130,10 @@ const VisualState = {
   EXPANDED: 3,
 }
 
-const EditableIngredient = ({ingredient, itemNb, foods, mixes}) => {
-
-  if (ingredient == null) {return null;}
+const EditableIngredient = ({ingredient, itemNb, foods, mixes, updateIngredients, removeIngredientOrHeader}) => {
+  
+  const [qty, setQty] = useState(ingredient.qty)
+  const [label, setLabel] = useState(ingredient.label)
 
   //const ingUrl = recipe_recipe_ingredient_path({id: ingredient.recipe_id}, ingredient)
   const ingUrl = ''
@@ -156,12 +157,12 @@ const EditableIngredient = ({ingredient, itemNb, foods, mixes}) => {
   return (
     <Row alignItems="center" gap="5px">
       <span style={{padding: "0 10px 0 0"}}><b>{itemNb}.</b></span>
-      <TextField model={ingredient} field="qty" size="8" className="editable-input" />
+      <input type="text" size="8" className="editable-input" value={qty||''} name="qty" onChange={(e) => setQty(e.target.value)} onBlur={(e) => {ingredient.qty = qty; updateIngredients()}} />
       de{/*" de " ou bien " - " si la quantité n'a pas d'unité => _1_____ - oeuf*/}
-      {f ? <a href={food_path(f)}>{f.name}</a> : <div>{ingredient.label}</div>}
+      <input type="text" size="24" className="editable-input" value={label||''} name="label" onChange={(e) => setLabel(e.target.value)} onBlur={(e) => {ingredient.label = label; updateIngredients()}} />
       <Block flexGrow="1" />
       {mix ? <img className="clickable" style={{marginRight: '0.4em'}} src="/icons/arrow-down-up.svg" width="16" height="16" onClick={moveIngToMix}></img> : '' }
-      <DeleteConfirmButton id={`ing-${ingredient.key}`} onDeleteConfirm={removeIngredient} message="Je veux enlever cet ingrédient?" />
+      <DeleteConfirmButton id={`ing-${ingredient.key}`} onDeleteConfirm={() => removeIngredientOrHeader(itemNb-1)} message="Je veux enlever cet ingrédient?" />
     </Row>
   )
 }
@@ -313,6 +314,15 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
   const imagePath = image ? image_variant_path(image, 'medium') : "/img/default_recipe_01.png"
   const mix = mixes.find(m => m.recipe_id == recipe.id)
 
+  function updateIngredients() {
+    window.hcu.updateField(recipe, 'ingredients', serializeIngredientsAndHeaders(ingredientsAndHeaders))
+  }
+
+  function removeIngredientOrHeader(index) {
+    ingredientsAndHeaders.splice(index, 1)
+    window.hcu.updateField(recipe, 'ingredients', serializeIngredientsAndHeaders(ingredientsAndHeaders))
+  }
+
   const renderedIngItems = ingredientsAndHeaders.map((ingOrHeader, i) => {
     return <Draggable key={ingOrHeader.key} draggableId={'drag-'+i} index={i}>
       {(provided) => (
@@ -321,7 +331,7 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
             if (ingOrHeader.qty || ingOrHeader.label) {
               const ing = ingOrHeader
               return <li className="list-group-item">
-                {<EditableIngredient ingredient={ingOrHeader} itemNb={i+1} {...{mixes, foods}} />}
+                {<EditableIngredient ingredient={ingOrHeader} itemNb={i+1} {...{mixes, foods, updateIngredients, removeIngredientOrHeader}} />}
               </li>
             } else {
                 //<TextField model={item} field="name" className="plain-input" url={recipe_ingredient_section_path({id: item.recipe_id}, {id: item.id})} />
