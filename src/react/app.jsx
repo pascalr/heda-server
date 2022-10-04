@@ -26,7 +26,7 @@ const PAGE_4 = 4 // EditUserTags
 const PAGE_6 = 6 // MyRecipes
 const PAGE_7 = 7 // MyBooks
 const PAGE_8 = 8 // TagEditAllCategories
-const PAGE_9 = 9 // TagSuggestions
+const PAGE_9 = 9 // SuggestionsIndex
 const PAGE_10 = 10 // HedaIndex
 const PAGE_11 = 11 // Inventory
 const PAGE_12 = 12 // MixIndex
@@ -133,7 +133,9 @@ const RecipeSingleCarrousel = ({tag, suggestions, isCategory, recipes}) => {
       <div>
         <div className="over-container" style={{margin: "auto"}}>
           <img src={suggestion.image_id ? image_variant_path({id: suggestion.image_id}, "medium") : "/img/default_recipe_01.png"} style={{maxWidth: "100vw"}} width="452" height="304" />
-          <h2 className="bottom-center font-satisfy" style={{borderRadius: "0.5em", border: "1px solid #777", color: "#333", bottom: "1em", backgroundColor: "#f5f5f5", fontSize: "2em", padding: "0.2em 0.8em 0 0.2em"}}>{recipe.name}</h2>
+          <LinkToPage page={{page: 15, recipeId: recipe.id}}>
+            <h2 className="bottom-center font-satisfy" style={{borderRadius: "0.5em", border: "1px solid #777", color: "#333", bottom: "1em", backgroundColor: "#f5f5f5", fontSize: "2em", padding: "0.2em 0.8em 0 0.2em"}}>{recipe.name}</h2>
+          </LinkToPage>
           <div className="left-center">
             <img src={icon_path("custom-chevron-left.svg")} width="45" height="90" onClick={previousSuggestion} aria-disabled={suggestionNb <= 0} />
           </div>
@@ -141,15 +143,11 @@ const RecipeSingleCarrousel = ({tag, suggestions, isCategory, recipes}) => {
             <img src={icon_path("custom-chevron-right.svg")} width="45" height="90" onClick={nextSuggestion} aria-disabled={suggestionNb >= suggestions.length-1} />
           </div>
         </div>
-        <div style={{height: '0.5em'}}></div>
-        <div id="choose-btns" className="d-flex flex-column">
-          <a type="button" className="btn btn-primary" onClick={sendStats} href={href}>Cuisiner!</a>
-        </div>
       </div>
   </>)
 }
 
-const TagSuggestions = ({tags, suggestions, page, recipes}) => {
+const SuggestionsIndex = ({tags, suggestions, page, recipes}) => {
 
   const tag = tags.find(f => f.id == page.filterId)
   if (!tag) {return ''}
@@ -997,7 +995,7 @@ const App = () => {
     [PAGE_6]: <MyRecipes {...{page, recipes, suggestions, recipeFilters, favoriteRecipes, tags: recipeFilters, mixes, recipeKinds, user}} />,
     [PAGE_7]: <MyBooks page={page} />,
     [PAGE_8]: <TagEditAllCategories page={page} recipeFilters={recipeFilters} />,
-    [PAGE_9]: <TagSuggestions page={page} suggestions={suggestions} tags={recipeFilters} recipes={recipes} />,
+    [PAGE_9]: <SuggestionsIndex page={page} suggestions={suggestions} tags={recipeFilters} recipes={recipes} />,
     [PAGE_10]: <HedaIndex {...{page, machines}} />,
     [PAGE_11]: <Inventory {...{page, machines, machineFoods, containerQuantities}} />,
     [PAGE_12]: <MixIndex {...{page, machines, machineFoods, mixes}} />,
