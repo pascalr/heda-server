@@ -16,7 +16,7 @@ const updateFavoriteRecipe = (fav, list_id, recipe, user) => {
   }
 }
 
-const removeFavorite = (fav, recipe) => {
+const removeFavoriteRecipe = (fav, recipe) => {
   window.hcu.destroyRecord(fav)
   window.hcu.removeRecord(recipe)
 }
@@ -37,7 +37,7 @@ const RecipeListItemMenu = ({fav, recipe, editUserRecipe, user}) => {
         <li>{fav && fav.list_id == 1 ? toNotCook : toCook }</li>
         <li>{fav && fav.list_id == 2 ? toNotTry : toTry }</li>
         <li><button type="button" className="dropdown-item" onClick={() => editUserRecipe(recipe)}>Tagger</button></li>
-        {fav ? <li><button type="button" className="dropdown-item" onClick={() => removeFavorite(fav, recipe)}>Retirer de mes favoris</button></li> : ''}
+        {fav ? <li><button type="button" className="dropdown-item" onClick={() => removeFavoriteRecipe(fav, recipe)}>Retirer de mes favoris</button></li> : ''}
       </ul>
     </span>
   </>

@@ -55,6 +55,7 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
   const toolIds = []
   const mix = mixes.find(m => m.recipe_id == recipe.id)
   const recipeTags = suggestions.filter(s => s.recipe_id == recipe.id).map(s => tags.find(t => t.id == s.filter_id))
+  const favorite = favoriteRecipes.find(f => f.recipe_id == recipe.id)
 
   const IngredientList = 
     <div id="ing_list">
@@ -178,9 +179,19 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
             <a className="btn btn-outline-secondary" href="FIXME">
               <img src="/icons/download.svg" width="16"></img>
             </a>
-            <a className="btn btn-outline-secondary" href="FIXME">
-              <img src="/icons/star.svg" width="16"></img>
-            </a>
+            {function() {
+              let img = favorite ? "/icons/star-fill.svg" : "/icons/star.svg"
+              const handleClick = () => {
+                if (favorite) {
+                  window.hcu.destroyRecord(favorite)
+                } else {
+                  window.hcu.createRecord({table_name: "favorite_recipes", recipe_id: recipe.id})
+                }
+              }
+              return <button type="button" className="btn btn-outline-secondary" onClick={handleClick}>
+                <img src={img} width="16"></img>
+              </button>
+            }()}
           </div>
         </div>
       </div>
