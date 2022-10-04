@@ -81,8 +81,6 @@ const EditableIngredientSection = ({item, index, updateIngredients, removeIngred
 
   const [header, setHeader] = useState(item.header)
                 
-  //<TextField model={item} field="name" className="plain-input" url={recipe_ingredient_section_path({id: item.recipe_id}, {id: item.id})} />
-
   return <h3 style={{margin: "0", padding: "0.5em 0 0.2em 0"}}>
     <input type="text" size="24" className="plain-input" value={header||''} name="header" onChange={(e) => setHeader(e.target.value)} onBlur={(e) => {item.header = header; updateIngredients()}} />
     <span style={{margin: "0 0.2em"}}>
@@ -91,57 +89,20 @@ const EditableIngredientSection = ({item, index, updateIngredients, removeIngred
   </h3>
 }
 
-function handleDropIng(ingItems, droppedItem) {
+function handleDrop(ingredientsAndHeaders, droppedItem, recipe) {
 
-  const getClosestItemNb = (index) => {
-    for (let i = index; i < ingItems.length; i++) {
-      if (ingItems[i].table_name == "recipe_ingredients") {
-        return ingItems[i].item_nb
-      }
-    }
-    return this.state.ingredients.length
-  }
-
-  console.log('Handle drop ing')
   // Ignore drop outside droppable container
   if (!droppedItem.destination) return;
-  let source = getClosestItemNb(droppedItem.source.index)-1
-  let destination = getClosestItemNb(droppedItem.destination.index)-1
-  let droppedRecord = ingItems[droppedItem.source.index]
-  //console.log("droppedRecord", droppedRecord)
-  //console.log("droppedItem", droppedItem)
-  //console.log("source", source)
-  //console.log("destination", destination)
-  if (droppedRecord.table_name == "recipe_ingredients") {
-    console.log("dropping recipe ingredient")
-    var updatedList = [...this.state.ingredients];
-    const [reorderedItem] = updatedList.splice(source, 1);
-    updatedList.splice(destination, 0, reorderedItem);
 
-    let data = new FormData()
-    data.append('ing_id', droppedRecord.id)
-    data.append('position', destination+1)
-    ajax({url: move_ing_recipe_path(gon.recipe), type: 'PATCH', data: data})
-    for (let i = 0; i < updatedList.length; i++) {
-      updatedList[i].item_nb = i+1
-    }
-    this.setState({ingredients: updatedList})
-  } else {
-    var others = [...this.state.ingredient_sections].filter(i => i.id != droppedRecord.id);
-    droppedRecord.before_ing_nb = droppedItem.source.index < droppedItem.destination.index ? destination+2 : destination+1
-    console.log("dropping ingredient section at ", droppedRecord.before_ing_nb)
-    let data = new FormData()
-    data.append('ingredient_section[before_ing_nb]', droppedRecord.before_ing_nb)
-    ajax({url: recipe_ingredient_section_path({id: droppedRecord.recipe_id}, droppedRecord), type: 'PATCH', data: data})
-    this.setState({ingredient_sections: [...others, droppedRecord]})
-  }
-}
+  let source = droppedItem.source.index
+  let destination = droppedItem.destination.index
+  console.log("source", source)
+  console.log("destination", destination)
 
-function removeIngSection(section) {
-  //ajax({url: recipe_ingredient_section_path({id: section.recipe_id}, section), type: 'DELETE', success: () => {
-  //  let sections = this.state.ingredient_sections.filter(i => i.id != section.id)
-  //  this.setState({ingredient_sections: sections})
-  //}})
+  var updatedList = [...ingredientsAndHeaders];
+  const [reorderedItem] = updatedList.splice(source, 1);
+  updatedList.splice(destination, 0, reorderedItem);
+  window.hcu.updateField(recipe, 'ingredients', serializeIngredientsAndHeaders(updatedList))
 }
 
 export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipes, recipeKinds, images, users, editable, user}) => {
@@ -204,7 +165,7 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
 
   const IngredientList = 
     <ul className="list-group" style={{maxWidth: "800px"}}>
-      <DragDropContext onDragEnd={(droppedItem) => handleDropIng(ingItems, droppedItem)}>
+      <DragDropContext onDragEnd={(droppedItem) => handleDrop(ingredientsAndHeaders, droppedItem, recipe)}>
         <Droppable droppableId="list-container">
           {(provided) => (
             <div className="list-container" {...provided.droppableProps} ref={provided.innerRef}>
