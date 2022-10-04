@@ -1,3 +1,4 @@
+Pouvoir ajouter une recette d'un autre utilisateur à ses favoris.
 Pouvoir faire tab pour éditer un ingrédient...
 Modifier un ingrédient ne se réflète pas en direct dans Tiptap...
 Use proseMirror directly in order to avoid using gon... in Tiptap?
@@ -5,26 +6,18 @@ https://prosemirror.net/examples/basic/
 L'image de pate chinois
 Remove gon.recipe
 Remove gon from everywhere except app
-Allow change owner if recipe belongs to any user from the account.
-Pouvoir cliquer sur un utilisateur et voir ses recettes.
-Pouvoir retirer une recette de mes favoris.
-Nouvel utilisateur
 DNS hedacuisine.com
 Demo user
 Thumbnails images
 Fix les images déformées (biscuits bonshommes en pain d'épices)
 Store images on volume or backblaze.
 Backblaze? https://www.npmjs.com/package/backblaze
-Pouvoir rechercher
 Mettre un peu de couleur!
-Clean le data. Des bonnes recettes seulement pour le user Pascal.
-Pouvoir transférer des recettes d'un utilisateur à l'autre.
-Ou bien pouvoir modifier une recette si la recette appartient à un utilisateur dans le même compte.
-Ça devient comme une recette partagé.
 
 Later:
 Conversions d'unités
 Pouvoir changer les tags des recettes
+Pouvoir cliquer sur un utilisateur et voir ses recettes.
 
 Later (other users):
 Create default user for account
