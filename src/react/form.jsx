@@ -297,15 +297,16 @@ export const CollectionSelect = ({model, field, options, showOption, includeBlan
   )
 }
 
-export const TextAreaField = ({model, field, cols, rows, changeCallback=null}) => {
-  const [value, setValue] = useState(model.currentValue(field))
+export const TextAreaField = ({ref, model, placeholder, field, cols, rows, changeCallback=null}) => {
+  console.log('model', model)
+  const [value, setValue] = useState(model[field])
 
   return (
     <div className="field">
-      <textarea value={value||''} name={model.fieldName(field)} id={field} cols={cols} rows={rows} onChange={(e) => {
+      <textarea value={value||''} name={field} id={field} cols={cols} rows={rows} placeholder={placeholder} onChange={(e) => {
         setValue(e.target.value);
         if(changeCallback) {changeCallback(e.target.value)}
-      }} onBlur={() => model.updateValue(field, value)} />
+      }} onBlur={() => window.hcu.updateField(model, field, value)} />
     </div>
   )
 }

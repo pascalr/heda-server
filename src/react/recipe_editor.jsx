@@ -130,53 +130,6 @@ const VisualState = {
   EXPANDED: 3,
 }
 
-// props: {comment}
-const EditableIngredientComment = (props) => {
-
-  //const [comment, setComment] = useState(props.comment);
-  const [visual, setVisual] = useState(props.commentJson && props.commentJson != '' ? VisualState.EXPANDED : VisualState.CLOSED);
-
-  //const commentInput = useRef(null);
-
-  useEffect(() => {
-    if (visual == VisualState.EXPANDING) {
-      setVisual(VisualState.EXPANDED)
-      //commentInput.current.focus()
-    }
-  }, [visual]);
-
-  //const updateComment = () => {
-  //  if (comment != props.comment) {
-  //    let data = new FormData()
-  //    data.append('recipe_ingredient[comment]', comment)
-  //    Rails.ajax({url: props.ingUrl, type: 'PATCH', data: data})
-  //  }
-  //  if (!comment || comment == '') {
-  //    setVisual(VisualState.CLOSED)
-  //  }
-  //}
-
-  const closeIfEmpty = () => {
-  }
-
-  if (visual == VisualState.CLOSED) {
-    return (
-      <button type="button" className="btn-image" onClick={() => setVisual(VisualState.EXPANDING)}>
-        <img src="/icons/chat-left.svg" style={{marginLeft: "10px"}}/>
-      </button>
-    )
-  } else {
-    const style = {transition: "width 0.4s ease-in-out"}
-    style.width = visual == VisualState.EXPANDED ? "200px" : "0px"
-    return (
-      <Row marginLeft="10px" style={style} onBlur={closeIfEmpty}>
-        <BubbleTiptap content={JSON.parse(props.commentJson)} model="recipe_ingredient" json_field="comment_json" html_field="comment_html" url={props.ingUrl}/>
-      </Row>
-    )
-    //(<input type="text" value={comment || ''} style={style} ref={commentInput} onChange={(e) => setComment(e.target.value)} onBlur={updateComment} />)
-  }
-}
-
 const EditableIngredient = ({ingredient, itemNb, foods, mixes}) => {
 
   if (ingredient == null) {return null;}
@@ -206,7 +159,6 @@ const EditableIngredient = ({ingredient, itemNb, foods, mixes}) => {
       <TextField model={ingredient} field="qty" size="8" className="editable-input" />
       de{/*" de " ou bien " - " si la quantité n'a pas d'unité => _1_____ - oeuf*/}
       {f ? <a href={food_path(f)}>{f.name}</a> : <div>{ingredient.label}</div>}
-      <EditableIngredientComment ingUrl={ingUrl} commentJson={ingredient.comment_json} />
       <Block flexGrow="1" />
       {mix ? <img className="clickable" style={{marginRight: '0.4em'}} src="/icons/arrow-down-up.svg" width="16" height="16" onClick={moveIngToMix}></img> : '' }
       <DeleteConfirmButton id={`ing-${ingredient.key}`} onDeleteConfirm={removeIngredient} message="Je veux enlever cet ingrédient?" />
@@ -276,13 +228,6 @@ function removeIng(ing) {
 function appendIngredientSection() {
   //ajax({url: recipe_ingredient_sections_path(gon.recipe), type: 'POST', data: {}, success: (section) => {
   //  this.setState({ingredient_sections: [...this.state.ingredient_sections, section]})
-  //}})
-}
-
-function pasteIngredients(text) {
-  //ajax({url: paste_ingredients_recipes_path(this.state.recipe), type: 'PATCH',
-  //      data: {pasted: text}, success: ({ingredients}) => {
-  //  this.setState({ingredients})
   //}})
 }
 
@@ -419,7 +364,7 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
           <img src="/icons/plus-circle.svg" style={{width: "2.5rem", padding: "0.5rem"}}/>
           <img src="/icons/minus-circle.svg" style={{width: "2.5rem", padding: "0.5rem"}}/>
         </Toggleable>
-        <PasteIngredientsButton ingredients={ingredients} handleSubmit={pasteIngredients} />
+        <PasteIngredientsButton recipe={recipe} ingredients={ingredients} />
       </Row>
     </ul>
 

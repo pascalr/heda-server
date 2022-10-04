@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Modal from 'react-bootstrap/Modal'
 
-import {asyncUpdateModel, TextField, FileField, RadioField} from '../form'
+import {TextAreaField} from '../form'
 
 export const PasteIngredientsButton = (props) => {
   const [showModal, setShowModal] = useState(false)
@@ -13,8 +13,7 @@ export const PasteIngredientsButton = (props) => {
   </>)
 }
 
-const PasteIngredientsModal = ({ingredients, show, handleClose, handleSubmit}) => {
-  const inputRef = useRef(null);
+const PasteIngredientsModal = ({recipe, ingredients, show, handleClose}) => {
   let ingText = ''
   ingredients.forEach(ing => {
     if (ing.raw) {ingText += ing.raw} // raw quantity
@@ -27,13 +26,8 @@ const PasteIngredientsModal = ({ingredients, show, handleClose, handleSubmit}) =
       <Modal.Body>
         <button style={{float: "right"}} type="button" className="btn-close" onClick={handleClose}></button>
         <h5 className="modal-title">Ingrédients</h5>
-        <textarea name='pasted-ingredients' defaultValue={ingText} placeholder="Par exemple...&#10;1 1/2 t farine tout usage&#10;250 mL d'eau&#10;4 oeufs&#10;" cols={40} rows={15} ref={inputRef} />
-        <button type="button" className="btn btn-outline-primary d-block" onClick={() => {
-            handleSubmit(inputRef.current.value)
-            handleClose()
-          }}>
-          Modifier 
-        </button>
+        <TextAreaField model={recipe} field='ingredients' placeholder="Par exemple...&#10;1 1/2 t farine tout usage&#10;250 mL d'eau&#10;4 oeufs&#10;" cols={40} rows={15} />
+        <button type="button" className="btn btn-outline-primary d-block" onClick={handleClose}>Ok</button>
         <br/>
         <h5>Notes</h5>
         <ol>

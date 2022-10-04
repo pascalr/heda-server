@@ -3,6 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { ajax, omit, join, bindSetter, capitalize } from "./utils"
 import {recipe_recipe_ingredient_path, food_path, recipe_ingredient_section_path, recipe_path, recipe_recipe_note_path, image_path } from './routes'
 
+export function serializeIngredients(ingredients) {
+  return ingredients.map(ing => {
+    return ing.qty + '; ' + ing.label
+  }).join("\n")
+}
+
 export function parseIngredientsOldFormat(text) {
   return text.split("\n").map((line,i) => {
     if (line.length <= 0) {return null;}
