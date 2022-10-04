@@ -30,8 +30,8 @@ const PAGE_9 = 9 // SuggestionsIndex
 const PAGE_10 = 10 // HedaIndex
 const PAGE_11 = 11 // Inventory
 const PAGE_12 = 12 // MixIndex
-const PAGE_13 = 13 // ShowMix
-const PAGE_14 = 14 // EditMix
+//const PAGE_13 = 13 // ShowMix
+//const PAGE_14 = 14 // EditMix
 const PAGE_15 = 15 // ShowRecipe
 const PAGE_16 = 16 // EditRecipe
 const PAGE_17 = 17 // NewRecipe
@@ -640,49 +640,6 @@ const ShowRecipe = (props) => {
 const EditRecipe = (props) => {
   return <RecipeEditor {...{recipeId: props.page.recipeId, ...props}} />
 }
-  
-const ShowMix = ({page, recipes, favoriteRecipes, machines, mixes, machineFoods}) => {
-
-  const machine = page.machineId ? machines.find(m => m.id == page.machineId) : null
-  const currentMachineFoods = machine ? machineFoods.filter(m => m.machine_id == machine.id) : machineFoods
-  const mix = mixes.find(m => m.id == page.mixId)
-
-  console.log('mix.recipe_id', mix.recipe_id)
-  const recipeHTML = useCacheOrFetchHTML(inline_recipe_path({id: mix.recipe_id}), {waitFor: mix.recipe_id})
-
-  const instructions = (mix.instructions||'').split(';')
-  const eInstructions = instructions.map((instruction,line) => {
-
-    let args = instruction.split(',')
-    let cmdType = CMD_TYPES.find(e => e.id == args[0])
-    let obj = cmdType ? cmdType.parse(args, context) : null
-    if (obj) {obj.type = cmdType}
-
-    return (
-      <li key={`${line}-${instruction}`} className={`list-group-item${!obj || obj.errors ? ' cmd-error' : ''}`}>
-        {!obj || obj.errors ? <img className="float-end" style={{marginRight: '0.4em', marginTop: '0.4em'}} src="/icons/info-circle.svg" width="18" height="18"></img> : ''}
-        <div className='d-flex gap-10'>
-          {obj ? cmdType.print(obj) : ''}
-        </div>
-      </li>
-    )
-  })
-
-  return (<>
-    <div className="d-flex gap-20 align-items-center">
-      <h1>{mix.name || 'Sans nom'}</h1>
-      <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => changePage({page: PAGE_14, machineId: machine.id, mixId: mix.id})}>Modifier</button>
-    </div>
-    <ul className="list-group">{eInstructions}</ul>
-    <div style={{height: '0.5em'}}></div>
-    <div className="d-flex gap-10">
-      <button type="button" className="btn btn-small btn-primary">Cuisiner</button>
-      <button type="button" className="btn btn-small btn-secondary">Ajouter à mon calendrier</button>
-    </div>
-    <div style={{height: '1em'}}></div>
-    {recipeHTML ? <div dangerouslySetInnerHTML={{__html: recipeHTML}} /> : ''}
-  </>)
-}
 
 const MixIndex = ({page, machines, mixes, machineFoods}) => {
 
@@ -965,8 +922,6 @@ const App = () => {
   const friendsRecipes = gon.friends_recipes.filter(r => !recipeIds.includes(r.id))
   const notes = gon.notes
 
-  const all = {page, recipeFilters, suggestions, userTags, favoriteRecipes, machines, machineFoods, containerQuantities, mixes, recipes, foods}
-
   const parentPages = {
     [PAGE_2]: PAGE_1,
     [PAGE_3]: PAGE_4,
@@ -979,13 +934,15 @@ const App = () => {
     [PAGE_10]: PAGE_1,
     [PAGE_11]: PAGE_10,
     [PAGE_12]: PAGE_10,
-    [PAGE_13]: PAGE_12,
-    [PAGE_14]: PAGE_13,
+//    [PAGE_13]: PAGE_12,
+//    [PAGE_14]: PAGE_13,
     [PAGE_15]: PAGE_6,
     [PAGE_16]: PAGE_15,
     [PAGE_17]: PAGE_6,
   }
 
+  //[PAGE_13]: <ShowMix {...all} />,
+  //[PAGE_14]: <EditMix {...all} />,
   const pages = {
     [PAGE_1]: <TagIndex {...{page, recipeFilters, userTags, machines}} addRecipeFilter={(filter) => recipeFilters.update(recipeFilters.concat([filter]))} />,
     [PAGE_2]: <TagCategorySuggestions {...{page, recipeFilters, suggestions, recipes}} />,
@@ -999,10 +956,8 @@ const App = () => {
     [PAGE_10]: <HedaIndex {...{page, machines}} />,
     [PAGE_11]: <Inventory {...{page, machines, machineFoods, containerQuantities}} />,
     [PAGE_12]: <MixIndex {...{page, machines, machineFoods, mixes}} />,
-    [PAGE_13]: <ShowMix {...all} />,
-    [PAGE_14]: <EditMix {...all} />,
-    [PAGE_15]: <ShowRecipe {...{...all, recipeKinds, images, user, users, suggestions, tags: recipeFilters}} />,
-    [PAGE_16]: <EditRecipe {...{...all, user, users, recipeKinds, images}} />,
+    [PAGE_15]: <ShowRecipe {...{page, recipes, mixes, favoriteRecipes, recipeKinds, images, user, users, suggestions, tags: recipeFilters}} />,
+    [PAGE_16]: <EditRecipe {...{page, recipes, mixes, user, users, recipeKinds, images}} />,
     [PAGE_17]: <NewRecipe {...{page}} />
   }
 
