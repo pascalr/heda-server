@@ -5,7 +5,6 @@ import utils from '../src/utils.js';
 
 import {fetchTable, RECIPE_ATTRS} from '../src/gon.js';
 
-// FIXME: I believe this is ran async, so everything should be nested inside for this to work...
 //db.run('ALTER TABLE recipes ADD COLUMN ingredients TEXT', [], function(err) {
 //  if (err) {console.log('ERR', err)}
 //})

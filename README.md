@@ -19,21 +19,23 @@ fly doctor // Si je n'arrive pas à me connecter avec fly ssh console, fly docto
 fly ssh console
 echo "ls && exit" | fly ssh console
 chown -R heroku:heroku /mnt
-#### Rollback
-fly releases --image
-fly deploy -i registry.fly.io/heda-server@sha256:67super-long-hash-super-long-hash-super-long-hash
 chown heroku prod.db
 chgrp heroku prod.db
 chmod 666 prod.db
+#### Rollback
+fly releases --image
+fly deploy -i registry.fly.io/heda-server@sha256:67super-long-hash-super-long-hash-super-long-hash
 
 ## Wireguard
 sudo apt install wireguard
 ln -s /usr/bin/resolvectl /usr/local/bin/resolvconf # S'il y a une erreur avec resolvconf
+#### POUR RÉSOUDRE root@heda-server.internal: Permission denied (publickey)
+flyctl ssh issue --agent
+#### Autre
 sudo wg # Pour voir l'état de wireguard, si rien ne s'affiche, il faut faire wg-quick up ...
 fly wireguard create # Entrer le nom de fichier: var/heda-server.conf. LE FICHIER DOIT ETRE DANS VAR POUR ETRE SUR DE NE PAS SE RETROUVER DANS GIT!!!
 wg-quick up var/heda-server.conf
 scp root@heda-server.internal:/mnt/heda_volume/prod.db var/db/dev.db
 //https://community.fly.io/t/how-to-copy-files-off-a-vm/1651/7
-flyctl ssh issue --agent
 references:
 https://www.digitalocean.com/community/tutorials/how-to-set-up-wireguard-on-ubuntu-20-04
