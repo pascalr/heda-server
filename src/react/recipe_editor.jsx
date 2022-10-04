@@ -303,7 +303,7 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
   if (!recipe || recipe.user_id != user.id) {window.hcu.changePage({page: 15, recipeId: recipeId}); return '';}
 
   const ingredientsAndHeaders = parseIngredientsAndHeaders(recipe.ingredients)
-  const ingredients = ingredientsAndHeaders.filter(e => e.label || e.qty)
+  const ingredients = ingredientsAndHeaders.filter(e => e.label != null || e.qty != null)
   gon.recipe_ingredients = parseIngredientsOldFormat(recipe.ingredients)
   //const ingredients = recipeIngredients.filter(e => e.recipe_id == recipeId) || []
   const ingredient_sections = ingredientSections.filter(e => e.recipe_id == recipeId) || []
@@ -323,12 +323,17 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
     window.hcu.updateField(recipe, 'ingredients', serializeIngredientsAndHeaders(ingredientsAndHeaders))
   }
 
+  function addEmptyIngredient() {
+    ingredientsAndHeaders.push({key: `${ingredientsAndHeaders.length}-`, qty: '', label: ''})
+    window.hcu.updateField(recipe, 'ingredients', serializeIngredientsAndHeaders(ingredientsAndHeaders))
+  }
+
   const renderedIngItems = ingredientsAndHeaders.map((ingOrHeader, i) => {
     return <Draggable key={ingOrHeader.key} draggableId={'drag-'+i} index={i}>
       {(provided) => (
         <div className="item-container" ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
           {function() {
-            if (ingOrHeader.qty || ingOrHeader.label) {
+            if (ingOrHeader.qty != null || ingOrHeader.label != null) {
               const ing = ingOrHeader
               return <li className="list-group-item">
                 {<EditableIngredient ingredient={ingOrHeader} itemNb={i+1} {...{mixes, foods, updateIngredients, removeIngredientOrHeader}} />}
@@ -361,13 +366,7 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
         </Droppable>
       </DragDropContext>
       <Row>
-        <Toggleable style={{float: "left"}}>
-          <li key={99999} className="list-group-item" style={{height: "37.2px"}}>
-            <NewIngInputField {...{foods}} />
-          </li>
-          <img src="/icons/plus-circle.svg" style={{width: "2.5rem", padding: "0.5rem"}}/>
-          <img src="/icons/minus-circle.svg" style={{width: "2.5rem", padding: "0.5rem"}}/>
-        </Toggleable>
+        <img src="/icons/plus-circle.svg" style={{width: "2.5rem", padding: "0.5rem"}} onClick={addEmptyIngredient} />
         <PasteIngredientsButton recipe={recipe} />
       </Row>
     </ul>

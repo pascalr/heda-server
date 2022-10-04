@@ -5,7 +5,7 @@ import {recipe_recipe_ingredient_path, food_path, recipe_ingredient_section_path
 
 export function serializeIngredientsAndHeaders(ingredients) {
   return ingredients.map(ing => {
-    if (ing.header) {return '#'+ing.header}
+    if (ing.header != null) {return '#'+ing.header}
     return ing.qty + '; ' + ing.label
   }).join("\n")
 }
