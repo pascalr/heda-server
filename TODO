@@ -1,21 +1,19 @@
 Modifier pour CV pour ajouter un lien vers mon site internet. Ajouter un code QR vers l'url de mon site? Un lien dans le pdf?
 
 Faire une page de vente pour l'application.
+    Faire la vidéo de créer la recette Chocolate chip cookies. (recipeId == 323)
+    Rajouter le crédit photo des biscuits aux brisures de chocolat.
     Faire une vidéo ou bien ou simulation live de l'éditeur de recette (Créer une recette n'aura jamais été aussi facile)
     Tu ne sais pas quoi manger? HedaCuisine te suggère des recettes selon des thèmes.
 
 Longer sessions (1 month!)
 Fix recipe notes. Les notes les faire simplement dans le texte des instructions. Mais pouvoir rajouter des liens vers les notes?
-Les images, maximum la largeur de la fenêtre.
-Quand tu crées une nouvelle recette, afficher en direct le recipe_kind qui lui est affecté et demander si tu veux que l'image soit celle choisie.
-Pouvoir faire tab pour éditer un ingrédient...
 Modifier un ingrédient ne se réflète pas en direct dans Tiptap...
 Use proseMirror directly in order to avoid using gon... in Tiptap?
 https://prosemirror.net/examples/basic/
 Remove gon.recipe
 Remove gon from everywhere except app
 Quand tu regardes une recette qui n'est pas à toi, et ensuite tu fais une recherche, elle est dans "Mes recettes" parce qu'elle a été ajouté à gon.recipes. Il faudrait filtrer ces recettes.
-Demo user
 Thumbnails images
 Fix les images déformées (biscuits bonshommes en pain d'épices)
 Store images on volume or backblaze.
@@ -30,6 +28,7 @@ Pouvoir cliquer sur un utilisateur et voir ses recettes.
 How to handle orphans? Destroy FavoriteRecipe when Recipe is destroyed? Or once in a while, clean up all orphans?
 
 Later (other users):
+Ajouter un moyen de me contacter
 Create default user for account
 Pouvoir modifier le mot de passe des utilisateurs: https://stackoverflow.com/questions/20277020/how-to-reset-change-password-in-node-js-with-passport-js
 Add security to password reset (token expiration) Unique token. Not null token

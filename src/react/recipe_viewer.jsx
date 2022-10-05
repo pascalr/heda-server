@@ -145,7 +145,7 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
           <div style={{width: "452px", height: "304px", maxWidth: "100vw"}}>
             <img src={imagePath} width="452" height="304"/>
           </div>
-          {!image ? '' : <>
+          {!image || !image.author || !image.source ? '' : <>
             <div className="text-center">
               <i>Crédit photo: </i><u><a style={{color: 'block', fontSize: '0.95em'}} href={image.source}>{image.author}</a></u>
             </div>
