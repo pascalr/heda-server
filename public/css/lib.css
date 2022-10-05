@@ -98,3 +98,9 @@ img {
   font-size: 0.8rem;
   color: gray;
 }
+
+/* Relative keeps the position of the element in the page, but it takes up space. */
+/* Absolute takes no space, but it needs to have a parent which is positioned. */
+/* By combining those two, it works. */
+.position-limbo {position: relative;}
+.position-limbo > * {position: absolute;}

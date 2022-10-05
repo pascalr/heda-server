@@ -5,6 +5,7 @@ Faire une page de vente pour l'application.
     Tu ne sais pas quoi manger? HedaCuisine te suggère des recettes selon des thèmes.
 
 Longer sessions (1 month!)
+Fix recipe notes. Les notes les faire simplement dans le texte des instructions. Mais pouvoir rajouter des liens vers les notes?
 Les images, maximum la largeur de la fenêtre.
 Quand tu crées une nouvelle recette, afficher en direct le recipe_kind qui lui est affecté et demander si tu veux que l'image soit celle choisie.
 Pouvoir faire tab pour éditer un ingrédient...

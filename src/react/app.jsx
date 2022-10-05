@@ -890,7 +890,8 @@ const NewRecipe = ({page, recipeKinds}) => {
     </>
   }
 
-  const createRecipe = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault()
     const record = {table_name: 'recipes', name, use_personalised_image: usePersonalisedImage}
     window.hcu.createRecord(record, (created) => {
       window.hcu.changePage({...page, page: 16, recipeId: created.id})
@@ -900,12 +901,14 @@ const NewRecipe = ({page, recipeKinds}) => {
   return <>
     <h1>Nouvelle recette</h1>
 
-    <b>Nom:</b><br/>
-    <input name="name" value={name} onChange={(e) => {setName(e.target.value)}} />
-    <br/><br/>
-    <b>Catégorie:</b><br/>
-    {recipeKind ? recipeKindPreview : <p>Aucune catégorie correspondante</p>}
-    <button className="btn btn-primary" onClick={createRecipe}>Créer</button>
+    <form onSubmit={handleSubmit}>
+      <b>Nom:</b><br/>
+      <input name="name" value={name} onChange={(e) => {setName(e.target.value)}} />
+      <br/><br/>
+      <b>Catégorie:</b><br/>
+      {recipeKind ? recipeKindPreview : <p>Aucune catégorie correspondante</p>}
+      <button type="submit" className="btn btn-primary">Créer</button>
+    </form>
   </>
 }
 
