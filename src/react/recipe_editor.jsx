@@ -123,6 +123,8 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
   const image = isTrue(recipe.use_personalised_image) ? recipe_image : recipeKindImage
   const imagePath = image ? image_variant_path(image, 'medium') : "/img/default_recipe_01.png"
   const mix = mixes.find(m => m.recipe_id == recipe.id)
+  const recipeUser = users.find(u => u.id == recipe.user_id)
+  const userName = recipeUser ? recipeUser.name : `user${recipe.user_id}`
 
   function updateIngredients() {
     window.hcu.updateField(recipe, 'ingredients', serializeIngredientsAndHeaders(ingredientsAndHeaders))
@@ -218,10 +220,14 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
     }})
   }
 
-  let mixEditor = mix ? <EditMix {...{page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, recipes}} /> : (<>
-    <p>Vous pouvez ajouter des instructions pour automatiser cette recette.</p>
-    <button type="button" className="btn btn-primary" onClick={createMix}>Ajouter</button>
-  </>)
+  //let mixEditor = mix ? <EditMix {...{page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, recipes}} /> : (<>
+  //  <p>Vous pouvez ajouter des instructions pour automatiser cette recette.</p>
+  //  <button type="button" className="btn btn-primary" onClick={createMix}>Ajouter</button>
+  //</>)
+  let mixEditor = mix ? <>
+    <h2>Commandes</h2>
+    <EditMix {...{page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, recipes}} />
+  </> : null
 
   let changeOwner = (e) => {
     let data = {recipeId: recipe.id, newOwnerId: e.target.id}
@@ -258,7 +264,7 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
           </h1>
           <div style={{marginTop: '-0.8em', marginBottom: '1.2em', color: 'gray'}}>
             <div className="dropdown dropdown-toggle clickable" style={{padding: "0 1em"}}>
-              <span data-bs-toggle="dropdown">par user{recipe.user_id}</span>
+              <span data-bs-toggle="dropdown">par {userName}</span>
               <div className="dropdown-menu">
                 {users.filter(u => u.id != recipe.user_id).map(usr => {
                   return <a key={usr.id} id={usr.id} className="dropdown-item clickable" onClick={changeOwner}>{usr.name}</a>
@@ -293,10 +299,7 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
         </div>
       </div>
       <div className="recipe-body">
-        
-        <h2>Commandes</h2>
         {mixEditor}
-
         <div style={{display: 'flex', alignItems: 'baseline'}}>
           <h2 style={{flexGrow: '1'}}>Ingrédients</h2>
           <div className="dropstart" style={{padding: "0 1em"}}>
