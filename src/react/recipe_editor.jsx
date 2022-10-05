@@ -185,34 +185,34 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
     </ul>
 
   //const NoteList = this.state.noteIds.map(id => {
-  const NoteList = [].map(id => {
-    const note = gon.recipe.notes[id]
+  //const NoteList = [].map(id => {
+  //  const note = gon.recipe.notes[id]
 
-    const removeNote = (evt) => {
-      ajax({url: recipe_recipe_note_path(gon.recipe, note), type: 'DELETE', success: () => {
-        let ids = this.state.noteIds.filter(item => item != note.id)
-        this.setState({noteIds: ids})
-        delete gon.recipe.notes[note.id]
-      }})
-    }
+  //  const removeNote = (evt) => {
+  //    ajax({url: recipe_recipe_note_path(gon.recipe, note), type: 'DELETE', success: () => {
+  //      let ids = this.state.noteIds.filter(item => item != note.id)
+  //      this.setState({noteIds: ids})
+  //      delete gon.recipe.notes[note.id]
+  //    }})
+  //  }
 
-    return (
-      <Row key={id} gap="5px" marginBottom="5px">
-        [{note.item_nb}]
-        <Block flexGrow="1">
-          <BubbleTiptap content={JSON.parse(note.json)} model="recipe_note" json_field="json" html_field="html" url={recipe_recipe_note_path(gon.recipe, note)} />
-        </Block>
-        <DeleteConfirmButton id={`note-${note.id}`} onDeleteConfirm={removeNote} message="Je veux enlever cette note?" />
-      </Row>
-    )
-  })
+  //  return (
+  //    <Row key={id} gap="5px" marginBottom="5px">
+  //      [{note.item_nb}]
+  //      <Block flexGrow="1">
+  //        <BubbleTiptap content={JSON.parse(note.json)} model="recipe_note" json_field="json" html_field="html" url={recipe_recipe_note_path(gon.recipe, note)} />
+  //      </Block>
+  //      <DeleteConfirmButton id={`note-${note.id}`} onDeleteConfirm={removeNote} message="Je veux enlever cette note?" />
+  //    </Row>
+  //  )
+  //})
 
   //const Tools = this.state.toolIds.map(id => (
-  const Tools = [].map(id => (
-    <li key={id}>
-      {gon.recipe.tools[id].name}
-    </li>
-  ))
+  //const Tools = [].map(id => (
+  //  <li key={id}>
+  //    {gon.recipe.tools[id].name}
+  //  </li>
+  //))
 
   //const createMix = () => {
   //  ajax({url: mixes_path(), type: 'POST', data: {mix: {recipe_id: recipe.id}}, success: (mix) => {
