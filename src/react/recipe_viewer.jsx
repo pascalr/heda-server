@@ -83,33 +83,46 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
       </ul>
     </div>
 
-  const NoteList = noteIds.map(id => {
-    const note = recipe.notes[id]
+  //const NoteList = noteIds.map(id => {
+  //  const note = recipe.notes[id]
 
-    const removeNote = (evt) => {
-      ajax({url: recipe_recipe_note_path(recipe, note), type: 'DELETE', success: () => {
-        let ids = noteIds.filter(item => item != note.id)
-        this.setState({noteIds: ids})
-        delete recipe.notes[note.id]
-      }})
-    }
+  //  const removeNote = (evt) => {
+  //    ajax({url: recipe_recipe_note_path(recipe, note), type: 'DELETE', success: () => {
+  //      let ids = noteIds.filter(item => item != note.id)
+  //      this.setState({noteIds: ids})
+  //      delete recipe.notes[note.id]
+  //    }})
+  //  }
 
-    return (
-      <Row key={id} gap="5px" marginBottom="5px">
-        [{note.item_nb}]
-        <Block flexGrow="1">
-          <BubbleTiptap content={JSON.parse(note.json)} model="recipe_note" json_field="json" html_field="html" url={recipe_recipe_note_path(recipe, note)} />
-        </Block>
-        <DeleteConfirmButton id={`note-${note.id}`} onDeleteConfirm={removeNote} message="Je veux enlever cette note?" />
-      </Row>
-    )
-  })
+  //  return (
+  //    <Row key={id} gap="5px" marginBottom="5px">
+  //      [{note.item_nb}]
+  //      <Block flexGrow="1">
+  //        <BubbleTiptap content={JSON.parse(note.json)} model="recipe_note" json_field="json" html_field="html" url={recipe_recipe_note_path(recipe, note)} />
+  //      </Block>
+  //      <DeleteConfirmButton id={`note-${note.id}`} onDeleteConfirm={removeNote} message="Je veux enlever cette note?" />
+  //    </Row>
+  //  )
+  //})
 
-  const Tools = toolIds.map(id => (
-    <li key={id}>
-      {recipe.tools[id].name}
-    </li>
-  ))
+  //const Tools = toolIds.map(id => (
+  //  <li key={id}>
+  //    {recipe.tools[id].name}
+  //  </li>
+  //))
+  //     
+  //{noteIds.length <= 0 ? '' : <>
+  //  <h3>Notes</h3>
+  //  {NoteList}
+  //</>}
+  //
+  //<h2>Outils</h2>
+  //<ul style={{fontSize: "1.1rem"}}>
+  //  {Tools}
+  //</ul>
+  //
+  //<h2>Références</h2>
+
   
   const imagePath = image ? image_variant_path(image, 'medium') : "/img/default_recipe_01.png"
   //console.log(model)
@@ -202,20 +215,8 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
       
         <h2>Instructions</h2>
         <Tiptap model="recipe" json_field="json" html_field="html" content={recipe.json ? JSON.parse(recipe.json) : null} editable={false} />
-       
-        {noteIds.length <= 0 ? '' : <>
-          <h3>Notes</h3>
-          {NoteList}
-        </>}
-        
-        <h2>Outils</h2>
-        <ul style={{fontSize: "1.1rem"}}>
-          {Tools}
-        </ul>
-        
-        <h2>Références</h2>
-
       </div>
+      <br/><br/><br/><br/><br/><br/><br/><br/>
     </div>
   </>)
 }
