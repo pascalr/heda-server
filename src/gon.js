@@ -53,11 +53,19 @@ function fetchAccountUsers(req, res, next) {
   })
 }
 
+function mapBooleans(records, fields) {
+  records.forEach(record => {
+    fields.forEach(field => {
+      record[field] = record[field] && record[field] != 'false'
+    })
+  })
+  return records
+}
 
 export const RECIPE_ATTRS = ['user_id', 'name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id', 'ingredients']
 function fetchRecipes(req, res, next) {
   fetchTable('recipes', {user_id: req.user.user_id}, RECIPE_ATTRS, next, (records) => {
-    res.locals.gon.recipes = utils.sortBy(records, 'name')
+    res.locals.gon.recipes = mapBooleans(utils.sortBy(records, 'name'), ['use_personalised_image'])
   })
 }
 
