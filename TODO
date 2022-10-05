@@ -1,6 +1,3 @@
-Bilingue.
-Pouvoir supprimer une recette.
-
 Modifier pour CV pour ajouter un lien vers mon site internet. Ajouter un code QR vers l'url de mon site? Un lien dans le pdf?
 
 Faire une page de vente pour l'application.
@@ -25,9 +22,11 @@ Backblaze? https://www.npmjs.com/package/backblaze
 Mettre un peu de couleur!
 
 Later:
+Bilingue. import {t} from './translations'; t('welcome_message')
 Conversions d'unités
 Pouvoir changer les tags des recettes
 Pouvoir cliquer sur un utilisateur et voir ses recettes.
+How to handle orphans? Destroy FavoriteRecipe when Recipe is destroyed? Or once in a while, clean up all orphans?
 
 Later (other users):
 Create default user for account

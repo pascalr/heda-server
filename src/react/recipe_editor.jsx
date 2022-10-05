@@ -214,12 +214,11 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
     </li>
   ))
 
-  const createMix = () => {
-    ajax({url: mixes_path(), type: 'POST', data: {mix: {recipe_id: recipe.id}}, success: (mix) => {
-      mixes.update([...mixes, mix])
-    }})
-  }
-
+  //const createMix = () => {
+  //  ajax({url: mixes_path(), type: 'POST', data: {mix: {recipe_id: recipe.id}}, success: (mix) => {
+  //    mixes.update([...mixes, mix])
+  //  }})
+  //}
   //let mixEditor = mix ? <EditMix {...{page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, recipes}} /> : (<>
   //  <p>Vous pouvez ajouter des instructions pour automatiser cette recette.</p>
   //  <button type="button" className="btn btn-primary" onClick={createMix}>Ajouter</button>
@@ -239,6 +238,28 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
       console.log('ERROR AJAX UPDATING...', errors.responseText)
     }})
   }
+        
+  //<h3>Notes</h3>
+  //{NoteList}
+  //<button type="button" className="plain-btn" onClick={() => appendNote()}>
+  //  <img src="/icons/plus-circle.svg" style={{width: "2.5rem", padding: "0.5rem"}}/>
+  //</button>
+  //
+  //<h2>Outils</h2>
+  //<ul style={{fontSize: "1.1rem"}}>
+  //  {Tools}
+  //</ul>
+  //
+  //<h2>Informations</h2>
+  //<table className="table table-light">
+  //  <tbody>
+  //    <tr>
+  //      <th>Ingrédient principal</th>
+  //      <td><CollectionSelect model={recipe} field="main_ingredient_id" options={ingredients.map(i => i.id)} showOption={(ingId) => ingredients.filter(i => i.id == ingId).name} includeBlank="true"></CollectionSelect></td>
+  //    </tr>
+  //  </tbody>
+  //</table>
+  //<h2>Références</h2>
 
   return (<>
     <div className="recipe">
@@ -316,30 +337,6 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
         <h2>Instructions</h2>
         <Tiptap model={recipe} json_field="json" html_field="html" content={gon.recipe.json ? JSON.parse(gon.recipe.json) : null} editable={true} ingredients={ingredients} />
         {editable ? <InstructionsShortcuts/> : ''}
-        
-        <h3>Notes</h3>
-        {NoteList}
-        <button type="button" className="plain-btn" onClick={() => appendNote()}>
-          <img src="/icons/plus-circle.svg" style={{width: "2.5rem", padding: "0.5rem"}}/>
-        </button>
-        
-        <h2>Outils</h2>
-        <ul style={{fontSize: "1.1rem"}}>
-          {Tools}
-        </ul>
-        
-        <h2>Informations</h2>
-        <table className="table table-light">
-          <tbody>
-            <tr>
-              <th>Ingrédient principal</th>
-              <td><CollectionSelect model={recipe} field="main_ingredient_id" options={ingredients.map(i => i.id)} showOption={(ingId) => ingredients.filter(i => i.id == ingId).name} includeBlank="true"></CollectionSelect></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <h2>Références</h2>
-
       </div>
     </div>
   </>)

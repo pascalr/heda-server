@@ -180,7 +180,7 @@ const ALLOWED_COLUMNS_MOD = {
 const ALLOWED_COLUMNS_GET = {
   'recipes': RECIPE_ATTRS
 }
-const ALLOWED_TABLES_DESTROY = ['favorite_recipes']
+const ALLOWED_TABLES_DESTROY = ['favorite_recipes', 'recipes']
 
 const BEFORE_CREATE = {
   'recipes': (recipe, callback) => {
