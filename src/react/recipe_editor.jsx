@@ -48,6 +48,22 @@ const InstructionsShortcuts = props => (
   </>
 )
 
+const NewIngredient = ({itemNb, foods, updateIngredients, removeIngredientOrHeader}) => {
+  
+  const [qty, setQty] = useState('')
+  const [label, setLabel] = useState('')
+
+  return (
+    <Row alignItems="center" gap="5px">
+      <input type="text" size="8" className="editable-input" value={qty||''} name="qty" onChange={(e) => setQty(e.target.value)} style={{marginLeft: '1.65rem'}} />
+      de{/*" de " ou bien " - " si la quantité n'a pas d'unité => _1_____ - oeuf*/}
+      <input type="text" size="24" className="editable-input" value={label||''} name="label" onChange={(e) => setLabel(e.target.value)} />
+      <Block flexGrow="1" />
+      <button type="button" className="btn btn-sm btn-primary">Ajouter</button>
+    </Row>
+  )
+}
+
 const EditableIngredient = ({ingredient, itemNb, foods, mixes, updateIngredients, removeIngredientOrHeader}) => {
   
   const [qty, setQty] = useState(ingredient.qty)
@@ -178,6 +194,9 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
           )}
         </Droppable>
       </DragDropContext>
+      <li className="list-group-item">
+        <NewIngredient {...{foods, updateIngredients}} />
+      </li>
       <Row>
         <img src="/icons/plus-circle.svg" style={{width: "2.5rem", padding: "0.5rem"}} onClick={addEmptyIngredient} />
         <PasteIngredientsButton recipe={recipe} />
