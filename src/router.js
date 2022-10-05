@@ -8,6 +8,7 @@ import db from './db.js';
 import gon, {initGon, fetchTable, RECIPE_ATTRS} from './gon.js';
 import passport from './passport.js';
 import utils from './utils.js';
+import { findRecipeKindForRecipeName } from "./lib.js"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -181,29 +182,49 @@ const ALLOWED_COLUMNS_GET = {
 }
 const ALLOWED_TABLES_DESTROY = ['favorite_recipes']
 
+const BEFORE_CREATE = {
+  'recipes': (recipe, callback) => {
+    fetchTable('recipe_kinds', {}, ['name'], () => {}, (recipe_kinds) => {
+      const recipeKind = findRecipeKindForRecipeName(recipe.name, recipe_kinds)
+      if (recipeKind) {recipe.recipe_kind_id = recipeKind.id}
+      callback(recipe)
+    })
+  }
+}
+
 router.post('/create_record/:table', function(req, res, next) {
   
   try {
     console.log('body', req.body)
     let table = req.params.table
-    let fields = req.body['fields[]'].filter(f => f != 'table_name')
+    let fieldsSent = req.body['fields[]'].filter(f => f != 'table_name')
     if (!Object.keys(ALLOWED_COLUMNS_MOD).includes(table)) {
       throw new Error("CreateRecord table not allowed")
     }
-    fields.forEach(field => {
+    fieldsSent.forEach(field => {
       if (!ALLOWED_COLUMNS_MOD[table].includes(field)) {
         throw new Error("CreateRecord column not allowed. Field: "+field)
       }
     })
-    let query = 'INSERT INTO '+table+' (user_id,created_at,updated_at,'+fields.join(',')+') '
-    query += 'VALUES (?,?,?,'+fields.map(f=>'?').join(',')+')'
-    let values = fields.map(f => req.body['record['+f+']'])
-    let args = [req.user.user_id, utils.now(), utils.now(), ...values]
-    db.run(query, args, function(err) {
-      if (err) { return next(err); }
-      let o = fields.reduce((acc, f) => ({ ...acc, [f]: req.body['record['+f+']']}), {}) 
-      res.json({...o, id: this.lastID, table_name: table})
-    })
+    let obj = fieldsSent.reduce((acc, f) => ({ ...acc, [f]: req.body['record['+f+']']}), {}) 
+
+    function updateObj(obj) {
+      let fields = Object.keys(obj)
+      let values = Object.values(obj)
+      let query = 'INSERT INTO '+table+' (user_id,created_at,updated_at,'+fields.join(',')+') '
+      query += 'VALUES (?,?,?,'+fields.map(f=>'?').join(',')+')'
+      let args = [req.user.user_id, utils.now(), utils.now(), ...values]
+      db.run(query, args, function(err) {
+        if (err) { return next(err); }
+        res.json({...obj, id: this.lastID, table_name: table})
+      })
+    }
+
+    if (BEFORE_CREATE[table]) {
+      BEFORE_CREATE[table](obj, updateObj)
+    } else {
+      updateObj(obj)
+    }
   } catch(err) {
     throw new Error(err)
   }

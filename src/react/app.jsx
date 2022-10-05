@@ -6,6 +6,7 @@ import { createRoot } from 'react-dom/client';
 
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, LinkToPage } from "./lib"
+import { findRecipeKindForRecipeName } from "../lib"
 import { RecipeList, RecipeIndex } from './recipe_index'
 import { ajax, isBlank, normalizeSearchText, preloadImage, getUrlParams, join, bindSetter, sortBy, capitalize } from "./utils"
 import { icon_path, image_variant_path } from './routes'
@@ -866,12 +867,32 @@ const MyRecipes = (props) => {
   </>)
 }
 
-const NewRecipe = ({page}) => {
+const NewRecipe = ({page, recipeKinds}) => {
 
   const [name, setName] = useState('')
+  const [usePersonalisedImage, setUsePersonalisedImage] = useState(false)
+
+  console.log('usePerso', usePersonalisedImage)
+      
+  const recipeKind = findRecipeKindForRecipeName(name, recipeKinds)
+  let recipeKindPreview = null
+  if (recipeKind) {
+    const imagePath = image_variant_path({id: recipeKind.image_id}, 'small')
+    recipeKindPreview = <>
+      <img src={imagePath} width="255" height="171"/>
+      <h3 style={{fontSize: '1.5rem'}}>{recipeKind.name}</h3>
+      <input type="checkbox" name="use_recipe_kind_image"
+        id="new-recipe-use-image" checked={!usePersonalisedImage}
+        onChange={(e) => setUsePersonalisedImage(!e.target.checked)}
+      />
+      <label htmlFor="new-recipe-use-image">Utiliser cette image pour la recette?</label>
+      <br/><br/>
+    </>
+  }
 
   const createRecipe = () => {
-    window.hcu.createRecord({table_name: 'recipes', name}, (created) => {
+    const record = {table_name: 'recipes', name, use_personalised_image: usePersonalisedImage}
+    window.hcu.createRecord(record, (created) => {
       window.hcu.changePage({...page, page: 16, recipeId: created.id})
     })
   }
@@ -879,8 +900,11 @@ const NewRecipe = ({page}) => {
   return <>
     <h1>Nouvelle recette</h1>
 
-    <b>Nom</b><br/>
-    <input name="name" value={name} onChange={(e) => {setName(e.target.value)}} /><br/><br/>
+    <b>Nom:</b><br/>
+    <input name="name" value={name} onChange={(e) => {setName(e.target.value)}} />
+    <br/><br/>
+    <b>Catégorie:</b><br/>
+    {recipeKind ? recipeKindPreview : <p>Aucune catégorie correspondante</p>}
     <button className="btn btn-primary" onClick={createRecipe}>Créer</button>
   </>
 }
@@ -951,7 +975,7 @@ const App = () => {
     [PAGE_12]: <MixIndex {...{page, machines, machineFoods, mixes}} />,
     [PAGE_15]: <ShowRecipe {...{page, recipes, mixes, favoriteRecipes, recipeKinds, images, user, users, suggestions, tags: recipeFilters}} />,
     [PAGE_16]: <EditRecipe {...{page, recipes, mixes, user, users, recipeKinds, images}} />,
-    [PAGE_17]: <NewRecipe {...{page}} />
+    [PAGE_17]: <NewRecipe {...{page, recipeKinds}} />
   }
 
   // I don't want a back system, I want a up system. So if you are given a nested link, you can go up.

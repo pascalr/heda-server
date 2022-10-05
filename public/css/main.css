@@ -95,6 +95,9 @@ body {
 input[type="radio"] {
   margin-right: 0.3em;
 }
+input[type="checkbox"] {
+  margin-right: 0.3em;
+}
 
 *[aria-disabled='true'] {
   opacity: 0.2;

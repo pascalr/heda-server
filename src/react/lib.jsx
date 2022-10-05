@@ -10,6 +10,7 @@ export function serializeIngredientsAndHeaders(ingredients) {
 }
 
 export function parseIngredientsOldFormat(text) {
+  if (!text) {return []}
   let itemNb = 0
   return text.split("\n").map(line => {
     if (line.length <= 0) {return null;}
@@ -21,6 +22,7 @@ export function parseIngredientsOldFormat(text) {
 }
 
 export function parseIngredientsAndHeaders(text) {
+  if (!text) {return []}
   return text.split("\n").map((line,i) => {
     if (line.length <= 0) {return null;}
     const key = `${i}-${line}`

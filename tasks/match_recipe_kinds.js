@@ -3,6 +3,7 @@
 import db from '../src/db.js';
 import utils from '../src/utils.js';
 import { normalizeSearchText } from "../src/react/utils.js"
+import { findRecipeKindForRecipe } from "../src/lib.js"
 
 import {fetchTable, RECIPE_ATTRS} from '../src/gon.js';
 
@@ -16,8 +17,7 @@ fetchTable('recipe_kinds', {}, ['name', 'description_json', 'image_id'], () => {
 
     recipes.forEach(recipe => {
 
-      let name = normalizeSearchText(recipe.name)
-      let recipe_kind = recipe_kinds.find(k => name.includes(normalizeSearchText(k.name)))
+      let recipe_kind = findRecipeKindForRecipeName(recipe.name)
 
       if (recipe_kind) {
         db.run('UPDATE recipes SET recipe_kind_id = ? WHERE id = ?', [recipe_kind.id, recipe.id], function(err) {
