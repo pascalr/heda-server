@@ -41,6 +41,7 @@ app.use(express.static(path.join(__dirname, '../node_modules/bootstrap/dist/')))
 app.use(express.static(path.join(__dirname, '../node_modules/bootstrap/dist/')));
 app.use(express.static(path.join(__dirname, '../node_modules/@popperjs/core/dist/')));
 app.use(express.static(path.join(__dirname, '../node_modules/toastr/')));
+app.use(express.static(path.join(__dirname, '../node_modules/prosemirror-menu/style/')));
 app.use(express.static(path.join(__dirname, '../public')));
 if (!fs.existsSync('./var')) {
   fs.mkdirSync('./var')
