@@ -1,5 +1,8 @@
 import $ from 'jquery'
 
+export function isTrue(val) {
+  return val && val != 'false'
+}
 
 export function bindSetter(obj, setter) {
   const updateObj = (val) => {

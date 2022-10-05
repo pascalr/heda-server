@@ -207,13 +207,14 @@ router.post('/create_record/:table', function(req, res, next) {
       }
     })
     let obj = fieldsSent.reduce((acc, f) => ({ ...acc, [f]: req.body['record['+f+']']}), {}) 
+    obj.user_id = req.user.user_id
 
     function updateObj(obj) {
       let fields = Object.keys(obj)
       let values = Object.values(obj)
-      let query = 'INSERT INTO '+table+' (user_id,created_at,updated_at,'+fields.join(',')+') '
-      query += 'VALUES (?,?,?,'+fields.map(f=>'?').join(',')+')'
-      let args = [req.user.user_id, utils.now(), utils.now(), ...values]
+      let query = 'INSERT INTO '+table+' (created_at,updated_at,'+fields.join(',')+') '
+      query += 'VALUES (?,?,'+fields.map(f=>'?').join(',')+')'
+      let args = [utils.now(), utils.now(), ...values]
       db.run(query, args, function(err) {
         if (err) { return next(err); }
         res.json({...obj, id: this.lastID, table_name: table})

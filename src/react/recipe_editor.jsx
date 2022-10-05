@@ -4,7 +4,7 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Autosuggest from 'react-autosuggest'
 import {Block, Inline, InlineBlock, Row, Col, InlineRow, InlineCol, Grid} from 'jsxstyle'
 
-import { ajax } from "./utils"
+import { ajax, isTrue } from "./utils"
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import { Tiptap, BubbleTiptap } from './tiptap'
 import {AutocompleteInput, updateRecord, TextField, CollectionSelect} from './form'
@@ -120,7 +120,7 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
   const recipe_kind = recipeKinds.find(k => k.id == recipe.recipe_kind_id)
   const recipe_image = recipe.image_id ? images.find(e => e.id == recipe.image_id) : {}
   let recipeKindImage = recipe_kind && recipe_kind.image_id ? images.find(e => e.id == recipe_kind.image_id) : null
-  const image = recipe.use_personalised_image ? recipe_image : recipeKindImage
+  const image = isTrue(recipe.use_personalised_image) ? recipe_image : recipeKindImage
   const imagePath = image ? image_variant_path(image, 'medium') : "/img/default_recipe_01.png"
   const mix = mixes.find(m => m.recipe_id == recipe.id)
 
@@ -256,7 +256,7 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
               <TextField model={recipe} field="name" className="plain-input" />
             </span>
           </h1>
-          <div style={{marginTop: '-1.2em', marginBottom: '1.2em', color: 'gray'}}>
+          <div style={{marginTop: '-0.8em', marginBottom: '1.2em', color: 'gray'}}>
             <div className="dropdown dropdown-toggle clickable" style={{padding: "0 1em"}}>
               <span data-bs-toggle="dropdown">par user{recipe.user_id}</span>
               <div className="dropdown-menu">

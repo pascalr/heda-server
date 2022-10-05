@@ -150,7 +150,7 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
               </span>
             }
           </h1>
-          <div style={{marginTop: '-1.2em', marginBottom: '1.2em'}}>
+          <div style={{marginTop: '-0.8em', marginBottom: '1.2em'}}>
             <span style={{color: 'gray'}}>par {userName}</span>
           </div>
           <div>
@@ -201,7 +201,7 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
         {IngredientList}
       
         <h2>Instructions</h2>
-        <Tiptap model="recipe" json_field="json" html_field="html" content={JSON.parse(recipe.json)} editable={false} />
+        <Tiptap model="recipe" json_field="json" html_field="html" content={recipe.json ? JSON.parse(recipe.json) : null} editable={false} />
        
         {noteIds.length <= 0 ? '' : <>
           <h3>Notes</h3>
