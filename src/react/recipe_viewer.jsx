@@ -134,7 +134,7 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
     <div className="recipe">
       <div className="d-block d-md-flex gap-20">
         <div>
-          <RecipeMediumImage {...{recipe, recipeKinds, images}} />
+          <RecipeMediumImage {...{recipe, recipeKinds, images, showCredit: true}} />
         </div>
         <div style={{width: '100%'}}>
           <h1>

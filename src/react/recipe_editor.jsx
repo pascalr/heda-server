@@ -4,7 +4,7 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Autosuggest from 'react-autosuggest'
 import {Block, Inline, InlineBlock, Row, Col, InlineRow, InlineCol, Grid} from 'jsxstyle'
 
-import { ajax, isTrue } from "./utils"
+import { ajax } from "./utils"
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import { RecipeTiptap, BubbleTiptap } from './tiptap'
 import {AutocompleteInput, updateRecord, TextField, CollectionSelect} from './form'
@@ -12,7 +12,7 @@ import { parseIngredientsAndHeaders, parseIngredientsOldFormat, serializeIngredi
 import {EditRecipeImageModal} from './modals/recipe_image'
 import {PasteIngredientsButton} from './modals/paste_ingredients'
 import {EditMix} from './app'
-import { image_variant_path } from './routes'
+import { RecipeMediumImage } from "./image"
 
 const InstructionsShortcuts = props => (
   <>
@@ -143,8 +143,6 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
   const recipe_kind = recipeKinds.find(k => k.id == recipe.recipe_kind_id)
   const recipe_image = recipe.image_id ? images.find(e => e.id == recipe.image_id) : {}
   let recipeKindImage = recipe_kind && recipe_kind.image_id ? images.find(e => e.id == recipe_kind.image_id) : null
-  const image = isTrue(recipe.use_personalised_image) ? recipe_image : recipeKindImage
-  const imagePath = image ? image_variant_path(image, 'medium') : "/img/default_recipe_01.png"
   const mix = mixes.find(m => m.recipe_id == recipe.id)
   const recipeUser = users.find(u => u.id == recipe.user_id)
   const userName = recipeUser ? recipeUser.name : `user${recipe.user_id}`
@@ -302,7 +300,7 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
                                   handleClose={() => setShowImageModal(false)}
                                   recipeImage={recipe_image} recipeKindImage={recipeKindImage} />
             <div style={{cursor: "pointer"}} onClick={() => setShowImageModal(true)}>
-              <img src={imagePath} width="452" height="304"/>
+              <RecipeMediumImage {...{recipe, recipeKinds, images}} />
               <div className="bottom-right" style={{color: 'white', fontSize: '2em'}}>
                 <img src="/icons/pencil-circle.svg" style={{width: "5rem", padding: "0.5rem"}}/>
               </div>
