@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { createRoot } from 'react-dom/client';
 
 import {undo, redo, history} from "prosemirror-history"
-import {EditorState} from "prosemirror-state"
+import {Plugin, EditorState} from "prosemirror-state"
 import {EditorView} from "prosemirror-view"
 import {Schema, DOMParser} from "prosemirror-model"
 import {schema} from "prosemirror-schema-basic"
@@ -12,14 +13,12 @@ import {baseKeymap, toggleMark, setBlockType, wrapIn} from "prosemirror-commands
 
 import {Inline} from 'jsxstyle'
 
-import {MarkButton, BoldIcon, ImageButton, HelpButton, StepButton, IngredientButton, AddNoteButton, MeasuringButton, CharButton, ItalicIcon, MoreButton, StrikeButton, LinkButton, SubscriptButton, SuperscriptButton} from './prosemirror_buttons'
+import {MarkButton, BoldIcon, ImageButton, HelpButton, StepButton, IngredientButton, AddNoteButton, MeasuringButton, CharButton, ItalicIcon, MoreButton, LinkButton, SubscriptButton, SuperscriptButton} from './prosemirror_buttons'
 
 const Toolbar = ({ editor, ingredients }) => {
   if (!editor) {return null}
 
   console.log('Toolbar')
-
-  editor.isActive = () => {return false}
 
   const width = 24
   const height = 24
@@ -60,7 +59,6 @@ const Toolbar = ({ editor, ingredients }) => {
       <Inline padding="0 1.5em">
         <MarkButton {...{editor, type: schema.marks.strong}}><BoldIcon {...{width, height}}/></MarkButton>
         <MarkButton {...{editor, type: schema.marks.em}}><ItalicIcon {...{width, height}}/></MarkButton>
-        <StrikeButton editor={editor} width={width} height={height} />
       </Inline>
       <Inline flexGrow="1"></Inline>
       <HelpButton editor={editor} width={width} height={height} />
@@ -68,11 +66,32 @@ const Toolbar = ({ editor, ingredients }) => {
   )
 }
 
-export const Menu = ({view}) => {
-  const test = () => {
-    toggleMark(schema.marks.strong)(view.state, view.dispatch, view)
+//export const Menu = ({view}) => {
+//  console.log('Menu')
+//  const test = () => {
+//    toggleMark(schema.marks.strong)(view.state, view.dispatch, view)
+//  }
+//  return <button type="button" className="btn btn-primary" onClick={test}>Testing</button>
+//}
+//
+class MenuView {
+  constructor(editorView, setView) {
+    this.editorView = editorView
+    this.setView = setView
   }
-  return <button type="button" className="btn btn-primary" onClick={test}>Testing</button>
+  update() {
+    console.log('UPDATE')
+    this.setView({...this.editorView})
+  }
+  destroy() { }
+}
+
+function menuPlugin(setView) {
+  return new Plugin({
+    view(editorView) {
+      return new MenuView(editorView, setView)
+    }
+  })
 }
 
 // Mix the nodes from prosemirror-schema-list into the basic schema to
@@ -85,14 +104,18 @@ const mySchema = new Schema({
 export const ProseMirror = ({ingredients}) => {
 
   let ref = useRef(null)
+  let toolbarRef = useRef(null)
   // FIXME: I don't like doing this. view should be immutable, but it is not here...
   // But how else to update the Toolbar based on the view???
   let [view, setView] = useState(null)
 
-  //const [rerender, setRerender] = useState(false);
-  //setRerender(!rerender);
+  const [renderCount, setRenderCount] = useState(0)
   
   console.log('ProseMirror')
+  
+  //useEffect(() => {
+  //  createRoot(toolbarRef.current).render(<Menu view={view}/>);
+  //}, [])
     
   useEffect(() => {
     if (view) {console.log('View destroyed'); view.destroy()}
@@ -103,19 +126,20 @@ export const ProseMirror = ({ingredients}) => {
         plugins: [
           history(),
           keymap({"Mod-z": undo, "Mod-y": redo}),
-          keymap(baseKeymap)
+          keymap(baseKeymap),
+          menuPlugin(setView)
         ]
       }),
-      dispatchTransaction(transaction) {
-        console.log("Document size went from", transaction.before.content.size,
-                    "to", transaction.doc.content.size)
-        let newState = editorView.state.apply(transaction)
-        editorView.updateState(newState)
-        const active = toggleMark(schema.marks.strong)(editorView.state, null, editorView)
-        console.log('activeInside', active)
-        setView({...editorView})
-      }
+      //dispatchTransaction(transaction) {
+      //  console.log("Document size went from", transaction.before.content.size,
+      //              "to", transaction.doc.content.size)
+      //  let newState = editorView.state.apply(transaction)
+      //  editorView.updateState(newState)
+      //  //setView({...editorView})
+      //  setRenderCount(renderCount+1)
+      //}
     })
+    console.log('initialEditorView', editorView)
     setView(editorView)
     return () => {
       if (view) {console.log('View destroyed'); view.destroy()}
@@ -124,8 +148,8 @@ export const ProseMirror = ({ingredients}) => {
   }, [ingredients])
 
   return <>
-    <Menu {...{view}} />
-    <Toolbar {...{ingredients, editor: view}} />
+    <Toolbar {...{ingredients, editor: view ? {...view} : null, renderCount}} />
+    <div ref={toolbarRef}></div>
     <div ref={ref}></div>
   </>
 }
