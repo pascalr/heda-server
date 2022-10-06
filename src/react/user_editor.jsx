@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { createRoot } from 'react-dom/client';
+import ReactDOM from 'react-dom'
+//import { createRoot } from 'react-dom/client';
 
 import { TextField, RadioField } from './form'
 import { useHcuState } from "../hcu"
@@ -22,6 +23,8 @@ const UserEditor = () => {
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  const root = createRoot(document.getElementById("root"));
-  root.render(<UserEditor/>);
+  const root = document.getElementById('root')
+  ReactDOM.render(<UserEditor/>, root)
+  //const root = createRoot(document.getElementById("root"));
+  //root.render(<UserEditor/>);
 })

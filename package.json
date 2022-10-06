@@ -16,6 +16,8 @@
     "build:css": "sass src/scss/prose_mirror.scss:public/build/prose_mirror.css src/scss/imports.scss:public/build/imports.css"
   },
   "dependencies": {
+    "@aeaton/prosemirror-commands": "^2.0.2",
+    "@aeaton/react-prosemirror": "^2.0.3",
     "@popperjs/core": "^2.11.6",
     "@tiptap/core": "^2.0.0-beta.196",
     "@tiptap/extension-bubble-menu": "^2.0.0-beta.196",
@@ -33,7 +35,7 @@
     "csurf": "^1.11.0",
     "debug": "~2.6.9",
     "dotenv": "^16.0.2",
-    "ejs": "~2.6.1",
+    "ejs": "~3.1.8",
     "esbuild": "^0.15.8",
     "express": "~4.16.1",
     "express-session": "^1.17.2",
@@ -51,14 +53,15 @@
     "prosemirror-schema-basic": "^1.2.0",
     "prosemirror-state": "^1.4.1",
     "prosemirror-view": "^1.28.3",
-    "react": "^18.2.0",
+    "punycode": "^2.1.1",
+    "react": "^17.0.1",
     "react-autosuggest": "^10.1.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-bootstrap": "^2.5.0",
-    "react-dom": "^18.2.0",
+    "react-dom": "^17.0.1",
     "sass": "^1.54.9",
     "sqlite3": "^5.0.2",
     "toastr": "^2.1.4",
-    "watch": "^1.0.2"
+    "watch": "~0.13.0"
   }
 }

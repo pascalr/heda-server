@@ -1,3 +1,5 @@
+Comprendre comment ProseMirror react fonctionne
+
 Update la Toolbar de ProseMirror chaque fois que l'état de l'éditeur change. Probablement à l'aide d'un plugin.
 
 Sur mon site internet de CV, rajouter une ligne sur la page d'acceuil, Portfolio, avec des liens vers les meilleurs projets que j'ai fait.

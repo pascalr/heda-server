@@ -134,3 +134,26 @@ span[data-ingredient] {
   //max-height: 100px;
   //overflow: scroll;
 }
+
+// TODO: Probably remove everything above this
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// With react-prosemirror
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+.prosemirror-toolbar {
+
+  border: 1px solid #bbb;
+
+  button.prosemirror-toolbar-item[data-active="true"] {
+    color: #06c;
+  }
+
+  button.prosemirror-toolbar-item {
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+  }
+}
