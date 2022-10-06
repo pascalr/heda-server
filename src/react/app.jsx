@@ -19,6 +19,7 @@ import {AddUserTagModal} from './modals/add_user_tag'
 import {RecipeEditor} from "./recipe_editor"
 import {RecipeViewer} from "./recipe_viewer"
 import { initHcu, useHcuState } from '../hcu'
+import { RecipeThumbnailImage } from "./image"
 
 // The advantage of using this instead of the number is if I need to search and to refactor, I can easy
 const PAGE_1 = 1 // TagIndex
@@ -780,9 +781,7 @@ const useTransition = (initial, current, final) => {
   return state
 }
 
-const RecipeListItem = ({recipe, current, tags, recipeKinds, page, selected, users, user}) => {
-  let kind = recipe.recipe_kind_id ? recipeKinds.find(k => k.id == recipe.recipe_kind_id) : null
-  let image_used_id = recipe.image_id || (kind && kind.image_id)
+const RecipeListItem = ({recipe, current, tags, recipeKinds, page, selected, users, user, images}) => {
   let userName = null
   if (user.id != recipe.user_id) {
     const recipeUser = users.find(u => u.id == recipe.user_id)
@@ -792,7 +791,8 @@ const RecipeListItem = ({recipe, current, tags, recipeKinds, page, selected, use
     <li key={recipe.id}>
       <LinkToPage page={{...page, page: 15, recipeId: recipe.id}} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={current == selected ? "selected" : undefined}>
         <div className="d-flex align-items-center">
-          <img src={image_used_id ? image_variant_path({id: image_used_id}, "thumb") : "/img/default_recipe_01_thumb.png"} width="71" height="48" style={{marginRight: '0.5em'}} />
+          <RecipeThumbnailImage {...{recipe, recipeKinds, images}} />
+          <div style={{marginRight: '0.5em'}}></div>
           {userName ? <div><div>{recipe.name}</div><div className="h002">de {userName}</div></div> : recipe.name}
         </div>
       </LinkToPage>
@@ -800,7 +800,7 @@ const RecipeListItem = ({recipe, current, tags, recipeKinds, page, selected, use
   )
 }
 
-const SearchBox = ({recipes, recipeKinds, tags, page, friendsRecipes, users, user}) => {
+const SearchBox = ({recipes, recipeKinds, tags, page, friendsRecipes, users, user, images}) => {
 
   //const height = useTransition('0', shown ? '100vh' : '0', '100vh')
   const height = '100vh'
@@ -846,13 +846,13 @@ const SearchBox = ({recipes, recipeKinds, tags, page, friendsRecipes, users, use
       {matchingUserRecipes.length >= 1 ? <h2 className="h001">Mes recettes</h2> : ''}
       <ul className="recipe-list">
         {matchingUserRecipes.map((recipe, current) => (
-          <RecipeListItem key={recipe.id} {...{recipe, current, tags, recipeKinds, page, selected, users, user}}/>
+          <RecipeListItem key={recipe.id} {...{recipe, current, tags, recipeKinds, page, selected, users, user, images}}/>
         ))}
       </ul>
       {matchingFriendsRecipes.length >= 1 ? <h2 className="h001">Suggestions</h2> : ''}
       <ul className="recipe-list">
         {matchingFriendsRecipes.map((recipe, current) => (
-          <RecipeListItem key={recipe.id} {...{recipe, current: current+matchingUserRecipes.length, tags, recipeKinds, page, selected, users, user}}/>
+          <RecipeListItem key={recipe.id} {...{recipe, current: current+matchingUserRecipes.length, tags, recipeKinds, page, selected, users, user, images}}/>
         ))}
       </ul>
     </div>
@@ -1005,7 +1005,7 @@ const App = () => {
       <img className="clickable" src={isSearching ? icon_path("x-lg.svg") : icon_path("search_black.svg")} width="24" onClick={() => {setIsSearching(!isSearching)}}/>
     </div>
     <hr style={{color: "#aaa", marginTop: "0"}}/>
-    {isSearching ? <SearchBox {...{page, recipes, recipeKinds, tags: recipeFilters, friendsRecipes, users, user}} /> : pages[page.page || 1]}
+    {isSearching ? <SearchBox {...{page, recipes, recipeKinds, tags: recipeFilters, friendsRecipes, users, user, images}} /> : pages[page.page || 1]}
   </>)
 }
 

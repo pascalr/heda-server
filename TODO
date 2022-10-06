@@ -8,11 +8,11 @@ Faire une page de vente pour l'application.
 
 Ne pas utiliser pretty quantity à moins que le user aie setter ce setting.
 Le user choisi dans quel format il veut voir les recettes.
+Scroll search
 Juste disable pretty quantity pour l'instant.
 Longer sessions (1 month!)
 Fix recipe notes. Les notes les faire simplement dans le texte des instructions. Mais pouvoir rajouter des liens vers les notes?
 Thumbnails images
-Fix les images déformées (biscuits bonshommes en pain d'épices)
 Store images on volume or backblaze.
 Backblaze? https://www.npmjs.com/package/backblaze
 Mettre un peu de couleur!
