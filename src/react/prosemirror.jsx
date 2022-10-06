@@ -9,6 +9,7 @@ import { isMarkActive } from '@aeaton/prosemirror-commands'
 //import {inputRules, wrappingInputRule, textblockTypeInputRule,
 //        smartQuotes, emDash, ellipsis} from "prosemirror-inputrules"
 import {inputRules, emDash} from "prosemirror-inputrules"
+// emDash transforms two consecutive dash "--" into a long dash (single character)
 
 import {BoldIcon, ItalicIcon} from './prosemirror_buttons'
 
@@ -26,6 +27,24 @@ const schema = new Schema({
       parseDOM: [{ tag: 'p' }],
       toDOM: () => ['p', 0],
     },
+    // a custom ingredient node, which can either be a link to an ingredient, or a custom ingredient
+    ing: {
+      attrs: {ingredient: {default: ""}},
+      inline: true,
+      group: "inline",
+      draggable: true,
+
+      toDOM: node => ["span", {ingredient: node.attrs.ingredient,
+                              class: "anIngredient"}],
+
+      parseDOM: [{
+        tag: "span[ingredient]",
+        getAttrs: dom => {
+          let ingredient = dom.getAttribute("ingredient")
+          return {ingredient}
+        }
+      }]
+    }
   },
   marks: {
     // a strong mark, represented in HTML as `<strong>`
@@ -41,25 +60,22 @@ const schema = new Schema({
   }
 })
 
-const toggleMarkStrong = toggleMark(schema.marks.strong)
-const toggleMarkEmphasis = toggleMark(schema.marks.emphasis)
-
-const plugins = [
+const pluginsConfig = (schema) => ([
   history(),
   keymap({
     'Mod-z': undo,
     'Shift-Mod-z': redo,
-    'Meta-b': toggleMarkStrong,
-    'Meta-i': toggleMarkEmphasis,
+    'Meta-b': toggleMark(schema.marks.strong),
+    'Meta-i': toggleMark(schema.marks.emphasis),
   }),
   keymap(baseKeymap),
   inputRules({rules: [emDash]})
-]
+])
 
 const width = 24
 const height = 24
 
-const toolbar = [
+const toolbarConfig = (schema) => ([
   {
     id: 'marks',
     items: [
@@ -67,21 +83,21 @@ const toolbar = [
         id: 'toggle-strong',
         className: 'testing1212',
         content: <BoldIcon {...{width, height}} />,
-        action: toggleMarkStrong,
-        enable: toggleMarkStrong,
+        action: toggleMark(schema.marks.strong),
+        enable: toggleMark(schema.marks.strong),
         active: isMarkActive(schema.marks.strong),
       },
       {
         id: 'toggle-emphasis',
         title: 'Toggle emphasis',
         content: <ItalicIcon {...{width, height}} />,
-        action: toggleMarkEmphasis,
-        enable: toggleMarkEmphasis,
+        action: toggleMark(schema.marks.emphasis),
+        enable: toggleMark(schema.marks.emphasis),
         active: isMarkActive(schema.marks.emphasis),
       },
     ]
   }
-]
+])
 
 export const ProseMirror = () => {
   const [value, setValue] = useState('<p></p>')
@@ -91,12 +107,12 @@ export const ProseMirror = () => {
   return (
     <HtmlEditor
       schema={schema}
-      plugins={plugins}
+      plugins={pluginsConfig(schema)}
       value={value}
       handleChange={setValue}
       debounce={250}
     >
-      <Toolbar toolbar={toolbar} />
+      <Toolbar toolbar={toolbarConfig(schema)} />
       <Editor autoFocus />
     </HtmlEditor>
   )

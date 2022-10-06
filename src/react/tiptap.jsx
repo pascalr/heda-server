@@ -836,10 +836,13 @@ export const Tiptap = ({content, model, json_field, html_field, url, editable, i
     return () => clearInterval(interval);
   }, [editor])
 
+  const [updateCount, forceUpdate] = useState(0)
+  useEffect(() => { forceUpdate(updateCount+1) }, [ingredients])
+
   return (
     <div>
       {editable ? <Toolbar editor={editor} ingredients={ingredients} /> : ''}
-      <EditorContent editor={editor} />
+      <EditorContent key={updateCount} editor={editor} />
     </div>
   )
 }
