@@ -13,7 +13,6 @@ import {EditRecipeImageModal} from './modals/recipe_image'
 import {PasteIngredientsButton} from './modals/paste_ingredients'
 import {EditMix} from './app'
 import { image_variant_path } from './routes'
-import { ProseMirror } from './prosemirror'
 
 const InstructionsShortcuts = props => (
   <>
@@ -366,9 +365,6 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
           </div>
         </div>
         {IngredientList}
-        
-        <h2>Prosemirror instructions</h2>
-        <ProseMirror {...{ingredients}} />
       
         <h2>Instructions</h2>
         <RecipeTiptap recipe={recipe} editable={true} ingredients={ingredients} />

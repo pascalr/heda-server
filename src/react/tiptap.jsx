@@ -830,26 +830,35 @@ export const recipeEditor = (content, editable=true) => {
     editable
   }
 }
+class RecipeTiptapComponent extends React.Component {
+  constructor() {
+    super();
+    this.state = {}
+  }
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.props.recipe.id != nextProps.recipe.id || this.props.ingredients != nextProps.ingredients
+  }
+  render () {
+  }
+};
 export const RecipeTiptap = ({recipe, editable, ingredients}) => {
 
   gon.recipe = recipe
   gon.recipe_ingredients = parseIngredientsOldFormat(recipe.ingredients)
 
-  let content = recipe.json ? JSON.parse(recipe.json) : null
-  const editor = useEditor(recipeEditor(content, editable))
+  const content = recipe.json ? JSON.parse(recipe.json) : null
+  const dependencies = [ingredients]
+  const editor = useEditor(recipeEditor(content, editable), dependencies)
 
   useEffect(() => {
     let interval = registerEditorWithEffect(editor, recipe, 'json', 'html', null)
     return () => clearInterval(interval);
   }, [editor])
 
-  const [updateCount, forceUpdate] = useState(0)
-  useEffect(() => { forceUpdate(updateCount+1) }, [ingredients])
-
   return (
     <div>
       {editable ? <Toolbar editor={editor} ingredients={ingredients} /> : ''}
-      <EditorContent key={updateCount} editor={editor} />
+      <EditorContent editor={editor} />
     </div>
   )
 }
@@ -924,14 +933,7 @@ const registerEditorWithEffect = (editor, model, json_field, html_field, url) =>
     let json = JSON.stringify(editor.getJSON())
     if (json != model[json_field]) {
       console.log('Saving changes for '+model.table_name+' '+json_field);
-
-      let data = {field: json_field, value: json}
-      ajax({url: '/update_field/'+model.table_name+'/'+model.id, type: 'PATCH', data: data, success: () => {
-        if (window.display) {window.display("Les changements ont étés enregistrés avec succès.")}
-        editor.savedJSON = json
-      }, error: () => {
-        if (window.displayError) {window.displayError("Les changements n'ont pas pu être enregistrés.")}
-      }})
+      window.hcu.updateField(model, json_field, json)
     }
   }, 1*1000);
 }

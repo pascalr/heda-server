@@ -12,11 +12,11 @@
         <% users.forEach(function(user) { %>
           <div class='account-user' style='cursor: pointer;' data-user-id='<%= user.id %>'>
             <% if (user.gender == 1) { %>
-              <img src="/img/chef_m.png" height="150"></img>
+              <img src="/img/chef_m.png" height="150" style="height: 150px;"></img>
             <% } else if (user.gender == 2) { %>
-              <img src="/img/chef_f.png" height="150"></img>
+              <img src="/img/chef_f.png" height="150" style="height: 150px;"></img>
             <% } else { %>
-              <img src="/img/tux-cooking.svg" height="150"></img>
+              <img src="/img/tux-cooking.svg" height="150" style="height: 150px;"></img>
             <% } %>
             <div style="text-align: center;"><%= user.name %></div>
           </div>

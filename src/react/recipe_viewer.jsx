@@ -7,6 +7,7 @@ import { RecipeTiptap, BubbleTiptap } from './tiptap'
 import { LinkToPage, parseIngredientsAndHeaders } from "./lib"
 import {image_variant_path} from './routes'
 import { Utils } from "./recipe_utils"
+import { isTrue } from "./utils"
 
 const MixIngredients = ({mix}) => {
   if (!mix) {return ''}
@@ -33,18 +34,17 @@ const MixIngredients = ({mix}) => {
 
 export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipeKinds, images, user, users, recipes, suggestions, tags}) => {
 
-  let recipe = recipes.find(e => e.id == recipeId)
-
+  const recipe = recipes.find(e => e.id == recipeId)
   useEffect(() => {
-    let recipe = recipes.find(e => e.id == recipeId)
-    if (!recipe) {
+    let r = recipes.find(e => e.id == recipeId)
+    if (!r) {
       window.hcu.fetchRecord('recipes', recipeId)
     }
   }, [recipeId])
   if (!recipe) {return ''}
 
   const recipe_kind = recipeKinds.find(k => k.id == recipe.recipe_kind_id)
-  const image_used_id = recipe.use_personalised_image ? recipe.image_id : recipe_kind && recipe_kind.image_id
+  const image_used_id = isTrue(recipe.use_personalised_image) ? recipe.image_id : recipe_kind && recipe_kind.image_id
   const image = images.find(i => i.id == image_used_id)
   const noteIds = recipe.notes ? Object.values(recipe.notes).sort((a,b) => a.item_nb - b.item_nb).map(ing => ing.id) : []
   const ingredientsAndHeaders = parseIngredientsAndHeaders(recipe.ingredients)
