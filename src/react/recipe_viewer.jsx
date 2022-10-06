@@ -137,8 +137,11 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
           <RecipeMediumImage {...{recipe, recipeKinds, images, showCredit: true}} />
         </div>
         <div style={{width: '100%'}}>
-          <h1>
-            <span className="recipe-title">{recipe.name}</span>
+          <div className='d-flex'>
+            <h1>
+              <span className="recipe-title">{recipe.name}</span>
+            </h1>
+            <div className='flex-grow-1' />
             {user.id != recipe.user_id ? '' :
               <span className="dropdown" style={{padding: "0 1rem"}}>
                 <img className="clickable" data-bs-toggle="dropdown" src="/icons/list.svg"/>
@@ -147,7 +150,7 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
                 </div>
               </span>
             }
-          </h1>
+          </div>
           <div style={{marginTop: '-0.8em', marginBottom: '1.2em'}}>
             <span style={{color: 'gray'}}>par {userName}</span>
           </div>
