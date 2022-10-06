@@ -75,12 +75,12 @@ const NewIngredient = ({foods, updateIngredients, addIngredient}) => {
   )
 }
 
-const EditableIngredient = ({ingredient, itemNb, foods, mixes, updateIngredients, removeIngredientOrHeader}) => {
+const EditableIngredient = ({recipe, ingredient, itemNb, foods, mixes, updateIngredients, removeIngredientOrHeader}) => {
   
   const [qty, setQty] = useState(ingredient.qty)
   const [label, setLabel] = useState(ingredient.label)
 
-  let mix = mixes.find(e => e.recipe_id == gon.recipe.id)
+  let mix = mixes.find(e => e.recipe_id == recipe.id)
 
   let moveIngToMix = () => {
     //let ins = mix.instructions+';ADD,'+ingredient.raw+','+(f ? f.name : ingredient.name)
@@ -136,14 +136,11 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
   const [showImageModal, setShowImageModal] = useState(false)
 
   const recipe = recipes.find(e => e.id == recipeId)
-  gon.recipe = recipe // FIXME: This is really ugly
 
   if (!recipe || recipe.user_id != user.id) {window.hcu.changePage({page: 15, recipeId: recipeId}); return '';}
 
   const ingredientsAndHeaders = parseIngredientsAndHeaders(recipe.ingredients)
   const ingredients = ingredientsAndHeaders.filter(e => e.label != null || e.qty != null)
-  gon.recipe_ingredients = parseIngredientsOldFormat(recipe.ingredients)
-  //const ingredients = recipeIngredients.filter(e => e.recipe_id == recipeId) || []
   const recipe_kind = recipeKinds.find(k => k.id == recipe.recipe_kind_id)
   const recipe_image = recipe.image_id ? images.find(e => e.id == recipe.image_id) : {}
   let recipeKindImage = recipe_kind && recipe_kind.image_id ? images.find(e => e.id == recipe_kind.image_id) : null
@@ -188,7 +185,7 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
               const ing = ingOrHeader
               itemNb += 1
               return <li className="list-group-item">
-                {<EditableIngredient ingredient={ingOrHeader} itemNb={itemNb} {...{mixes, foods, updateIngredients, removeIngredientOrHeader}} />}
+                {<EditableIngredient ingredient={ingOrHeader} {...{recipe, itemNb, mixes, foods, updateIngredients, removeIngredientOrHeader}} />}
               </li>
             } else {
               return <EditableIngredientSection item={ingOrHeader} index={i} {...{updateIngredients, removeIngredientOrHeader}} />
@@ -222,13 +219,13 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
 
   //const NoteList = this.state.noteIds.map(id => {
   //const NoteList = [].map(id => {
-  //  const note = gon.recipe.notes[id]
+  //  const note = recipe.notes[id]
 
   //  const removeNote = (evt) => {
-  //    ajax({url: recipe_recipe_note_path(gon.recipe, note), type: 'DELETE', success: () => {
+  //    ajax({url: recipe_recipe_note_path(recipe, note), type: 'DELETE', success: () => {
   //      let ids = this.state.noteIds.filter(item => item != note.id)
   //      this.setState({noteIds: ids})
-  //      delete gon.recipe.notes[note.id]
+  //      delete recipe.notes[note.id]
   //    }})
   //  }
 
@@ -236,7 +233,7 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
   //    <Row key={id} gap="5px" marginBottom="5px">
   //      [{note.item_nb}]
   //      <Block flexGrow="1">
-  //        <BubbleTiptap content={JSON.parse(note.json)} model="recipe_note" json_field="json" html_field="html" url={recipe_recipe_note_path(gon.recipe, note)} />
+  //        <BubbleTiptap content={JSON.parse(note.json)} model="recipe_note" json_field="json" html_field="html" url={recipe_recipe_note_path(recipe, note)} />
   //      </Block>
   //      <DeleteConfirmButton id={`note-${note.id}`} onDeleteConfirm={removeNote} message="Je veux enlever cette note?" />
   //    </Row>
@@ -246,7 +243,7 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
   //const Tools = this.state.toolIds.map(id => (
   //const Tools = [].map(id => (
   //  <li key={id}>
-  //    {gon.recipe.tools[id].name}
+  //    {recipe.tools[id].name}
   //  </li>
   //))
 
