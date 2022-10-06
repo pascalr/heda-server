@@ -5,9 +5,8 @@ import {Block, Inline, InlineBlock, Row, Col, InlineRow, InlineCol, Grid} from '
 
 import { RecipeTiptap, BubbleTiptap } from './tiptap'
 import { LinkToPage, parseIngredientsAndHeaders } from "./lib"
-import {image_variant_path} from './routes'
 import { Utils } from "./recipe_utils"
-import { isTrue } from "./utils"
+import { RecipeMediumImage } from "./image"
 
 const MixIngredients = ({mix}) => {
   if (!mix) {return ''}
@@ -43,9 +42,6 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
   }, [recipeId])
   if (!recipe) {return ''}
 
-  const recipe_kind = recipeKinds.find(k => k.id == recipe.recipe_kind_id)
-  const image_used_id = isTrue(recipe.use_personalised_image) ? recipe.image_id : recipe_kind && recipe_kind.image_id
-  const image = images.find(i => i.id == image_used_id)
   const noteIds = recipe.notes ? Object.values(recipe.notes).sort((a,b) => a.item_nb - b.item_nb).map(ing => ing.id) : []
   const ingredientsAndHeaders = parseIngredientsAndHeaders(recipe.ingredients)
   const ingredients = ingredientsAndHeaders.filter(e => e.label || e.qty)
@@ -121,8 +117,6 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
   //
   //<h2>Références</h2>
 
-  
-  const imagePath = image ? image_variant_path(image, 'medium') : "/img/default_recipe_01.png"
   //console.log(model)
 
   const recipeUser = users.find(u => u.id == recipe.user_id)
@@ -140,14 +134,7 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
     <div className="recipe">
       <div className="d-block d-md-flex gap-20">
         <div>
-          <div style={{width: "452px", height: "304px", maxWidth: "100vw"}}>
-            <img src={imagePath} width="452" height="304"/>
-          </div>
-          {!image || !image.author || !image.source ? '' : <>
-            <div className="text-center">
-              <i>Crédit photo: </i><u><a style={{color: 'block', fontSize: '0.95em'}} href={image.source}>{image.author}</a></u>
-            </div>
-          </>}
+          <RecipeMediumImage {...{recipe, recipeKinds, images}} />
         </div>
         <div style={{width: '100%'}}>
           <h1>
