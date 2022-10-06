@@ -1,12 +1,72 @@
 import React, { useState, useEffect, useRef } from 'react'
 
+import {undo, redo, history} from "prosemirror-history"
 import {EditorState} from "prosemirror-state"
 import {EditorView} from "prosemirror-view"
 import {Schema, DOMParser} from "prosemirror-model"
 import {schema} from "prosemirror-schema-basic"
 import {addListNodes} from "prosemirror-schema-list"
-import {exampleSetup} from "prosemirror-example-setup"
-import {toggleMark, setBlockType, wrapIn} from "prosemirror-commands"
+//import {exampleSetup} from "prosemirror-example-setup"
+import {keymap} from "prosemirror-keymap"
+import {baseKeymap, toggleMark, setBlockType, wrapIn} from "prosemirror-commands"
+
+import {Inline} from 'jsxstyle'
+
+import {MarkButton, BoldIcon, ImageButton, HelpButton, StepButton, IngredientButton, AddNoteButton, MeasuringButton, CharButton, ItalicIcon, MoreButton, StrikeButton, LinkButton, SubscriptButton, SuperscriptButton} from './prosemirror_buttons'
+
+const Toolbar = ({ editor, ingredients }) => {
+  if (!editor) {return null}
+
+  console.log('Toolbar')
+
+  editor.isActive = () => {return false}
+
+  const width = 24
+  const height = 24
+
+  // REALLY UGLY
+  let selectedHeader = "0";
+  //if (editor.isActive('heading', { level: 3 })) {selectedHeader = "3"}
+  //if (editor.isActive('heading', { level: 4 })) {selectedHeader = "4"}
+  //if (editor.isActive('heading', { level: 5 })) {selectedHeader = "5"}
+  // selectedHeader = editor.getAttributes('heading').level // Does not work
+
+  return (
+    <div className="toolbar" style={{display: "flex"}}>
+      <Inline padding="0 1.5em">
+        <select value={selectedHeader} style={{display: "flex", alignItems: "center"}} onChange={(e) => {
+          let val = parseInt(e.target.value)
+          if (!val) {
+            editor.chain().focus().setParagraph().run()
+          } else {
+            editor.chain().focus().toggleHeading({ level: val }).run()
+          }
+        }}>
+          <option value="3">Titre 1</option>
+          <option value="4">Titre 2</option>
+          <option value="5">Titre 3</option>
+          <option value="0">Normal</option>
+        </select>
+      </Inline>
+      <Inline padding="0 1.5em">
+        <StepButton editor={editor} width={width} height={height} />
+        <IngredientButton editor={editor} width={width} height={height} ingredients={ingredients} />
+        <MeasuringButton editor={editor} width={width} height={height} />
+        <AddNoteButton editor={editor} width={width} height={height} />
+        <LinkButton editor={editor} width={width} height={height} />
+        <CharButton editor={editor} width={width} height={height} />
+        <MoreButton editor={editor} width={width} height={height} />
+      </Inline>
+      <Inline padding="0 1.5em">
+        <MarkButton {...{editor, type: schema.marks.strong}}><BoldIcon {...{width, height}}/></MarkButton>
+        <MarkButton {...{editor, type: schema.marks.em}}><ItalicIcon {...{width, height}}/></MarkButton>
+        <StrikeButton editor={editor} width={width} height={height} />
+      </Inline>
+      <Inline flexGrow="1"></Inline>
+      <HelpButton editor={editor} width={width} height={height} />
+    </div>
+  )
+}
 
 export const Menu = ({view}) => {
   const test = () => {
@@ -25,24 +85,47 @@ const mySchema = new Schema({
 export const ProseMirror = ({ingredients}) => {
 
   let ref = useRef(null)
+  // FIXME: I don't like doing this. view should be immutable, but it is not here...
+  // But how else to update the Toolbar based on the view???
   let [view, setView] = useState(null)
+
+  //const [rerender, setRerender] = useState(false);
+  //setRerender(!rerender);
+  
+  console.log('ProseMirror')
     
   useEffect(() => {
     if (view) {console.log('View destroyed'); view.destroy()}
     console.log('View created')
-    setView(new EditorView(ref.current, {
+    let editorView = new EditorView(ref.current, {
       state: EditorState.create({
         doc: DOMParser.fromSchema(mySchema).parse(''),
-        plugins: exampleSetup({schema: mySchema})
-      })
-    }))
+        plugins: [
+          history(),
+          keymap({"Mod-z": undo, "Mod-y": redo}),
+          keymap(baseKeymap)
+        ]
+      }),
+      dispatchTransaction(transaction) {
+        console.log("Document size went from", transaction.before.content.size,
+                    "to", transaction.doc.content.size)
+        let newState = editorView.state.apply(transaction)
+        editorView.updateState(newState)
+        const active = toggleMark(schema.marks.strong)(editorView.state, null, editorView)
+        console.log('activeInside', active)
+        setView({...editorView})
+      }
+    })
+    setView(editorView)
     return () => {
       if (view) {console.log('View destroyed'); view.destroy()}
+      if (editorView && !view) {console.log('!!!!!!!!!!!!!!!!!!!!')}
     }
   }, [ingredients])
 
   return <>
     <Menu {...{view}} />
+    <Toolbar {...{ingredients, editor: view}} />
     <div ref={ref}></div>
   </>
 }
