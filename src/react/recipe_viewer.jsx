@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom'
 import Autosuggest from 'react-autosuggest'
 import {Block, Inline, InlineBlock, Row, Col, InlineRow, InlineCol, Grid} from 'jsxstyle'
 
-import { Tiptap, BubbleTiptap } from './tiptap'
-import { LinkToPage, parseIngredientsAndHeaders, parseIngredientsOldFormat } from "./lib"
+import { RecipeTiptap, BubbleTiptap } from './tiptap'
+import { LinkToPage, parseIngredientsAndHeaders } from "./lib"
 import {image_variant_path} from './routes'
 import { Utils } from "./recipe_utils"
 
@@ -34,7 +34,6 @@ const MixIngredients = ({mix}) => {
 export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipeKinds, images, user, users, recipes, suggestions, tags}) => {
 
   let recipe = recipes.find(e => e.id == recipeId)
-  gon.recipe = recipe // FIXME: This is really ugly
 
   useEffect(() => {
     let recipe = recipes.find(e => e.id == recipeId)
@@ -50,7 +49,6 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
   const noteIds = recipe.notes ? Object.values(recipe.notes).sort((a,b) => a.item_nb - b.item_nb).map(ing => ing.id) : []
   const ingredientsAndHeaders = parseIngredientsAndHeaders(recipe.ingredients)
   const ingredients = ingredientsAndHeaders.filter(e => e.label || e.qty)
-  gon.recipe_ingredients = parseIngredientsOldFormat(recipe.ingredients)
   console.log('ingredients', ingredients)
   const toolIds = []
   const mix = mixes.find(m => m.recipe_id == recipe.id)
@@ -214,7 +212,7 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
         {IngredientList}
       
         <h2>Instructions</h2>
-        <Tiptap model="recipe" json_field="json" html_field="html" content={recipe.json ? JSON.parse(recipe.json) : null} editable={false} />
+        <RecipeTiptap recipe={recipe} editable={false} />
       </div>
       <br/><br/><br/><br/><br/><br/><br/><br/>
     </div>

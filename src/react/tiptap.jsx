@@ -30,6 +30,8 @@ import { Node, mergeAttributes, nodeInputRule, textblockTypeInputRule } from '@t
 
 import {ImageButton, HelpButton, StepButton, IngredientButton, AddNoteButton, MeasuringButton, CharButton, BoldButton, ItalicButton, MoreButton, StrikeButton, LinkButton, SubscriptButton, SuperscriptButton} from './buttons'
 
+import { parseIngredientsOldFormat } from "./lib"
+
 // TODO: Check if anything in the data is null, and show a useful error if it is.
 function safeRenderHTML(html) {
   //console.log('html', html)
@@ -828,11 +830,16 @@ export const recipeEditor = (content, editable=true) => {
     editable
   }
 }
-export const Tiptap = ({content, model, json_field, html_field, url, editable, ingredients}) => {
+export const RecipeTiptap = ({recipe, editable, ingredients}) => {
+
+  gon.recipe = recipe
+  gon.recipe_ingredients = parseIngredientsOldFormat(recipe.ingredients)
+
+  let content = recipe.json ? JSON.parse(recipe.json) : null
   const editor = useEditor(recipeEditor(content, editable))
 
   useEffect(() => {
-    let interval = registerEditorWithEffect(editor, model, json_field, html_field, url)
+    let interval = registerEditorWithEffect(editor, recipe, 'json', 'html', null)
     return () => clearInterval(interval);
   }, [editor])
 

@@ -6,7 +6,7 @@ import {Block, Inline, InlineBlock, Row, Col, InlineRow, InlineCol, Grid} from '
 
 import { ajax, isTrue } from "./utils"
 import { DeleteConfirmButton } from './components/delete_confirm_button'
-import { Tiptap, BubbleTiptap } from './tiptap'
+import { RecipeTiptap, BubbleTiptap } from './tiptap'
 import {AutocompleteInput, updateRecord, TextField, CollectionSelect} from './form'
 import { parseIngredientsAndHeaders, parseIngredientsOldFormat, serializeIngredientsAndHeaders } from './lib'
 import {EditRecipeImageModal} from './modals/recipe_image'
@@ -374,7 +374,7 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
         <ProseMirror {...{ingredients}} />
       
         <h2>Instructions</h2>
-        <Tiptap model={recipe} json_field="json" html_field="html" content={gon.recipe.json ? JSON.parse(gon.recipe.json) : null} editable={true} ingredients={ingredients} />
+        <RecipeTiptap recipe={recipe} editable={true} ingredients={ingredients} />
         {editable ? <InstructionsShortcuts/> : ''}
       </div>
       <br/><br/><br/><br/><br/><br/><br/><br/>
