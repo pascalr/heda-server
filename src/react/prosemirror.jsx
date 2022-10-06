@@ -6,6 +6,9 @@ import { baseKeymap } from 'prosemirror-commands'
 import { keymap } from 'prosemirror-keymap'
 import { history, undo, redo } from 'prosemirror-history'
 import { isMarkActive } from '@aeaton/prosemirror-commands'
+//import {inputRules, wrappingInputRule, textblockTypeInputRule,
+//        smartQuotes, emDash, ellipsis} from "prosemirror-inputrules"
+import {inputRules, emDash} from "prosemirror-inputrules"
 
 import {BoldIcon, ItalicIcon} from './prosemirror_buttons'
 
@@ -50,6 +53,7 @@ const plugins = [
     'Meta-i': toggleMarkEmphasis,
   }),
   keymap(baseKeymap),
+  inputRules({rules: [emDash]})
 ]
 
 const width = 24
