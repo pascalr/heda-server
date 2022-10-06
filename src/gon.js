@@ -70,7 +70,7 @@ function fetchRecipes(req, res, next) {
 }
 
 function fetchFriendsRecipes(req, res, next) {
-  let ids = res.locals.gon.users.map(u => u.id).filter(id => id != req.user.id)
+  let ids = res.locals.gon.users.map(u => u.id).filter(id => id != req.user.user_id)
   fetchTable('recipes', {user_id: ids}, ['name', 'user_id', 'image_id', 'recipe_kind_id'], next, (records) => {
     res.locals.gon.friends_recipes = utils.sortBy(records, 'name')
   })

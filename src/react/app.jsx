@@ -823,7 +823,8 @@ const SearchBox = ({recipes, recipeKinds, tags, page, friendsRecipes, users, use
       r.name && ~normalizeSearchText(r.name).indexOf(normalized)
     ))
   }
-  let matchingUserRecipes = filterItems(recipes, term)
+  let userRecipes = recipes.filter(r => r.user_id == user.id)
+  let matchingUserRecipes = filterItems(userRecipes, term)
   let matchingFriendsRecipes = filterItems(friendsRecipes, term)
   let allMatching = [...matchingUserRecipes, ...matchingFriendsRecipes]
 
@@ -936,13 +937,12 @@ const App = () => {
   const mixes = gon.mixes
   const foods = gon.foods
   const recipes = useHcuState(gon.recipes, {tableName: 'recipes'})
-  const recipeIds = recipes.map(r => r.id)
   const recipeKinds = gon.recipe_kinds
   const images = gon.images
   const user = gon.user
   const users = gon.users
-  const friendsRecipes = gon.friends_recipes.filter(r => !recipeIds.includes(r.id))
   const notes = gon.notes
+  const friendsRecipes = gon.friends_recipes//.filter(r => !recipeIds.includes(r.id))
 
   const parentPages = {
     [PAGE_2]: PAGE_1,
