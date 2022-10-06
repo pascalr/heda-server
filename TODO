@@ -8,8 +8,6 @@ Faire une page de vente pour l'application.
 
 Longer sessions (1 month!)
 Fix recipe notes. Les notes les faire simplement dans le texte des instructions. Mais pouvoir rajouter des liens vers les notes?
-Remove gon.recipe, except in Tiptap
-Remove gon from everywhere except App and Tiptap
 Quand tu regardes une recette qui n'est pas à toi, et ensuite tu fais une recherche, elle est dans "Mes recettes" parce qu'elle a été ajouté à gon.recipes. Il faudrait filtrer ces recettes.
 Thumbnails images
 Fix les images déformées (biscuits bonshommes en pain d'épices)

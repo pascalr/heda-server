@@ -273,7 +273,7 @@ export const ColorField = ({model, field}) => {
  * @param {Array} showOption - A function to show the option. (option) => howToPrint(option)
  * @param {Boolean} includeBlank - Whether to include blank or not
  */
-// Example: <CollectionSelect model={recipe} field="recipe_kind_id" options={gon.recipe_kinds.map(k => k.id)} showOption={(id) => gon.recipe_kinds.find(k => k.id == id).name} includeBlank="true">
+// Example: <CollectionSelect model={recipe} field="recipe_kind_id" options={recipe_kinds.map(k => k.id)} showOption={(id) => recipe_kinds.find(k => k.id == id).name} includeBlank="true">
 export const CollectionSelect = ({model, field, options, showOption, includeBlank, onChange}) => {
   const [value, setValue] = useState(model[field])
 
