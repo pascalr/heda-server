@@ -830,24 +830,16 @@ export const recipeEditor = (content, editable=true) => {
     editable
   }
 }
-class RecipeTiptapComponent extends React.Component {
-  constructor() {
-    super();
-    this.state = {}
-  }
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.props.recipe.id != nextProps.recipe.id || this.props.ingredients != nextProps.ingredients
-  }
-  render () {
-  }
-};
+
 export const RecipeTiptap = ({recipe, editable, ingredients}) => {
 
-  gon.recipe = recipe
+  gon.recipe = recipe // For tiptap
   gon.recipe_ingredients = parseIngredientsOldFormat(recipe.ingredients)
 
   const content = recipe.json ? JSON.parse(recipe.json) : null
-  const dependencies = [ingredients]
+  // Transforming the ingredients object into a string so it rerenders only when
+  // it really changes, not because the object refence id is not the same
+  const dependencies = [JSON.stringify(ingredients)]
   const editor = useEditor(recipeEditor(content, editable), dependencies)
 
   useEffect(() => {
@@ -858,7 +850,7 @@ export const RecipeTiptap = ({recipe, editable, ingredients}) => {
   return (
     <div>
       {editable ? <Toolbar editor={editor} ingredients={ingredients} /> : ''}
-      <EditorContent editor={editor} />
+      <EditorContent editor={editor} />
     </div>
   )
 }
