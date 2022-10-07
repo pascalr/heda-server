@@ -140,3 +140,5 @@ export const Utils = {
   },
 
 };
+
+export const RecipeUtils = Utils;

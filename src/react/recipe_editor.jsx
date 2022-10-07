@@ -12,6 +12,7 @@ import {EditRecipeImageModal} from './modals/recipe_image'
 import {PasteIngredientsButton} from './modals/paste_ingredients'
 import {EditMix} from './app'
 import { RecipeMediumImage } from "./image"
+import { RecipeUtils } from "./recipe_utils"
 
 const InstructionsShortcuts = props => (
   <>
@@ -88,11 +89,12 @@ const EditableIngredient = ({recipe, ingredient, itemNb, foods, mixes, updateIng
     //}})
   }
 
+  let preposition = RecipeUtils.needsPreposition(qty) ? RecipeUtils.prettyPreposition(label) : ''
   return (
     <div className="d-flex align-items-center" style={{gap: '5px'}}>
       <span style={{padding: "0 10px 0 0"}}><b>{itemNb}.</b></span>
       <input type="text" size="8" className="editable-input" value={qty||''} name="qty" onChange={(e) => setQty(e.target.value)} onBlur={(e) => {ingredient.qty = qty; updateIngredients()}} />
-      de{/*" de " ou bien " - " si la quantité n'a pas d'unité => _1_____ - oeuf*/}
+      <div style={{width: '1em'}}>{preposition}</div>
       <input className="food-name" type="text" size="24" value={label||''} name="label" onChange={(e) => setLabel(e.target.value)} onBlur={(e) => {ingredient.label = label; updateIngredients()}} style={{border: '1px solid #ccc'}} />
       <div className='flex-grow-1' />
       {mix ? <img className="clickable" style={{marginRight: '0.4em'}} src="/icons/arrow-down-up.svg" width="16" height="16" onClick={moveIngToMix}></img> : '' }
