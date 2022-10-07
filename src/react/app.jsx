@@ -369,7 +369,7 @@ const EditUserTags = ({userTags, recipeFilters, page}) => {
   </>)
 }
 
-const TagButton = ({winWidth, image, title, handleClick}) => {
+const TagButton = ({image, title, handleClick}) => {
   return (
     <div style={{width: '200px', padding: '25px', display: "inline-block"}}>
       <button className="plain-btn d-flex flex-column align-items-center" onClick={handleClick}>
@@ -386,22 +386,22 @@ const TagIndex = ({page, machines, recipeFilters, addRecipeFilter, userTags}) =>
 
   const buttons = userTags.map(userTag => {
     let tag = recipeFilters.find(t => t.id == userTag.tag_id)
-    return <TagButton key={userTag.id} winWidth={winWidth} image={`/img/${tag.image_src || "question-mark.jpg"}`} title={tag.name || "Sans nom"} handleClick={() => changePage({page: PAGE_9, filterId: tag.id})} />
+    return <TagButton key={userTag.id} image={`/img/${tag.image_src || "question-mark.jpg"}`} title={tag.name || "Sans nom"} handleClick={() => changePage({page: PAGE_9, filterId: tag.id})} />
   })
 
   const machineButtons = machines.map(machine => {
-    return <TagButton key={`machine-${machine.id}`} winWidth={winWidth} image='/img/robot.jpg' title={machine.name || "Heda"} handleClick={() => changePage({page: PAGE_10, machineId: machine.id})} />
+    return <TagButton key={`machine-${machine.id}`} image='/img/robot.jpg' title={machine.name || "Heda"} handleClick={() => changePage({page: PAGE_10, machineId: machine.id})} />
   })
 
   // Pour recevoir des invités => (page suivantes, quelles restrictions => véganes)
-  //<TagButton winWidth={winWidth} image="/img/recipes.jpg" title="Mes livres" handleClick={() => {window.location.href = my_books_path()}} />
+  //<TagButton image="/img/recipes.jpg" title="Mes livres" handleClick={() => {window.location.href = my_books_path()}} />
   return (<>
     <div style={{maxWidth: "100vw", width: "800px", margin: "auto", paddingLeft: `${pl}px`, marginLeft: '-0.3em'}}>
       <div style={{width: "fit-content"}}>
-        <TagButton winWidth={winWidth} image="/img/cooking.jpg" title="Mes recettes" handleClick={() => changePage({page: PAGE_6})} />
+        <TagButton image="/img/cooking.jpg" title="Mes recettes" handleClick={() => changePage({page: PAGE_6})} />
         {machineButtons}
         {buttons}
-        <TagButton winWidth={winWidth} image="/icons/gear-gray.svg" title="Paramètres" handleClick={() => changePage({page: PAGE_4})} />
+        <TagButton image="/icons/gear-gray.svg" title="Paramètres" handleClick={() => changePage({page: PAGE_4})} />
       </div>
     </div>
   </>)
@@ -776,12 +776,12 @@ const HedaIndex = ({page, machines}) => {
 
   return (<>
     <div style={{maxWidth: "100vw", width: "400px", margin: "auto"}}>
-      <TagButton winWidth={winWidth} image="/img/calendar.jpg" title="Calendrier" handleClick={() => window.location.href = calendar_path(machine)} />
-      <TagButton winWidth={winWidth} image="/img/blender.jpg" title="Mélanges" handleClick={() => changePage({page: PAGE_12, machineId: machine.id})} />
-      <TagButton winWidth={winWidth} image="/img/bar_code.jpg" title="Inventaire" handleClick={() => changePage({page: PAGE_11, machineId: machine.id})} />
+      <TagButton image="/img/calendar.jpg" title="Calendrier" handleClick={() => window.location.href = calendar_path(machine)} />
+      <TagButton image="/img/blender.jpg" title="Mélanges" handleClick={() => changePage({page: PAGE_12, machineId: machine.id})} />
+      <TagButton image="/img/bar_code.jpg" title="Inventaire" handleClick={() => changePage({page: PAGE_11, machineId: machine.id})} />
     
-      <TagButton winWidth={winWidth} image="/img/jar.svg" title="Pots" handleClick={() => window.location.href = containers_path(machine)} />
-      <TagButton winWidth={winWidth} image="/img/shopping_cart.jpg" title="Liste d'épicerie" handleClick={() => window.location.href = grocery_list_path(machine)} />
+      <TagButton image="/img/jar.svg" title="Pots" handleClick={() => window.location.href = containers_path(machine)} />
+      <TagButton image="/img/shopping_cart.jpg" title="Liste d'épicerie" handleClick={() => window.location.href = grocery_list_path(machine)} />
     </div>
   </>)
 }
