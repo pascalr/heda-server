@@ -1,3 +1,9 @@
+Mettre simplement une icon pour l'utilisateur à gauche de la loupe.
+Le but est d'enlever la ligne du haut, pour pouvoir la colorer.
+Ajouter un exemple de Carrousel de suggestions de recettes dans la page d'acceuil.
+Ajouter un exemple de modifier une recette sur la page d'acceuil.
+Ah je le sais quel design que je veux! Un genre de faux design de téléphone.
+
 Sur mon site internet de CV, rajouter une ligne sur la page d'acceuil, Portfolio, avec des liens vers les meilleurs projets que j'ai fait.
 
 Faire une page de vente pour l'application.
@@ -6,11 +12,9 @@ Faire une page de vente pour l'application.
     Faire une vidéo ou bien ou simulation live de l'éditeur de recette (Créer une recette n'aura jamais été aussi facile)
     Tu ne sais pas quoi manger? HedaCuisine te suggère des recettes selon des thèmes.
 
-Ne pas utiliser pretty quantity à moins que le user aie setter ce setting.
-Le user choisi dans quel format il veut voir les recettes.
+Simplement enlever pretty quantity...
 Scroll search
-Juste disable pretty quantity pour l'instant.
-Longer sessions (1 month!)
+Longer sessions (1 month!), refresh le 1 mois lorsque l'utilisateur se connecte?, ne pas avoir à se logger souvent.
 Fix recipe notes. Les notes les faire simplement dans le texte des instructions. Mais pouvoir rajouter des liens vers les notes?
 Thumbnails images
 Store images on volume or backblaze.

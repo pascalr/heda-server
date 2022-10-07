@@ -927,6 +927,11 @@ const App = () => {
     window.history.replaceState(updated, '', '?'+new URLSearchParams(updated).toString())
   }
 
+  const [_csrf, setCsrf] = useState('')
+  useEffect(() => {
+    setCsrf(document.querySelector('[name="csrf-token"]').content)
+  }, [])
+
   const recipeFilters = gon.recipe_filters
   const suggestions = gon.suggestions
   const userTags = gon.user_tags
@@ -997,15 +1002,40 @@ const App = () => {
 
   // Pour recevoir des invités => (page suivantes, quelles restrictions => véganes)
   return (<>
-    <div className="d-flex align-items-center">
-      {moveBtn}
-      <div className="flex-grow-1"/>
-      <h1 style={{marginBottom: "0", fontSize: '2rem'}} className="clickable" onClick={() => changePage(1)}>HedaCuisine</h1>
-      <div className="flex-grow-1"/>
-      <img className="clickable" src={isSearching ? icon_path("x-lg.svg") : icon_path("search_black.svg")} width="24" onClick={() => {setIsSearching(!isSearching)}}/>
+    <nav style={{backgroundColor: '#e3f2fd', marginBottom: '0.5em'}}>
+      <div className="d-flex align-items-center" style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0 0.5em 0'}}>
+        {moveBtn}
+        <div className="flex-grow-1"/>
+        <div style={{fontWeight: '500', fontSize: '1.5rem', color: '#4f5458'}} className="clickable" onClick={() => changePage(1)}>HedaCuisine</div>
+        <div className="flex-grow-1"/>
+        <img className="clickable" src={isSearching ? icon_path("x-lg.svg") : icon_path("search_black.svg")} width="24" onClick={() => {setIsSearching(!isSearching)}} style={{marginRight: '1em'}} />
+        <div className="dropdown">
+          <button className="plain-btn dropdown-toggle" type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <img className="clickable" src={icon_path("person.svg")} width="28" onClick={() => {}}/>
+          </button>
+          <div className="dropdown-menu" aria-labelledby="dropdownUserButton">
+            <a href="/edit_profile" className="dropdown-item">Mon profil</a>
+            <form action="/logout" method="post">
+              <button className="dropdown-item" type="submit">Logout</button>
+              <input type="hidden" name="_csrf" value={_csrf}/>
+            </form>
+            <hr className="dropdown-divider"/>
+            <h6 className="dropdown-header">Changer d'utilisateur</h6>
+            { users.map((usr) => { 
+              if (usr.id == user.id) {return;}
+              return <form key={usr.id} action="/change_user" method="post">
+                <button className="dropdown-item" type="submit">{ usr.name }</button>
+                <input type="hidden" name="user_id" value={usr.id}/>
+                <input type="hidden" name="_csrf" value={_csrf}/>
+              </form>
+            })}
+          </div>
+        </div>
+      </div>
+    </nav>
+    <div id="trunk">
+      {isSearching ? <SearchBox {...{page, recipes, recipeKinds, tags: recipeFilters, friendsRecipes, users, user, images}} /> : pages[page.page || 1]}
     </div>
-    <hr style={{color: "#aaa", marginTop: "0"}}/>
-    {isSearching ? <SearchBox {...{page, recipes, recipeKinds, tags: recipeFilters, friendsRecipes, users, user, images}} /> : pages[page.page || 1]}
   </>)
 }
 

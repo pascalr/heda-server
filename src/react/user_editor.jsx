@@ -3,11 +3,12 @@ import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
 import { TextField, RadioField } from './form'
-import { useHcuState } from "../hcu"
+import { initHcu, useHcuState } from "../hcu"
  
 
 const UserEditor = () => {
 
+  if (!window.hcu) {initHcu()}
   const users = useHcuState([gon.user], {tableName: 'users'})
   const user = users[0]
 
