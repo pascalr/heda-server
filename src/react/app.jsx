@@ -823,15 +823,16 @@ const useTransition = (initial, current, final) => {
   return state
 }
 
-const RecipeListItem = ({recipe, current, tags, recipeKinds, page, selected, users, user, images}) => {
+const RecipeListItem = ({recipe, current, tags, recipeKinds, page, selected, users, user, images, selectedRef}) => {
   let userName = null
+  let isSelected = current == selected
   if (user.id != recipe.user_id) {
     const recipeUser = users.find(u => u.id == recipe.user_id)
     userName = recipeUser ? recipeUser.name : `user${recipe.user_id}`
   }
   return (
-    <li key={recipe.id}>
-      <LinkToPage page={{...page, page: 15, recipeId: recipe.id}} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={current == selected ? "selected" : undefined}>
+    <li key={recipe.id} ref={isSelected ? selectedRef : null}>
+      <LinkToPage page={{...page, page: 15, recipeId: recipe.id}} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
         <div className="d-flex align-items-center">
           <RecipeThumbnailImage {...{recipe, recipeKinds, images}} />
           <div style={{marginRight: '0.5em'}}></div>
@@ -844,19 +845,23 @@ const RecipeListItem = ({recipe, current, tags, recipeKinds, page, selected, use
 
 const SearchBox = ({recipes, recipeKinds, tags, page, friendsRecipes, users, user, images}) => {
 
-  //const height = useTransition('0', shown ? '100vh' : '0', '100vh')
-  const height = '100vh'
   // Search is the text shown in the input field
   // Term is the term currently used to filter the search
   const [search, setSearch] = useState('')
   const [term, setTerm] = useState('')
   const [selected, setSelected] = useState(-1)
   const inputField = useRef(null)
+  const selectedRef = useRef(null)
   const minChars = 3
 
   useEffect(() => {
     inputField.current.focus()
   }, [])
+  
+  useEffect(() => {
+    //displayRef.current.scrollTop = 56.2*(selected||0)
+    if (selectedRef.current) { selectedRef.current.scrollIntoView(false) }
+  }, [selected])
 
   const filterItems = (items, term) => {
     if (isBlank(term) || term.length < minChars) {return []}
@@ -883,20 +888,22 @@ const SearchBox = ({recipes, recipeKinds, tags, page, friendsRecipes, users, use
   }
 
   return (<>
-    <div style={{minHeight: height, transition: 'height 1s'}}>
+    <div style={{transition: 'height 1s'}}>
       <input ref={inputField} type="search" placeholder="Rechercher..." onChange={(e) => {setTerm(e.target.value); setSearch(e.target.value)}} autoComplete="off" style={{width: "100%"}} onKeyDown={onKeyDown} value={search}/>
-      {matchingUserRecipes.length >= 1 ? <h2 className="h001">Mes recettes</h2> : ''}
-      <ul className="recipe-list">
-        {matchingUserRecipes.map((recipe, current) => (
-          <RecipeListItem key={recipe.id} {...{recipe, current, tags, recipeKinds, page, selected, users, user, images}}/>
-        ))}
-      </ul>
-      {matchingFriendsRecipes.length >= 1 ? <h2 className="h001">Suggestions</h2> : ''}
-      <ul className="recipe-list">
-        {matchingFriendsRecipes.map((recipe, current) => (
-          <RecipeListItem key={recipe.id} {...{recipe, current: current+matchingUserRecipes.length, tags, recipeKinds, page, selected, users, user, images}}/>
-        ))}
-      </ul>
+      <div style={{height: 'calc(100vh - 125px)', overflowY: 'scroll'}}>
+        {matchingUserRecipes.length >= 1 ? <h2 className="h001">Mes recettes</h2> : ''}
+        <ul className="recipe-list">
+          {matchingUserRecipes.map((recipe, current) => (
+            <RecipeListItem key={recipe.id} {...{recipe, current, tags, recipeKinds, page, selected, users, user, images, selectedRef}}/>
+          ))}
+        </ul>
+        {matchingFriendsRecipes.length >= 1 ? <h2 className="h001">Suggestions</h2> : ''}
+        <ul className="recipe-list">
+          {matchingFriendsRecipes.map((recipe, current) => (
+            <RecipeListItem key={recipe.id} {...{recipe, current: current+matchingUserRecipes.length, tags, recipeKinds, page, selected, users, user, images, selectedRef}}/>
+          ))}
+        </ul>
+      </div>
     </div>
   </>)
 }
