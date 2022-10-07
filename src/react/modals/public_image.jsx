@@ -22,7 +22,8 @@ export const PublicImageField = ({model, field, defaultSrc, url, getter, setter}
 
 const PublicImageModal = ({model, field, show, setShowModal, url, getter, setter}) => {
 
-  const publicImages = useFetch(public_images_path()) // FIXME: useFetch should cache the data...
+  //const publicImages = useFetch(public_images_path()) // FIXME: useFetch should cache the data...
+  const publicImages = []
 
   const updateSrc = (image) => {
     updateRecordField(model, field, image, url, getter, setter)

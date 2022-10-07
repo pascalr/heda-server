@@ -300,17 +300,9 @@ const EditFilter = ({page, recipeFilters}) => {
   return (<>
     <h2>Modifier le filtre</h2>
     <h3>Titre</h3>
-    <TextField model={filter} field="name" url={recipe_filter_path(filter)} getter={recipeFilters} setter={recipeFilters.update} />
+    <TextField model={filter} field="name" getter={recipeFilters} setter={recipeFilters.update} />
     <h3>Image</h3>
-    <PublicImageField model={filter} field="image_src" defaultSrc={"question-mark.jpg"} url={recipe_filter_path(filter)} getter={recipeFilters} setter={recipeFilters.update} />
-    <br/>
-    <div>
-      <button type="button" className="btn btn-primary" onClick={() => {}}>Modifier les recettes correspondantes (not implemented yet)</button>
-    </div>
-    <br/>
-    <div>
-      <button type="button" className="btn btn-primary" onClick={() => changePage({page: 8, filterId: filter.id})}>Modifier les catégories correspondantes</button>
-    </div>
+    <PublicImageField model={filter} field="image_src" defaultSrc={"question-mark.jpg"} getter={recipeFilters} setter={recipeFilters.update} />
   </>)
 }
 
@@ -979,8 +971,16 @@ const App = () => {
   window.hcu.changePage = (updated) => {
     setPage(updated)
     setIsSearching(false)
-    window.history.replaceState(updated, '', '?'+new URLSearchParams(updated).toString())
+    window.history.pushState(updated, '', '?'+new URLSearchParams(updated).toString())
   }
+
+  useEffect(() => {
+
+    window.onpopstate = (event) => {
+      setPage(event.state || getUrlParams())
+      setIsSearching(false)
+    }
+  }, [])
 
   const [_csrf, setCsrf] = useState('')
   useEffect(() => {

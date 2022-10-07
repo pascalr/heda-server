@@ -225,10 +225,10 @@ export const updateRecordField = (model, field, value, url, getter, setter) => {
 }
 export const TextField = ({model, field, inputRef, onUpdate, url, getter, setter, ...props}) => {
   const [value, setValue] = useState(model[field])
-  if (onUpdate) {throw "Is onUpdate deprecated on TextField? I think so..."}
-  if (url) {throw "Is url deprecated on TextField? I think so..."}
-  if (getter) {throw "Is getter deprecated on TextField? I think so..."}
-  if (setter) {throw "Is setter deprecated on TextField? I think so..."}
+  //if (onUpdate) {throw "Is onUpdate deprecated on TextField? I think so..."}
+  //if (url) {throw "Is url deprecated on TextField? I think so..."}
+  //if (getter) {throw "Is getter deprecated on TextField? I think so..."}
+  //if (setter) {throw "Is setter deprecated on TextField? I think so..."}
   
   return (
     <input type="text" value={value||''} name={model.table_name+"["+field+"]"} id={field} ref={inputRef} {...props}
