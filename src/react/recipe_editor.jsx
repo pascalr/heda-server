@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Autosuggest from 'react-autosuggest'
-import {Block, Inline, InlineBlock, Row, Col, InlineRow, InlineCol, Grid} from 'jsxstyle'
 
 import { ajax } from "./utils"
 import { DeleteConfirmButton } from './components/delete_confirm_button'
@@ -64,12 +63,12 @@ const NewIngredient = ({foods, updateIngredients, addIngredient}) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Row alignItems="center" gap="5px">
+      <div className="d-flex align-items-center" style={{gap: '5px'}}>
         <input type="text" size="8" className="editable-input" value={qty||''} name="qty" onChange={(e) => setQty(e.target.value)} style={{marginLeft: '1.65rem'}} ref={qtyInputField} />
         de{/*" de " ou bien " - " si la quantité n'a pas d'unité => _1_____ - oeuf*/}
         <input type="text" size="24" value={label||''} name="label" onChange={(e) => setLabel(e.target.value)} />
         <button type="submit" className="btn btn-sm btn-primary">Ajouter</button>
-      </Row>
+      </div>
     </form>
   )
 }
@@ -90,15 +89,15 @@ const EditableIngredient = ({recipe, ingredient, itemNb, foods, mixes, updateIng
   }
 
   return (
-    <Row alignItems="center" gap="5px">
+    <div className="d-flex align-items-center" style={{gap: '5px'}}>
       <span style={{padding: "0 10px 0 0"}}><b>{itemNb}.</b></span>
       <input type="text" size="8" className="editable-input" value={qty||''} name="qty" onChange={(e) => setQty(e.target.value)} onBlur={(e) => {ingredient.qty = qty; updateIngredients()}} />
       de{/*" de " ou bien " - " si la quantité n'a pas d'unité => _1_____ - oeuf*/}
       <input type="text" size="24" value={label||''} name="label" onChange={(e) => setLabel(e.target.value)} onBlur={(e) => {ingredient.label = label; updateIngredients()}} />
-      <Block flexGrow="1" />
+      <div className='flex-grow-1' />
       {mix ? <img className="clickable" style={{marginRight: '0.4em'}} src="/icons/arrow-down-up.svg" width="16" height="16" onClick={moveIngToMix}></img> : '' }
       <DeleteConfirmButton id={`ing-${ingredient.key}`} onDeleteConfirm={() => removeIngredientOrHeader(itemNb-1)} message="Je veux enlever cet ingrédient?" />
-    </Row>
+    </div>
   )
 }
 
@@ -156,11 +155,6 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
     window.hcu.updateField(recipe, 'ingredients', serializeIngredientsAndHeaders(ingredientsAndHeaders))
   }
 
-  function addEmptyIngredient() {
-    ingredientsAndHeaders.push({key: `${ingredientsAndHeaders.length}-`, qty: '', label: ''})
-    window.hcu.updateField(recipe, 'ingredients', serializeIngredientsAndHeaders(ingredientsAndHeaders))
-  }
-
   function addIngredient(qty, label) {
     let key = `${ingredientsAndHeaders.length}-${qty}; ${label}`
     ingredientsAndHeaders.push({key, qty, label})
@@ -208,10 +202,6 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
       <li className="list-group-item">
         <NewIngredient {...{foods, updateIngredients, addIngredient}} />
       </li>
-      <Row>
-        <img src="/icons/plus-circle.svg" style={{width: "2.5rem", padding: "0.5rem"}} onClick={addEmptyIngredient} />
-        <PasteIngredientsButton recipe={recipe} />
-      </Row>
     </ul>
 
   //const NoteList = this.state.noteIds.map(id => {
@@ -363,6 +353,7 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
           </div>
         </div>
         {IngredientList}
+        <PasteIngredientsButton recipe={recipe} />
       
         <h2>Instructions</h2>
         <RecipeTiptap recipe={recipe} editable={true} ingredients={ingredients} />
