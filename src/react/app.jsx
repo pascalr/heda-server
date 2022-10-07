@@ -34,8 +34,8 @@ const PAGE_9 = 9 // SuggestionsIndex
 const PAGE_10 = 10 // HedaIndex
 const PAGE_11 = 11 // Inventory
 const PAGE_12 = 12 // MixIndex
-//const PAGE_13 = 13 // ShowMix
-//const PAGE_14 = 14 // EditMix
+const PAGE_13 = 13 // ShowMix
+const PAGE_14 = 14 // EditMix
 const PAGE_15 = 15 // ShowRecipe
 const PAGE_16 = 16 // EditRecipe
 const PAGE_17 = 17 // NewRecipe
@@ -475,7 +475,47 @@ const labelForCmdType = (cmdType) => {
   return t ? t.label.fr : cmdType.id
 }
 
-// This is not a page anymore. It is a subset of the RecipeEditor.
+const ShowMix = ({page, recipes, favoriteRecipes, machines, mixes, machineFoods}) => {
+
+  const machine = page.machineId ? machines.find(m => m.id == page.machineId) : null
+  const currentMachineFoods = machine ? machineFoods.filter(m => m.machine_id == machine.id) : machineFoods
+  const mix = mixes.find(m => m.id == page.mixId)
+
+  console.log('mix.recipe_id', mix.recipe_id)
+
+  const instructions = (mix.instructions||'').split(';')
+  const eInstructions = instructions.map((instruction,line) => {
+
+    let args = instruction.split(',')
+    let cmdType = CMD_TYPES.find(e => e.id == args[0])
+    let obj = cmdType ? cmdType.parse(args, context) : null
+    if (obj) {obj.type = cmdType}
+
+    return (
+      <li key={`${line}-${instruction}`} className={`list-group-item${!obj || obj.errors ? ' cmd-error' : ''}`}>
+        {!obj || obj.errors ? <img className="float-end" style={{marginRight: '0.4em', marginTop: '0.4em'}} src="/icons/info-circle.svg" width="18" height="18"></img> : ''}
+        <div className='d-flex gap-10'>
+          {obj ? cmdType.print(obj) : ''}
+        </div>
+      </li>
+    )
+  })
+
+  return (<>
+    <div className="d-flex gap-20 align-items-center">
+      <h1>{mix.name || 'Sans nom'}</h1>
+      <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => changePage({page: PAGE_14, machineId: machine.id, mixId: mix.id})}>Modifier</button>
+    </div>
+    <ul className="list-group">{eInstructions}</ul>
+    <div style={{height: '0.5em'}}></div>
+    <div className="d-flex gap-10">
+      <button type="button" className="btn btn-small btn-primary">Cuisiner</button>
+      <button type="button" className="btn btn-small btn-secondary">Ajouter à mon calendrier</button>
+    </div>
+    <div style={{height: '1em'}}></div>
+  </>)
+}
+
 export const EditMix = ({page, recipes, favoriteRecipes, machines, mixes, machineFoods}) => {
 
   const context = {recipes, favoriteRecipes, machines, mixes, machineFoods}
@@ -677,25 +717,27 @@ const MixIndex = ({page, machines, mixes, machineFoods}) => {
   </>)
 }
 
-const Inventory = ({page, machines, containerQuantities, machineFoods}) => {
+const Inventory = ({page, machines, containerQuantities, machineFoods, foods, containerFormats}) => {
 
   const machine = machines.find(m => m.id == page.machineId)
   const currentMachineFoods = machineFoods.filter(m => m.machine_id == page.machineId)
 
   const items = currentMachineFoods.map(machineFood => {
+    let food = foods.find(f => f.id == machineFood.food_id)
     let qties = containerQuantities.filter(c => c.machine_food_id == machineFood.id)
 
     //<img src={`JarIcon${containerQuantity.container_format_name}.png`} width="42" height="42"></img>
-    let containers = qties.map(containerQuantity =>{
+    let containers = qties.map(containerQuantity => {
+      let format = containerFormats.find(f => f.id == containerQuantity.container_format_id)
       return (<span key={containerQuantity.id}>
         <span>{containerQuantity.full_qty}</span>
-        <img src={`jar-${containerQuantity.container_format_name}.svg`} width="42" height="42"></img>
+        <img src={`jar-${format.name}.svg`} width="42" height="42"></img>
       </span>)
     })
 
     return (
       <tr key={machineFood.id}>
-        <td>{capitalize(machineFood.name)}</td>
+        <td>{capitalize(food.name)}</td>
         <td>
           <div className="containers d-flex">
             <div>
@@ -939,6 +981,7 @@ const App = () => {
   const machines = gon.machines
   const machineFoods = useHcuState(gon.machine_foods, {tableName: 'machine_foods'})
   const containerQuantities = gon.container_quantities
+  const containerFormats = gon.container_formats
   const mixes = gon.mixes
   const foods = gon.foods
   const recipes = useHcuState(gon.recipes, {tableName: 'recipes'})
@@ -961,15 +1004,13 @@ const App = () => {
     [PAGE_10]: PAGE_1,
     [PAGE_11]: PAGE_10,
     [PAGE_12]: PAGE_10,
-//    [PAGE_13]: PAGE_12,
-//    [PAGE_14]: PAGE_13,
+    [PAGE_13]: PAGE_12,
+    [PAGE_14]: PAGE_13,
     [PAGE_15]: PAGE_6,
     [PAGE_16]: PAGE_15,
     [PAGE_17]: PAGE_6,
   }
 
-  //[PAGE_13]: <ShowMix {...all} />,
-  //[PAGE_14]: <EditMix {...all} />,
   const pages = {
     [PAGE_1]: <TagIndex {...{page, recipeFilters, userTags, machines}} addRecipeFilter={(filter) => recipeFilters.update(recipeFilters.concat([filter]))} />,
     [PAGE_2]: <TagCategorySuggestions {...{page, recipeFilters, suggestions, recipes}} />,
@@ -981,8 +1022,10 @@ const App = () => {
     [PAGE_8]: <TagEditAllCategories page={page} recipeFilters={recipeFilters} />,
     [PAGE_9]: <SuggestionsIndex page={page} suggestions={suggestions} tags={recipeFilters} recipes={recipes} />,
     [PAGE_10]: <HedaIndex {...{page, machines}} />,
-    [PAGE_11]: <Inventory {...{page, machines, machineFoods, containerQuantities}} />,
+    [PAGE_11]: <Inventory {...{page, machines, machineFoods, containerQuantities, foods, containerFormats}} />,
     [PAGE_12]: <MixIndex {...{page, machines, machineFoods, mixes}} />,
+    [PAGE_13]: <ShowMix {...{page, recipes, favoriteRecipes, machines, mixes, machineFoods}} />,
+    [PAGE_14]: <EditMix {...{page, recipes, favoriteRecipes, machines, mixes, machineFoods}} />,
     [PAGE_15]: <ShowRecipe {...{page, recipes, mixes, favoriteRecipes, recipeKinds, images, user, users, suggestions, tags: recipeFilters}} />,
     [PAGE_16]: <EditRecipe {...{page, recipes, mixes, user, users, recipeKinds, images}} />,
     [PAGE_17]: <NewRecipe {...{page, recipeKinds}} />
@@ -1007,7 +1050,7 @@ const App = () => {
         <div className="float-start" style={{margin: '0.3em 0 0 0.5em'}}>
           {moveBtn}
         </div>
-        <div className="float-end" style={{marginTop: '0.2em'}}>
+        <div className="float-end" style={{marginTop: '0.25em'}}>
           <img className="clickable" src={isSearching ? icon_path("x-lg.svg") : icon_path("search_black.svg")} width="24" onClick={() => {setIsSearching(!isSearching)}} style={{marginRight: '1em'}} />
           <div className="dropdown d-inline-block">
             <button className="plain-btn dropdown-toggle" type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style={{marginRight: '1em'}}>
