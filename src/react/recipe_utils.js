@@ -105,6 +105,11 @@ export const Utils = {
     return qty.pretty() + ' ' + Utils.prettyPreposition(food.name)
   },
 
+  needsPreposition(qty) {
+    let q = new Quantity({raw: qty})
+    return !!q.label
+  },
+
   // Should print the quantity in the locale or user unit system
   // Not yet this way...
   prettyQuantityFor(quantity, foodName, scale=1.0) {

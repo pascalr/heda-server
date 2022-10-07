@@ -60,9 +60,10 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
             </h3>
           } else {
             const ing = ingOrHeader
-            let prettyQty = Utils.prettyQuantityFor(ing.qty, ing.label)
+            //let prettyQty = Utils.prettyQuantityFor(ing.qty, ing.label)
+            let preposition = Utils.needsPreposition(ing.qty) ? Utils.prettyPreposition(ing.label) : ''
             return <li key={ing.key} className="list-group-item">
-              <span>{prettyQty} <span className="food-name">{ing.label}</span></span>
+              <span>{ing.qty} {preposition}<span className="food-name">{ing.label}</span></span>
               <div className="dropdown d-inline-block float-end">
                  <img className="clickable" data-bs-toggle="dropdown" src="/icons/pencil-square.svg"/>
                 <div className="dropdown-menu">
