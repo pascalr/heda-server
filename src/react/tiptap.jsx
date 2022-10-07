@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import ReactDOMServer from 'react-dom/server'
 
-import {Block, Inline, InlineBlock, Row, Col, InlineRow, InlineCol, Grid} from 'jsxstyle'
-
 import Autosuggest from 'react-autosuggest'
 
 // TIPTAP
@@ -713,7 +711,7 @@ const Toolbar = ({ editor, ingredients }) => {
 
   return (
     <div className="toolbar" style={{display: "flex"}}>
-      <Inline padding="0 1.5em">
+      <span className="toolbar-group">
         <select value={selectedHeader} style={{display: "flex", alignItems: "center"}} onChange={(e) => {
           let val = parseInt(e.target.value)
           if (!val) {
@@ -727,8 +725,8 @@ const Toolbar = ({ editor, ingredients }) => {
           <option value="5">Titre 3</option>
           <option value="0">Normal</option>
         </select>
-      </Inline>
-      <Inline padding="0 1.5em">
+      </span>
+      <span className="toolbar-group">
         <StepButton editor={editor} width={width} height={height} />
         <IngredientButton editor={editor} width={width} height={height} ingredients={ingredients} />
         <MeasuringButton editor={editor} width={width} height={height} />
@@ -736,13 +734,13 @@ const Toolbar = ({ editor, ingredients }) => {
         <LinkButton editor={editor} width={width} height={height} />
         <CharButton editor={editor} width={width} height={height} />
         <MoreButton editor={editor} width={width} height={height} />
-      </Inline>
-      <Inline padding="0 1.5em">
+      </span>
+      <span className="toolbar-group">
         <BoldButton editor={editor} width={width} height={height} />
         <ItalicButton editor={editor} width={width} height={height} />
         <StrikeButton editor={editor} width={width} height={height} />
-      </Inline>
-      <Inline flexGrow="1"></Inline>
+      </span>
+      <span className='flex-grow-1'/>
       <HelpButton editor={editor} width={width} height={height} />
     </div>
   )
@@ -764,7 +762,7 @@ const ArticleToolbar = ({ editor }) => {
 
   return (
     <div className="toolbar" style={{display: "flex"}}>
-      <Inline padding="0 1.5em">
+      <span className="toolbar-group">
         <select value={selectedHeader} style={{display: "flex", alignItems: "center"}} onChange={(e) => {
           let val = parseInt(e.target.value)
           if (!val) {
@@ -779,20 +777,20 @@ const ArticleToolbar = ({ editor }) => {
           <option value="5">Titre 4</option>
           <option value="0">Normal</option>
         </select>
-      </Inline>
-      <Inline padding="0 1.5em">
+      </span>
+      <span className="toolbar-group">
         <ImageButton editor={editor} width={width} height={height} />
         <AddNoteButton editor={editor} width={width} height={height} />
         <LinkButton editor={editor} width={width} height={height} />
         <CharButton editor={editor} width={width} height={height} />
         <MoreButton editor={editor} width={width} height={height} />
-      </Inline>
-      <Inline padding="0 1.5em">
+      </span>
+      <span className="toolbar-group">
         <BoldButton editor={editor} width={width} height={height} />
         <ItalicButton editor={editor} width={width} height={height} />
         <StrikeButton editor={editor} width={width} height={height} />
-      </Inline>
-      <Inline flexGrow="1"></Inline>
+      </span>
+      <span className='flex-grow-1'/>
       <HelpButton editor={editor} width={width} height={height} />
     </div>
   )

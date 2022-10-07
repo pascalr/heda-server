@@ -135,10 +135,11 @@ span[data-ingredient] {
   //overflow: scroll;
 }
 
-// TODO: Probably remove everything above this
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// With react-prosemirror
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+.toolbar-group {
+  padding: 0 1.5em;
+}
+
+/* This was when I was trying to not use Tiptap, to use prosemirror directly */
 .prosemirror-toolbar {
 
   border: 1px solid #bbb;
