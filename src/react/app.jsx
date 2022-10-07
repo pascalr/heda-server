@@ -379,7 +379,7 @@ const EditUserTags = ({userTags, recipeFilters, page}) => {
 
 const TagButton = ({winWidth, image, title, handleClick}) => {
   return (
-    <div style={{width: `${Math.min(200, winWidth/2)}px`, padding: `${Math.min(25, (winWidth-300)/4)}px`, display: "inline-block"}}>
+    <div style={{width: '200px', padding: '25px', display: "inline-block"}}>
       <button className="plain-btn d-flex flex-column align-items-center" onClick={handleClick}>
         <img src={image} width="150" height="150" />
         <b>{title}</b>
@@ -846,7 +846,7 @@ const RecipeListItem = ({recipe, current, tags, recipeKinds, page, selected, use
   )
 }
 
-const SearchBox = ({recipes, recipeKinds, tags, page, friendsRecipes, users, user, images}) => {
+const SearchBox = ({recipes, recipeKinds, tags, page, friendsRecipes, users, user, images, setIsSearching}) => {
 
   // Search is the text shown in the input field
   // Term is the term currently used to filter the search
@@ -885,9 +885,12 @@ const SearchBox = ({recipes, recipeKinds, tags, page, friendsRecipes, users, use
 
   let onKeyDown = ({key}) => {
     if (key == "ArrowDown") {select(selected >= allMatching.length-1 ? -1 : selected+1)}
-    if (key == "ArrowUp") {select(selected < 0 ? allMatching.length-1 : selected-1)}
-    if (key == "Escape") {setSearch(''); setTerm('')}
-    if (key == "Enter") {changePage({...page, page: PAGE_15, recipeId: allMatching[selected].id})}
+    else if (key == "ArrowUp") {select(selected < 0 ? allMatching.length-1 : selected-1)}
+    else if (key == "Enter") {changePage({...page, page: PAGE_15, recipeId: allMatching[selected].id})}
+    else if (key == "Escape") {
+      if (!term || term == '') { setIsSearching(false) }
+      else { setSearch(''); setTerm('') }
+    }
   }
 
   return (<>
@@ -1089,7 +1092,7 @@ const App = () => {
       </div>
     </nav>
     <div id="trunk">
-      {isSearching ? <SearchBox {...{page, recipes, recipeKinds, tags: recipeFilters, friendsRecipes, users, user, images}} /> : pages[page.page || 1]}
+      {isSearching ? <SearchBox {...{page, recipes, recipeKinds, tags: recipeFilters, friendsRecipes, users, user, images, setIsSearching}} /> : pages[page.page || 1]}
     </div>
   </>)
 }
