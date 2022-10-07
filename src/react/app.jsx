@@ -1052,7 +1052,7 @@ const App = () => {
   }
 
   let moveBtn = ''
-  if (page.page && parentPages[page.page]) {
+  if (!isSearching && page.page && parentPages[page.page]) {
     moveBtn = <img className="clickable" src={icon_path("arrow-up-square.svg")} width="32" style={{paddingLeft: "0.5em"}} onClick={goUp} />
   }
 

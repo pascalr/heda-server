@@ -93,7 +93,7 @@ const EditableIngredient = ({recipe, ingredient, itemNb, foods, mixes, updateIng
       <span style={{padding: "0 10px 0 0"}}><b>{itemNb}.</b></span>
       <input type="text" size="8" className="editable-input" value={qty||''} name="qty" onChange={(e) => setQty(e.target.value)} onBlur={(e) => {ingredient.qty = qty; updateIngredients()}} />
       de{/*" de " ou bien " - " si la quantité n'a pas d'unité => _1_____ - oeuf*/}
-      <input type="text" size="24" value={label||''} name="label" onChange={(e) => setLabel(e.target.value)} onBlur={(e) => {ingredient.label = label; updateIngredients()}} />
+      <input className="food-name" type="text" size="24" value={label||''} name="label" onChange={(e) => setLabel(e.target.value)} onBlur={(e) => {ingredient.label = label; updateIngredients()}} style={{border: '1px solid #ccc'}} />
       <div className='flex-grow-1' />
       {mix ? <img className="clickable" style={{marginRight: '0.4em'}} src="/icons/arrow-down-up.svg" width="16" height="16" onClick={moveIngToMix}></img> : '' }
       <DeleteConfirmButton id={`ing-${ingredient.key}`} onDeleteConfirm={() => removeIngredientOrHeader(itemNb-1)} message="Je veux enlever cet ingrédient?" />
