@@ -380,7 +380,7 @@ const EditUserTags = ({userTags, recipeFilters, page}) => {
 const TagButton = ({winWidth, image, title, handleClick}) => {
   return (
     <div style={{width: `${Math.min(200, winWidth/2)}px`, padding: `${Math.min(25, (winWidth-300)/4)}px`, display: "inline-block"}}>
-      <button className="plain-btn d-flex p-1 flex-column align-items-center" onClick={handleClick}>
+      <button className="plain-btn d-flex flex-column align-items-center" onClick={handleClick}>
         <img src={image} width="150" height="150" />
         <b>{title}</b>
       </button>
@@ -390,6 +390,7 @@ const TagButton = ({winWidth, image, title, handleClick}) => {
 const TagIndex = ({page, machines, recipeFilters, addRecipeFilter, userTags}) => {
 
   const winWidth = useWindowWidth()
+  let pl = winWidth > 800 ? 0 : (winWidth % 200)/2
 
   const buttons = userTags.map(userTag => {
     let tag = recipeFilters.find(t => t.id == userTag.tag_id)
@@ -403,11 +404,13 @@ const TagIndex = ({page, machines, recipeFilters, addRecipeFilter, userTags}) =>
   // Pour recevoir des invités => (page suivantes, quelles restrictions => véganes)
   //<TagButton winWidth={winWidth} image="/img/recipes.jpg" title="Mes livres" handleClick={() => {window.location.href = my_books_path()}} />
   return (<>
-    <div style={{maxWidth: "100vw", width: "400px", margin: "auto"}}>
-      <TagButton winWidth={winWidth} image="/img/cooking.jpg" title="Mes recettes" handleClick={() => changePage({page: PAGE_6})} />
-      {machineButtons}
-      {buttons}
-      <TagButton winWidth={winWidth} image="/icons/gear-gray.svg" title="Paramètres" handleClick={() => changePage({page: PAGE_4})} />
+    <div style={{maxWidth: "100vw", width: "800px", margin: "auto", paddingLeft: `${pl}px`, marginLeft: '-0.3em'}}>
+      <div style={{width: "fit-content"}}>
+        <TagButton winWidth={winWidth} image="/img/cooking.jpg" title="Mes recettes" handleClick={() => changePage({page: PAGE_6})} />
+        {machineButtons}
+        {buttons}
+        <TagButton winWidth={winWidth} image="/icons/gear-gray.svg" title="Paramètres" handleClick={() => changePage({page: PAGE_4})} />
+      </div>
     </div>
   </>)
 }
