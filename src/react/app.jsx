@@ -1053,21 +1053,25 @@ const App = () => {
 
   let moveBtn = ''
   if (!isSearching && page.page && parentPages[page.page]) {
-    moveBtn = <img className="clickable" src={icon_path("arrow-up-square.svg")} width="32" style={{paddingLeft: "0.5em"}} onClick={goUp} />
+    moveBtn = <img className="clickable" src={icon_path("arrow-up-square-white.svg")} width="32" style={{paddingLeft: "0.5em"}} onClick={goUp} />
   }
 
   // Pour recevoir des invités => (page suivantes, quelles restrictions => véganes)
+  // Theme light:
+  //   Background color: #e3f2fd
+  //   Title color: #4f5458
+  //   Icon color: black
   return (<>
-    <nav style={{backgroundColor: '#e3f2fd', marginBottom: '0.5em', borderBottom: '1px solid #cee2f0'}}>
+    <nav style={{backgroundColor: '#212529', marginBottom: '0.5em', borderBottom: '1px solid #cee2f0'}}>
       <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0 0.5em 0'}}>
         <div className="float-start" style={{margin: '0.3em 0 0 0.5em'}}>
           {moveBtn}
         </div>
         <div className="float-end" style={{marginTop: '0.25em'}}>
-          <img className="clickable" src={isSearching ? icon_path("x-lg.svg") : icon_path("search_black.svg")} width="24" onClick={() => {setIsSearching(!isSearching)}} style={{marginRight: '1em'}} />
+          <img className="clickable" src={isSearching ? icon_path("x-lg.svg") : icon_path("search.svg")} width="24" onClick={() => {setIsSearching(!isSearching)}} style={{marginRight: '1em'}} />
           <div className="dropdown d-inline-block">
-            <button className="plain-btn dropdown-toggle" type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style={{marginRight: '1em'}}>
-              <img className="clickable" src={icon_path("person.svg")} width="28"/>
+            <button className="plain-btn dropdown-toggle" type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style={{marginRight: '1em', color: 'white'}}>
+              <img className="clickable" src={icon_path("person-fill-white.svg")} width="28"/>
             </button>
             <div className="dropdown-menu" aria-labelledby="dropdownUserButton">
               <a href="/edit_profile" className="dropdown-item">Mon profil</a>
@@ -1088,7 +1092,7 @@ const App = () => {
             </div>
           </div>
         </div>
-        <div style={{margin: 'auto', width: 'fit-content', fontWeight: '500', fontSize: '1.5rem', color: '#4f5458'}} className="clickable" onClick={() => changePage(1)}>HedaCuisine</div>
+        <div style={{margin: 'auto', width: 'fit-content', fontWeight: '500', fontSize: '1.5rem', color: '#f9f9f9'}} className="clickable" onClick={() => changePage(1)}>HedaCuisine</div>
       </div>
     </nav>
     <div id="trunk">
