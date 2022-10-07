@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 import Autosuggest from 'react-autosuggest'
-import {Block, Inline, InlineBlock, Row, Col, InlineRow, InlineCol, Grid} from 'jsxstyle'
 
 import { RecipeTiptap, BubbleTiptap } from './tiptap'
 import { LinkToPage, parseIngredientsAndHeaders } from "./lib"
