@@ -3,9 +3,9 @@ import React from 'react'
 import { isTrue } from "./utils"
 import {image_variant_path} from './routes'
 
-const ImageCredit = ({images}) => {
-  //  {!showCredit || !image || !image.author || !image.source ? '' : <>
+const ImageCredit = ({imageId, images}) => {
   const image = images.find(i => i.id == imageId)
+  if (!image || !image.author || !image.source) {return ''}
   return <>
     <div className="text-center">
       <i>Crédit photo: </i>
