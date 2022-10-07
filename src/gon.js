@@ -112,13 +112,17 @@ function fetchUserTags(req, res, next) {
   })
 }
 
+function fetchMachineUsers(req, res, next) {
+  fetchTable('machine_users', {user_id: req.user.user_id}, ['machine_id'], next, (records) => {
+    res.locals.machine_users = records
+  })
+}
+
 function fetchMachines(req, res, next) {
-  res.locals.gon.machines = []
-  next();
-  //// FIXME: Condition based on MachineUser model...
-  //fetchTable('machines', {}, ['name'], next, (records) => {
-  //  res.locals.gon.machines = records
-  //})
+  let ids = res.locals.machine_users.map(m=>m.id)
+  fetchTable('machines', {id: [ids]}, ['name'], next, (records) => {
+    res.locals.gon.machines = records
+  })
 }
 
 function fetchFavoriteRecipes(req, res, next) {
@@ -244,7 +248,7 @@ export function initGon(req, res, next) {
 }
 
 // WARNING: LIST ORDER IS IMPORTANT
-const fetchAll = [initGon, fetchAccountUsers, fetchRecipes, fetchFavoriteRecipes, fetchFavoriteRecipesRecipe, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachines, fetchSuggestions, fetchUserRecipeFilters, fetchPublicRecipeFilters, fetchFoods, fetchUnits, fetchNotes, fetchImages, fetchMachineFoods, fetchFriendsRecipes]
+const fetchAll = [initGon, fetchAccountUsers, fetchRecipes, fetchFavoriteRecipes, fetchFavoriteRecipesRecipe, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachineUsers, fetchMachines, fetchSuggestions, fetchUserRecipeFilters, fetchPublicRecipeFilters, fetchFoods, fetchUnits, fetchNotes, fetchImages, fetchMachineFoods, fetchFriendsRecipes]
 
 const gon = {fetchAll, fetchAccountUsers};
 export default gon;
