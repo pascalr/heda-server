@@ -1030,7 +1030,7 @@ const App = () => {
     [PAGE_3]: <EditFilter page={page} recipeFilters={recipeFilters} />,
     [PAGE_4]: <EditUserTags recipeFilters={recipeFilters}userTags={userTags} page={page} />,
     //5: <TrainFilter page={page} recipeFilters={recipeFilters} />,
-    [PAGE_6]: <MyRecipes {...{page, recipes, suggestions, recipeFilters, favoriteRecipes, tags: recipeFilters, mixes, recipeKinds, user}} />,
+    [PAGE_6]: <MyRecipes {...{page, recipes, suggestions, recipeFilters, favoriteRecipes, tags: recipeFilters, mixes, recipeKinds, user, images}} />,
     [PAGE_7]: <MyBooks page={page} />,
     [PAGE_8]: <TagEditAllCategories page={page} recipeFilters={recipeFilters} />,
     [PAGE_9]: <SuggestionsIndex page={page} suggestions={suggestions} tags={recipeFilters} recipes={recipes} />,

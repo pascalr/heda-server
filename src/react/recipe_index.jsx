@@ -5,6 +5,7 @@ import { image_variant_path } from "./routes"
 import {EditUserRecipeModal} from './modals/edit_user_recipe'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import { LinkToPage } from "./lib"
+import { RecipeThumbnailImage } from "./image"
   
 const updateFavoriteRecipe = (fav, list_id, recipe, user) => {
   if (fav && recipe.user_id == user.id) {
@@ -50,28 +51,26 @@ const RecipeListItemMenu = ({fav, recipe, editUserRecipe, user}) => {
   </>
 }
 
-export const RecipeList = ({page, list, selected, suggestions, tags, editUserRecipe, mixes, recipes, recipeKinds, user}) => {
+export const RecipeList = ({page, list, selected, suggestions, tags, editUserRecipe, mixes, recipes, recipeKinds, user, images}) => {
 
   return (<>
     <ul id="recipes" className="recipe-list">
       {list.map((item, current) => {
-        let recipe = item.recipe
-        let fav = item.fav
-        let kind = recipe.recipe_kind_id ? recipeKinds.find(k => k.id == recipe.recipe_kind_id) : null
-        let image_used_id = recipe.image_id || (kind && kind.image_id)
+        let {fav, recipe} = item
         let recipeTags = suggestions.filter(suggestion => suggestion.recipe_id == recipe.id).map(suggestion => tags.find(t => t.id == suggestion.filter_id))
         let mix = mixes.find(e => e.recipe_id == recipe.id)
 
         return (
           <li key={recipe.id} className='d-flex'>
-            <span>
-              <LinkToPage page={{...page, page: 15, recipeId: recipe.id}} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={current == selected ? "selected" : undefined}>
-                <img src={image_used_id ? image_variant_path({id: image_used_id}, "thumb") : "/img/default_recipe_01_thumb.png"} width="71" height="48" style={{marginRight: '0.5em'}} />
+            <LinkToPage page={{...page, page: 15, recipeId: recipe.id}} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={current == selected ? "selected" : undefined}>
+              <div className="d-flex align-items-center">
+                <RecipeThumbnailImage {...{recipe, recipeKinds, images}} />
+                <div style={{marginRight: '0.5em'}}></div>
                 {recipe.name}
-              </LinkToPage>
+              </div>
+            </LinkToPage>
               {mix ? <img src="/img/logo_001.svg" width="24" height="24"/> : ''}
               <span style={{color: 'gray', fontSize: '0.78em'}}>{recipeTags.map(tag => ` #${tag.name}`)} </span>
-            </span>
             <span className="flex-grow-1"/>
             <RecipeListItemMenu {...{fav, recipe, editUserRecipe, user}} />
           </li>
@@ -81,7 +80,7 @@ export const RecipeList = ({page, list, selected, suggestions, tags, editUserRec
   </>)
 }
 
-export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, recipes, recipeKinds, user}) => {
+export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, recipes, recipeKinds, user, images}) => {
   
   const [showModal, setShowModal] = useState(true)
   const [recipeToEdit, setRecipeToEdit] = useState(null)
@@ -104,7 +103,7 @@ export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, re
     setShowModal(true)
   }
 
-  let listArgs = {page, suggestions, tags, editUserRecipe, mixes, recipes, recipeKinds, user}
+  let listArgs = {page, suggestions, tags, editUserRecipe, mixes, recipes, recipeKinds, user, images}
 
   return (<>
     <EditUserRecipeModal showModal={showModal} setShowModal={setShowModal} recipe={recipeToEdit} tags={tags} suggestions={suggestions} />
