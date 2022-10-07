@@ -1,3 +1,6 @@
+Add emojis to Tag images: https://github.com/googlefonts/noto-emoji
+Remove CreateTagModal, simplement créer un nouveau Tag empty, et rediriger vers EditTag de ce tag.
+Remove UserTag???
 Pouvoir créer des Tags.
 Pouvoir ajouter des tags à une recette.
 Ajouter un exemple de Carrousel de suggestions de recettes dans la page d'acceuil.
