@@ -61,7 +61,7 @@ export const RecipeList = ({page, list, selected, suggestions, tags, editUserRec
         let mix = mixes.find(e => e.recipe_id == recipe.id)
 
         return (
-          <li key={recipe.id} className='d-flex'>
+          <li key={recipe.id} className='d-flex align-items-center'>
             <LinkToPage page={{...page, page: 15, recipeId: recipe.id}} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={current == selected ? "selected" : undefined}>
               <div className="d-flex align-items-center">
                 <RecipeThumbnailImage {...{recipe, recipeKinds, images}} />
@@ -70,7 +70,7 @@ export const RecipeList = ({page, list, selected, suggestions, tags, editUserRec
               </div>
             </LinkToPage>
               {mix ? <img src="/img/logo_001.svg" width="24" height="24"/> : ''}
-              <span style={{color: 'gray', fontSize: '0.78em'}}>{recipeTags.map(tag => ` #${tag.name}`)} </span>
+              <span className='ms-2' style={{color: 'gray', fontSize: '0.78em'}}>{recipeTags.map(tag => ` #${tag.name}`)} </span>
             <span className="flex-grow-1"/>
             <RecipeListItemMenu {...{fav, recipe, editUserRecipe, user}} />
           </li>
