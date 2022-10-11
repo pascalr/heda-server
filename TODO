@@ -1,3 +1,5 @@
+Use Docker instead of Herkou build pack
+https://www.docker.com/blog/getting-started-with-docker-using-node-jspart-i/
 Store images on heda_volume
 Images en premiers, tag ensuite. Parce que la manière que je gère les images influencent les tags.
 Créer une nouvelle table 'tags'
