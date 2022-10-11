@@ -8,7 +8,7 @@
     <h1 style='text-align: center;'>Who's cooking?</h1>
     <br/><br/>
 		<form id='choose-user-form' action="/choose_user" method="post">
-      <div class="d-flex align-items-center" style="justify-content: center; gap: 1em;">
+      <div class="d-flex align-items-center flex-wrap" style="justify-content: center; gap: 1em;">
         <% users.forEach(function(user) { %>
           <div class='account-user' style='cursor: pointer;' data-user-id='<%= user.id %>'>
             <% if (user.gender == 1) { %>

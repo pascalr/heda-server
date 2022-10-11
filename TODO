@@ -1,12 +1,10 @@
-Les utilisateurs peuvent mettre une image pour leur utilisateur. ( Faire recette avant... )
-Ajouter une page new_user qui ressemble beaucoup à edit_user
-Ajouter POST create_user.
-Pouvoir créer un user
+Images en premiers, tag ensuite. Parce que la manière que je gère les images influencent les tags.
 Créer une nouvelle table 'tags'
 Remove CreateTagModal, simplement créer un nouveau Tag empty, et rediriger vers EditTag de ce tag.
 Remove UserTag???
 Pouvoir créer des Tags.
 Pouvoir ajouter des tags à une recette.
+Les utilisateurs peuvent mettre une image pour leur utilisateur. ( Faire recette avant... )
 Ajouter un exemple de Carrousel de suggestions de recettes dans la page d'acceuil.
 Ajouter un exemple de modifier une recette sur la page d'acceuil.
 Ah je le sais quel design que je veux! Un genre de faux design de téléphone.
