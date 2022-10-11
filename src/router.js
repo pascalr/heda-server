@@ -29,6 +29,17 @@ router.get('/new_user', function(req, res, next) {
   res.render('new_profile');
 });
 
+router.post('/create_user', function(req, res, next) {
+  if (!req.user.account_id) {return next('Must be logged in to create user')}
+  db.run('INSERT INTO users (name, account_id, created_at, updated_at) VALUES (?, ?, ?, ?)', [
+    req.body.name, req.user.account_id, utils.now(), utils.now() 
+  ], function(err) {
+    if (err) { return next(err); }
+    req.user.user_id = this.lastID;
+    res.redirect('/');
+  });
+});
+
 router.post('/choose_user', function(req, res, next) {
   req.user.user_id = req.body.user_id
   res.redirect('/');
