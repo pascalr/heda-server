@@ -29,6 +29,9 @@ Mettre un peu de couleur!
 Quand tu déplaces des ingrédients, modifier le json pour changer les numéros d'ingrédients.
 
 Later:
+Add max file size to images
+Add max image count to users
+Add max profile count to accounts
 Bilingue. import {t} from './translations'; t('welcome_message')
 Conversions d'unités
 Pouvoir changer les tags des recettes

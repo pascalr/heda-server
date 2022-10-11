@@ -2,6 +2,9 @@
 
 ## .env
 Store secret API and credentials inside .env
+Add
+DB_URL="./var/db/dev.db"
+VOLUME_PATH="volume"
 
 ## Npm watch
 Pour voir les modifications en effet chaque fois qu'un fichier change, il faut installer watch.

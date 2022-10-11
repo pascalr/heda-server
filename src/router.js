@@ -36,7 +36,8 @@ router.post('/upload_image', function(req, res, next) {
   }
 
   let file = req.files[req.body.field];
-  let uploadPath = __dirname + '/somewhere/on/your/server/' + file.name;
+  let p = process.env.VOLUME_PATH
+  let uploadPath = path.join(p[0] == '.' ? path.join(__dirname, '..', p) : p, file.name)
 
   // Use the mv() method to place the file somewhere on your server
   file.mv(uploadPath, function(err) {
