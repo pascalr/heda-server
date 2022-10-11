@@ -30,7 +30,7 @@ router.get('/new_user', function(req, res, next) {
 });
 
 router.post('/create_user', function(req, res, next) {
-  if (!req.user.account_id) {return next('Must be logged in to create user')}
+  if (!req.user.account_id) {return next('Must be logged in to create profile')}
   db.run('INSERT INTO users (name, account_id, created_at, updated_at) VALUES (?, ?, ?, ?)', [
     req.body.name, req.user.account_id, utils.now(), utils.now() 
   ], function(err) {
@@ -38,6 +38,20 @@ router.post('/create_user', function(req, res, next) {
     req.user.user_id = this.lastID;
     res.redirect('/');
   });
+});
+
+router.delete('/destroy_profile/:id', function(req, res, next) {
+
+  if (!req.user.account_id) {return next('Must be logged in to destroy profile')}
+  let id = req.params.id
+
+  let query = 'DELETE FROM users WHERE id = ? AND account_id = ?'
+  let args = [id, req.user.account_id]
+  db.run(query, args, function(err) {
+    if (err) { return next(err); }
+    req.user.user_id = null
+    res.json({status: 'ok'})
+  })
 });
 
 router.post('/choose_user', function(req, res, next) {
@@ -67,10 +81,16 @@ router.get('/signup', function(req, res, next) {
   res.render('signup');
 });
 
-router.get('/edit_profile', initGon, gon.fetchAccountUsers, function(req, res, next) {
+function setProfile(req, res, next) {
+  if (!res.locals.users) next('Error set profile must be called after fetching profiles')
   let user = res.locals.users.find(u => u.id == req.user.user_id)
+  if (!user) {req.user.user_id = null; next('Error profile not found')}
   res.locals.gon.user = user
   res.locals.user = user
+  next()
+}
+
+router.get('/edit_profile', initGon, gon.fetchAccountUsers, setProfile, function(req, res, next) {
   res.render('edit_profile');
 });
 
@@ -346,10 +366,8 @@ router.get('/', function(req, res, next) {
   if (!req.user) { return res.render('home'); }
   if (!req.user.user_id) { return res.redirect('/choose_user'); }
   next();
-}, gon.fetchAll, function(req, res, next) {
-  let user = res.locals.users.find(u => u.id == req.user.user_id)
-  res.locals.gon.user = user
-  res.render('index', { user, account: req.user });
+}, gon.fetchAll, setProfile, function(req, res, next) {
+  res.render('index', { account: req.user });
 });
 
 function handleError(err, req, res, next) {

@@ -4,13 +4,25 @@ import ReactDOM from 'react-dom'
 
 import { TextField, RadioField } from './form'
 import { initHcu, useHcuState } from "../hcu"
- 
+import { ajax } from "./utils"
 
 const UserEditor = () => {
 
   if (!window.hcu) {initHcu()}
   const users = useHcuState([gon.user], {tableName: 'users'})
   const user = users[0]
+
+  const destroyUser = () => {
+    if (confirm('Voulez-vous supprimer définitivement ce profil?')) {
+      let url = '/destroy_profile/'+user.id
+      ajax({url, type: 'DELETE', success: (status) => {
+        window.location.href = "/choose_user"
+      }, error: (errors) => {
+        console.log('ERROR AJAX DELETE...', errors.responseText)
+        toastr.error(errors.responseText)
+      }})
+    }
+  }
 
   return <>
     <b>Name</b><br/>
@@ -19,6 +31,9 @@ const UserEditor = () => {
     <RadioField model={user} field="gender" value={1} label="Homme"/><br/>
     <RadioField model={user} field="gender" value={2} label="Femme"/><br/>
     <RadioField model={user} field="gender" value={3} label="Autre"/><br/>
+    <hr/>
+    <button type="button" className="float-end btn btn-danger" onClick={destroyUser}>Supprimer</button>
+    <a href="/" className="btn btn-primary">Ok</a>
   </>
 }
 
