@@ -36,14 +36,25 @@ router.post('/upload_image', function(req, res, next) {
   }
 
   let file = req.files[req.body.field];
-  let p = process.env.VOLUME_PATH
-  let uploadPath = path.join(p[0] == '.' ? path.join(__dirname, '..', p) : p, file.name)
+  let ext = file.name.substr(file.name.lastIndexOf('.') + 1);
+  if (!['jpg', 'jpeg', 'png'].includes(ext)) {
+    return res.status(500).send("Image format not supported. Expected jpg, jpeg or png. Was " + ext);
+  }
 
-  // Use the mv() method to place the file somewhere on your server
-  file.mv(uploadPath, function(err) {
-    if (err) { return res.status(500).send(err); }
-    res.send('File uploaded!');
+  let p = process.env.VOLUME_PATH
+  let uploadFolder = p[0] == '.' ? path.join(__dirname, '..', p) : p
+
+  db.run('INSERT INTO images (filename, user_id, created_at, updated_at) VALUES (?, ?, ?, ?)', [
+    file.name, req.user.user_id, utils.now(), utils.now() 
+  ], function(err) {
+    if (err) { return next(err); }
+    // Use the mv() method to place the file somewhere on your server
+    file.mv(path.join(uploadFolder, this.lastID + '.' + ext), function(err) {
+      if (err) { return res.status(500).send(err); }
+      res.send('File uploaded!');
+    });
   });
+
 });
 
 router.post('/create_user', function(req, res, next) {
