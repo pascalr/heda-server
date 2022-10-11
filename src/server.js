@@ -14,6 +14,7 @@ import http from 'http';
 import debugModule from 'debug';
 import fs from 'fs';
 const debug = debugModule('todos:server');
+import fileUpload from 'express-fileupload';
 
 // pass the session to the connect sqlite3 module
 // allowing it to inherit from session.Store
@@ -34,6 +35,7 @@ app.set('view engine', 'ejs');
 app.locals.pluralize = pluralize;
 
 app.use(logger('dev'));
+app.use(fileUpload());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());

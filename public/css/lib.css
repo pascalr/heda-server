@@ -104,3 +104,8 @@ img {
 /* By combining those two, it works. */
 .position-limbo {position: relative;}
 .position-limbo > * {position: absolute;}
+
+.disabled {
+  color: gray;
+  pointer-events: none;
+}

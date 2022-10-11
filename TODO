@@ -1,3 +1,4 @@
+Store images on heda_volume
 Images en premiers, tag ensuite. Parce que la manière que je gère les images influencent les tags.
 Créer une nouvelle table 'tags'
 Remove CreateTagModal, simplement créer un nouveau Tag empty, et rediriger vers EditTag de ce tag.
@@ -33,6 +34,7 @@ Conversions d'unités
 Pouvoir changer les tags des recettes
 Pouvoir cliquer sur un utilisateur et voir ses recettes.
 How to handle orphans? Destroy FavoriteRecipe when Recipe is destroyed? Or once in a while, clean up all orphans?
+Use fetch instead of jquery.ajax
 
 Later (other users):
 Ajouter un moyen de me contacter

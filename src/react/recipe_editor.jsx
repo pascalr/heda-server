@@ -141,9 +141,6 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
 
   const ingredientsAndHeaders = parseIngredientsAndHeaders(recipe.ingredients)
   const ingredients = ingredientsAndHeaders.filter(e => e.label != null || e.qty != null)
-  const recipe_kind = recipeKinds.find(k => k.id == recipe.recipe_kind_id)
-  const recipe_image = recipe.image_id ? images.find(e => e.id == recipe.image_id) : {}
-  let recipeKindImage = recipe_kind && recipe_kind.image_id ? images.find(e => e.id == recipe_kind.image_id) : null
   const mix = mixes.find(m => m.recipe_id == recipe.id)
   const recipeUser = users.find(u => u.id == recipe.user_id)
   const userName = recipeUser ? recipeUser.name : `user${recipe.user_id}`
@@ -288,9 +285,8 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
       <div className="d-block d-md-flex gap-20">
         <div>
           <div className="over-container">
-            <EditRecipeImageModal recipe={recipe} show={showImageModal}
-                                  handleClose={() => setShowImageModal(false)}
-                                  recipeImage={recipe_image} recipeKindImage={recipeKindImage} />
+            <EditRecipeImageModal {...{recipe, recipeKinds, images}} show={showImageModal}
+                                   handleClose={() => setShowImageModal(false)} />
             <div style={{cursor: "pointer"}} onClick={() => setShowImageModal(true)}>
               <RecipeMediumImage {...{recipe, recipeKinds, images}} />
               <div className="bottom-right" style={{color: 'white', fontSize: '2em'}}>

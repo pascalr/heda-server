@@ -29,6 +29,22 @@ router.get('/new_user', function(req, res, next) {
   res.render('new_profile');
 });
 
+router.post('/upload_image', function(req, res, next) {
+
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400).send('No files were uploaded.');
+  }
+
+  let file = req.files[req.body.field];
+  let uploadPath = __dirname + '/somewhere/on/your/server/' + file.name;
+
+  // Use the mv() method to place the file somewhere on your server
+  file.mv(uploadPath, function(err) {
+    if (err) { return res.status(500).send(err); }
+    res.send('File uploaded!');
+  });
+});
+
 router.post('/create_user', function(req, res, next) {
   if (!req.user.account_id) {return next('Must be logged in to create profile')}
   db.run('INSERT INTO users (name, account_id, created_at, updated_at) VALUES (?, ?, ?, ?)', [

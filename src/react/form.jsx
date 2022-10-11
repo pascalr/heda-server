@@ -162,6 +162,7 @@ export const ImageField = ({model, imageAttr, field, ...props}) => {
 export const FileField = ({model, field, maxSizeBytes, onRemove, ...props}) => {
   let id = `${model.table_name}_${field}`
   const handleChange = (e) => {
+    console.log('File selected in FileField.')
     if (e.target.files.length > 1) {
       alert('Error. You can only upload one file.');
       return;
@@ -171,11 +172,16 @@ export const FileField = ({model, field, maxSizeBytes, onRemove, ...props}) => {
       alert(`Error. Max upload size is ${maxSizeBytes/1000.0}kb. Was ${file.size/1000.0}kb.`);
       return;
     }
-    asyncUpdateModelField(model, field, file)
+    let data = new FormData()
+    data.append(field, file)
+    data.append('field', field)
+    ajax({url: '/upload_image', type: 'POST', data, success: () => {
+      console.log('UPLOAD IMAGE SUCCESS!')
+    }})
   }
   if (!model.filename) {
     return (<>
-      <input type="file" name={`${model.table_name}[${field}]`} id={id} {...props} onChange={handleChange} />
+      <input type="file" name={field} id={id} {...props} onChange={handleChange} />
     </>)
   } else {
     return (

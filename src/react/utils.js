@@ -132,20 +132,43 @@ export function ajax(params) {
   if (!params.url) {throw "ajax missing params url"}
 
   if (params.data instanceof FormData) {
-    throw('FIXME: Rails ujs not supported anymore here not using rails anymore...')
-  }
 
-  //let _csrf = $('[name="csrf-token"]').content
-  let _csrf = document.querySelector('[name="csrf-token"]').content
-  $.ajax({
-    type: params.type,
-    url: params.url, //addExtensionToPath("json", params.url),
-    data: {_csrf, ...params.data},
-    //contentType: "application/json",
-    //data: JSON.stringify(data),
-    success: params.success,
-    error: params.error,
-  });
+    let formData = new FormData()
+    for (let [k, v] of params.data) {
+      let v1 = convertFormDataValue(v)
+      formData.append(k, convertFormDataValue(v))
+    }
+
+    let _csrf = document.querySelector('[name="csrf-token"]').content
+    formData.append('_csrf', _csrf)
+
+    fetch(params.url, {
+      method: params.type,
+      mode: 'cors', // no-cors, *cors, same-origin
+      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: 'same-origin', // include, *same-origin, omit
+      //headers: {
+      //  'Content-Type': 'application/json'
+      //},
+      redirect: 'follow', // manual, *follow, error
+      referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: formData 
+      //body: JSON.stringify({_csrf, testing: '1212'})
+    });
+
+  } else {
+    //let _csrf = $('[name="csrf-token"]').content
+    let _csrf = document.querySelector('[name="csrf-token"]').content
+    $.ajax({
+      type: params.type,
+      url: params.url, //addExtensionToPath("json", params.url),
+      data: {_csrf, ...params.data},
+      //contentType: "application/json",
+      //data: JSON.stringify(data),
+      success: params.success,
+      error: params.error,
+    });
+  }
 }
 
 // https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript

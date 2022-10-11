@@ -5,3 +5,5 @@
 !/public/build/.keep
 *.swp
 .env
+/volume/*
+!/volume/.keep

@@ -7,11 +7,15 @@ import {clearRecord, asyncUpdateModel, TextField, FileField, RadioField} from '.
 import { image_variant_path } from '../routes'
 import { isTrue } from "../utils"
 
-export const EditRecipeImageModal = ({recipe, recipeImage, recipeKindImage, show, handleClose}) => {
+export const EditRecipeImageModal = ({recipe, recipeKinds, images, show, handleClose}) => {
 
+  const recipeKind = recipeKinds.find(k => k.id == recipe.recipe_kind_id)
+  const recipeImage = recipe.image_id ? images.find(e => e.id == recipe.image_id) : {}
+  let recipeKindImage = recipeKind && recipeKind.image_id ? images.find(e => e.id == recipeKind.image_id) : null
+  
   const image = isTrue(recipe.use_personalised_image) ? recipeImage : recipeKindImage
   const imagePath = image ? image_variant_path(image, 'medium') : "/img/default_recipe_01.png"
-  
+
   const handleRemove = () => {
     recipeImage.onUpdate(clearRecord(recipeImage))
     asyncUpdateModel(recipe, {use_personalised_image: '', image_id: null})
@@ -49,7 +53,7 @@ export const EditRecipeImageModal = ({recipe, recipeImage, recipeKindImage, show
               <div style={{height: "0.5em"}}/>
               <RadioField model={recipeImage} field="is_user_author" value={true} label="Je suis l'auteur de cette image" />
               <div style={{height: "0.5em"}}/>
-              <RadioField model={recipeImage} field="is_user_author" value={false} label="L'image est publique sous une license qui permet son usage" />
+              <RadioField model={recipeImage} field="is_user_author" value={false} label="L'image est sous une license qui permet son usage" />
               <div style={{height: "0.5em"}}/>
               <div className={recipeImage.is_user_author ? 'disabled' : undefined} style={{paddingLeft: "2em"}}>
                 <label htmlFor="author">Author</label>
