@@ -25,6 +25,10 @@ router.get('/choose_user', gon.fetchAccountUsers, function(req, res, next) {
   res.render('choose_user');
 });
 
+router.get('/new_user', function(req, res, next) {
+  res.render('new_profile');
+});
+
 router.post('/choose_user', function(req, res, next) {
   req.user.user_id = req.body.user_id
   res.redirect('/');
@@ -329,6 +333,7 @@ router.delete('/destroy_record/:table/:id', function(req, res, next) {
 /* GET home page. */
 router.get('/', function(req, res, next) {
   if (!req.user) { return res.render('home'); }
+  if (!req.user.user_id) { return res.redirect('/choose_user'); }
   next();
 }, gon.fetchAll, function(req, res, next) {
   let user = res.locals.users.find(u => u.id == req.user.user_id)

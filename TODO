@@ -1,4 +1,8 @@
-Add emojis to Tag images: https://github.com/googlefonts/noto-emoji
+Les utilisateurs peuvent mettre une image pour leur utilisateur. ( Faire recette avant... )
+Ajouter une page new_user qui ressemble beaucoup à edit_user
+Ajouter POST create_user.
+Pouvoir créer un user
+Créer une nouvelle table 'tags'
 Remove CreateTagModal, simplement créer un nouveau Tag empty, et rediriger vers EditTag de ce tag.
 Remove UserTag???
 Pouvoir créer des Tags.

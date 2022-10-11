@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <%- include('partials/head') %>
+    <link rel="stylesheet" href="/css/form.css">
+    <link rel="stylesheet" href="/build/toastr.min.css">
+  </head>
+  <body>
+    <div class="form-container">
+      <h1>New profile</h1>
+
+      <form action="/create_user" method="post">
+        <div>
+          <label for="name">Name</label>
+          <input id="name" name="name" class="form-control" type="text" autocomplete="name" required>
+        </div>
+        <br/>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <br/>
+        <button class="btn btn-primary form-control" type="submit">Créer</button>
+      </form>
+    </div>
+  </body>
+</html>
