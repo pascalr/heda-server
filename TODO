@@ -29,6 +29,7 @@ Mettre un peu de couleur!
 Quand tu déplaces des ingrédients, modifier le json pour changer les numéros d'ingrédients.
 
 Later:
+Periodic task to remove images which are not referenced anywhere. To remove images without a file.
 Add max file size to images
 Add max image count to users
 Add max profile count to accounts

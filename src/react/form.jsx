@@ -159,7 +159,7 @@ export const ImageField = ({model, imageAttr, field, ...props}) => {
   }
   throw "ImageField missing imageAttr"
 }
-export const FileField = ({model, field, maxSizeBytes, onRemove, ...props}) => {
+export const FileField = ({model, field, maxSizeBytes, onRemove, onImageCreated, ...props}) => {
   let id = `${model.table_name}_${field}`
   const handleChange = (e) => {
     console.log('File selected in FileField.')
@@ -175,8 +175,8 @@ export const FileField = ({model, field, maxSizeBytes, onRemove, ...props}) => {
     let data = new FormData()
     data.append(field, file)
     data.append('field', field)
-    ajax({url: '/upload_image', type: 'POST', data, success: () => {
-      console.log('UPLOAD IMAGE SUCCESS!')
+    ajax({url: '/upload_image', type: 'POST', data, success: (image) => {
+      onImageCreated(image)
     }})
   }
   if (!model.filename) {

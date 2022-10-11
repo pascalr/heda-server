@@ -154,7 +154,11 @@ export function ajax(params) {
       referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
       body: formData 
       //body: JSON.stringify({_csrf, testing: '1212'})
-    });
+    }).then(response => {
+      if (params.success) {
+        params.success(response.json())
+      }
+    })
 
   } else {
     //let _csrf = $('[name="csrf-token"]').content

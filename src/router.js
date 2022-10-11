@@ -13,6 +13,10 @@ import { findRecipeKindForRecipeName } from "./lib.js"
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+let p = process.env.VOLUME_PATH
+let VOLUME_FOLDER = p[0] == '.' ? path.join(__dirname, '..', p) : p
+let IMAGE_FOLDER = path.join(VOLUME_FOLDER, 'images')
+
 const ensureLogIn = connectEnsureLogin.ensureLoggedIn;
 const ensureLoggedIn = ensureLogIn();
 const router = express.Router();
@@ -37,21 +41,21 @@ router.post('/upload_image', function(req, res, next) {
 
   let file = req.files[req.body.field];
   let ext = file.name.substr(file.name.lastIndexOf('.') + 1);
-  if (!['jpg', 'jpeg', 'png'].includes(ext)) {
-    return res.status(500).send("Image format not supported. Expected jpg, jpeg or png. Was " + ext);
+  if (!['jpg'].includes(ext)) {
+    return res.status(500).send("Image format not supported. Expected jpg. Was " + ext);
   }
 
-  let p = process.env.VOLUME_PATH
-  let uploadFolder = p[0] == '.' ? path.join(__dirname, '..', p) : p
-
+  let image = {filename: file.name, user_id: req.user.user_id}
   db.run('INSERT INTO images (filename, user_id, created_at, updated_at) VALUES (?, ?, ?, ?)', [
-    file.name, req.user.user_id, utils.now(), utils.now() 
+    image.name, image.user_id, utils.now(), utils.now() 
   ], function(err) {
     if (err) { return next(err); }
+    image.id = this.lastID;
     // Use the mv() method to place the file somewhere on your server
-    file.mv(path.join(uploadFolder, this.lastID + '.' + ext), function(err) {
+    file.mv(path.join(IMAGE_FOLDER, image.id + '.' + ext), function(err) {
       if (err) { return res.status(500).send(err); }
       res.send('File uploaded!');
+      res.json({...image, table_name: table})
     });
   });
 
@@ -214,8 +218,8 @@ router.post('/reset', function (req, res, next) {
 router.get('/images/:id/:variant', function(req, res, next) {
 
   // TODO: Send only variants, not original
-  var fileName = req.params.id+'.jpg';
-  res.sendFile(fileName, {root: path.join(__dirname, '../public/images/')}, function (err) {
+  var fileName = parseInt(req.params.id).toString()+'.jpg';
+  res.sendFile(fileName, {root: IMAGE_FOLDER}, function (err) {
       if (err) {
           next(err);
       } else {

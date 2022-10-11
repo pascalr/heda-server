@@ -49,7 +49,7 @@ export const EditRecipeImageModal = ({recipe, recipeKinds, images, show, handleC
           {!recipeImage ? '' :
             <div className={isTrue(recipe.use_personalised_image) ? undefined : 'disabled'} style={{paddingLeft: "2em"}}>
               <div style={{height: "0.5em"}}/>
-              <FileField model={recipeImage} field="original" onRemove={handleRemove} maxSizeBytes={2*1000*1000} />
+              <FileField model={recipeImage} field="original" onRemove={handleRemove} maxSizeBytes={2*1000*1000} onImageCreated={(image) => {window.hcu.updateField(recipe, 'image_id', image.id)}} />
               <div style={{height: "0.5em"}}/>
               <RadioField model={recipeImage} field="is_user_author" value={true} label="Je suis l'auteur de cette image" />
               <div style={{height: "0.5em"}}/>
