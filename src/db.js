@@ -35,11 +35,13 @@ sqlite3.Database.prototype.runBatchAsync = function (statements) {
 
 const ALLOWED_CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
 if (sqlite3.Database.prototype.safe) {throw "Can't overide safe"}
-sqlite3.Database.prototype.safe = function(str) {
+sqlite3.Database.prototype.safe = function(str, allowed) {
   let s = '';
   [...str].forEach(c => {
     if (ALLOWED_CHARS.includes(c)) {s += c}
   })
+  if (str != s) {throw "Error: User tried to send unsafe value."}
+  if (!allowed.includes(s)) {throw "Error: Db value not allowed."}
   return s
 }
 
