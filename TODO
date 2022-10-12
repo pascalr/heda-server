@@ -1,8 +1,37 @@
+Recette rapide
+Plusieurs repas
+Manger seul
+BBQ
+Tahiti
+Québec
+Picnic
+Halloween
+Jardin
+------------------
+Recevoir des invités
+Apporter à un potluck
+Souper romantique
+Noël
+Soupes
+Désserts
+Apporter en avion
+Végane
+Zéro-Déchet
+Condiment
+Sauce
+Déjeuner
+Porc
+Boeuf
+Poulet
+Breuvage
+Cocktail
+Accompagnement
+Tofu
+Trempette
+
+
 Use Docker instead of Herkou build pack
 https://www.docker.com/blog/getting-started-with-docker-using-node-jspart-i/
-Store images on heda_volume
-Images en premiers, tag ensuite. Parce que la manière que je gère les images influencent les tags.
-Créer une nouvelle table 'tags'
 Remove CreateTagModal, simplement créer un nouveau Tag empty, et rediriger vers EditTag de ce tag.
 Remove UserTag???
 Pouvoir créer des Tags.

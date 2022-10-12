@@ -180,6 +180,13 @@ function fetchSuggestions(req, res, next) {
   })
 }
 
+function fetchTags(req, res, next) {
+  let attrs = ['name', 'image_id', 'user_id']
+  fetchTable('tags', {user_id: req.user.user_id}, attrs, next, (records) => {
+    res.locals.gon.tags = records
+  })
+}
+
 function fetchUserRecipeFilters(req, res, next) {
   let attrs = ['name', 'image_src', 'user_id']
   fetchTable('recipe_filters', {user_id: req.user.user_id}, attrs, next, (records) => {
