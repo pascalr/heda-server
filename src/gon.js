@@ -101,12 +101,12 @@ function fetchMixes(req, res, next) {
   })
 }
 
-function fetchUserTags(req, res, next) {
-  let attrs = ['tag_id', 'position']
-  fetchTable('user_tags', {user_id: req.user.user_id}, attrs, next, (records) => {
-    res.locals.gon.user_tags = utils.sortBy(records, 'position')
-  })
-}
+//function fetchUserTags(req, res, next) {
+//  let attrs = ['tag_id', 'position']
+//  fetchTable('user_tags', {user_id: req.user.user_id}, attrs, next, (records) => {
+//    res.locals.gon.user_tags = utils.sortBy(records, 'position')
+//  })
+//}
 
 function fetchMachineUsers(req, res, next) {
   fetchTable('machine_users', {user_id: req.user.user_id}, ['machine_id'], next, (records) => {
@@ -174,7 +174,7 @@ function fetchFavoriteRecipesRecipe(req, res, next) {
 //    gon.favorite_recipes = current_user.favorite_recipes.includes(:recipe).sort_by {|fav| fav.recipe.name}.map{|fav| fav.to_obj}
 
 function fetchSuggestions(req, res, next) {
-  let attrs = ['user_id', 'recipe_id', 'filter_id', 'score']
+  let attrs = ['user_id', 'recipe_id', 'tag_id', 'score']
   fetchTable('suggestions', {user_id: req.user.user_id}, attrs, next, (records) => {
     res.locals.gon.suggestions = records
   })
@@ -187,19 +187,19 @@ function fetchTags(req, res, next) {
   })
 }
 
-function fetchUserRecipeFilters(req, res, next) {
-  let attrs = ['name', 'image_src', 'user_id']
-  fetchTable('recipe_filters', {user_id: req.user.user_id}, attrs, next, (records) => {
-    res.locals.gon.recipe_filters = utils.removeDuplicateIds([...(res.locals.gon.recipe_filters||[]), ...records])
-  })
-}
-
-function fetchPublicRecipeFilters(req, res, next) {
-  let attrs = ['name', 'image_src', 'user_id']
-  fetchTable('recipe_filters', {user_id: null}, attrs, next, (records) => {
-    res.locals.gon.recipe_filters = utils.removeDuplicateIds([...(res.locals.gon.recipe_filters||[]), ...records])
-  })
-}
+//function fetchUserRecipeFilters(req, res, next) {
+//  let attrs = ['name', 'image_src', 'user_id']
+//  fetchTable('recipe_filters', {user_id: req.user.user_id}, attrs, next, (records) => {
+//    res.locals.gon.recipe_filters = utils.removeDuplicateIds([...(res.locals.gon.recipe_filters||[]), ...records])
+//  })
+//}
+//
+//function fetchPublicRecipeFilters(req, res, next) {
+//  let attrs = ['name', 'image_src', 'user_id']
+//  fetchTable('recipe_filters', {user_id: null}, attrs, next, (records) => {
+//    res.locals.gon.recipe_filters = utils.removeDuplicateIds([...(res.locals.gon.recipe_filters||[]), ...records])
+//  })
+//}
 
 function fetchFoods(req, res, next) {
   fetchTable('foods', {}, ['name'], next, (records) => {
@@ -274,7 +274,7 @@ export function initGon(req, res, next) {
 }
 
 // WARNING: LIST ORDER IS IMPORTANT
-const fetchAll = [initGon, fetchAccountUsers, fetchRecipes, fetchFavoriteRecipes, fetchFavoriteRecipesRecipe, fetchRecipeKinds, fetchMixes, fetchUserTags, fetchMachineUsers, fetchMachines, fetchContainerFormats, fetchContainerQuantities, fetchContainers, fetchSuggestions, fetchTags, fetchUserRecipeFilters, fetchPublicRecipeFilters, fetchFoods, fetchUnits, fetchNotes, fetchImages, fetchMachineFoods, fetchFriendsRecipes]
+const fetchAll = [initGon, fetchAccountUsers, fetchRecipes, fetchFavoriteRecipes, fetchFavoriteRecipesRecipe, fetchRecipeKinds, fetchMixes, fetchMachineUsers, fetchMachines, fetchContainerFormats, fetchContainerQuantities, fetchContainers, fetchSuggestions, fetchTags, fetchFoods, fetchUnits, fetchNotes, fetchImages, fetchMachineFoods, fetchFriendsRecipes]
 
 const gon = {fetchAll, fetchAccountUsers};
 export default gon;

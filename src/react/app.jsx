@@ -115,16 +115,17 @@ const RecipeSingleCarrousel = ({tag, suggestions, isCategory, recipes}) => {
   }
 
   const sendStats = () => {
-    if (!isCategory) {
-      let skipped = []
-      for (let i = 0; i < suggestionNb; i++) {
-        skipped.push(encodeRecord(suggestions[i]))
-      }
-      for (let i = suggestionNb+1; i <= maxSuggestionNb; i++) {
-        skipped.push(encodeRecord(suggestions[i]))
-      }
-      ajax({url: send_data_suggestions_path(), type: 'PATCH', data: {filterId: tag.id, skipped, selected: encodeRecord(suggestion)}})
-    }
+    // TODO
+    //if (!isCategory) {
+    //  let skipped = []
+    //  for (let i = 0; i < suggestionNb; i++) {
+    //    skipped.push(encodeRecord(suggestions[i]))
+    //  }
+    //  for (let i = suggestionNb+1; i <= maxSuggestionNb; i++) {
+    //    skipped.push(encodeRecord(suggestions[i]))
+    //  }
+    //  ajax({url: send_data_suggestions_path(), type: 'PATCH', data: {filterId: tag.id, skipped, selected: encodeRecord(suggestion)}})
+    //}
   }
   
   //<button type="button" className="btn btn-danger" onClick={() => nextSuggestion()}>Non, pas cette fois</button>
@@ -141,10 +142,10 @@ const RecipeSingleCarrousel = ({tag, suggestions, isCategory, recipes}) => {
             <h2 className="bottom-center font-satisfy" style={{borderRadius: "0.5em", border: "1px solid #777", color: "#333", bottom: "1em", backgroundColor: "#f5f5f5", fontSize: "2em", padding: "0.2em 0.8em 0 0.2em"}}>{recipe.name}</h2>
           </LinkToPage>
           <div className="left-center">
-            <img src={icon_path("custom-chevron-left.svg")} width="45" height="90" onClick={previousSuggestion} aria-disabled={suggestionNb <= 0} />
+            <img className="clickable" src={icon_path("custom-chevron-left.svg")} width="45" height="90" onClick={previousSuggestion} aria-disabled={suggestionNb <= 0} />
           </div>
           <div className="right-center">
-            <img src={icon_path("custom-chevron-right.svg")} width="45" height="90" onClick={nextSuggestion} aria-disabled={suggestionNb >= suggestions.length-1} />
+            <img className="clickable" src={icon_path("custom-chevron-right.svg")} width="45" height="90" onClick={nextSuggestion} aria-disabled={suggestionNb >= suggestions.length-1} />
           </div>
         </div>
       </div>
@@ -154,9 +155,10 @@ const RecipeSingleCarrousel = ({tag, suggestions, isCategory, recipes}) => {
 const SuggestionsIndex = ({tags, suggestions, page, recipes}) => {
 
   const tag = tags.find(f => f.id == page.tagId)
-  if (!tag) {return ''}
+  if (!tag) {console.log('No tag found'); return ''}
+  console.log('Tag found')
 
-  const tagSuggestions = suggestions.filter(suggestion => suggestion.filter_id == tag.id)
+  const tagSuggestions = suggestions.filter(suggestion => suggestion.tag_id == tag.id)
 
   return (<>
     <SuggestionsNav {...{page, tagSuggestions}} />
@@ -1005,9 +1007,7 @@ const App = () => {
     setCsrf(document.querySelector('[name="csrf-token"]').content)
   }, [])
 
-  const recipeFilters = gon.recipe_filters
   const suggestions = gon.suggestions
-  const userTags = gon.user_tags
   const favoriteRecipes = useHcuState(gon.favorite_recipes, {tableName: 'favorite_recipes'})
   const machines = gon.machines
   const machineFoods = useHcuState(gon.machine_foods, {tableName: 'machine_foods'})
@@ -1045,20 +1045,20 @@ const App = () => {
 
   const pages = {
     [PAGE_1]: <TagIndex {...{page, machines, tags, images}} />,
-    [PAGE_2]: <TagCategorySuggestions {...{page, recipeFilters, suggestions, recipes}} />,
+    [PAGE_2]: <TagCategorySuggestions {...{page, suggestions, recipes}} />,
     [PAGE_3]: <EditTag {...{page, tags, images}} />,
     [PAGE_4]: <EditTags {...{tags, page, images}} />,
     //5: <TrainFilter page={page} recipeFilters={recipeFilters} />,
-    [PAGE_6]: <MyRecipes {...{page, recipes, suggestions, recipeFilters, favoriteRecipes, tags: recipeFilters, mixes, recipeKinds, user, images}} />,
+    [PAGE_6]: <MyRecipes {...{page, recipes, suggestions, favoriteRecipes, tags, mixes, recipeKinds, user, images}} />,
     [PAGE_7]: <MyBooks page={page} />,
-    [PAGE_8]: <TagEditAllCategories page={page} recipeFilters={recipeFilters} />,
-    [PAGE_9]: <SuggestionsIndex page={page} suggestions={suggestions} tags={recipeFilters} recipes={recipes} />,
+    [PAGE_8]: <TagEditAllCategories page={page} />,
+    [PAGE_9]: <SuggestionsIndex {...{page, tags, suggestions, recipes}} />,
     [PAGE_10]: <HedaIndex {...{page, machines}} />,
     [PAGE_11]: <Inventory {...{page, machines, machineFoods, containerQuantities, foods, containerFormats}} />,
     [PAGE_12]: <MixIndex {...{page, machines, machineFoods, mixes}} />,
     [PAGE_13]: <ShowMix {...{page, recipes, favoriteRecipes, machines, mixes, machineFoods}} />,
     [PAGE_14]: <EditMix {...{page, recipes, favoriteRecipes, machines, mixes, machineFoods}} />,
-    [PAGE_15]: <ShowRecipe {...{page, recipes, mixes, favoriteRecipes, recipeKinds, images, user, users, suggestions, tags: recipeFilters}} />,
+    [PAGE_15]: <ShowRecipe {...{page, recipes, mixes, favoriteRecipes, recipeKinds, images, user, users, suggestions, tags}} />,
     [PAGE_16]: <EditRecipe {...{page, recipes, mixes, user, users, recipeKinds, images}} />,
     [PAGE_17]: <NewRecipe {...{page, recipeKinds}} />
   }
@@ -1115,7 +1115,7 @@ const App = () => {
       </div>
     </nav>
     <div id="trunk">
-      {isSearching ? <SearchBox {...{page, recipes, recipeKinds, tags: recipeFilters, friendsRecipes, users, user, images, setIsSearching}} /> : pages[page.page || 1]}
+      {isSearching ? <SearchBox {...{page, recipes, recipeKinds, tags, friendsRecipes, users, user, images, setIsSearching}} /> : pages[page.page || 1]}
     </div>
   </>)
 }
