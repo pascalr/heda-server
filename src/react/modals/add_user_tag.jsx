@@ -12,7 +12,6 @@ import {AutocompleteInput} from '../form'
 export const AddUserTagModal = ({showModal, setShowModal, tags, userTags}) => {
   
   const inputRef = useRef(null);
-  const hedaTags = tags.filter(f => !f.user_id)
 
   //let [tagsChecked, setTagsChecked] = useState([])
 

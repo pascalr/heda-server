@@ -10,7 +10,7 @@ import {mapModels} from '../lib'
 
 export const EditUserRecipeModal = ({showModal, setShowModal, recipe, tags, suggestions}) => {
 
-  let isTagChecked = (tag) => (!!suggestions.find(suggestion => suggestion.filter_id == tag.id && suggestion.recipe_id == recipe.id))
+  let isTagChecked = (tag) => (!!suggestions.find(suggestion => suggestion.tag_id == tag.id && suggestion.recipe_id == recipe.id))
  
   let [tagsChecked, setTagsChecked] = useState([])
 

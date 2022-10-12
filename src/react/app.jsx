@@ -1007,22 +1007,22 @@ const App = () => {
     setCsrf(document.querySelector('[name="csrf-token"]').content)
   }, [])
 
-  const suggestions = gon.suggestions
+  const suggestions = useHcuState(gon.suggestions, {tableName: 'suggestions'})
   const favoriteRecipes = useHcuState(gon.favorite_recipes, {tableName: 'favorite_recipes'})
-  const machines = gon.machines
   const machineFoods = useHcuState(gon.machine_foods, {tableName: 'machine_foods'})
-  const containerQuantities = gon.container_quantities
-  const containerFormats = gon.container_formats
-  const mixes = gon.mixes
-  const foods = gon.foods
+  const mixes = useHcuState(gon.mixes, {tableName: 'mixes'})
   const recipes = useHcuState(gon.recipes, {tableName: 'recipes'})
   const recipeKinds = gon.recipe_kinds
   const images = useHcuState(gon.images, {tableName: 'images'})
-  const user = gon.user
-  const users = gon.users
-  const notes = gon.notes
   const tags = useHcuState(gon.tags, {tableName: 'tags'})
+  //const notes = gon.notes
+  const containerQuantities = useHcuState(gon.container_quantities, {tableName: 'container_quantities'})
+  const containerFormats = useHcuState(gon.container_formats, {tableName: 'container_formats'})
+  const foods = useHcuState(gon.foods, {tableName: 'foods'})
+  const machines = useHcuState(gon.machines, {tableName: 'machines'})
   const friendsRecipes = gon.friends_recipes//.filter(r => !recipeIds.includes(r.id))
+  const users = gon.users
+  const user = gon.user
 
   const parentPages = {
     [PAGE_2]: PAGE_1,

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 
 import { ajax, isBlank, normalizeSearchText } from "./utils"
 import { image_variant_path } from "./routes"
-import {EditUserRecipeModal} from './modals/edit_user_recipe'
+import {EditTagsModal} from './modals/edit_tags'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import { LinkToPage } from "./lib"
 import { RecipeThumbnailImage } from "./image"
@@ -82,7 +82,6 @@ export const RecipeList = ({page, list, selected, suggestions, tags, editUserRec
 
 export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, recipes, recipeKinds, user, images}) => {
   
-  const [showModal, setShowModal] = useState(true)
   const [recipeToEdit, setRecipeToEdit] = useState(null)
  
   let userRecipes = []
@@ -100,13 +99,12 @@ export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, re
 
   let editUserRecipe = (recipe) => {
     setRecipeToEdit(recipe)
-    setShowModal(true)
   }
 
   let listArgs = {page, suggestions, tags, editUserRecipe, mixes, recipes, recipeKinds, user, images}
 
   return (<>
-    <EditUserRecipeModal showModal={showModal} setShowModal={setShowModal} recipe={recipeToEdit} tags={tags} suggestions={suggestions} />
+    <EditTagsModal {...{recipe: recipeToEdit, tags, suggestions}} />
     <br/>
     {toCookList.length == 0 ? null : <>
       <h3 className="h001">À cuisinner prochainement</h3>

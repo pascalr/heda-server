@@ -1,4 +1,13 @@
+Faire des blog posts sur mon site de CV?
+pascalr.github.io/cv/posts/1
+L'idée est de le faire pour moi aussi. Comme cheatsheet.
+=> Most common bootstrap css class.
+=> Creating a modal with react and bootstrap.
+=> Creating tags with react and bootstrap.
+=> Hcu
+
 Pouvoir ajouter des tags à une recette.
+Remove user_id from suggestions? Because tags avec user_id, it is redundant there. But it makes my life easier so let's keep it there for now.
 Les utilisateurs peuvent mettre une image pour leur utilisateur. ( Faire recette avant... )
 Ajouter un exemple de Carrousel de suggestions de recettes dans la page d'acceuil.
 Ajouter un exemple de modifier une recette sur la page d'acceuil.

@@ -267,13 +267,14 @@ const ALLOWED_COLUMNS_MOD = {
   'recipes': ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id', 'ingredients'],
   'users': ['name', 'gender'],
   'favorite_recipes': ['list_id', 'recipe_id'],
-  'tags': ['name', 'image_id', 'position']
+  'tags': ['name', 'image_id', 'position'],
+  'suggestions': ['tag_id', 'recipe_id']
 }
 // WARNING: All users have access to these
 const ALLOWED_COLUMNS_GET = {
   'recipes': RECIPE_ATTRS
 }
-const ALLOWED_TABLES_DESTROY = ['favorite_recipes', 'recipes']
+const ALLOWED_TABLES_DESTROY = ['favorite_recipes', 'recipes', 'suggestions']
 
 const BEFORE_CREATE = {
   'recipes': (recipe, callback) => {
@@ -289,7 +290,7 @@ router.post('/create_record/:table', function(req, res, next) {
   
   try {
     console.log('body', req.body)
-    let table = req.params.table
+    let safeTable = db.safe(req.params.table, Object.keys(ALLOWED_COLUMNS_MOD))
     let fieldsSent = utils.ensureIsArray(req.body['fields[]']).filter(f => f != 'table_name')
     let obj = fieldsSent.reduce((acc, f) => ({ ...acc, [f]: req.body['record['+f+']']}), {}) 
     obj.user_id = req.user.user_id
@@ -297,18 +298,18 @@ router.post('/create_record/:table', function(req, res, next) {
     function updateObj(obj) {
       let fields = Object.keys(obj)
       let values = Object.values(obj)
-      let columns = ALLOWED_COLUMNS_MOD[table]
-      let query = 'INSERT INTO '+db.safe(table, Object.keys(ALLOWED_COLUMNS_MOD))+' (created_at,updated_at,'+fields.map(f => db.safe(f, columns)).join(',')+') '
+      let columns = ALLOWED_COLUMNS_MOD[safeTable]
+      let query = 'INSERT INTO '+safeTable+' (created_at,updated_at,'+fields.map(f => db.safe(f, [...columns, 'user_id'])).join(',')+') '
       query += 'VALUES (?,?,'+fields.map(f=>'?').join(',')+')'
       let args = [utils.now(), utils.now(), ...values]
       db.run(query, args, function(err) {
         if (err) { return next(err); }
-        res.json({...obj, id: this.lastID, table_name: table})
+        res.json({...obj, id: this.lastID, table_name: safeTable})
       })
     }
 
-    if (BEFORE_CREATE[table]) {
-      BEFORE_CREATE[table](obj, updateObj)
+    if (BEFORE_CREATE[safeTable]) {
+      BEFORE_CREATE[safeTable](obj, updateObj)
     } else {
       updateObj(obj)
     }
