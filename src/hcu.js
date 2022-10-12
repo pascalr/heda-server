@@ -34,18 +34,22 @@ export const initHcu = () => {
       let data = {field, value}
       ajax({url: '/update_field/'+model.table_name+'/'+model.id, type: 'PATCH', data: data, success: () => {
         console.log(`Updating model ${model.table_name} field ${field} from ${model[field]} to ${value}.`)
-        let record = {...model}
-        record[field] = value
-        let old = window.hcu.getters[record.table_name]
-        let updated = [...old].map(r => r.id == record.id ? record : r)
-        window.hcu.setters[record.table_name](updated)
-        if (successCallback) {successCallback(record)}
+        window.hcu.changeField(model, field, value, successCallback)
       }, error: (errors) => {
         console.log('ERROR AJAX UPDATING...', errors.responseText)
         toastr.error(errors.responseText)
         //toastr.error("<ul>"+Object.values(JSON.parse(errors)).map(e => ("<li>"+e+"</li>"))+"</ul>", 'Error updating')
       }})
     }
+  }
+  // Change record in memory only
+  window.hcu.changeField = (record, field, value, successCallback=null) => {
+    let updatedRecord = {...record}
+    updatedRecord[field] = value
+    let old = window.hcu.getters[updatedRecord.table_name]
+    let updated = [...old].map(r => r.id == updatedRecord.id ? updatedRecord : r)
+    window.hcu.setters[updatedRecord.table_name](updated)
+    if (successCallback) {successCallback(updatedRecord)}
   }
   window.hcu.createRecord = (record, successCallback=null) => {
     if (!record.table_name) { throw "Error: hcu.createRecord record must have valid table_name" }
