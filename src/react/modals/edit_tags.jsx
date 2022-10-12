@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Modal from 'react-bootstrap/Modal'
 
-export const EditTagsModal = ({recipe, tags, suggestions}) => {
+export const EditTagsModal = ({showModal, setShowModal, recipe, tags, suggestions}) => {
 
-  const [showModal, setShowModal] = useState(true)
   if (recipe == null) {return ''}
   
   let recipeSuggestions = suggestions.filter(s => s.recipe_id == recipe.id)
@@ -16,7 +15,7 @@ export const EditTagsModal = ({recipe, tags, suggestions}) => {
   function removeSuggestion(suggestion) {
     window.hcu.destroyRecord(suggestion)
   }
- 
+
   return (<>
     <Modal show={showModal} onHide={() => setShowModal(false)}>
       <Modal.Dialog>

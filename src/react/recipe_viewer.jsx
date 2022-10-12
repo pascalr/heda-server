@@ -6,6 +6,8 @@ import { RecipeTiptap, BubbleTiptap } from './tiptap'
 import { LinkToPage, parseIngredientsAndHeaders } from "./lib"
 import { Utils } from "./recipe_utils"
 import { RecipeMediumImage } from "./image"
+import { EditTagsModal } from './modals/edit_tags'
+import { removeRecipe } from './recipe_index'
 
 const MixIngredients = ({mix}) => {
   if (!mix) {return ''}
@@ -32,13 +34,15 @@ const MixIngredients = ({mix}) => {
 
 export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipeKinds, images, user, users, recipes, suggestions, tags}) => {
 
-  const recipe = recipes.find(e => e.id == recipeId)
+  const [showModal, setShowModal] = useState(false)
   useEffect(() => {
     let r = recipes.find(e => e.id == recipeId)
     if (!r) {
       window.hcu.fetchRecord('recipes', recipeId)
     }
   }, [recipeId])
+  
+  const recipe = recipes.find(e => e.id == recipeId)
   if (!recipe) {return ''}
 
   const noteIds = recipe.notes ? Object.values(recipe.notes).sort((a,b) => a.item_nb - b.item_nb).map(ing => ing.id) : []
@@ -118,11 +122,12 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
   //<h2>Références</h2>
 
   //console.log(model)
-
+  
   const recipeUser = users.find(u => u.id == recipe.user_id)
   const userName = recipeUser ? recipeUser.name : `user${recipe.user_id}`
 
   return (<>
+    <EditTagsModal {...{recipe, tags, suggestions, showModal, setShowModal}} />
     <div style={{fontSize: '0.8em', marginBottom: '0.5em'}}>
       <b>Tags:</b>&nbsp;
       <span>
@@ -142,14 +147,16 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
               <span className="recipe-title">{recipe.name}</span>
             </h1>
             <div className='flex-grow-1' />
-            {user.id != recipe.user_id ? '' :
-              <span className="dropdown" style={{padding: "0 1rem"}}>
-                <img className="clickable" data-bs-toggle="dropdown" src="/icons/list.svg"/>
-                <div className="dropdown-menu">
+            <span className="dropdown" style={{padding: "0 1rem"}}>
+              <img className="clickable" data-bs-toggle="dropdown" src="/icons/list.svg"/>
+              <div className="dropdown-menu">
+                <button type="button" className="dropdown-item" onClick={() => setShowModal(true)}>Tagger</button>
+                {user.id != recipe.user_id ? '' : <>
                   <LinkToPage page={{...page, page: 16}} className="dropdown-item">Modifier</LinkToPage>
-                </div>
-              </span>
-            }
+                  {recipe.user_id == user.id ? <li><button type="button" className="dropdown-item" onClick={() => {removeRecipe(recipe); window.hcu.changePage({page: 6})}}>Supprimer la recette</button></li> : ''}
+                  </>}
+              </div>
+            </span>
           </div>
           <div style={{marginTop: '-0.8em', marginBottom: '1.2em'}}>
             <span style={{color: 'gray'}}>par {userName}</span>

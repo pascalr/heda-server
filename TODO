@@ -6,9 +6,10 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Creating tags with react and bootstrap.
 => Hcu
 
-Pouvoir ajouter des tags à une recette.
-Remove user_id from suggestions? Because tags avec user_id, it is redundant there. But it makes my life easier so let's keep it there for now.
 Les utilisateurs peuvent mettre une image pour leur utilisateur. ( Faire recette avant... )
+Mettre des suggestions d'images par défault pour les utilisateurs.
+Mettre des suggestions d'images par défault pour les tags.
+Enlever le sexe dans utilisateur après avoir changer que les utilisateurs peuvent mettre une image.
 Ajouter un exemple de Carrousel de suggestions de recettes dans la page d'acceuil.
 Ajouter un exemple de modifier une recette sur la page d'acceuil.
 Ah je le sais quel design que je veux! Un genre de faux design de téléphone.
@@ -34,6 +35,7 @@ Quand tu déplaces des ingrédients, modifier le json pour changer les numéros 
 SuggestionsIndex AutresRecettes
 Use Docker instead of Herkou build pack
 https://www.docker.com/blog/getting-started-with-docker-using-node-jspart-i/
+Remove user_id from suggestions? Because tags avec user_id, it is redundant there. But it makes my life easier so let's keep it there for now.
 
 Later:
 Periodic task to remove images which are not referenced anywhere. To remove images without a file.

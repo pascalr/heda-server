@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 
 import { ajax, isBlank, normalizeSearchText } from "./utils"
 import { image_variant_path } from "./routes"
-import {EditTagsModal} from './modals/edit_tags'
+import { EditTagsModal } from './modals/edit_tags'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import { LinkToPage } from "./lib"
 import { RecipeThumbnailImage } from "./image"
@@ -17,7 +17,7 @@ const updateFavoriteRecipe = (fav, list_id, recipe, user) => {
   }
 }
 
-const removeRecipe = (recipe) => {
+export const removeRecipe = (recipe) => {
   if (confirm("Voulez vous supprimez définitivement cette recette?")) {
     window.hcu.destroyRecord(recipe)
   }
@@ -83,6 +83,7 @@ export const RecipeList = ({page, list, selected, suggestions, tags, editUserRec
 export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, recipes, recipeKinds, user, images}) => {
   
   const [recipeToEdit, setRecipeToEdit] = useState(null)
+  const [showModal, setShowModal] = useState(true)
  
   let userRecipes = []
   let toCookList = []
@@ -99,12 +100,13 @@ export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, re
 
   let editUserRecipe = (recipe) => {
     setRecipeToEdit(recipe)
+    setShowModal(true)
   }
 
   let listArgs = {page, suggestions, tags, editUserRecipe, mixes, recipes, recipeKinds, user, images}
 
   return (<>
-    <EditTagsModal {...{recipe: recipeToEdit, tags, suggestions}} />
+    <EditTagsModal {...{recipe: recipeToEdit, tags, suggestions, showModal, setShowModal}} />
     <br/>
     {toCookList.length == 0 ? null : <>
       <h3 className="h001">À cuisinner prochainement</h3>
