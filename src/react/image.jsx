@@ -20,7 +20,7 @@ const RecipeImage = ({recipe, recipeKinds, images, showCredit, width, height, va
   const imageId = isTrue(recipe.use_personalised_image) ? recipe.image_id : recipe_kind && recipe_kind.image_id
   const imagePath = imageId ? image_variant_path({id: imageId}, variant) : "/img/default_recipe_01.png"
   return <>
-    <div style={{width: `${width}px`, height: `${height}px`, overflow: 'hidden'}}>
+    <div style={{width: `${width}px`, height: `${height}px`, overflow: 'hidden', flexShrink: '0'}}>
       <img src={imagePath} width={width} height={height} style={{transform: `translateY(calc(-50% + ${height/2}px))`}} />
     </div>
     {showCredit ? <ImageCredit {...{imageId, images}} /> : ''}

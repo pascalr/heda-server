@@ -70,7 +70,7 @@ export const RecipeList = ({page, list, selected, suggestions, tags, editUserRec
               </div>
             </LinkToPage>
               {mix ? <img src="/img/logo_001.svg" width="24" height="24"/> : ''}
-              <span className='ms-2' style={{color: 'gray', fontSize: '0.78em'}}>{recipeTags.map(tag => ` #${tag.name}`)} </span>
+            <span className='ms-2' style={{color: 'gray', fontSize: '0.78em', flexShrink: '3'}}>{recipeTags.map(tag => ` #${tag.name}`)} </span>
             <span className="flex-grow-1"/>
             <RecipeListItemMenu {...{fav, recipe, editUserRecipe, user}} />
           </li>
