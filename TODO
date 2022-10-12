@@ -29,6 +29,8 @@ Accompagnement
 Tofu
 Trempette
 
+SuggestionsIndex AutresRecettes
+Ajouter la colonne tag_id aux suggestions. Modifier manuellement les valeurs pour que ça corresponde.
 Use db.sanitize everywhere.
 Use Docker instead of Herkou build pack
 https://www.docker.com/blog/getting-started-with-docker-using-node-jspart-i/

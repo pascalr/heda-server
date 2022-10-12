@@ -153,7 +153,7 @@ const RecipeSingleCarrousel = ({tag, suggestions, isCategory, recipes}) => {
 
 const SuggestionsIndex = ({tags, suggestions, page, recipes}) => {
 
-  const tag = tags.find(f => f.id == page.filterId)
+  const tag = tags.find(f => f.id == page.tagId)
   if (!tag) {return ''}
 
   const tagSuggestions = suggestions.filter(suggestion => suggestion.filter_id == tag.id)
@@ -386,7 +386,7 @@ const EditTags = ({tags, images, page}) => {
   </>)
 }
 
-const TagButton = ({image, title, handleClick}) => {
+const TagButton = ({title, image, handleClick}) => {
   return (
     <div style={{width: '200px', padding: '25px', display: "inline-block"}}>
       <button className="plain-btn d-flex flex-column align-items-center" onClick={handleClick}>
@@ -396,14 +396,15 @@ const TagButton = ({image, title, handleClick}) => {
     </div>
   )
 }
-const TagIndex = ({page, machines, tags, recipeFilters, userTags}) => {
+const TagIndex = ({page, machines, tags, images}) => {
 
   const winWidth = useWindowWidth()
   let pl = winWidth > 800 ? 0 : (winWidth % 200)/2
 
-  const buttons = userTags.map(userTag => {
-    let tag = recipeFilters.find(t => t.id == userTag.tag_id)
-    return <TagButton key={userTag.id} image={`/img/${tag.image_src || "question-mark.jpg"}`} title={tag.name || "Sans nom"} handleClick={() => changePage({page: PAGE_9, filterId: tag.id})} />
+  const buttons = tags.map(tag => {
+    const image = images.find(i => i.id == tag.image_id)
+    const imagePath = image ? image_variant_path(image, 'medium') : "/img/question-mark.jpg"
+    return <TagButton key={tag.id} image={imagePath} title={tag.name || "Sans nom"} handleClick={() => changePage({page: PAGE_9, tagId: tag.id})} />
   })
 
   const machineButtons = machines.map(machine => {
@@ -1043,7 +1044,7 @@ const App = () => {
   }
 
   const pages = {
-    [PAGE_1]: <TagIndex {...{page, recipeFilters, userTags, machines, tags}} />,
+    [PAGE_1]: <TagIndex {...{page, machines, tags, images}} />,
     [PAGE_2]: <TagCategorySuggestions {...{page, recipeFilters, suggestions, recipes}} />,
     [PAGE_3]: <EditTag {...{page, tags, images}} />,
     [PAGE_4]: <EditTags {...{tags, page, images}} />,
