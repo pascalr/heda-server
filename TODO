@@ -1,42 +1,7 @@
-Recette rapide
-Plusieurs repas
-Manger seul
-BBQ
-Tahiti
-Québec
-Picnic
-Halloween
-Jardin
-------------------
-Recevoir des invités
-Apporter à un potluck
-Souper romantique
-Noël
-Soupes
-Désserts
-Apporter en avion
-Végane
-Zéro-Déchet
-Condiment
-Sauce
-Déjeuner
-Porc
-Boeuf
-Poulet
-Breuvage
-Cocktail
-Accompagnement
-Tofu
-Trempette
-
 SuggestionsIndex AutresRecettes
-Ajouter la colonne tag_id aux suggestions. Modifier manuellement les valeurs pour que ça corresponde.
 Use db.sanitize everywhere.
 Use Docker instead of Herkou build pack
 https://www.docker.com/blog/getting-started-with-docker-using-node-jspart-i/
-Remove CreateTagModal, simplement créer un nouveau Tag empty, et rediriger vers EditTag de ce tag.
-Remove UserTag???
-Pouvoir créer des Tags.
 Pouvoir ajouter des tags à une recette.
 Les utilisateurs peuvent mettre une image pour leur utilisateur. ( Faire recette avant... )
 Ajouter un exemple de Carrousel de suggestions de recettes dans la page d'acceuil.
@@ -51,6 +16,7 @@ Faire une page de vente pour l'application.
     Faire une vidéo ou bien ou simulation live de l'éditeur de recette (Créer une recette n'aura jamais été aussi facile)
     Tu ne sais pas quoi manger? HedaCuisine te suggère des recettes selon des thèmes.
 
+Inspiration pour la page de vente peut-être: https://www.scoop.solar/
 Simplement enlever pretty quantity...
 Scroll search
 Longer sessions (1 month!), refresh le 1 mois lorsque l'utilisateur se connecte?, ne pas avoir à se logger souvent.
@@ -95,3 +61,22 @@ Do double security to prevent SQL injection. Sanitize all the input AND make sur
 //  key: process.env.B2_KEY
 //});
 
+
+
+Electromechanic | Logiflex
+December 2017 - August 2018
+
+
+                * Responsible of the factory alone on the night shift and on call a third of the time
+* Troubleshoot problems and restart machines as quickly as possible
+* Work in collaboration with production to minimize downtime
+* Read and analyze technical plans
+            
+Farmer | Family farm
+January 2006 - August 2016
+
+
+                * Repair and maintain agricultural equipment
+* Construct farm buildings entirely
+* Drive tractors and operate machinery
+            
