@@ -29,7 +29,7 @@ Accompagnement
 Tofu
 Trempette
 
-
+Use db.sanitize everywhere.
 Use Docker instead of Herkou build pack
 https://www.docker.com/blog/getting-started-with-docker-using-node-jspart-i/
 Remove CreateTagModal, simplement créer un nouveau Tag empty, et rediriger vers EditTag de ce tag.
@@ -83,6 +83,9 @@ Expressjs mobile development???
 
 Later (optimize):
 Delegate all the db data sorting to the client to avoid load on the server.
+
+Later (security):
+Do double security to prevent SQL injection. Sanitize all the input AND make sure that the item is whitelisted.
 
 //import Bucket from "backblaze";
 //const bucket = Bucket("heda-bucket-production", {

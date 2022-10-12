@@ -125,7 +125,7 @@ const updateModelField = (model, field, value, successCallback=null) => {
     }})
   }
 }
-export const ImageField = ({image, record, field, maxSizeBytes, onRemove, onUpdate, ...props}) => {
+export const ImageField = ({image, record, field, maxSizeBytes, onRemove, ...props}) => {
   const handleChange = (e) => {
     console.log('File selected in FileField.')
     if (e.target.files.length > 1) {
@@ -145,7 +145,8 @@ export const ImageField = ({image, record, field, maxSizeBytes, onRemove, onUpda
       data.append('record_field', field)
     }
     ajax({url: '/upload_image', type: 'POST', data, success: (image) => {
-      onUpdate(image)
+      window.hcu.addRecord(image)
+      window.hcu.changeField(record, field, image.id)
     }})
   }
   if (!image) {

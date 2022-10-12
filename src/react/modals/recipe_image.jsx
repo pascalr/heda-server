@@ -15,11 +15,7 @@ export const EditRecipeImageModal = ({recipe, recipeKinds, images, show, handleC
   
   const image = isTrue(recipe.use_personalised_image) ? recipeImage : recipeKindImage
   const imagePath = image ? image_variant_path(image, 'medium') : "/img/default_recipe_01.png"
-
-  const handleRemove = () => {
-    window.hcu.updateField(recipe, 'image_id', null)
-  }
-
+    
   return (<>
     <Modal show={show} onHide={handleClose}>
       <Modal.Dialog>
@@ -48,7 +44,7 @@ export const EditRecipeImageModal = ({recipe, recipeKinds, images, show, handleC
           {!isTrue(recipe.use_personalised_image) ? '' :
             <div style={{paddingLeft: "2em"}}>
               <div style={{height: "0.5em"}}/>
-              <ImageField record={recipe} field="image_id" image={recipeImage} onRemove={handleRemove} maxSizeBytes={2*1000*1000} onUpdate={(image) => {window.hcu.changeField(recipe, 'image_id', image.id)}} />
+              <ImageField record={recipe} field="image_id" image={recipeImage} onRemove={() => window.hcu.updateField(recipe, 'image_id', null)} maxSizeBytes={2*1000*1000} />
               {!recipeImage ? '' : <>
                 <div style={{height: "0.5em"}}/>
                 <RadioField model={recipeImage} field="is_user_author" value={true} label="Je suis l'auteur de cette image" />

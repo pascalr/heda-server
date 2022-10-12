@@ -32,6 +32,10 @@ function removeDuplicateIds(records) {
   return [...new Map(records.map((r) => [r.id, r])).values()];
 }
 
-const utils = {padStr, now, sortBy, removeDuplicateIds};
+function ensureIsArray(obj) {
+  return Array.isArray(obj) ? obj : [obj]
+}
+
+const utils = {padStr, now, sortBy, removeDuplicateIds, ensureIsArray};
 export default utils;
 //module.exports = utils;

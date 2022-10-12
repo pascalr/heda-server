@@ -28,12 +28,12 @@ export const initHcu = () => {
   window.hcu.getters = {}
   window.hcu.setters = {}
   window.hcu.updateField = (model, field, value, successCallback=null) => {
+    console.log(`updateField record=${model.table_name} field=${field} from ${model[field]} to ${value}.`)
     if (value != model[field]) { // update only if value changed
 
       //let data = {[model.table_name+"["+field+"]"]: value}
       let data = {field, value}
       ajax({url: '/update_field/'+model.table_name+'/'+model.id, type: 'PATCH', data: data, success: () => {
-        console.log(`Updating model ${model.table_name} field ${field} from ${model[field]} to ${value}.`)
         window.hcu.changeField(model, field, value, successCallback)
       }, error: (errors) => {
         console.log('ERROR AJAX UPDATING...', errors.responseText)
@@ -44,6 +44,7 @@ export const initHcu = () => {
   }
   // Change record in memory only
   window.hcu.changeField = (record, field, value, successCallback=null) => {
+    console.log(`changeField record=${record.table_name} field=${field} from ${record[field]} to ${value}.`)
     let updatedRecord = {...record}
     updatedRecord[field] = value
     let old = window.hcu.getters[updatedRecord.table_name]
@@ -57,14 +58,18 @@ export const initHcu = () => {
     let url = '/create_record/'+record.table_name
     ajax({url: url, type: 'POST', data: {record, fields}, success: (created) => {
       console.log('created', created)
-      let old = window.hcu.getters[record.table_name]
-      let updated = [...old, {...created}]
-      window.hcu.setters[record.table_name](updated)
-      if (successCallback) {successCallback(created)}
+      window.hcu.addRecord(created, successCallback)
     }, error: (errors) => {
       console.log('ERROR AJAX CREATING...', errors.responseText)
       toastr.error(errors.responseText)
     }})
+  }
+  // Add record in memory only
+  window.hcu.addRecord = (record, callback=null) => {
+    let old = window.hcu.getters[record.table_name]
+    let updated = [...old, {...record}]
+    window.hcu.setters[record.table_name](updated)
+    if (callback) {callback(record)}
   }
   window.hcu.fetchRecord = (tableName, id, successCallback=null) => {
     let url = '/fetch_record/'+tableName+'/'+id

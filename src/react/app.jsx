@@ -12,7 +12,7 @@ import { findRecipeKindForRecipeName } from "../lib"
 import { RecipeList, RecipeIndex } from './recipe_index'
 import { ajax, isBlank, normalizeSearchText, preloadImage, getUrlParams, join, bindSetter, sortBy, capitalize } from "./utils"
 import { icon_path, image_variant_path } from './routes'
-import {TextField, AutocompleteInput, TextInput, CollectionSelect} from './form'
+import {TextField, AutocompleteInput, TextInput, CollectionSelect, ImageField} from './form'
 import {PublicImageField} from './modals/public_image'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import {AddUserTagModal} from './modals/add_user_tag'
@@ -25,8 +25,8 @@ import { FOOD_EMOJIS, ANIMAL_EMOJIS, OTHER_EMOJIS, TO_REMOVE_EMOJIS, SMILEYS } f
 // The advantage of using this instead of the number is if I need to search and to refactor, I can easy
 const PAGE_1 = 1 // TagIndex
 const PAGE_2 = 2 // TagCategorySuggestions
-const PAGE_3 = 3 // EditFilter
-const PAGE_4 = 4 // EditUserTags
+const PAGE_3 = 3 // EditTag
+const PAGE_4 = 4 // EditTags
 //const PAGE_5 = 5 // TrainFilter
 const PAGE_6 = 6 // MyRecipes
 const PAGE_7 = 7 // MyBooks
@@ -293,69 +293,54 @@ const TagEditAllCategories = ({page, recipeFilters}) => {
   </>)
 }
 
-const EditFilter = ({page, recipeFilters}) => {
+const EditTag = ({page, tags, images}) => {
   const [name, setName] = useState('')
-  const filter = page && page.filterId ? recipeFilters.find(f => f.id == page.filterId) : null
-  if (!filter) {console.log("Can't edit filter, did not exist."); return '';}
+  //const filter = page && page.filterId ? recipeFilters.find(f => f.id == page.filterId) : null
+  const tag = page && page.tagId ? tags.find(f => f.id == page.tagId) : null
+  if (!tag) {console.log("Can't edit tag, did not exist."); return '';}
+  
+  const image = images.find(i => i.id == tag.image_id)
+  const imagePath = image ? image_variant_path(image, 'medium') : "/img/question-mark.jpg"
 
   return (<>
-    <h2>Modifier le filtre</h2>
+    <h2>Modifier le tag</h2>
     <h3>Titre</h3>
-    <TextField model={filter} field="name" getter={recipeFilters} setter={recipeFilters.update} />
-    <h3>Image</h3>
-    <PublicImageField model={filter} field="image_src" defaultSrc={"question-mark.jpg"} getter={recipeFilters} setter={recipeFilters.update} />
+    <TextField model={tag} field="name" />
     <br/>
-    <h3>Emojis</h3>
-    <div style={{fontSize: '2.5em'}}>
-      <h3>Nourriture</h3>
-      {FOOD_EMOJIS.map((code,i) => <span key={i} dangerouslySetInnerHTML={{__html: `&#x${code};`}}/>)}
-      <h3>Animaux</h3>
-      {ANIMAL_EMOJIS.map((code,i) => <span key={i} dangerouslySetInnerHTML={{__html: `&#x${code};`}}/>)}
-      <h3>Smileys</h3>
-      {SMILEYS.map((code,i) => <span key={i} dangerouslySetInnerHTML={{__html: `&#x${code};`}}/>)}
-      <h3>To remove</h3>
-      {TO_REMOVE_EMOJIS.map((code,i) => <span key={i} dangerouslySetInnerHTML={{__html: `&#x${code};`}}/>)}
-      <h3>Symboles</h3>
-      <h3>Autre</h3>
-      {OTHER_EMOJIS.map((code,i) => <span key={i} dangerouslySetInnerHTML={{__html: ` &#x${code}; `}}/>)}
+    <h3>Image</h3>
+    <div style={{width: "fit-content"}}>
+      <img style={{maxWidth: "100vh", height: "auto"}} src={imagePath} width="150" height="150"/>
     </div>
+    <ImageField record={tag} field="image_id" image={image} onRemove={() => window.hcu.updateField(tag, 'image_id', null)} maxSizeBytes={2*1000*1000} />
   </>)
 }
 
-const EditTagButton = ({tag, userTag}) => {
-  let image = `/img/${tag.image_src || "question-mark.jpg"}`
-  const handleClick = () => changePage({page: 3, filterId: tag.id})
+const EditTagButton = ({tag, images}) => {
+  const image = images.find(i => i.id == tag.image_id)
+  const imagePath = image ? image_variant_path(image, 'medium') : "/img/question-mark.jpg"
+  const handleClick = () => changePage({page: 3, tagId: tag.id})
   return (
     <div className="d-flex align-items-center" style={{padding: '5px 0'}}>
       <img src='/icons/arrows-move.svg' width="28" height="28" />
       <div className="me-3"/>
       <div className="clickable" onClick={handleClick}>
-        <img className="me-1" src={image} width="60" height="60" />
+        <img className="me-1" src={imagePath} width="60" height="60" />
         <b>#{tag.name || "Sans nom"}</b>
       </div>
       <div className="me-3"/>
-      <DeleteConfirmButton id={`del-user-tag-${userTag.id}`} onDeleteConfirm={() => removeUserTag(userTag)} message="Je veux retirer cette étiquette?" />
+      <DeleteConfirmButton id={`del-user-tag-${tag.id}`} onDeleteConfirm={() => window.hcu.destroyRecord(tag)} message="Je veux retirer cette étiquette?" />
     </div>
   )
 }
-const EditUserTags = ({userTags, recipeFilters, page}) => {
+const EditTags = ({tags, images, page}) => {
 
   //userTags = sortBy(userTags, "position") Not necessary, done on server side
 
-  const removeUserTag = (userTag) => {
-    ajax({url: user_tag_path(userTag), type: 'DELETE', success: () => {
-      userTags.update(userTags.filter(f => f.id != userTag.id))
-    }})
-  }
-  
-  const [showAddModal, setShowAddModal] = useState(false)
-
-  const userTagsC = userTags.map((userTag, index) => {
-    let tag = recipeFilters.find(t => t.id == userTag.tag_id)
-    return <Draggable key={`drag-user-tag-${userTag.id}`} draggableId={`drag-user-tag-${userTag.id.toString()}`} index={index}>
+  const tagsC= tags.map((tag, index) => {
+    return <Draggable key={`drag-user-tag-${tag.id}`} draggableId={`drag-user-tag-${tag.id.toString()}`} index={index}>
       {(provided) => (<>
         <div className="item-container" ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
-          <EditTagButton tag={tag} userTag={userTag} />
+          <EditTagButton {...{tag, images}} />
         </div>
       </>)}
     </Draggable>
@@ -377,17 +362,22 @@ const EditUserTags = ({userTags, recipeFilters, page}) => {
     }})
   }
 
+  const createTag = () => {
+    window.hcu.createRecord({table_name: 'tags'}, (tag) => {
+      changePage({page: PAGE_3, tagId: tag.id})
+    })
+  }
+
   return (<>
-    <AddUserTagModal showModal={showAddModal} setShowModal={setShowAddModal} tags={recipeFilters} userTags={userTags} />
     <div className="d-flex gap-15 align-items-center">
       <h2>Tags</h2>
-      <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => setShowAddModal(true)}>Ajouter un tag</button>
+      <button type="button" className="btn btn-outline-primary btn-sm" onClick={createTag}>Ajouter un tag</button>
     </div>
     <DragDropContext onDragEnd={handleDrop}>
       <Droppable droppableId="user-tags-container">
         {(provided) => (<>
           <div className="user-tags-container" {...provided.droppableProps} ref={provided.innerRef}>
-            {userTagsC}
+            {tagsC}
             {provided.placeholder}
           </div>
         </>)}
@@ -406,7 +396,7 @@ const TagButton = ({image, title, handleClick}) => {
     </div>
   )
 }
-const TagIndex = ({page, machines, recipeFilters, userTags}) => {
+const TagIndex = ({page, machines, tags, recipeFilters, userTags}) => {
 
   const winWidth = useWindowWidth()
   let pl = winWidth > 800 ? 0 : (winWidth % 200)/2
@@ -1026,10 +1016,11 @@ const App = () => {
   const foods = gon.foods
   const recipes = useHcuState(gon.recipes, {tableName: 'recipes'})
   const recipeKinds = gon.recipe_kinds
-  const images = gon.images
+  const images = useHcuState(gon.images, {tableName: 'images'})
   const user = gon.user
   const users = gon.users
   const notes = gon.notes
+  const tags = useHcuState(gon.tags, {tableName: 'tags'})
   const friendsRecipes = gon.friends_recipes//.filter(r => !recipeIds.includes(r.id))
 
   const parentPages = {
@@ -1039,7 +1030,7 @@ const App = () => {
     //[PAGE_5]: PAGE_3,
     [PAGE_6]: PAGE_1,
     [PAGE_7]: PAGE_1,
-    [PAGE_8]: PAGE_3, // TagEditAllCategories => EditFilter
+    [PAGE_8]: PAGE_3, // TagEditAllCategories => EditTag
     [PAGE_9]: PAGE_1,
     [PAGE_10]: PAGE_1,
     [PAGE_11]: PAGE_10,
@@ -1052,10 +1043,10 @@ const App = () => {
   }
 
   const pages = {
-    [PAGE_1]: <TagIndex {...{page, recipeFilters, userTags, machines}} />,
+    [PAGE_1]: <TagIndex {...{page, recipeFilters, userTags, machines, tags}} />,
     [PAGE_2]: <TagCategorySuggestions {...{page, recipeFilters, suggestions, recipes}} />,
-    [PAGE_3]: <EditFilter {...{page, recipeFilters}} />,
-    [PAGE_4]: <EditUserTags {...{recipeFilters, userTags, page}} />,
+    [PAGE_3]: <EditTag {...{page, tags, images}} />,
+    [PAGE_4]: <EditTags {...{tags, page, images}} />,
     //5: <TrainFilter page={page} recipeFilters={recipeFilters} />,
     [PAGE_6]: <MyRecipes {...{page, recipes, suggestions, recipeFilters, favoriteRecipes, tags: recipeFilters, mixes, recipeKinds, user, images}} />,
     [PAGE_7]: <MyBooks page={page} />,

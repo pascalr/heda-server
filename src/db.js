@@ -33,6 +33,15 @@ sqlite3.Database.prototype.runBatchAsync = function (statements) {
     .then(() => results.slice(2));
 };
 
+const ALLOWED_CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
+if (sqlite3.Database.prototype.safe) {throw "Can't overide safe"}
+sqlite3.Database.prototype.safe = function(str) {
+  let s = '';
+  [...str].forEach(c => {
+    if (ALLOWED_CHARS.includes(c)) {s += c}
+  })
+  return s
+}
 
 // FIXME: DB_URL should be DB_PATH, it's not an URL (doesn't start with sqlite3://...)
 let dbPath = process.env.DB_URL

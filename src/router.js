@@ -51,6 +51,11 @@ router.post('/upload_image', function(req, res, next) {
   let recordId = req.body.record_id
   let recordField = 'image_id'//req.body.record_field (FIXME: lazy way to make secure)
 
+  const UPLOAD_IMAGE_TABLES = ['recipes', 'tags']
+  if (!recordTable || !UPLOAD_IMAGE_TABLES.includes(recordTable)) {
+    return res.status(500).send("Error invalid table for uploading image");
+  }
+
   // TODO: Do a transaction like explained here: https://stackoverflow.com/questions/53299322/transactions-in-node-sqlite3
   // I've already copied the code inside db.js
   // But I can't use runBatchAsync because I need the lastId in the second statement
@@ -75,7 +80,9 @@ router.post('/upload_image', function(req, res, next) {
     file.mv(path.join(IMAGE_FOLDER, image.id + '.' + ext), function(err) {
       if (err) { return res.status(500).send(err); }
 
-      db.run("UPDATE "+recordTable+" SET "+recordField+" = ?, updated_at = ? WHERE id = ? AND user_id = ?", [image.id, utils.now(), recordId, req.user.user_id], function(err) {
+      let q = "UPDATE "+db.safe(recordTable)+" SET "+db.safe(recordField)+" = ?, updated_at = ? WHERE id = ? AND user_id = ?"
+      console.log('q', q)
+      db.run(q, [image.id, utils.now(), recordId, req.user.user_id], function(err) {
         if (err) { return next(err); }
 
         res.json({...image, table_name: 'images'})
@@ -265,7 +272,8 @@ router.get('/images/:id/:variant', function(req, res, next) {
 const ALLOWED_COLUMNS_MOD = {
   'recipes': ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id', 'ingredients'],
   'users': ['name', 'gender'],
-  'favorite_recipes': ['list_id', 'recipe_id']
+  'favorite_recipes': ['list_id', 'recipe_id'],
+  'tags': ['name', 'image_id', 'position']
 }
 // WARNING: All users have access to these
 const ALLOWED_COLUMNS_GET = {
@@ -288,7 +296,7 @@ router.post('/create_record/:table', function(req, res, next) {
   try {
     console.log('body', req.body)
     let table = req.params.table
-    let fieldsSent = req.body['fields[]'].filter(f => f != 'table_name')
+    let fieldsSent = utils.ensureIsArray(req.body['fields[]']).filter(f => f != 'table_name')
     if (!Object.keys(ALLOWED_COLUMNS_MOD).includes(table)) {
       throw new Error("CreateRecord table not allowed")
     }
