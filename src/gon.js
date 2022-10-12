@@ -176,7 +176,7 @@ function fetchFavoriteRecipesRecipe(req, res, next) {
 function fetchSuggestions(req, res, next) {
   let attrs = ['user_id', 'recipe_id', 'tag_id', 'score']
   fetchTable('suggestions', {user_id: req.user.user_id}, attrs, next, (records) => {
-    res.locals.gon.suggestions = records
+    res.locals.gon.suggestions = records.filter(r => r.tag_id) // FIXME: Fix the data. tag_id is mandatory...
   })
 }
 

@@ -1,6 +1,3 @@
-Use db.sanitize everywhere.
-Use Docker instead of Herkou build pack
-https://www.docker.com/blog/getting-started-with-docker-using-node-jspart-i/
 Pouvoir ajouter des tags à une recette.
 Les utilisateurs peuvent mettre une image pour leur utilisateur. ( Faire recette avant... )
 Ajouter un exemple de Carrousel de suggestions de recettes dans la page d'acceuil.
@@ -26,6 +23,8 @@ Backblaze? https://www.npmjs.com/package/backblaze
 Mettre un peu de couleur!
 Quand tu déplaces des ingrédients, modifier le json pour changer les numéros d'ingrédients.
 SuggestionsIndex AutresRecettes
+Use Docker instead of Herkou build pack
+https://www.docker.com/blog/getting-started-with-docker-using-node-jspart-i/
 
 Later:
 Periodic task to remove images which are not referenced anywhere. To remove images without a file.

@@ -57,7 +57,7 @@ export const RecipeList = ({page, list, selected, suggestions, tags, editUserRec
     <ul id="recipes" className="recipe-list">
       {list.map((item, current) => {
         let {fav, recipe} = item
-        let recipeTags = suggestions.filter(suggestion => suggestion.recipe_id == recipe.id).map(suggestion => tags.find(t => t.id == suggestion.filter_id))
+        let recipeTags = suggestions.filter(suggestion => suggestion.recipe_id == recipe.id).map(suggestion => tags.find(t => t.id == suggestion.tag_id))
         let mix = mixes.find(e => e.recipe_id == recipe.id)
 
         return (

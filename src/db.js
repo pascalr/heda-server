@@ -41,7 +41,7 @@ sqlite3.Database.prototype.safe = function(str, allowed) {
     if (ALLOWED_CHARS.includes(c)) {s += c}
   })
   if (str != s) {throw "Error: User tried to send unsafe value."}
-  if (!allowed.includes(s)) {throw "Error: Db value not allowed."}
+  if (!allowed.includes(s)) {throw "Error: Db value not allowed ("+s+")."}
   return s
 }
 

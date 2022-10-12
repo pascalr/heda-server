@@ -47,7 +47,7 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
   console.log('ingredients', ingredients)
   const toolIds = []
   const mix = mixes.find(m => m.recipe_id == recipe.id)
-  const recipeTags = suggestions.filter(s => s.recipe_id == recipe.id).map(s => tags.find(t => t.id == s.filter_id))
+  const recipeTags = suggestions.filter(s => s.recipe_id == recipe.id).map(s => tags.find(t => t.id == s.tag_id))
   const favorite = favoriteRecipes.find(f => f.recipe_id == recipe.id)
 
   const IngredientList = 
@@ -127,7 +127,7 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
       <b>Tags:</b>&nbsp;
       <span>
         {!recipeTags || recipeTags.length == 0 ? 'Aucun' : recipeTags.map(tag => 
-          <LinkToPage key={tag.id} page={{page: 9, filterId: tag.id}} className="plain-link h002">#{tag.name}&nbsp;</LinkToPage>
+          <LinkToPage key={tag.id} page={{page: 9, tagId: tag.id}} className="plain-link h002">#{tag.name}&nbsp;</LinkToPage>
         )}
       </span>
     </div>

@@ -73,7 +73,6 @@ router.post('/upload_image', function(req, res, next) {
         if (err) { return res.status(500).send(err); }
 
         let q = "UPDATE "+db.safe(recordTable, ['recipes', 'tags'])+" SET "+db.safe(recordField, 'image_id')+" = ?, updated_at = ? WHERE id = ? AND user_id = ?"
-        console.log('q', q)
         db.run(q, [image.id, utils.now(), recordId, req.user.user_id], function(err) {
           if (err) { return next(err); }
 
@@ -292,21 +291,14 @@ router.post('/create_record/:table', function(req, res, next) {
     console.log('body', req.body)
     let table = req.params.table
     let fieldsSent = utils.ensureIsArray(req.body['fields[]']).filter(f => f != 'table_name')
-    if (!Object.keys(ALLOWED_COLUMNS_MOD).includes(table)) {
-      throw new Error("CreateRecord table not allowed")
-    }
-    fieldsSent.forEach(field => {
-      if (!ALLOWED_COLUMNS_MOD[table].includes(field)) {
-        throw new Error("CreateRecord column not allowed. Field: "+field)
-      }
-    })
     let obj = fieldsSent.reduce((acc, f) => ({ ...acc, [f]: req.body['record['+f+']']}), {}) 
     obj.user_id = req.user.user_id
 
     function updateObj(obj) {
       let fields = Object.keys(obj)
       let values = Object.values(obj)
-      let query = 'INSERT INTO '+table+' (created_at,updated_at,'+fields.join(',')+') '
+      let columns = ALLOWED_COLUMNS_MOD[table]
+      let query = 'INSERT INTO '+db.safe(table, Object.keys(ALLOWED_COLUMNS_MOD))+' (created_at,updated_at,'+fields.map(f => db.safe(f, columns)).join(',')+') '
       query += 'VALUES (?,?,'+fields.map(f=>'?').join(',')+')'
       let args = [utils.now(), utils.now(), ...values]
       db.run(query, args, function(err) {
@@ -358,23 +350,18 @@ router.patch('/update_field/:table/:id', function(req, res, next) {
     let table = req.params.table
     let field = req.body.field
     let value = req.body.value
-    if (Object.keys(ALLOWED_COLUMNS_MOD).includes(table) && ALLOWED_COLUMNS_MOD[table].includes(field)) {
-      let query = ''
-      let args = []
-      if (table == 'users') {
-        query = 'UPDATE '+table+' SET '+field+' = ?, updated_at = ? WHERE id = ?'
-        args = [value, utils.now(), req.user.user_id]
-      } else {
-        query = 'UPDATE '+table+' SET '+field+' = ?, updated_at = ? WHERE id = ? AND user_id = ?'
-        args = [value, utils.now(), id, req.user.user_id]
-      }
-      db.run(query, args, function(err) {
-        if (err) { return next(err); }
-        res.json({status: 'ok'})
-      })
+    let query = 'UPDATE '+db.safe(table, Object.keys(ALLOWED_COLUMNS_MOD))+' SET '+db.safe(field, ALLOWED_COLUMNS_MOD[table])+' = ?, updated_at = ? WHERE id = ?'
+    let args = []
+    if (table != 'users') {
+      query += ' AND user_id = ?'
+      args = [value, utils.now(), req.user.user_id]
     } else {
-      throw new Error("UpdateField not allowed")
+      args = [value, utils.now(), id, req.user.user_id]
     }
+    db.run(query, args, function(err) {
+      if (err) { return next(err); }
+      res.json({status: 'ok'})
+    })
   } catch(err) {
     throw new Error(err)
   }
@@ -403,18 +390,14 @@ router.delete('/destroy_record/:table/:id', function(req, res, next) {
   try {
     let id = req.params.id
     let table = req.params.table
-    if (ALLOWED_TABLES_DESTROY.includes(table)) {
-      let query = ''
-      let args = []
-      query = 'DELETE FROM '+table+' WHERE id = ? AND user_id = ?'
-      args = [id, req.user.user_id]
-      db.run(query, args, function(err) {
-        if (err) { return next(err); }
-        res.json({status: 'ok'})
-      })
-    } else {
-      throw new Error("DestroyRecord not allowed")
-    }
+    let query = ''
+    let args = []
+    query = 'DELETE FROM '+db.safe(table, ALLOWED_TABLES_DESTROY)+' WHERE id = ? AND user_id = ?'
+    args = [id, req.user.user_id]
+    db.run(query, args, function(err) {
+      if (err) { return next(err); }
+      res.json({status: 'ok'})
+    })
   } catch(err) {
     throw new Error(err)
   }
