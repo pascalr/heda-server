@@ -155,9 +155,14 @@ export function ajax(params) {
       body: formData 
       //body: JSON.stringify({_csrf, testing: '1212'})
     }).then(response => {
-      if (params.success) {
-        params.success(response.json())
+      if (response.ok) {
+        return response.json()
+      } else {
+        console.log('Fetch error')
+        if (params.error) { params.error(response) }
       }
+    }).then(json => {
+      if (params.success) { params.success(json) }
     })
 
   } else {

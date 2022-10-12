@@ -125,39 +125,41 @@ const updateModelField = (model, field, value, successCallback=null) => {
     }})
   }
 }
-export const ImageField = ({model, imageAttr, field, ...props}) => {
-
-  const [value, setValue] = useState(model[field])
-  const handleOpen = () => {
-  
-    const form = document.querySelector("#new-image-modal-form");
-    form.onImageCreate = (image) => {
-      console.log('form.onImageCreate!!', image)
-      model[imageAttr] = image
-      updateModelField(model, field, image.id)
+export const ImageField = ({image, record, field, maxSizeBytes, onRemove, onUpdate, ...props}) => {
+  const handleChange = (e) => {
+    console.log('File selected in FileField.')
+    if (e.target.files.length > 1) {
+      alert('Error. You can only upload one file.');
+      return;
     }
+    var file = e.target.files[0];
+    if (maxSizeBytes && file.size > maxSizeBytes) {
+      alert(`Error. Max upload size is ${maxSizeBytes/1000.0}kb. Was ${file.size/1000.0}kb.`);
+      return;
+    }
+    let data = new FormData()
+    data.append('file', file)
+    if (record) {
+      data.append('record_table', record.table_name)
+      data.append('record_id', record.id)
+      data.append('record_field', field)
+    }
+    ajax({url: '/upload_image', type: 'POST', data, success: (image) => {
+      onUpdate(image)
+    }})
   }
-
-  const removeImage = (evt) => {
-    model[imageAttr] = null
-    updateModelField(model, field, null)
-  }
-
-  if (!model[field]) {
+  if (!image) {
     return (<>
-      <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-image-modal" onClick={handleOpen}>
-        Ajouter une image
-      </button>
+      <input type="file" name='file' {...props} onChange={handleChange} />
     </>)
-  } else if (model[imageAttr]) {
+  } else {
     return (
       <span>
-        {model[imageAttr].filename}
-        <DeleteConfirmButton id={`del-im-${model[imageAttr].id}`} onDeleteConfirm={removeImage} message="Je veux enlever cette image?" />
+        {image.filename}
+        <DeleteConfirmButton id={`del-im-${image.id}`} onDeleteConfirm={onRemove} message="Je veux enlever cette image?" />
       </span>
     )
   }
-  throw "ImageField missing imageAttr"
 }
 export const FileField = ({model, field, maxSizeBytes, onRemove, onImageCreated, ...props}) => {
   let id = `${model.table_name}_${field}`

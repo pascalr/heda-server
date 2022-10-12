@@ -39,13 +39,33 @@ router.post('/upload_image', function(req, res, next) {
     return res.status(400).send('No files were uploaded.');
   }
 
-  let file = req.files[req.body.field];
+  let file = req.files['file'];
   let ext = file.name.substr(file.name.lastIndexOf('.') + 1);
   if (!['jpg'].includes(ext)) {
     return res.status(500).send("Image format not supported. Expected jpg. Was " + ext);
   }
 
-  let image = {filename: file.name, user_id: req.user.user_id}
+  let image = {name: file.name, user_id: req.user.user_id}
+
+  let recordTable = req.body.record_table
+  let recordId = req.body.record_id
+  let recordField = 'image_id'//req.body.record_field (FIXME: lazy way to make secure)
+
+  // TODO: Do a transaction like explained here: https://stackoverflow.com/questions/53299322/transactions-in-node-sqlite3
+  // I've already copied the code inside db.js
+  // But I can't use runBatchAsync because I need the lastId in the second statement
+  // But I could simply use runAsync
+  // It's just too complicated for now
+  //let UPDLOAD_IMAGE_TABLES = ['recipes']
+  //if (recordTable && recordId && recordField && UPLOAD_IMAGE_TABLES.includes(recordTable)) {
+  //  statements.push(["UPDATE "+recordTable+" SET "+recordField+" = ?, updated_at = ? WHERE id = ? AND user_id = ?", ])
+  //}
+  //let statements = [
+  //  ['INSERT INTO images (filename, user_id, created_at, updated_at) VALUES (?, ?, ?, ?)',
+  //    [image.name, image.user_id, utils.now(), utils.now()]
+  //  ],
+  //];
+
   db.run('INSERT INTO images (filename, user_id, created_at, updated_at) VALUES (?, ?, ?, ?)', [
     image.name, image.user_id, utils.now(), utils.now() 
   ], function(err) {
@@ -54,8 +74,12 @@ router.post('/upload_image', function(req, res, next) {
     // Use the mv() method to place the file somewhere on your server
     file.mv(path.join(IMAGE_FOLDER, image.id + '.' + ext), function(err) {
       if (err) { return res.status(500).send(err); }
-      res.send('File uploaded!');
-      res.json({...image, table_name: table})
+
+      db.run("UPDATE "+recordTable+" SET "+recordField+" = ?, updated_at = ? WHERE id = ? AND user_id = ?", [image.id, utils.now(), recordId, req.user.user_id], function(err) {
+        if (err) { return next(err); }
+
+        res.json({...image, table_name: 'images'})
+      })
     });
   });
 

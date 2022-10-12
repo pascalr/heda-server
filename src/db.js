@@ -1,6 +1,39 @@
 import sqlite3 from 'sqlite3';
 import fs from 'fs';
 
+https://stackoverflow.com/questions/53299322/transactions-in-node-sqlite3
+sqlite3.Database.prototype.runAsync = function (sql, ...params) {
+  return new Promise((resolve, reject) => {
+    this.run(sql, params, function (err) {
+      if (err) return reject(err);
+      resolve(this);
+    });
+  });
+};
+//var statements = [
+//    "DROP TABLE IF EXISTS foo;",
+//    "CREATE TABLE foo (id INTEGER NOT NULL, name TEXT);",
+//    ["INSERT INTO foo (id, name) VALUES (?, ?);", 1, "First Foo"]
+//];
+//db.runBatchAsync(statements).then(results => {
+//    console.log("SUCCESS!")
+//    console.log(results);
+//}).catch(err => {
+//    console.error("BATCH FAILED: " + err);
+//});
+sqlite3.Database.prototype.runBatchAsync = function (statements) {
+    var results = [];
+    var batch = ['BEGIN', ...statements, 'COMMIT'];
+    return batch.reduce((chain, statement) => chain.then(result => {
+        results.push(result);
+        return db.runAsync(...[].concat(statement));
+    }), Promise.resolve())
+    .catch(err => db.runAsync('ROLLBACK').then(() => Promise.reject(err +
+        ' in statement #' + results.length)))
+    .then(() => results.slice(2));
+};
+
+
 // FIXME: DB_URL should be DB_PATH, it's not an URL (doesn't start with sqlite3://...)
 let dbPath = process.env.DB_URL
 console.log('Database path:', dbPath)
