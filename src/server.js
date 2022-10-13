@@ -50,6 +50,8 @@ app.use(express.static(path.join(__dirname, '../node_modules/prosemirror-menu/st
 app.use(express.static(path.join(__dirname, '../public')));
 
 // This will be called for every query
+// Sets the locale in the global variable.
+// Redirects to add locale to query string if missing and found in referer.
 app.use((req, res, next) => {
   //console.log('Time:', Date.now())
   if (!req.query.locale && req.headers.referer) {

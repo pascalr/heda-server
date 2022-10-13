@@ -989,7 +989,9 @@ const App = () => {
 
   const [page, setPage] = useState(getUrlParams())
   if (!window.hcu) {initHcu()}
-  window.hcu.changePage = (updated) => {
+  window.hcu.changePage = (newPage) => {
+    let locale = newPage.locale || getUrlParams(window.location.href).locale
+    let updated = {...newPage, locale}
     setPage(updated)
     setIsSearching(false)
     window.history.pushState(updated, '', '?'+new URLSearchParams(updated).toString())
