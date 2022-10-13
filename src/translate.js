@@ -1,6 +1,7 @@
 export function tr(id, locale) {
   let en = {
     by_2: 'by',
+    Confirm_delete: 'Are you sure you want to remove this item?',
   }
   let fr = {
     Edit_profile: 'Modifier le profil',
@@ -47,6 +48,7 @@ export function tr(id, locale) {
     by: 'par',
     by_2: 'de',
     Suggestions: 'Suggestions',
+    Confirm_delete: 'Êtes-vous certain de vouloir supprimer cet item?',
   }
   if (locale == 'fr') {
     if (!fr[id]) {console.log('Missing translation for '+id+' in '+locale)}

@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button'
 import {clearRecord, asyncUpdateModel, TextField, ImageField, RadioField} from '../form'
 import { image_variant_path } from '../routes'
 import { isTrue } from "../utils"
+import { t } from "../../translate"
 
 export const EditRecipeImageModal = ({recipe, recipeKinds, images, show, handleClose}) => {
 
@@ -15,6 +16,14 @@ export const EditRecipeImageModal = ({recipe, recipeKinds, images, show, handleC
   
   const image = isTrue(recipe.use_personalised_image) ? recipeImage : recipeKindImage
   const imagePath = image ? image_variant_path(image, 'medium') : "/img/default_recipe_01.png"
+
+  const removeImage = () => {
+    if (window.confirm(t('Confirm_delete'))) {
+      window.hcu.updateField(recipe, 'image_id', null)
+    }
+  }
+          
+  //<ImageSelector record={recipe} field="image_id" maxSizeBytes={2*1000*1000} height="171px" defaultImage="/img/default_recipe_01.png" />
     
   return (<>
     <Modal show={show} onHide={handleClose}>
@@ -44,7 +53,7 @@ export const EditRecipeImageModal = ({recipe, recipeKinds, images, show, handleC
           {!isTrue(recipe.use_personalised_image) ? '' :
             <div style={{paddingLeft: "2em"}}>
               <div style={{height: "0.5em"}}/>
-              <ImageField record={recipe} field="image_id" image={recipeImage} onRemove={() => window.hcu.updateField(recipe, 'image_id', null)} maxSizeBytes={2*1000*1000} />
+              <ImageField record={recipe} field="image_id" maxSizeBytes={2*1000*1000} height="171px" />
               {!recipeImage ? '' : <>
                 <div style={{height: "0.5em"}}/>
                 <RadioField model={recipeImage} field="is_user_author" value={true} label="Je suis l'auteur de cette image" />
@@ -59,6 +68,7 @@ export const EditRecipeImageModal = ({recipe, recipeKinds, images, show, handleC
                   <TextField model={recipeImage} field="source" id="author"/>
                 </div>
                 <br/>
+                <button type="button" className="btn btn-danger" onClick={removeImage}>{t('Delete')}</button>
               </>}
             </div>
           }
