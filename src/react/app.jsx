@@ -21,6 +21,7 @@ import {RecipeEditor} from "./recipe_editor"
 import {RecipeViewer} from "./recipe_viewer"
 import { initHcu, useHcuState } from '../hcu'
 import { RecipeThumbnailImage } from "./image"
+import { t } from "../translate"
 import { FOOD_EMOJIS, ANIMAL_EMOJIS, OTHER_EMOJIS, TO_REMOVE_EMOJIS, SMILEYS } from "./emojis"
 
 // The advantage of using this instead of the number is if I need to search and to refactor, I can easy
@@ -1027,6 +1028,7 @@ const App = () => {
   const friendsRecipes = gon.friends_recipes//.filter(r => !recipeIds.includes(r.id))
   const users = gon.users
   const user = gon.user
+  window.locale = user.locale
 
   const parentPages = {
     [PAGE_2]: PAGE_1,
@@ -1099,15 +1101,15 @@ const App = () => {
               <img className="clickable" src={icon_path("person-fill-white.svg")} width="28"/>
             </button>
             <div className="dropdown-menu" aria-labelledby="dropdownUserButton">
-              <a href="/edit_profile" className="dropdown-item">Mon profil</a>
+              <a href="/edit_profile" className="dropdown-item">{t('My_profile')}</a>
               <form action="/logout" method="post">
-                <button className="dropdown-item" type="submit">Logout</button>
+                <button className="dropdown-item" type="submit">{t('Logout')}</button>
                 <input type="hidden" name="_csrf" value={_csrf}/>
               </form>
-              <a href="/new_user" className="dropdown-item">Nouveau profil</a>
+              <a href="/new_user" className="dropdown-item">{t('New_profile')}</a>
               { otherProfiles.length == 0 ? '' : <>
                 <hr className="dropdown-divider"/>
-                <h6 className="dropdown-header">Changer d'utilisateur</h6>
+                <h6 className="dropdown-header">{t('Switch_user')}</h6>
                 { otherProfiles.map(usr => { 
                   return <form key={usr.id} action="/change_user" method="post">
                     <button className="dropdown-item" type="submit">{ usr.name }</button>

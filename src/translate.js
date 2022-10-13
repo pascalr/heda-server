@@ -6,6 +6,10 @@ export function tr(id, locale) {
     Delete: 'Delete',
     Ok: 'Ok',
     Language: 'Language',
+    My_profile: 'My profile',
+    Logout: 'Logout',
+    New_profile: 'New profile',
+    Switch_user: 'Switch user',
   }
   let fr = {
     Edit_profile: 'Modifier le profil',
@@ -14,6 +18,10 @@ export function tr(id, locale) {
     Delete: 'Supprimer',
     Ok: 'Ok',
     Language: 'Language',
+    My_profile: 'Mon profil',
+    Logout: 'Déconnexion',
+    New_profile: 'Nouveau profil',
+    Switch_user: "Changer d'utilisateur",
   }
   let lang = locale == 'fr' ? fr : en
   if (!lang[id]) {throw 'Missing translation for '+id+' in '+locale}
