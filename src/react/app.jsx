@@ -1095,7 +1095,7 @@ const App = () => {
           {moveBtn}
         </div>
         <div className="float-end" style={{marginTop: '0.25em'}}>
-          <img className="clickable" src={isSearching ? icon_path("x-lg.svg") : icon_path("search.svg")} width="24" onClick={() => {setIsSearching(!isSearching)}} style={{marginRight: '1em'}} />
+          <img className="clickable" src={isSearching ? icon_path("x-lg-white.svg") : icon_path("search.svg")} width="24" onClick={() => {setIsSearching(!isSearching)}} style={{marginRight: '1em'}} />
           <div className="dropdown d-inline-block">
             <button className="plain-btn dropdown-toggle" type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style={{marginRight: '1em', color: 'white'}}>
               <img className="clickable" src={icon_path("person-fill-white.svg")} width="28"/>
