@@ -86,7 +86,7 @@ router.post('/upload_image', function(req, res, next) {
         db.run(q, args, function(err) {
           if (err) { return next(err); }
 
-          res.json({...image, table_name: 'images'})
+          res.json(image)
         })
       });
     });
@@ -313,7 +313,7 @@ router.post('/create_record/:table', function(req, res, next) {
   try {
     console.log('body', req.body)
     let safeTable = db.safe(req.params.table, Object.keys(ALLOWED_COLUMNS_MOD))
-    let fieldsSent = utils.ensureIsArray(req.body['fields[]']).filter(f => f != 'table_name')
+    let fieldsSent = utils.ensureIsArray(req.body['fields[]'])//.filter(f => f != 'table_name')
     let obj = fieldsSent.reduce((acc, f) => ({ ...acc, [f]: req.body['record['+f+']']}), {}) 
     obj.user_id = req.user.user_id
 

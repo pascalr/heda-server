@@ -51,22 +51,21 @@ export const initHcu = () => {
     window.hcu.setters[updatedRecord.table_name](updated)
     if (successCallback) {successCallback(updatedRecord)}
   }
-  window.hcu.createRecord = (record, successCallback=null) => {
-    if (!record.table_name) { throw "Error: hcu.createRecord record must have valid table_name" }
+  window.hcu.createRecord = (tableName, record, successCallback=null) => {
     let fields = Object.keys(record)
-    let url = '/create_record/'+record.table_name
+    let url = '/create_record/'+tableName
     ajax({url: url, type: 'POST', data: {record, fields}, success: (created) => {
       console.log('created', created)
-      window.hcu.addRecord({...created, table_name: record.table_name}, successCallback)
+      window.hcu.addRecord(created, successCallback)
     }, error: (errors) => {
       console.log('ERROR AJAX CREATING...', errors.responseText)
       toastr.error(errors.responseText)
     }})
   }
   // Add record in memory only
-  window.hcu.addRecord = (record, callback=null) => {
+  window.hcu.addRecord = (tableName, record, callback=null) => {
     let old = window.hcu.getters[record.table_name]
-    let updated = [...old, {...record}]
+    let updated = [...old, {...record, table_name: tableName}]
     window.hcu.setters[record.table_name](updated)
     if (callback) {callback(record)}
   }

@@ -363,7 +363,7 @@ const EditTags = ({tags, images, page}) => {
   }
 
   const createTag = () => {
-    window.hcu.createRecord({table_name: 'tags'}, (tag) => {
+    window.hcu.createRecord('tags', {}, (tag) => {
       changePage({page: PAGE_3, tagId: tag.id})
     })
   }
@@ -960,8 +960,8 @@ const NewRecipe = ({page, recipeKinds}) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    const record = {table_name: 'recipes', name, use_personalised_image: usePersonalisedImage}
-    window.hcu.createRecord(record, (created) => {
+    const record = {name, use_personalised_image: usePersonalisedImage}
+    window.hcu.createRecord('recipes', record, (created) => {
       window.hcu.changePage({...page, page: 16, recipeId: created.id})
     })
   }

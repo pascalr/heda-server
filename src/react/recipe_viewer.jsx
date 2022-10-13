@@ -194,7 +194,7 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
                 if (favorite) {
                   window.hcu.destroyRecord(favorite)
                 } else {
-                  window.hcu.createRecord({table_name: "favorite_recipes", recipe_id: recipe.id})
+                  window.hcu.createRecord('favorite_recipes', {recipe_id: recipe.id})
                 }
               }
               return <button type="button" className="btn btn-outline-secondary" onClick={handleClick}>

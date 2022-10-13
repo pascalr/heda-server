@@ -11,7 +11,7 @@ export const EditTagsModal = ({showModal, setShowModal, recipe, tags, suggestion
   let unusedTags = tags.filter(tag => !recipeSuggestions.find(s => s.tag_id == tag.id))
 
   function addTag(tag) {
-    window.hcu.createRecord({table_name: 'suggestions', tag_id: tag.id, recipe_id: recipe.id})
+    window.hcu.createRecord('suggestions', {tag_id: tag.id, recipe_id: recipe.id})
   }
 
   function removeSuggestion(suggestion) {

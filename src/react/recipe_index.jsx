@@ -14,7 +14,7 @@ const updateFavoriteRecipe = (fav, list_id, recipe, user) => {
   } else if (fav) {
     window.hcu.updateField(fav, 'list_id', list_id)
   } else if (list_id != 0) {
-    window.hcu.createRecord({table_name: "favorite_recipes", list_id: list_id, recipe_id: recipe.id})
+    window.hcu.createRecord('favorite_recipes', {list_id: list_id, recipe_id: recipe.id})
   }
 }
 
