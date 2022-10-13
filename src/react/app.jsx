@@ -335,8 +335,9 @@ const EditTagButton = ({tag, images}) => {
 const EditTags = ({tags, images, page}) => {
 
   //userTags = sortBy(userTags, "position") Not necessary, done on server side
+  const [orderedTags, setOrderedTags] = useState(tags)
 
-  const tagsC= tags.map((tag, index) => {
+  const tagsC= orderedTags.map((tag, index) => {
     return <Draggable key={`drag-user-tag-${tag.id}`} draggableId={`drag-user-tag-${tag.id.toString()}`} index={index}>
       {(provided) => (<>
         <div className="item-container" ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
@@ -350,16 +351,19 @@ const EditTags = ({tags, images, page}) => {
     if (!destination) return; // Ignore drop outside droppable container
     
     let userTagId = draggableId.substr(14) // removes "drag-user-tag-"
+    console.log('userTagId', userTagId)
 
-    var updatedList = [...userTags];
+    var updatedList = [...orderedTags];
     const [reorderedItem] = updatedList.splice(source.index, 1);
     updatedList.splice(destination.index, 0, reorderedItem);
 
-    let data = {position: destination.index+1}
-    ajax({url: user_tag_path({id: userTagId}), type: 'PATCH', data, success: () => {
-      updatedList.forEach((el,i) => {el.position = i+1}) 
-      userTags.update(updatedList)
-    }})
+    setOrderedTags(updatedList)
+
+    //let data = {position: destination.index+1}
+    //ajax({url: user_tag_path({id: userTagId}), type: 'PATCH', data, success: () => {
+    //  updatedList.forEach((el,i) => {el.position = i+1}) 
+    //  userTags.update(updatedList)
+    //}})
   }
 
   const createTag = () => {
