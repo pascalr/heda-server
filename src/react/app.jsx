@@ -991,6 +991,7 @@ const App = () => {
   if (!window.hcu) {initHcu()}
   window.hcu.changePage = (newPage) => {
     let locale = newPage.locale || getUrlParams(window.location.href).locale
+    window.locale = locale
     let updated = {...newPage, locale}
     setPage(updated)
     setIsSearching(false)
@@ -998,7 +999,7 @@ const App = () => {
   }
 
   useEffect(() => {
-
+    window.locale = getUrlParams(window.location.href).locale
     window.onpopstate = (event) => {
       setPage(event.state || getUrlParams())
       setIsSearching(false)
