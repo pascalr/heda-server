@@ -26,7 +26,6 @@ const UserEditor = () => {
     }
   }
 
-  console.log('user.image_slug', user.image_slug)
   const imageId = (user.image_slug || '').split('.')[0]
   const image = images.find(i => i.id == imageId)
   const imagePath = image ? image_slug_variant_path(user.image_slug, 'medium') : "/icons/person-fill.svg"
