@@ -1,14 +1,7 @@
 import db from './db.js';
 import utils from './utils.js';
 
-//class AppController < ApplicationController
-//  def index
-//    gon.current_user_admin = current_user_admin?
-//    gon.contractionList = FrenchExpression.where(contract_preposition: true).map(&:singular)
-//  end
-//end
-
-export function fetchTable(tableName, conditions, attributes, next, callback) {
+export function fetchTable(tableName, conditions, attributes, callback) {
   let s = 'SELECT '+['id',...attributes].join(', ')+' FROM '+tableName
   let a = []
   let l = Object.keys(conditions).length
@@ -33,17 +26,23 @@ export function fetchTable(tableName, conditions, attributes, next, callback) {
   console.log('statement:', s)
   console.log('values', a)
   db.all(s, a, function(err, rows) {
-    if (err) { return next(err); }
+    if (err) { return callback(null, err); }
 
     let rowsWithTableName = rows.map(o => {o.table_name = tableName; return o;})
-    callback(rowsWithTableName)
-    next();
+    callback(rowsWithTableName, null)
   })
 }
 
+function fetchTableMiddleware(tableName, conditions, attributes, next, callback) {
+  fetchTable(tableName, conditions, attributes, (rows, err=null) => {
+    if (err) { return next(err); }
+    callback(rows)
+    next()
+  })
+}
 
 function fetchAccountUsers(req, res, next) {
-  fetchTable('users', {account_id: req.user.account_id}, ['name', 'gender', 'image_slug', 'locale'], next, (records) => {
+  fetchTableMiddleware('users', {account_id: req.user.account_id}, ['name', 'gender', 'image_slug', 'locale'], next, (records) => {
     res.locals.users = records
     if (res.locals.gon) {res.locals.gon.users = records}
   })
@@ -60,14 +59,14 @@ function mapBooleans(records, fields) {
 
 export const RECIPE_ATTRS = ['user_id', 'name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id', 'ingredients']
 function fetchRecipes(req, res, next) {
-  fetchTable('recipes', {user_id: req.user.user_id}, RECIPE_ATTRS, next, (records) => {
+  fetchTableMiddleware('recipes', {user_id: req.user.user_id}, RECIPE_ATTRS, next, (records) => {
     res.locals.gon.recipes = mapBooleans(utils.sortBy(records, 'name'), ['use_personalised_image'])
   })
 }
 
 function fetchFriendsRecipes(req, res, next) {
   let ids = res.locals.gon.users.map(u => u.id).filter(id => id != req.user.user_id)
-  fetchTable('recipes', {user_id: ids}, ['name', 'user_id', 'image_id', 'recipe_kind_id'], next, (records) => {
+  fetchTableMiddleware('recipes', {user_id: ids}, ['name', 'user_id', 'image_id', 'recipe_kind_id'], next, (records) => {
     res.locals.gon.friends_recipes = utils.sortBy(records, 'name')
   })
 }
@@ -75,7 +74,7 @@ function fetchFriendsRecipes(req, res, next) {
 //function fetchRecipeIngredients(req, res, next) {
 //  let attrs = ['item_nb', 'raw', 'comment_json', 'food_id', 'raw_food', 'recipe_id']
 //  let ids = res.locals.gon.recipes.map(r=>r.id)
-//  fetchTable('recipe_ingredients', {recipe_id: ids}, attrs, next, (records) => {
+//  fetchTableMiddleware('recipe_ingredients', {recipe_id: ids}, attrs, next, (records) => {
 //    res.locals.gon.recipe_ingredients = utils.sortBy(records, 'item_nb').map(r => {
 //      r.name = r.raw_food||''; return r;
 //    })
@@ -83,40 +82,40 @@ function fetchFriendsRecipes(req, res, next) {
 //}
 
 function fetchRecipeKinds(req, res, next) {
-  fetchTable('recipe_kinds', {}, ['name', 'description_json', 'image_id'], next, (records) => {
+  fetchTableMiddleware('recipe_kinds', {}, ['name', 'description_json', 'image_id'], next, (records) => {
     res.locals.gon.recipe_kinds = utils.sortBy(records, 'name')
   })
 }
 
 function fetchMachineFoods(req, res, next) {
-  fetchTable('machine_foods', {}, ['food_id', 'machine_id'], next, (records) => {
+  fetchTableMiddleware('machine_foods', {}, ['food_id', 'machine_id'], next, (records) => {
     res.locals.gon.machine_foods = records
   })
 }
 
 function fetchMixes(req, res, next) {
   let attrs = ['name', 'instructions', 'recipe_id', 'original_recipe_id']
-  fetchTable('mixes', {user_id: req.user.user_id}, attrs, next, (records) => {
+  fetchTableMiddleware('mixes', {user_id: req.user.user_id}, attrs, next, (records) => {
     res.locals.gon.mixes = utils.sortBy(records, 'name')
   })
 }
 
 //function fetchUserTags(req, res, next) {
 //  let attrs = ['tag_id', 'position']
-//  fetchTable('user_tags', {user_id: req.user.user_id}, attrs, next, (records) => {
+//  fetchTableMiddleware('user_tags', {user_id: req.user.user_id}, attrs, next, (records) => {
 //    res.locals.gon.user_tags = utils.sortBy(records, 'position')
 //  })
 //}
 
 function fetchMachineUsers(req, res, next) {
-  fetchTable('machine_users', {user_id: req.user.user_id}, ['machine_id'], next, (records) => {
+  fetchTableMiddleware('machine_users', {user_id: req.user.user_id}, ['machine_id'], next, (records) => {
     res.locals.machine_users = records
   })
 }
 
 function fetchMachines(req, res, next) {
   let ids = res.locals.machine_users.map(m=>m.id)
-  fetchTable('machines', {id: [ids]}, ['name'], next, (records) => {
+  fetchTableMiddleware('machines', {id: [ids]}, ['name'], next, (records) => {
     res.locals.gon.machines = records
   })
 }
@@ -124,41 +123,41 @@ function fetchMachines(req, res, next) {
 function fetchContainers(req, res, next) {
   let ids = res.locals.gon.machines.map(m=>m.id)
   let attrs = ['jar_id', 'machine_id', 'container_format_id', 'pos_x', 'pos_y', 'pos_z', 'food_id']
-  fetchTable('containers', {machine_id: [ids]}, attrs, next, (records) => {
+  fetchTableMiddleware('containers', {machine_id: [ids]}, attrs, next, (records) => {
     res.locals.gon.containers = records
   })
 }
 
 function fetchContainerFormats(req, res, next) {
-  fetchTable('container_formats', {}, ['name'], next, (records) => {
+  fetchTableMiddleware('container_formats', {}, ['name'], next, (records) => {
     res.locals.gon.container_formats = records
   })
 }
 
 function fetchContainerQuantities(req, res, next) {
   let attrs = ['container_format_id', 'machine_food_id', 'full_qty_quarters']
-  fetchTable('container_quantities', {}, attrs, next, (records) => {
+  fetchTableMiddleware('container_quantities', {}, attrs, next, (records) => {
     res.locals.gon.container_quantities = records
   })
 }
 
 function fetchFavoriteRecipes(req, res, next) {
 
-  fetchTable('favorite_recipes', {user_id: req.user.user_id}, ['list_id', 'recipe_id'], next, (records) => {
+  fetchTableMiddleware('favorite_recipes', {user_id: req.user.user_id}, ['list_id', 'recipe_id'], next, (records) => {
     res.locals.gon.favorite_recipes = utils.sortBy(records, 'name')
   })
 }
  
 function fetchFavoriteRecipesRecipe(req, res, next) {
   let recipe_ids = res.locals.gon.favorite_recipes.map(r=>r.recipe_id)
-  fetchTable('recipes', {id: recipe_ids}, RECIPE_ATTRS, next, (records) => {
+  fetchTableMiddleware('recipes', {id: recipe_ids}, RECIPE_ATTRS, next, (records) => {
     res.locals.gon.recipes = utils.removeDuplicateIds(res.locals.gon.recipes.concat(utils.sortBy(records, 'name')))
   })
 }
 
 //function fetchFavoriteRecipesNames(req, res, next) {
 //  let ids = res.locals.gon.favorite_recipes.map(r=>r.recipe_id)
-//  fetchTable('recipes', {id: ids}, ['name'], next, (recipes) => {
+//  fetchTableMiddleware('recipes', {id: ids}, ['name'], next, (recipes) => {
 //    res.locals.gon.favorite_recipes = res.locals.gon.favorite_recipes.map(f => {
 //      let r = recipes.find(r => r.id == f.recipe_id)
 //      if (r) {
@@ -175,48 +174,48 @@ function fetchFavoriteRecipesRecipe(req, res, next) {
 
 function fetchSuggestions(req, res, next) {
   let attrs = ['user_id', 'recipe_id', 'tag_id', 'score']
-  fetchTable('suggestions', {user_id: req.user.user_id}, attrs, next, (records) => {
+  fetchTableMiddleware('suggestions', {user_id: req.user.user_id}, attrs, next, (records) => {
     res.locals.gon.suggestions = records.filter(r => r.tag_id) // FIXME: Fix the data. tag_id is mandatory...
   })
 }
 
 function fetchTags(req, res, next) {
   let attrs = ['name', 'image_slug', 'user_id']
-  fetchTable('tags', {user_id: req.user.user_id}, attrs, next, (records) => {
+  fetchTableMiddleware('tags', {user_id: req.user.user_id}, attrs, next, (records) => {
     res.locals.gon.tags = records
   })
 }
 
 //function fetchUserRecipeFilters(req, res, next) {
 //  let attrs = ['name', 'image_src', 'user_id']
-//  fetchTable('recipe_filters', {user_id: req.user.user_id}, attrs, next, (records) => {
+//  fetchTableMiddleware('recipe_filters', {user_id: req.user.user_id}, attrs, next, (records) => {
 //    res.locals.gon.recipe_filters = utils.removeDuplicateIds([...(res.locals.gon.recipe_filters||[]), ...records])
 //  })
 //}
 //
 //function fetchPublicRecipeFilters(req, res, next) {
 //  let attrs = ['name', 'image_src', 'user_id']
-//  fetchTable('recipe_filters', {user_id: null}, attrs, next, (records) => {
+//  fetchTableMiddleware('recipe_filters', {user_id: null}, attrs, next, (records) => {
 //    res.locals.gon.recipe_filters = utils.removeDuplicateIds([...(res.locals.gon.recipe_filters||[]), ...records])
 //  })
 //}
 
 function fetchFoods(req, res, next) {
-  fetchTable('foods', {}, ['name'], next, (records) => {
+  fetchTableMiddleware('foods', {}, ['name'], next, (records) => {
     res.locals.gon.foods = utils.sortBy(records, 'name')
   })
 }
 
 function fetchUnits(req, res, next) {
   let attrs = ['name', 'value', 'is_weight', 'is_volume', 'show_fraction']
-  fetchTable('units', {}, attrs, next, (records) => {
+  fetchTableMiddleware('units', {}, attrs, next, (records) => {
     res.locals.gon.units = records
   })
 }
 
 function fetchNotes(req, res, next) {
   let ids = res.locals.gon.recipes.map(r=>r.id)
-  fetchTable('recipe_notes', {recipe_id: ids}, ['item_nb'], next, (records) => {
+  fetchTableMiddleware('recipe_notes', {recipe_id: ids}, ['item_nb'], next, (records) => {
     res.locals.gon.notes = records
   })
 }
@@ -224,7 +223,7 @@ function fetchNotes(req, res, next) {
 //function fetchIngredientSections(req, res, next) {
 //  let ids = res.locals.gon.recipes.map(r=>r.id)
 //  let attrs = ['before_ing_nb', 'name', 'recipe_id']
-//  fetchTable('ingredient_sections', {recipe_id: ids}, attrs, next, (records) => {
+//  fetchTableMiddleware('ingredient_sections', {recipe_id: ids}, attrs, next, (records) => {
 //    res.locals.gon.ingredient_sections = records
 //  })
 //}
@@ -235,7 +234,7 @@ function fetchImages(req, res, next) {
   let ids3 = res.locals.gon.tags.map(t=>(t.image_slug || '').split('.')[0]).filter(x=>x)
   let ids = [...ids1, ...ids2, ...ids3]
   let attrs = ['author', 'source', 'filename', 'is_user_author']
-  fetchTable('images', {id: ids}, attrs, next, (records) => {
+  fetchTableMiddleware('images', {id: ids}, attrs, next, (records) => {
     res.locals.gon.images = records.map(im => {
       let ext = im.filename.substr(im.filename.lastIndexOf('.') + 1);
       im.slug = `${im.id}.${ext}`
@@ -246,7 +245,7 @@ function fetchImages(req, res, next) {
 
 function fetchUserImages(req, res, next) {
   let attrs = ['author', 'source', 'filename', 'is_user_author']
-  fetchTable('images', {user_id: req.user.user_id}, attrs, next, (records) => {
+  fetchTableMiddleware('images', {user_id: req.user.user_id}, attrs, next, (records) => {
     res.locals.gon.images = records
   })
 }
