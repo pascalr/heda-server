@@ -57,7 +57,7 @@ export const initHcu = () => {
     let url = '/create_record/'+record.table_name
     ajax({url: url, type: 'POST', data: {record, fields}, success: (created) => {
       console.log('created', created)
-      window.hcu.addRecord(created, successCallback)
+      window.hcu.addRecord({...created, table_name: record.table_name}, successCallback)
     }, error: (errors) => {
       console.log('ERROR AJAX CREATING...', errors.responseText)
       toastr.error(errors.responseText)
@@ -76,7 +76,7 @@ export const initHcu = () => {
       console.log('fetched', fetched)
       let old = window.hcu.getters[tableName]
       if (old.find(r => r.id == fetched.id)) {throw "Error: Fetched a record already available"}
-      let updated = [...old, {...fetched}]
+      let updated = [...old, {...fetched, table_name: tableName}]
       window.hcu.setters[tableName](updated)
       if (successCallback) {successCallback(fetched)}
     }, error: (errors) => {

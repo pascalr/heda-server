@@ -326,7 +326,7 @@ router.post('/create_record/:table', function(req, res, next) {
       let args = [utils.now(), utils.now(), ...values]
       db.run(query, args, function(err) {
         if (err) { return next(err); }
-        res.json({...obj, id: this.lastID, table_name: safeTable})
+        res.json({...obj, id: this.lastID})
       })
     }
 
