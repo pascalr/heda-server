@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { isTrue } from "./utils"
-import {image_variant_path} from './routes'
+import {image_variant_path, image_slug_variant_path } from './routes'
 
 const ImageCredit = ({imageId, images}) => {
   const image = images.find(i => i.id == imageId)
@@ -25,6 +25,15 @@ const RecipeImage = ({recipe, recipeKinds, images, showCredit, width, height, va
     </div>
     {showCredit ? <ImageCredit {...{imageId, images}} /> : ''}
   </>
+}
+
+export const UserImage = ({user, images}) => {
+
+  const imagePath = user.image_slug ? image_slug_variant_path(user.image_slug, 'square') : "/icons/person-fill.svg"
+
+  return <div style={{width: "fit-content"}}>
+    <img style={{maxWidth: "100vh", height: "auto"}} src={imagePath} width="150" height="150"/>
+  </div>
 }
 
 export const RecipeMediumImage = (props) => {

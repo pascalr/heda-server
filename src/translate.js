@@ -10,6 +10,7 @@ export function tr(id, locale) {
     Delete_recipe: 'Supprimer la recette',
     Ok: 'Ok',
     Language: 'Language',
+    Image_suggestions: "Suggestions d'images",
     My_profile: 'Mon profil',
     Logout: 'Déconnexion',
     New_profile: 'Nouveau profil',

@@ -6,11 +6,9 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Creating tags with react and bootstrap.
 => Hcu
 
-Traduire partout
-Print, Share, Download
-Drag and drop tags
 Mettre des images par défault que l'utilisateur peut choisir pour les utilisateurs et pour les tags.
-ImageSlug
+ImageSlug for tags
+ImageSlug for recipes
 Mettre des suggestions d'images par défault pour les utilisateurs.
 Mettre des suggestions d'images par défault pour les tags.
 Enlever le sexe dans utilisateur après avoir changer que les utilisateurs peuvent mettre une image.
@@ -26,6 +24,7 @@ Faire une page de vente pour l'application.
     Faire une vidéo ou bien ou simulation live de l'éditeur de recette (Créer une recette n'aura jamais été aussi facile)
     Tu ne sais pas quoi manger? HedaCuisine te suggère des recettes selon des thèmes.
 
+Drag and drop tags
 Inspiration pour la page de vente peut-être: https://www.scoop.solar/
 Simplement enlever pretty quantity...
 Scroll search
@@ -41,6 +40,7 @@ Use Docker instead of Herkou build pack
 https://www.docker.com/blog/getting-started-with-docker-using-node-jspart-i/
 Remove user_id from suggestions? Because tags avec user_id, it is redundant there. But it makes my life easier so let's keep it there for now.
 db.safe exception crashes the server...
+Print, Share, Download
 
 Later:
 Periodic task to remove images which are not referenced anywhere. To remove images without a file.
