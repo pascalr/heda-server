@@ -232,7 +232,7 @@ function fetchNotes(req, res, next) {
 function fetchImages(req, res, next) {
   let ids1 = res.locals.gon.recipes.map(r=>r.image_id).filter(x=>x)
   let ids2 = res.locals.gon.recipe_kinds.map(r=>r.image_id).filter(x=>x)
-  let ids3 = res.locals.gon.tags.map(t=>t.image_id).filter(x=>x)
+  let ids3 = res.locals.gon.tags.map(t=>(t.image_slug || '').split('.')[0]).filter(x=>x)
   let ids = [...ids1, ...ids2, ...ids3]
   let attrs = ['author', 'source', 'filename', 'is_user_author']
   fetchTable('images', {id: ids}, attrs, next, (records) => {
