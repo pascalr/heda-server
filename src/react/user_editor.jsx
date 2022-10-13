@@ -32,7 +32,7 @@ const UserEditor = () => {
   const imageId = (user.image_slug || '').split('.')[0]
   const image = images.find(i => i.id == imageId)
 
-  let suggestionsSlugs = ["116.jpg", "126.png"]
+  let suggestionsSlugs = ["125.png", "126.png", "127.png"]
 
   return <>
     <h1>{t('Edit_profile')}</h1>

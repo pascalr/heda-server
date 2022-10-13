@@ -32,7 +32,7 @@ export const UserImage = ({user, images}) => {
   const imagePath = user.image_slug ? image_slug_variant_path(user.image_slug, 'square') : "/icons/person-fill.svg"
 
   return <div style={{width: "fit-content"}}>
-    <img style={{maxWidth: "100vh", height: "auto"}} src={imagePath} width="150" height="150"/>
+    <img style={{maxWidth: "100vh", height: '150px', width: "auto"}} src={imagePath} height="150"/>
   </div>
 }
 

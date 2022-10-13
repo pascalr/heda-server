@@ -6,6 +6,7 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Creating tags with react and bootstrap.
 => Hcu
 
+Afficher les exception correctement. (Par exemple, uploader un svg au lieu d'un jpg ou png)
 Mettre des images par défault que l'utilisateur peut choisir pour les utilisateurs et pour les tags.
 ImageSlug for tags
 ImageSlug for recipes

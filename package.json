@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node ./src/server.js",
-    "images:backup": "rsync -v root@heda-server.internal:/mnt/heda_volume/images/* volume/images/",
+    "images:backup": "rsync -v --recursive root@heda-server.internal:/mnt/heda_volume/images/ volume/images/",
     "db:open": "sqlitebrowser var/db/dev.db",
     "db:backup": "scp root@heda-server.internal:/mnt/heda_volume/prod.db var/db/dev.db",
     "dev": "npm run build:all && node --trace-uncaught -r dotenv/config ./src/server.js",
