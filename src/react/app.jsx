@@ -57,7 +57,7 @@ const SuggestionsNav = ({page, tagSuggestions, categorySuggestions}) => {
   return (<>
     <ul className="nav nav-tabs">
       <li className="nav-item">
-        <LinkToPage page={{...page, page: 9}} className="nav-link" active={page.page == 9}>Mes recettes{tagSuggestions ? ` (${tagSuggestions.length})` : ''}</LinkToPage>
+        <LinkToPage page={{...page, page: 9}} className="nav-link" active={page.page == 9}>{t('My_recipes')}{tagSuggestions ? ` (${tagSuggestions.length})` : ''}</LinkToPage>
       </li>
       <li className="nav-item">
         <LinkToPage page={{...page, page: 2}} className="nav-link" active={page.page == 2}>Autres recettes{categorySuggestions ? ` (${categorySuggestions.length})` : ''}</LinkToPage>
@@ -420,10 +420,10 @@ const TagIndex = ({page, machines, tags, images}) => {
   return (<>
     <div style={{maxWidth: "100vw", width: "800px", margin: "auto", paddingLeft: `${pl}px`, marginLeft: '-0.3em'}}>
       <div style={{width: "fit-content"}}>
-        <TagButton image="/img/cooking.jpg" title="Mes recettes" handleClick={() => changePage({page: PAGE_6})} />
+        <TagButton image="/img/cooking.jpg" title={t('My_recipes')} handleClick={() => changePage({page: PAGE_6})} />
         {machineButtons}
         {buttons}
-        <TagButton image="/icons/gear-gray.svg" title="Paramètres" handleClick={() => changePage({page: PAGE_4})} />
+        <TagButton image="/icons/gear-gray.svg" title={t('Settings')} handleClick={() => changePage({page: PAGE_4})} />
       </div>
     </div>
   </>)
@@ -911,7 +911,7 @@ const SearchBox = ({recipes, recipeKinds, tags, page, friendsRecipes, users, use
     <div style={{transition: 'height 1s'}}>
       <input ref={inputField} type="search" placeholder="Rechercher..." onChange={(e) => {setTerm(e.target.value); setSearch(e.target.value)}} autoComplete="off" style={{width: "100%"}} onKeyDown={onKeyDown} value={search}/>
       <div style={{height: 'calc(100vh - 125px)', overflowY: 'scroll'}}>
-        {matchingUserRecipes.length >= 1 ? <h2 className="h001">Mes recettes</h2> : ''}
+        {matchingUserRecipes.length >= 1 ? <h2 className="h001">{t('My_recipes')}</h2> : ''}
         <ul className="recipe-list">
           {matchingUserRecipes.map((recipe, current) => (
             <RecipeListItem key={recipe.id} {...{recipe, current, tags, recipeKinds, page, selected, users, user, images, selectedRef}}/>
@@ -932,8 +932,8 @@ const MyRecipes = (props) => {
 
   return (<>
     <div className="d-flex gap-20 align-items-center">
-      <h2>Mes recettes</h2>
-      <LinkToPage page={{...props.page, page: 17}} className="btn btn-outline-primary btn-sm">Nouvelle recette</LinkToPage>
+      <h2>{t('My_recipes')}</h2>
+      <LinkToPage page={{...props.page, page: 17}} className="btn btn-outline-primary btn-sm">{t('New_recipe')}</LinkToPage>
     </div>
     <RecipeIndex {...props} loading={false} />
   </>)

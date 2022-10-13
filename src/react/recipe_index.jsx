@@ -6,6 +6,7 @@ import { EditTagsModal } from './modals/edit_tags'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import { LinkToPage } from "./lib"
 import { RecipeThumbnailImage } from "./image"
+import { t } from "../translate"
   
 const updateFavoriteRecipe = (fav, list_id, recipe, user) => {
   if (fav && recipe.user_id == user.id) {
@@ -109,17 +110,17 @@ export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, re
     <EditTagsModal {...{recipe: recipeToEdit, tags, suggestions, showModal, setShowModal}} />
     <br/>
     {toCookList.length == 0 ? null : <>
-      <h3 className="h001">À cuisinner prochainement</h3>
+      <h3 className="h001">{t('To_cook_soon')}</h3>
       <RecipeList list={toCookList} {...listArgs} />
     </>}
     {toTryList.length == 0 ? null : <>
-      <h3 className="h001">À essayer</h3>
+      <h3 className="h001">{t('To_try')}</h3>
       <RecipeList list={toTryList} {...listArgs} />
     </>}
-    <h3 className="h001">Recettes personnelles</h3>
+    <h3 className="h001">{t('Personal_recipes')}</h3>
     {userRecipes.length == 0 ? <p>Aucune recette pour l'instant.</p> : <RecipeList list={userRecipes} {...listArgs} />}
     {otherList.length == 0 ? null : <>
-      <h3 className="h001">Recettes favorites</h3>
+      <h3 className="h001">{t('Favorite_recipes')}</h3>
       <RecipeList list={otherList} {...listArgs} />
     </>}
   </>)
