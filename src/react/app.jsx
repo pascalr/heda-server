@@ -12,8 +12,8 @@ import { findRecipeKindForRecipeName } from "../lib"
 import { RecipeList, RecipeIndex } from './recipe_index'
 import { ajax, isBlank, normalizeSearchText, preloadImage, join, bindSetter, sortBy, capitalize } from "./utils"
 import { getUrlParams } from "../utils"
-import { icon_path, image_variant_path } from './routes'
-import {TextField, AutocompleteInput, TextInput, CollectionSelect, ImageField} from './form'
+import { icon_path, image_variant_path, image_slug_variant_path } from './routes'
+import {TextField, AutocompleteInput, TextInput, CollectionSelect, ImageField, ImageSelector} from './form'
 import {PublicImageField} from './modals/public_image'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import {AddUserTagModal} from './modals/add_user_tag'
@@ -303,8 +303,7 @@ const EditTag = ({page, tags, images}) => {
   const tag = page && page.tagId ? tags.find(f => f.id == page.tagId) : null
   if (!tag) {console.log("Can't edit tag, did not exist."); return '';}
   
-  const image = images.find(i => i.id == tag.image_id)
-  const imagePath = image ? image_variant_path(image, 'medium') : "/img/question-mark.jpg"
+  let suggestions = ['114.jpg', '115.jpg', '116.jpg', '117.jpg', '118.jpg', '119.jpg', '120.jpg', '121.jpg', '122.jpg', '123.jpg']
 
   return (<>
     <h2>{t('Modify_tag')}</h2>
@@ -312,15 +311,12 @@ const EditTag = ({page, tags, images}) => {
     <TextField model={tag} field="name" />
     <br/>
     <h3>{t('Image')}</h3>
-    <div style={{width: "fit-content"}}>
-      <img style={{maxWidth: "100vh", height: "auto"}} src={imagePath} width="150" height="150"/>
-    </div>
-    <ImageField record={tag} field="image_id" image={image} onRemove={() => window.hcu.updateField(tag, 'image_id', null)} maxSizeBytes={2*1000*1000} />
+    <ImageSelector record={tag} field="image_slug" maxSizeBytes={2*1000*1000} suggestions={suggestions} height="120px" defaultImage="/img/question-mark.jpg" />
   </>)
 }
 
 const EditTagButton = ({tag, images}) => {
-  const image = images.find(i => i.id == tag.image_id)
+  const image = images.find(i => i.slug == tag.image_slug)
   const imagePath = image ? image_variant_path(image, 'medium') : "/img/question-mark.jpg"
   const handleClick = () => changePage({page: 3, tagId: tag.id})
   return (
@@ -406,7 +402,7 @@ const TagIndex = ({page, machines, tags, images}) => {
   let pl = winWidth > 800 ? 0 : (winWidth % 200)/2
 
   const buttons = tags.map(tag => {
-    const image = images.find(i => i.id == tag.image_id)
+    const image = images.find(i => i.slug == tag.image_slug)
     const imagePath = image ? image_variant_path(image, 'medium') : "/img/question-mark.jpg"
     return <TagButton key={tag.id} image={imagePath} title={tag.name || "Sans nom"} handleClick={() => changePage({page: PAGE_9, tagId: tag.id})} />
   })

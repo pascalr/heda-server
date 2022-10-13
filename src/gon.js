@@ -181,7 +181,7 @@ function fetchSuggestions(req, res, next) {
 }
 
 function fetchTags(req, res, next) {
-  let attrs = ['name', 'image_id', 'user_id']
+  let attrs = ['name', 'image_slug', 'user_id']
   fetchTable('tags', {user_id: req.user.user_id}, attrs, next, (records) => {
     res.locals.gon.tags = records
   })
@@ -236,7 +236,11 @@ function fetchImages(req, res, next) {
   let ids = [...ids1, ...ids2, ...ids3]
   let attrs = ['author', 'source', 'filename', 'is_user_author']
   fetchTable('images', {id: ids}, attrs, next, (records) => {
-    res.locals.gon.images = records
+    res.locals.gon.images = records.map(im => {
+      let ext = im.filename.substr(im.filename.lastIndexOf('.') + 1);
+      im.slug = `${im.id}.${ext}`
+      return im
+    })
   })
 }
 

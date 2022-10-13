@@ -2,11 +2,10 @@ import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
-import { TextField, RadioField, ImageField, CollectionSelect } from './form'
+import { TextField, RadioField, ImageField, ImageSelector, CollectionSelect } from './form'
 import { initHcu, useHcuState } from "../hcu"
 import { ajax } from "./utils"
 import { image_slug_variant_path } from "./routes"
-import { UserImage } from './image'
 import { t } from "../translate"
 
 const UserEditor = () => {
@@ -28,11 +27,8 @@ const UserEditor = () => {
       }})
     }
   }
-  
-  const imageId = (user.image_slug || '').split('.')[0]
-  const image = images.find(i => i.id == imageId)
 
-  let suggestionsSlugs = ["125.png", "126.png", "127.png"]
+  let suggestions = ["125.png", "126.png", "127.png"]
 
   return <>
     <h1>{t('Edit_profile')}</h1>
@@ -41,22 +37,7 @@ const UserEditor = () => {
     <b>{t('Language')}</b><br/>
     <CollectionSelect model={user} field="locale" options={['en', 'fr']} showOption={e => e} includeBlank={false}/><br/><br/>
     <b>{t('Image')}</b><br/>
-    <div className='d-flex align-items-center'>
-      <UserImage {...{user, images}} />
-      {user.image_slug ? <img className="clickable" src="/icons/x-lg.svg" width="18" height="18" onClick={() => window.hcu.updateField(user, 'image_slug', null)}/> : ''}
-    </div>
-    <ImageField record={user} field="image_slug" image={image} onRemove={() => window.hcu.updateField(user, 'image_slug', null)} maxSizeBytes={2*1000*1000} />
-    {user.image_slug ? '' : <>
-      <br/><br/>
-      <h6>{t('Image_suggestions')}</h6>
-      <div className="d-flex align-items-center">
-        {suggestionsSlugs.map(slug => (
-          <div key={slug} style={{width: "fit-content"}}>
-            <img className="clickable" style={{maxWidth: "100vh", height: "auto"}} src={image_slug_variant_path(slug, "square")} width="80" height="80" onClick={() => window.hcu.updateField(user, 'image_slug', slug)} />
-          </div>
-        ))}
-      </div>
-    </>}
+    <ImageSelector record={user} field="image_slug" maxSizeBytes={2*1000*1000} suggestions={suggestions} height="180px" defaultImage="/icons/person-fill.svg" />
     <hr/>
     <button type="button" className="float-end btn btn-danger" onClick={destroyUser}>{t('Delete')}</button>
     <a href="/" className="btn btn-primary">{t('Ok')}</a>

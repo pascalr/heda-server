@@ -4,6 +4,9 @@ import autocomplete from 'js-autocomplete';
 import { normalizeSearchText, colorToHexString, hexStringToColor, Utils, ajax } from './utils'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 
+import { image_slug_variant_path } from "./routes"
+import { t } from '../translate'
+
 export const TextInput = ({defaultValue, onBlur}) => {
   const [value, setValue] = useState(defaultValue)
 
@@ -125,7 +128,32 @@ const updateModelField = (model, field, value, successCallback=null) => {
     }})
   }
 }
-export const ImageField = ({image, record, field, maxSizeBytes, onRemove, ...props}) => {
+
+export const ImageSelector = ({record, field, maxSizeBytes, suggestions, width, height, defaultImage, ...props}) => {
+  
+  const imagePath = record[field] ? image_slug_variant_path(record[field], 'fixme') : defaultImage
+  
+  return <>
+    <div className='d-flex align-items-center'>
+      <img style={{height, width}} src={imagePath} />
+      <DeleteConfirmButton id={`del-im-${record.id}`} onDeleteConfirm={() => window.hcu.updateField(record, field, null)} message="Je veux enlever cette image?" />
+    </div>
+    <ImageField {...{record, field, maxSizeBytes}} />
+    {record[field] || !suggestions || suggestions.length == 0 ? '' : <>
+      <br/><br/>
+      <h6>{t('Image_suggestions')}:</h6>
+      <div className="d-flex align-items-center flex-wrap">
+        {suggestions.map(slug => (
+          <div key={slug} style={{width: "fit-content"}}>
+            <img className="clickable" style={{height: "100px"}} src={image_slug_variant_path(slug, "square")} height="80" onClick={() => window.hcu.updateField(record, field, slug)} />
+          </div>
+        ))}
+      </div>
+    </>}
+  </>
+}
+export const ImageField = ({record, field, maxSizeBytes, ...props}) => {
+  if (record[field]) {return ''} // Only show the field when not set
   const handleChange = (e) => {
     console.log('File selected in FileField.')
     if (e.target.files.length > 1) {
@@ -151,18 +179,7 @@ export const ImageField = ({image, record, field, maxSizeBytes, onRemove, ...pro
       window.hcu.changeField(record, field, val)
     }})
   }
-  if (!image) {
-    return (<>
-      <input type="file" name='file' {...props} onChange={handleChange} />
-    </>)
-  } else {
-    return (
-      <span>
-        {image.filename}
-        <DeleteConfirmButton id={`del-im-${image.id}`} onDeleteConfirm={onRemove} message="Je veux enlever cette image?" />
-      </span>
-    )
-  }
+  return <input type="file" name='file' {...props} onChange={handleChange} />
 }
 export const FileField = ({model, field, maxSizeBytes, onRemove, onImageCreated, ...props}) => {
   let id = `${model.table_name}_${field}`

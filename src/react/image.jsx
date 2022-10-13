@@ -27,15 +27,6 @@ const RecipeImage = ({recipe, recipeKinds, images, showCredit, width, height, va
   </>
 }
 
-export const UserImage = ({user, images}) => {
-
-  const imagePath = user.image_slug ? image_slug_variant_path(user.image_slug, 'square') : "/icons/person-fill.svg"
-
-  return <div style={{width: "fit-content"}}>
-    <img style={{maxWidth: "100vh", height: '150px', width: "auto"}} src={imagePath} height="150"/>
-  </div>
-}
-
 export const RecipeMediumImage = (props) => {
   return <RecipeImage {...{...props, width: 452, height: 304}} />
 }
