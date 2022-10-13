@@ -23,6 +23,7 @@ import SQLiteStoreModule from 'connect-sqlite3'
 const SQLiteStore = SQLiteStoreModule(session);
 
 import router from './router.js';
+import { getUrlParams } from './utils.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -51,6 +52,17 @@ app.use(express.static(path.join(__dirname, '../public')));
 // This will be called for every query
 app.use((req, res, next) => {
   //console.log('Time:', Date.now())
+  if (!req.query.locale && req.headers.referer) {
+    // Try to set the same locale as the url
+    let locale = getUrlParams(req.headers.referer).locale || 'en'
+    if (locale) {
+      if (req.originalUrl.indexOf('?') == -1) {
+        return res.redirect(req.originalUrl+'?locale='+locale)
+      } else {
+        return res.redirect(req.originalUrl+'&locale='+locale)
+      }
+    }
+  }
   global.locale = req.query.locale || 'en'
   next()
 })
