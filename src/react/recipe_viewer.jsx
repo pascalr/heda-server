@@ -8,6 +8,7 @@ import { Utils } from "./recipe_utils"
 import { RecipeMediumImage } from "./image"
 import { EditTagsModal } from './modals/edit_tags'
 import { removeRecipe } from './recipe_index'
+import { t } from "../translate"
 
 const MixIngredients = ({mix}) => {
   if (!mix) {return ''}
@@ -150,31 +151,31 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
             <span className="dropdown" style={{padding: "0 1rem"}}>
               <img className="clickable" data-bs-toggle="dropdown" src="/icons/list.svg"/>
               <div className="dropdown-menu">
-                <button type="button" className="dropdown-item" onClick={() => setShowModal(true)}>Tagger</button>
+                <button type="button" className="dropdown-item" onClick={() => setShowModal(true)}>{t('Tag')}</button>
                 {user.id != recipe.user_id ? '' : <>
-                  <LinkToPage page={{...page, page: 16}} className="dropdown-item">Modifier</LinkToPage>
-                  {recipe.user_id == user.id ? <li><button type="button" className="dropdown-item" onClick={() => {removeRecipe(recipe); window.hcu.changePage({page: 6})}}>Supprimer la recette</button></li> : ''}
+                  <LinkToPage page={{...page, page: 16}} className="dropdown-item">{t('Edit')}</LinkToPage>
+                  {recipe.user_id == user.id ? <li><button type="button" className="dropdown-item" onClick={() => {removeRecipe(recipe); window.hcu.changePage({page: 6})}}>{t('Delete_recipe')}</button></li> : ''}
                   </>}
               </div>
             </span>
           </div>
           <div style={{marginTop: '-0.8em', marginBottom: '1.2em'}}>
-            <span style={{color: 'gray'}}>par {userName}</span>
+            <span style={{color: 'gray'}}>{t('by')} {userName}</span>
           </div>
           <div>
-            <b>Préparation (minutes): </b>
+            <b>{t('Preparation')} ({t('min')}): </b>
             <span style={{color: 'gray'}}>{recipe.preparation_time}</span>
           </div>
           <div>
-            <b>Cuisson (minutes): </b>
+            <b>{t('Cooking')} ({t('min')}): </b>
             <span style={{color: 'gray'}}>{recipe.cooking_time}</span>
           </div>
           <div>
-            <b>Total (minutes): </b>
+            <b>{t('Total')} ({t('min')}): </b>
             <span style={{color: 'gray'}}>{recipe.total_time}</span>
           </div>
           <div>
-            <b>Portions: </b>
+            <b>{t('Servings')}: </b>
             <span style={{color: 'gray'}}>{recipe.raw_servings}</span>
           </div>
           <div className="d-flex" style={{gap: '5px', marginTop: '10px'}}>
@@ -205,10 +206,10 @@ export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, mach
       </div>
       <div className="recipe-body">
 
-        <h2 style={{flexGrow: '1'}}>Ingrédients</h2>
+        <h2 style={{flexGrow: '1'}}>{t('Ingredients')}</h2>
         {IngredientList}
       
-        <h2>Instructions</h2>
+        <h2>{t('Instructions')}</h2>
         <RecipeTiptap recipe={recipe} editable={false} />
       </div>
       <br/><br/><br/><br/><br/><br/><br/><br/>

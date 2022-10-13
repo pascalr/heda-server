@@ -13,6 +13,7 @@ import {PasteIngredientsButton} from './modals/paste_ingredients'
 import {EditMix} from './app'
 import { RecipeMediumImage } from "./image"
 import { RecipeUtils } from "./recipe_utils"
+import { t } from "../translate"
 
 const InstructionsShortcuts = props => (
   <>
@@ -243,7 +244,7 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
   //  <button type="button" className="btn btn-primary" onClick={createMix}>Ajouter</button>
   //</>)
   let mixEditor = mix ? <>
-    <h2>Commandes</h2>
+    <h2>{t('Commands')}</h2>
     <EditMix {...{page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, recipes}} />
   </> : null
 
@@ -312,25 +313,25 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
             </div>
           </div>
           <div>
-            <b>Préparation (minutes): </b>
+            <b>{t('Preparation')} ({t('min')}): </b>
             <span style={{color: 'gray'}}>
               <TextField model={recipe} field="preparation_time" className="editable-input" />
             </span>
           </div>
           <div>
-            <b>Cuisson (minutes): </b>
+            <b>{t('Cooking')} ({t('min')}): </b>
             <span style={{color: 'gray'}}>
               <TextField model={recipe} field="cooking_time" className="editable-input" />
             </span>
           </div>
           <div>
-            <b>Total (minutes): </b>
+            <b>{t('Total')} ({t('min')}): </b>
             <span style={{color: 'gray'}}>
               <TextField model={recipe} field="total_time" className="editable-input" />
             </span>
           </div>
           <div>
-            <b>Portions: </b>
+            <b>{t('Servings')}: </b>
             <span style={{color: 'gray'}}>
               <TextField model={recipe} field="raw_servings" className="editable-input" />
             </span>
@@ -340,12 +341,12 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
       <div className="recipe-body">
         {mixEditor}
         <div style={{display: 'flex', alignItems: 'baseline'}}>
-          <h2 style={{flexGrow: '1'}}>Ingrédients</h2>
+          <h2 style={{flexGrow: '1'}}>{t('Ingredients')}</h2>
           <div className="dropstart" style={{padding: "0 1em"}}>
             <img data-bs-toggle="dropdown" style={{cursor: "pointer"}} src="/icons/list.svg"/>
             <div className="dropdown-menu">
               <button className="dropdown-item" type="button" onClick={addIngredientSection}>
-                Ajouter une section
+                {t('Add_section')}
               </button>
             </div>
           </div>
@@ -353,7 +354,7 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
         {IngredientList}
         <PasteIngredientsButton recipe={recipe} />
       
-        <h2>Instructions</h2>
+        <h2>{t('Instructions')}</h2>
         <RecipeTiptap recipe={recipe} editable={true} ingredients={ingredients} />
         {editable ? <InstructionsShortcuts/> : ''}
       </div>

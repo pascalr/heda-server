@@ -31,10 +31,10 @@ const removeFavoriteRecipe = (fav, recipe) => {
 
 const RecipeListItemMenu = ({fav, recipe, editUserRecipe, user}) => {
 
-  let toCook = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 1, recipe, user)}>À cuisiner</button>
-  let toTry = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 2, recipe, user)}>À essayer</button>
-  let toNotCook = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 0, recipe, user)}>Ne plus cuisiner</button>
-  let toNotTry = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 0, recipe, user)}>Ne plus essayer</button>
+  let toCook = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 1, recipe, user)}>{t('To_cook')}</button>
+  let toTry = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 2, recipe, user)}>{t('To_try')}</button>
+  let toNotCook = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 0, recipe, user)}>{t('Stop_cooking_soon')}</button>
+  let toNotTry = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 0, recipe, user)}>{t('Stop_trying_recipe')}</button>
 
   return <>
     <span className="dropdown m-auto">
@@ -44,9 +44,9 @@ const RecipeListItemMenu = ({fav, recipe, editUserRecipe, user}) => {
       <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
         <li>{fav && fav.list_id == 1 ? toNotCook : toCook }</li>
         <li>{fav && fav.list_id == 2 ? toNotTry : toTry }</li>
-        <li><button type="button" className="dropdown-item" onClick={() => editUserRecipe(recipe)}>Tagger</button></li>
-        {fav ? <li><button type="button" className="dropdown-item" onClick={() => removeFavoriteRecipe(fav, recipe)}>Retirer de mes favoris</button></li> : ''}
-        {recipe.user_id == user.id ? <li><button type="button" className="dropdown-item" onClick={() => {removeRecipe(recipe)}}>Supprimer la recette</button></li> : ''}
+        <li><button type="button" className="dropdown-item" onClick={() => editUserRecipe(recipe)}>{t('Tag')}</button></li>
+        {fav ? <li><button type="button" className="dropdown-item" onClick={() => removeFavoriteRecipe(fav, recipe)}>{t('Remove_from_favorites')}</button></li> : ''}
+        {recipe.user_id == user.id ? <li><button type="button" className="dropdown-item" onClick={() => {removeRecipe(recipe)}}>{t('Delete_recipe')}</button></li> : ''}
       </ul>
     </span>
   </>

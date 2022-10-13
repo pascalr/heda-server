@@ -307,11 +307,11 @@ const EditTag = ({page, tags, images}) => {
   const imagePath = image ? image_variant_path(image, 'medium') : "/img/question-mark.jpg"
 
   return (<>
-    <h2>Modifier le tag</h2>
-    <h3>Titre</h3>
+    <h2>{t('Modify_tag')}</h2>
+    <h3>{t('Name')}</h3>
     <TextField model={tag} field="name" />
     <br/>
-    <h3>Image</h3>
+    <h3>{t('Image')}</h3>
     <div style={{width: "fit-content"}}>
       <img style={{maxWidth: "100vh", height: "auto"}} src={imagePath} width="150" height="150"/>
     </div>
@@ -374,8 +374,8 @@ const EditTags = ({tags, images, page}) => {
 
   return (<>
     <div className="d-flex gap-15 align-items-center">
-      <h2>Tags</h2>
-      <button type="button" className="btn btn-outline-primary btn-sm" onClick={createTag}>Ajouter un tag</button>
+      <h2>{t('Tags')}</h2>
+      <button type="button" className="btn btn-outline-primary btn-sm" onClick={createTag}>{t('Create_tag')}</button>
     </div>
     <DragDropContext onDragEnd={handleDrop}>
       <Droppable droppableId="user-tags-container">
@@ -853,7 +853,7 @@ const RecipeListItem = ({recipe, current, tags, recipeKinds, page, selected, use
         <div className="d-flex align-items-center">
           <RecipeThumbnailImage {...{recipe, recipeKinds, images}} />
           <div style={{marginRight: '0.5em'}}></div>
-          {userName ? <div><div>{recipe.name}</div><div className="h002">de {userName}</div></div> : recipe.name}
+          {userName ? <div><div>{recipe.name}</div><div className="h002">{t('by_2')} {userName}</div></div> : recipe.name}
         </div>
       </LinkToPage>
     </li>
@@ -917,7 +917,7 @@ const SearchBox = ({recipes, recipeKinds, tags, page, friendsRecipes, users, use
             <RecipeListItem key={recipe.id} {...{recipe, current, tags, recipeKinds, page, selected, users, user, images, selectedRef}}/>
           ))}
         </ul>
-        {matchingFriendsRecipes.length >= 1 ? <h2 className="h001">Suggestions</h2> : ''}
+        {matchingFriendsRecipes.length >= 1 ? <h2 className="h001">{t('Suggestions')}</h2> : ''}
         <ul className="recipe-list">
           {matchingFriendsRecipes.map((recipe, current) => (
             <RecipeListItem key={recipe.id} {...{recipe, current: current+matchingUserRecipes.length, tags, recipeKinds, page, selected, users, user, images, selectedRef}}/>
@@ -971,15 +971,15 @@ const NewRecipe = ({page, recipeKinds}) => {
   }
 
   return <>
-    <h1>Nouvelle recette</h1>
+    <h1>{t('New_recipe')}</h1>
 
     <form onSubmit={handleSubmit}>
-      <b>Nom:</b><br/>
+      <b>{t('Name')}:</b><br/>
       <input name="name" value={name} onChange={(e) => {setName(e.target.value)}} />
       <br/><br/>
-      <b>Catégorie:</b><br/>
-      {recipeKind ? recipeKindPreview : <p>Aucune catégorie correspondante</p>}
-      <button type="submit" className="btn btn-primary">Créer</button>
+      <b>{t('Category')}:</b><br/>
+      {recipeKind ? recipeKindPreview : <p>{t('No_matching_category_found')}</p>}
+      <button type="submit" className="btn btn-primary">{t('Create')}</button>
     </form>
   </>
 }
@@ -990,10 +990,10 @@ const App = () => {
 
   const [page, setPage] = useState(getUrlParams())
   if (!window.hcu) {initHcu()}
-  window.hcu.changePage = (newPage) => {
-    let locale = newPage.locale || getUrlParams(window.location.href).locale
-    window.locale = locale
-    let updated = {...newPage, locale}
+  window.hcu.changePage = (updated) => {
+    //let locale = newPage.locale || getUrlParams(window.location.href).locale
+    //window.locale = locale
+    //let updated = {...newPage, locale}
     setPage(updated)
     setIsSearching(false)
     window.history.pushState(updated, '', '?'+new URLSearchParams(updated).toString())
@@ -1065,7 +1065,7 @@ const App = () => {
     [PAGE_13]: <ShowMix {...{page, recipes, favoriteRecipes, machines, mixes, machineFoods}} />,
     [PAGE_14]: <EditMix {...{page, recipes, favoriteRecipes, machines, mixes, machineFoods}} />,
     [PAGE_15]: <ShowRecipe {...{page, recipes, mixes, favoriteRecipes, recipeKinds, images, user, users, suggestions, tags}} />,
-    [PAGE_16]: <EditRecipe {...{page, recipes, mixes, user, users, recipeKinds, images}} />,
+    [PAGE_16]: <EditRecipe {...{page, recipes, mixes, user, users, recipeKinds, images, machineFoods, favoriteRecipes}} />,
     [PAGE_17]: <NewRecipe {...{page, recipeKinds}} />
   }
 
