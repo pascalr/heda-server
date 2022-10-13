@@ -43,7 +43,7 @@ export function fetchTable(tableName, conditions, attributes, next, callback) {
 
 
 function fetchAccountUsers(req, res, next) {
-  fetchTable('users', {account_id: req.user.account_id}, ['name', 'gender'], next, (records) => {
+  fetchTable('users', {account_id: req.user.account_id}, ['name', 'gender', 'image_slug'], next, (records) => {
     res.locals.users = records
     if (res.locals.gon) {res.locals.gon.users = records}
   })
@@ -240,6 +240,13 @@ function fetchImages(req, res, next) {
   })
 }
 
+function fetchUserImages(req, res, next) {
+  let attrs = ['author', 'source', 'filename', 'is_user_author']
+  fetchTable('images', {user_id: req.user.user_id}, attrs, next, (records) => {
+    res.locals.gon.images = records
+  })
+}
+
 //  create_table "active_storage_attachments", force: :cascade do |t|
 //    t.string "name", limit: 255, null: false
 //    t.string "record_type", limit: 255, null: false
@@ -276,6 +283,6 @@ export function initGon(req, res, next) {
 // WARNING: LIST ORDER IS IMPORTANT
 const fetchAll = [initGon, fetchAccountUsers, fetchRecipes, fetchFavoriteRecipes, fetchFavoriteRecipesRecipe, fetchRecipeKinds, fetchMixes, fetchMachineUsers, fetchMachines, fetchContainerFormats, fetchContainerQuantities, fetchContainers, fetchSuggestions, fetchTags, fetchFoods, fetchUnits, fetchNotes, fetchImages, fetchMachineFoods, fetchFriendsRecipes]
 
-const gon = {fetchAll, fetchAccountUsers};
+const gon = {fetchAll, fetchAccountUsers, fetchUserImages};
 export default gon;
 //module.exports = gon;

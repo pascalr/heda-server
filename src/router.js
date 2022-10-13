@@ -35,36 +35,36 @@ router.get('/new_user', function(req, res, next) {
 
 router.post('/upload_image', function(req, res, next) {
 
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return res.status(400).send('No files were uploaded.');
-  }
-
-  let file = req.files['file'];
-  let ext = file.name.substr(file.name.lastIndexOf('.') + 1);
-  if (!['jpg'].includes(ext)) {
-    return res.status(500).send("Image format not supported. Expected jpg. Was " + ext);
-  }
-
-  let image = {name: file.name, user_id: req.user.user_id}
-
-  let recordTable = req.body.record_table
-  let recordId = req.body.record_id
-  let recordField = req.body.record_field
-
-  // TODO: Do a transaction like explained here: https://stackoverflow.com/questions/53299322/transactions-in-node-sqlite3
-  // I've already copied the code inside db.js
-  // But I can't use runBatchAsync because I need the lastId in the second statement
-  // But I could simply use runAsync
-  // It's just too complicated for now
-  //let statements = [
-  //  ['INSERT INTO images (filename, user_id, created_at, updated_at) VALUES (?, ?, ?, ?)',
-  //    [image.name, image.user_id, utils.now(), utils.now()]
-  //  ],
-  //];
-
   try {
+    if (!req.files || Object.keys(req.files).length === 0) {
+      return res.status(400).send('No files were uploaded.');
+    }
+
+    let file = req.files['file'];
+    let ext = file.name.substr(file.name.lastIndexOf('.') + 1);
+    if (!['jpg', 'jpeg', 'png'].includes(ext)) {
+      return res.status(500).send("Image format not supported. Expected jpg, jpeg or png. Was " + ext);
+    }
+
+    let image = {filename: file.name, user_id: req.user.user_id}
+
+    let recordTable = req.body.record_table
+    let recordId = req.body.record_id
+    let recordField = req.body.record_field
+
+    // TODO: Do a transaction like explained here: https://stackoverflow.com/questions/53299322/transactions-in-node-sqlite3
+    // I've already copied the code inside db.js
+    // But I can't use runBatchAsync because I need the lastId in the second statement
+    // But I could simply use runAsync
+    // It's just too complicated for now
+    //let statements = [
+    //  ['INSERT INTO images (filename, user_id, created_at, updated_at) VALUES (?, ?, ?, ?)',
+    //    [image.name, image.user_id, utils.now(), utils.now()]
+    //  ],
+    //];
+
     db.run('INSERT INTO images (filename, user_id, created_at, updated_at) VALUES (?, ?, ?, ?)', [
-      image.name, image.user_id, utils.now(), utils.now() 
+      image.filename, image.user_id, utils.now(), utils.now() 
     ], function(err) {
       if (err) { return next(err); }
       image.id = this.lastID;
@@ -72,17 +72,25 @@ router.post('/upload_image', function(req, res, next) {
       file.mv(path.join(IMAGE_FOLDER, image.id + '.' + ext), function(err) {
         if (err) { return res.status(500).send(err); }
 
-        let q = "UPDATE "+db.safe(recordTable, ['recipes', 'tags'])+" SET "+db.safe(recordField, 'image_id')+" = ?, updated_at = ? WHERE id = ? AND user_id = ?"
-        db.run(q, [image.id, utils.now(), recordId, req.user.user_id], function(err) {
+        let idOrSlug = recordField == 'image_id' ? image.id : `${image.id}.${ext}`
+        console.log('recordField', recordField)
+        console.log('idOrSlug', idOrSlug)
+        let q = "UPDATE "+db.safe(recordTable, ['recipes', 'tags', 'users'])+" SET "+db.safe(recordField, ['image_id', 'image_slug'])+" = ?, updated_at = ? WHERE id = ?"
+        let args = []
+        if (recordTable == 'users') {
+          args = [idOrSlug, utils.now(), req.user.user_id]
+        } else {
+          q += " AND user_id = ?"
+          args = [isOrSlug, utils.now(), recordId, req.user.user_id]
+        }
+        db.run(q, args, function(err) {
           if (err) { return next(err); }
 
           res.json({...image, table_name: 'images'})
         })
       });
     });
-  } catch(err) {
-    throw new Error(err)
-  }
+  } catch(err) { return res.status(500).send(err) }
 
 });
 
@@ -147,7 +155,7 @@ function setProfile(req, res, next) {
   next()
 }
 
-router.get('/edit_profile', initGon, gon.fetchAccountUsers, setProfile, function(req, res, next) {
+router.get('/edit_profile', initGon, gon.fetchAccountUsers, gon.fetchUserImages, setProfile, function(req, res, next) {
   res.render('edit_profile');
 });
 
@@ -240,16 +248,30 @@ router.post('/reset', function (req, res, next) {
   });
 });
 
+router.get('/imgs/:variant/:slug', function(req, res, next) {
+
+  // TODO: Send only variants, not original
+  
+  let ext = req.params.slug.substr(req.params.slug.lastIndexOf('.') + 1);
+  if (!['jpg', 'jpeg', 'png'].includes(ext)) {
+    return res.status(500).send("Image format not supported. Expected jpg, jpeg or png. Was " + ext);
+  }
+
+  var fileName = parseInt(req.params.slug.split('.')[0]).toString()+'.'+ext;
+  res.sendFile(fileName, {root: IMAGE_FOLDER}, function (err) {
+    if (err) { return next(err); }
+    console.log('Sent:', fileName);
+  });
+});
+
+// Deprecated. Use slug instead.
 router.get('/images/:id/:variant', function(req, res, next) {
 
   // TODO: Send only variants, not original
   var fileName = parseInt(req.params.id).toString()+'.jpg';
   res.sendFile(fileName, {root: IMAGE_FOLDER}, function (err) {
-      if (err) {
-          next(err);
-      } else {
-          console.log('Sent:', fileName);
-      }
+    if (err) { return next(err); }
+    console.log('Sent:', fileName);
   });
 });
 
@@ -265,7 +287,7 @@ router.get('/images/:id/:variant', function(req, res, next) {
 
 const ALLOWED_COLUMNS_MOD = {
   'recipes': ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id', 'ingredients'],
-  'users': ['name', 'gender'],
+  'users': ['name', 'gender', 'image_slug'],
   'favorite_recipes': ['list_id', 'recipe_id'],
   'tags': ['name', 'image_id', 'position'],
   'suggestions': ['tag_id', 'recipe_id']
@@ -355,9 +377,9 @@ router.patch('/update_field/:table/:id', function(req, res, next) {
     let args = []
     if (table != 'users') {
       query += ' AND user_id = ?'
-      args = [value, utils.now(), req.user.user_id]
-    } else {
       args = [value, utils.now(), id, req.user.user_id]
+    } else {
+      args = [value, utils.now(), req.user.user_id]
     }
     db.run(query, args, function(err) {
       if (err) { return next(err); }

@@ -146,7 +146,9 @@ export const ImageField = ({image, record, field, maxSizeBytes, onRemove, ...pro
     }
     ajax({url: '/upload_image', type: 'POST', data, success: (image) => {
       window.hcu.addRecord(image)
-      window.hcu.changeField(record, field, image.id)
+      let ext = image.filename.substr(image.filename.lastIndexOf('.') + 1);
+      let val = field == 'image_id' ? image.id : `${image.id}.${ext}`
+      window.hcu.changeField(record, field, val)
     }})
   }
   if (!image) {

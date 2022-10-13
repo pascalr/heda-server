@@ -6,6 +6,8 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Creating tags with react and bootstrap.
 => Hcu
 
+db.safe exception crashes the server...
+ImageSlug
 Les utilisateurs peuvent mettre une image pour leur utilisateur. ( Faire recette avant... )
 Mettre des suggestions d'images par défault pour les utilisateurs.
 Mettre des suggestions d'images par défault pour les tags.
@@ -50,6 +52,7 @@ How to handle orphans? Destroy FavoriteRecipe when Recipe is destroyed? Or once 
 Use fetch instead of jquery.ajax
 
 Later (other users):
+Faire des tests.
 Ajouter un moyen de me contacter
 Create default user for account
 Pouvoir modifier le mot de passe des utilisateurs: https://stackoverflow.com/questions/20277020/how-to-reset-change-password-in-node-js-with-passport-js
@@ -90,3 +93,18 @@ January 2006 - August 2016
 * Construct farm buildings entirely
 * Drive tractors and operate machinery
             
+
+
+
+file:///home/pascalr/heda-server/src/db.js:44
+  if (!allowed.includes(s)) {throw "Error: Db value not allowed ("+s+")."}
+                             ^
+Error: Db value not allowed (users).
+Thrown at:
+    at sqlite3.Database.safe (file:///home/pascalr/heda-server/src/db.js:44:30)
+    at file:///home/pascalr/heda-server/src/router.js:76:30
+    at /home/pascalr/heda-server/node_modules/express-fileupload/lib/utilities.js:64:52
+    at /home/pascalr/heda-server/node_modules/express-fileupload/lib/utilities.js:220:5
+    at emit (node:events:520:28)
+    at emitCloseNT (node:internal/streams/destroy:138:10)
+    at processTicksAndRejections (node:internal/process/task_queues:82:21)

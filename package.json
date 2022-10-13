@@ -8,7 +8,7 @@
     "images:backup": "rsync -v root@heda-server.internal:/mnt/heda_volume/images/* volume/images/",
     "db:open": "sqlitebrowser var/db/dev.db",
     "db:backup": "scp root@heda-server.internal:/mnt/heda_volume/prod.db var/db/dev.db",
-    "dev": "npm run build:all && node -r dotenv/config ./src/server.js",
+    "dev": "npm run build:all && node --trace-uncaught -r dotenv/config ./src/server.js",
     "build:js": "npm run build && npm run build:user_editor",
     "build:all": "npm run build:css && npm run build:js",
     "build": "esbuild src/react/app.jsx --bundle --sourcemap --outfile=public/build/app.js",

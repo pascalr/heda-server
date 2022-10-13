@@ -20,6 +20,10 @@ export const icon_path = (arg) => {
   return `/icons/${arg}`
 }
 
+export const image_slug_variant_path = (imageSlug, variant) => {
+  return `/imgs/${variant}/${imageSlug}`
+}
+
 export const image_variant_path = (image, variant) => {
   //if (!image || !variant || !image.id) {console.log(`ERROR invalid image_variant_path variant=${variant} image=`, image); return null}
   if (!image || !image.id) {console.log(`ERROR invalid image_variant_path variant=${variant} image=`, image); return null}
