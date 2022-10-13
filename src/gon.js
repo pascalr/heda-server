@@ -27,9 +27,7 @@ export function fetchTable(tableName, conditions, attributes, callback) {
   console.log('values', a)
   db.all(s, a, function(err, rows) {
     if (err) { return callback(null, err); }
-
-    let rowsWithTableName = rows.map(o => {o.table_name = tableName; return o;})
-    callback(rowsWithTableName, null)
+    callback(rows, null)
   })
 }
 

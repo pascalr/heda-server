@@ -3,13 +3,12 @@ import toastr from 'toastr'
 
 import { ajax } from "./react/utils"
 
-//window.hcu.update(recipe)
-//window.hcu.updateField(recipe)
 export const useHcuState = (initial, options, callback=null) => {
   if (!Array.isArray(initial)) { throw "Error: useHcuState requires an array as input" }
-  const [state, setState] = useState(initial)
-
+  
   const {tableName} = options;
+
+  const [state, setState] = useState(initial.map(o => ({...o, table_name: tableName})))
 
   useEffect(() => {
     window.hcu.setters[tableName] = setState

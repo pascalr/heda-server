@@ -6,6 +6,7 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Creating tags with react and bootstrap.
 => Hcu
 
+Add table_name to every new object fetch or upated inside hcu, not on the server.
 The mapping of table_name should be done on the client side, with useHcuState, instead of on the server side.
 Mettre des images par défault que l'utilisateur peut choisir pour les utilisateurs et pour les tags.
 ImageSlug for recipes
