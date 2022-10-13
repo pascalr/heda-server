@@ -81,7 +81,7 @@ router.post('/upload_image', function(req, res, next) {
           args = [idOrSlug, utils.now(), req.user.user_id]
         } else {
           q += " AND user_id = ?"
-          args = [isOrSlug, utils.now(), recordId, req.user.user_id]
+          args = [idOrSlug, utils.now(), recordId, req.user.user_id]
         }
         db.run(q, args, function(err) {
           if (err) { return next(err); }

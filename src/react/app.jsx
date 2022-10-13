@@ -1075,6 +1075,8 @@ const App = () => {
     moveBtn = <img className="clickable" src={icon_path("arrow-up-square-white.svg")} width="32" style={{paddingLeft: "0.5em"}} onClick={goUp} />
   }
 
+  let otherProfiles = users.filter(u => u.id != user.id)
+
   // Pour recevoir des invités => (page suivantes, quelles restrictions => véganes)
   // Theme light:
   //   Background color: #e3f2fd
@@ -1098,16 +1100,18 @@ const App = () => {
                 <button className="dropdown-item" type="submit">Logout</button>
                 <input type="hidden" name="_csrf" value={_csrf}/>
               </form>
-              <hr className="dropdown-divider"/>
-              <h6 className="dropdown-header">Changer d'utilisateur</h6>
-              { users.map((usr) => { 
-                if (usr.id == user.id) {return;}
-                return <form key={usr.id} action="/change_user" method="post">
-                  <button className="dropdown-item" type="submit">{ usr.name }</button>
-                  <input type="hidden" name="user_id" value={usr.id}/>
-                  <input type="hidden" name="_csrf" value={_csrf}/>
-                </form>
-              })}
+              <a href="/new_user" className="dropdown-item">Nouveau profil</a>
+              { otherProfiles.length == 0 ? '' : <>
+                <hr className="dropdown-divider"/>
+                <h6 className="dropdown-header">Changer d'utilisateur</h6>
+                { otherProfiles.map(usr => { 
+                  return <form key={usr.id} action="/change_user" method="post">
+                    <button className="dropdown-item" type="submit">{ usr.name }</button>
+                    <input type="hidden" name="user_id" value={usr.id}/>
+                    <input type="hidden" name="_csrf" value={_csrf}/>
+                  </form>
+                })}
+              </>}
             </div>
           </div>
         </div>

@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Modal from 'react-bootstrap/Modal'
 
+import { LinkToPage } from "../lib"
+
 export const EditTagsModal = ({showModal, setShowModal, recipe, tags, suggestions}) => {
 
   if (recipe == null) {return ''}
@@ -33,7 +35,9 @@ export const EditTagsModal = ({showModal, setShowModal, recipe, tags, suggestion
           {unusedTags.map(tag => {
             return <span key={tag.id} className="btn btn-secondary m-1" onClick={() => addTag(tag)}>+ {tag.name}</span>
           })}
-          <br/>
+          <br/><br/><br/>
+          <p className="fs-09"><i>Note: Vous pouvez créer de nouveaux tags dans vos <LinkToPage page={{page: 4}}>paramètres</LinkToPage>.</i></p>
+        
         </Modal.Body>
       </Modal.Dialog>
     </Modal>

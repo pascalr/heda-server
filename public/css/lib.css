@@ -99,6 +99,14 @@ img {
   color: gray;
 }
 
+/* font sizes */
+.fs-08 { font-size: 0.8em; }
+.fsr-08 { font-size: 0.8rem; }
+.fs-09 { font-size: 0.9em; }
+.fsr-09 { font-size: 0.9rem; }
+.fs-12 { font-size: 1.2em; }
+.fsr-12 { font-size: 1.2rem; }
+
 /* Relative keeps the position of the element in the page, but it takes up space. */
 /* Absolute takes no space, but it needs to have a parent which is positioned. */
 /* By combining those two, it works. */
