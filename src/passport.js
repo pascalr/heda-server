@@ -38,7 +38,7 @@ passport.use(new LocalStrategy(function verify(email, password, cb) {
  */
 passport.serializeUser(function(user, cb) {
   process.nextTick(function() {
-    cb(null, { account_id: user.account_id, email: user.email });
+    cb(null, { account_id: user.account_id, email: user.email, locale: user.locale });
   });
 });
 

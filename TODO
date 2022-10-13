@@ -108,3 +108,24 @@ Thrown at:
     at emit (node:events:520:28)
     at emitCloseNT (node:internal/streams/destroy:138:10)
     at processTicksAndRejections (node:internal/process/task_queues:82:21)
+
+// This will be called for every query
+// Sets the locale in the global variable.
+// Redirects to add locale to query string if missing and found in referer.
+app.use((req, res, next) => {
+  //console.log('Time:', Date.now())
+  if (!req.query.locale && req.headers.referer) {
+    // Try to set the same locale as the url
+    let locale = getUrlParams(req.headers.referer).locale || 'en'
+    if (locale) {
+      if (req.originalUrl.indexOf('?') == -1) {
+        return res.redirect(req.originalUrl+'?locale='+locale)
+      } else {
+        return res.redirect(req.originalUrl+'&locale='+locale)
+      }
+    }
+  }
+  global.locale = req.query.locale || 'en'
+  next()
+})
+window.locale = getUrlParams(window.location.href).locale

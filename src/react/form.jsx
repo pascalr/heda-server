@@ -293,7 +293,7 @@ export const CollectionSelect = ({model, field, options, showOption, includeBlan
     if (onChange) {
       onChange(val)
     } else {
-      updateModelField(model, field, val, () => setValue(val))
+      window.hcu.updateField(model, field, val, () => setValue(val))
     }
   }
 

@@ -43,7 +43,7 @@ export function fetchTable(tableName, conditions, attributes, next, callback) {
 
 
 function fetchAccountUsers(req, res, next) {
-  fetchTable('users', {account_id: req.user.account_id}, ['name', 'gender', 'image_slug'], next, (records) => {
+  fetchTable('users', {account_id: req.user.account_id}, ['name', 'gender', 'image_slug', 'locale'], next, (records) => {
     res.locals.users = records
     if (res.locals.gon) {res.locals.gon.users = records}
   })

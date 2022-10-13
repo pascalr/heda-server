@@ -15,7 +15,7 @@ import debugModule from 'debug';
 import fs from 'fs';
 const debug = debugModule('todos:server');
 import fileUpload from 'express-fileupload';
-import { t } from './translate.js'
+import { tr } from './translate.js'
 
 // pass the session to the connect sqlite3 module
 // allowing it to inherit from session.Store
@@ -35,7 +35,7 @@ app.set('views', path.join(path.join(__dirname, '..'), 'views'));
 app.set('view engine', 'ejs');
 
 app.locals.pluralize = pluralize;
-app.locals.t = t;
+app.locals.tr = tr;
 
 app.use(logger('dev'));
 app.use(fileUpload());
@@ -48,26 +48,6 @@ app.use(express.static(path.join(__dirname, '../node_modules/@popperjs/core/dist
 app.use(express.static(path.join(__dirname, '../node_modules/toastr/')));
 app.use(express.static(path.join(__dirname, '../node_modules/prosemirror-menu/style/')));
 app.use(express.static(path.join(__dirname, '../public')));
-
-// This will be called for every query
-// Sets the locale in the global variable.
-// Redirects to add locale to query string if missing and found in referer.
-app.use((req, res, next) => {
-  //console.log('Time:', Date.now())
-  if (!req.query.locale && req.headers.referer) {
-    // Try to set the same locale as the url
-    let locale = getUrlParams(req.headers.referer).locale || 'en'
-    if (locale) {
-      if (req.originalUrl.indexOf('?') == -1) {
-        return res.redirect(req.originalUrl+'?locale='+locale)
-      } else {
-        return res.redirect(req.originalUrl+'&locale='+locale)
-      }
-    }
-  }
-  global.locale = req.query.locale || 'en'
-  next()
-})
 
 if (!fs.existsSync('./var')) {
   fs.mkdirSync('./var')

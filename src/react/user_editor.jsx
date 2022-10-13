@@ -2,21 +2,19 @@ import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
-import { TextField, RadioField, ImageField } from './form'
+import { TextField, RadioField, ImageField, CollectionSelect } from './form'
 import { initHcu, useHcuState } from "../hcu"
-import { getUrlParams } from "../utils"
 import { ajax } from "./utils"
 import { image_slug_variant_path } from "./routes"
 import { t } from "../translate"
 
 const UserEditor = () => {
 
-  window.locale = getUrlParams(window.location.href).locale
-
   if (!window.hcu) {initHcu()}
   const users = useHcuState([gon.user], {tableName: 'users'})
   const images = useHcuState(gon.images, {tableName: 'images'})
   const user = users[0]
+  window.locale = user.locale
 
   const destroyUser = () => {
     if (confirm('Voulez-vous supprimer définitivement ce profil?')) {
@@ -35,8 +33,11 @@ const UserEditor = () => {
   const imagePath = image ? image_slug_variant_path(user.image_slug, 'medium') : "/icons/person-fill.svg"
 
   return <>
+    <h1>{t('Edit_profile')}</h1>
     <b>{t('Name')}</b><br/>
     <TextField model={user} field="name" size="8" className="editable-input" /><br/><br/>
+    <b>{t('Language')}</b><br/>
+    <CollectionSelect model={user} field="locale" options={['fr', 'en']} showOption={e => e} includeBlank={false}/><br/><br/>
     <b>{t('Image')}</b><br/>
     <div style={{width: "fit-content"}}>
       <img style={{maxWidth: "100vh", height: "auto"}} src={imagePath} width="150" height="150"/>

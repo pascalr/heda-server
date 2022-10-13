@@ -287,7 +287,7 @@ router.get('/images/:id/:variant', function(req, res, next) {
 
 const ALLOWED_COLUMNS_MOD = {
   'recipes': ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id', 'ingredients'],
-  'users': ['name', 'gender', 'image_slug'],
+  'users': ['name', 'gender', 'image_slug', 'locale'],
   'favorite_recipes': ['list_id', 'recipe_id'],
   'tags': ['name', 'image_id', 'position'],
   'suggestions': ['tag_id', 'recipe_id']
