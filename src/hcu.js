@@ -119,7 +119,8 @@ export const initHcu = () => {
   //  {method: 'DELETE', tableName: "...", id: "..."}
   //]
   window.hcu.batchModify = (mods) => {
-    ajax({url: '/batch_modify/', type: 'PATCH', data: {mods}, success: (status) => {
+    let data = {mods: JSON.stringify(mods)}
+    ajax({url: '/batch_modify/', type: 'PATCH', data, success: (status) => {
       // TODO: Go through all the modifications and apply them in memory
     }, error: (errors) => {
       console.log('ERROR AJAX BATCH MODIFY...', errors.responseText)

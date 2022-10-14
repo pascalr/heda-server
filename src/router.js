@@ -412,7 +412,7 @@ router.get('/fetch_record/:table/:id', function(req, res, next) {
 router.patch('/batch_modify', function(req, res, next) {
 
   try {
-    let mods = req.body.mods
+    let mods = JSON.parse(req.body.mods)
     console.log('****************')
     console.log('****************')
     console.log('req.body', req.body)
