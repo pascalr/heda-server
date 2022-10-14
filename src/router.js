@@ -4,7 +4,7 @@ import connectEnsureLogin from 'connect-ensure-login'
 import { fileURLToPath } from 'url';
 import path from 'path';
 
-import { db2, ALLOWED_COLUMNS_MOD, ALLOWED_COLUMNS_GET, ALLOWED_TABLES_DESTROY, BEFORE_CREATE } from './db.js';
+import { db, ALLOWED_COLUMNS_MOD, ALLOWED_COLUMNS_GET, ALLOWED_TABLES_DESTROY, BEFORE_CREATE } from './db.js';
 import gon, {initGon, fetchTable, fetchTableMiddleware} from './gon.js';
 import passport from './passport.js';
 import utils from './utils.js';
@@ -62,8 +62,8 @@ router.post('/upload_image', function(req, res, next) {
     //  ],
     //];
 
-    db2.transaction(() => {
-      let info = db2.prepare('INSERT INTO images (filename, user_id, created_at, updated_at) VALUES (?, ?, ?, ?)').run(image.filename, image.user_id, utils.now(), utils.now())
+    db.transaction(() => {
+      let info = db.prepare('INSERT INTO images (filename, user_id, created_at, updated_at) VALUES (?, ?, ?, ?)').run(image.filename, image.user_id, utils.now(), utils.now())
       image.id = info.lastInsertRowid;
       // Use the mv() method to place the file somewhere on your server
       file.mv(path.join(IMAGE_FOLDER, image.id + '.' + ext), function(err) {
@@ -72,7 +72,7 @@ router.post('/upload_image', function(req, res, next) {
         let idOrSlug = recordField == 'image_id' ? image.id : `${image.id}.${ext}`
         console.log('recordField', recordField)
         console.log('idOrSlug', idOrSlug)
-        let q = "UPDATE "+db2.safe(recordTable, ['recipes', 'tags', 'users'])+" SET "+db2.safe(recordField, ['image_id', 'image_slug'])+" = ?, updated_at = ? WHERE id = ?"
+        let q = "UPDATE "+db.safe(recordTable, ['recipes', 'tags', 'users'])+" SET "+db.safe(recordField, ['image_id', 'image_slug'])+" = ?, updated_at = ? WHERE id = ?"
         let args = []
         if (recordTable == 'users') {
           args = [idOrSlug, utils.now(), req.user.user_id]
@@ -80,7 +80,7 @@ router.post('/upload_image', function(req, res, next) {
           q += " AND user_id = ?"
           args = [idOrSlug, utils.now(), recordId, req.user.user_id]
         }
-        db2.prepare(q).run(...args)
+        db.prepare(q).run(...args)
         res.json(image)
       });
     })()
@@ -90,7 +90,7 @@ router.post('/upload_image', function(req, res, next) {
 
 router.post('/create_user', function(req, res, next) {
   if (!req.user.account_id) {return next('Must be logged in to create profile')}
-  let info = db2.prepare('INSERT INTO users (name, account_id, created_at, updated_at) VALUES (?, ?, ?, ?)').run(req.body.name, req.user.account_id, utils.now(), utils.now())
+  let info = db.prepare('INSERT INTO users (name, account_id, created_at, updated_at) VALUES (?, ?, ?, ?)').run(req.body.name, req.user.account_id, utils.now(), utils.now())
   req.user.user_id = info.lastInsertRowid;
   res.redirect('/');
 });
@@ -101,7 +101,7 @@ router.delete('/destroy_profile/:id', function(req, res, next) {
   let id = req.params.id
 
   let query = 'DELETE FROM users WHERE id = ? AND account_id = ?'
-  db2.prepare(query).run(id, req.user.account_id)
+  db.prepare(query).run(id, req.user.account_id)
   req.user.user_id = null
   res.json({status: 'ok'})
 });
@@ -159,7 +159,7 @@ router.post('/signup', function(req, res, next) {
   var salt = crypto.randomBytes(16);
   crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', function(err, hashedPassword) {
     if (err) { return next(err); }
-    const info = db2.prepare('INSERT INTO accounts (email, encrypted_password, salt, created_at, updated_at) VALUES (?, ?, ?, ?, ?)').run(req.body.email, hashedPassword, salt, utils.now(), utils.now())
+    const info = db.prepare('INSERT INTO accounts (email, encrypted_password, salt, created_at, updated_at) VALUES (?, ?, ?, ?, ?)').run(req.body.email, hashedPassword, salt, utils.now(), utils.now())
     var user = {
       account_id: info.lastInsertRowid,
       email: req.body.email
@@ -214,7 +214,7 @@ router.post('/reset', function (req, res, next) {
   var salt = crypto.randomBytes(16);
   crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', function(err, hashedPassword) {
     if (err) { return next(err); }
-    let info = db2.prepare('UPDATE accounts SET encrypted_password = ?, salt = ?, updated_at = ? WHERE reset_password_token = ?').run(hashedPassword, salt, utils.now(), req.body.token)
+    let info = db.prepare('UPDATE accounts SET encrypted_password = ?, salt = ?, updated_at = ? WHERE reset_password_token = ?').run(hashedPassword, salt, utils.now(), req.body.token)
     var user = {
       id: this.lastInsertRowid,
       username: req.body.username
@@ -269,7 +269,7 @@ router.post('/create_record/:table', function(req, res, next) {
   
   try {
     console.log('body', req.body)
-    let safeTable = db2.safe(req.params.table, Object.keys(ALLOWED_COLUMNS_MOD))
+    let safeTable = db.safe(req.params.table, Object.keys(ALLOWED_COLUMNS_MOD))
     let fieldsSent = utils.ensureIsArray(req.body['fields[]'])//.filter(f => f != 'table_name')
     let obj = fieldsSent.reduce((acc, f) => ({ ...acc, [f]: req.body['record['+f+']']}), {}) 
     obj.user_id = req.user.user_id
@@ -278,10 +278,10 @@ router.post('/create_record/:table', function(req, res, next) {
       let fields = Object.keys(obj)
       let values = Object.values(obj)
       let columns = ALLOWED_COLUMNS_MOD[safeTable]
-      let query = 'INSERT INTO '+safeTable+' (created_at,updated_at,'+fields.map(f => db2.safe(f, [...columns, 'user_id'])).join(',')+') '
+      let query = 'INSERT INTO '+safeTable+' (created_at,updated_at,'+fields.map(f => db.safe(f, [...columns, 'user_id'])).join(',')+') '
       query += 'VALUES (?,?,'+fields.map(f=>'?').join(',')+')'
       let args = [utils.now(), utils.now(), ...values]
-      let info = db2.prepare(query).run(...args)
+      let info = db.prepare(query).run(...args)
       res.json({...obj, id: info.lastInsertRowId})
     }
 
@@ -329,9 +329,9 @@ router.patch('/update_field/:table/:id', function(req, res, next) {
 
     let info = null
     if (table == 'users') {
-      info = db2.updateField(table, req.user.user_id, field, value, null)
+      info = db.updateField(table, req.user.user_id, field, value, null)
     } else {
-      info = db2.updateField(table, id, field, value, {user_id: req.user.user_id})
+      info = db.updateField(table, id, field, value, {user_id: req.user.user_id})
     }
     res.json({status: 'ok'})
   } catch(err) {
@@ -380,8 +380,8 @@ router.delete('/destroy_record/:table/:id', function(req, res, next) {
     let table = req.params.table
     let query = ''
     let args = []
-    query = 'DELETE FROM '+db2.safe(table, ALLOWED_TABLES_DESTROY)+' WHERE id = ? AND user_id = ?'
-    db2.prepare(query).run([id, req.user.user_id])
+    query = 'DELETE FROM '+db.safe(table, ALLOWED_TABLES_DESTROY)+' WHERE id = ? AND user_id = ?'
+    db.prepare(query).run([id, req.user.user_id])
     res.json({status: 'ok'})
   } catch(err) {
     throw new Error(err)

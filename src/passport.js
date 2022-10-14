@@ -2,10 +2,10 @@ import passport from 'passport';
 import LocalStrategy from 'passport-local';
 import crypto from 'crypto';
 
-import {db2} from './db.js';
+import {db} from './db.js';
 
 passport.use(new LocalStrategy(function verify(email, password, cb) {
-  const row = db2.prepare('SELECT * FROM accounts WHERE email = ?').get(email)
+  const row = db.prepare('SELECT * FROM accounts WHERE email = ?').get(email)
   if (!row) { return cb(null, false, { message: 'Incorrect username or password.' }); }
   
   crypto.pbkdf2(password, row.salt, 310000, 32, 'sha256', function(err, hashedPassword) {

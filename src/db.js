@@ -11,7 +11,7 @@ if (fs.existsSync(dbPath)) {
 } else {
   console.log('no')
 }
-export const db2 = new betterSqlite3(dbPath, { verbose: console.log })
+export const db = new betterSqlite3(dbPath, { verbose: console.log })
 console.log('Opening database successful!')
 
 import { findRecipeKindForRecipeName } from "./lib.js"
@@ -19,8 +19,8 @@ import {fetchTable, RECIPE_ATTRS} from './gon.js';
 import utils from './utils.js';
 
 const ALLOWED_CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
-if (db2.safe) {throw "Can't overide safe"}
-db2.safe = function(str, allowed) {
+if (db.safe) {throw "Can't overide safe"}
+db.safe = function(str, allowed) {
   let s = '';
   [...str].forEach(c => {
     if (ALLOWED_CHARS.includes(c)) {s += c}
@@ -55,16 +55,16 @@ export const BEFORE_CREATE = {
 }
 
 // WARNING: Conditions keys are not safe. Never use user input for conditions keys.
-if (db2.updateField) {throw "Can't overide updateField"}
-db2.updateField = function(table, id, field, value, conditions) {
+if (db.updateField) {throw "Can't overide updateField"}
+db.updateField = function(table, id, field, value, conditions) {
 
-  let query = 'UPDATE '+db2.safe(table, Object.keys(ALLOWED_COLUMNS_MOD))+' SET '+db2.safe(field, ALLOWED_COLUMNS_MOD[table])+' = ?, updated_at = ? WHERE id = ?'
+  let query = 'UPDATE '+db.safe(table, Object.keys(ALLOWED_COLUMNS_MOD))+' SET '+db.safe(field, ALLOWED_COLUMNS_MOD[table])+' = ?, updated_at = ? WHERE id = ?'
   let args = [value, utils.now(), id]
   Object.keys(conditions || {}).forEach(column => {
     query += ' AND '+column+' = ?'
     args.push(conditions[column])
   })
-  return db2.prepare(query).run(args)
+  return db.prepare(query).run(args)
 }
 
 //var db = null;

@@ -1,4 +1,4 @@
-import {db2} from './db.js';
+import {db} from './db.js';
 import utils from './utils.js';
 
 export function fetchTable(tableName, conditions, attributes) {
@@ -30,7 +30,7 @@ export function fetchTable(tableName, conditions, attributes) {
   }
   console.log('statement:', s)
   console.log('values', a)
-  return db2.prepare(s).all(...a)
+  return db.prepare(s).all(...a)
 }
 
 export function fetchTableMiddleware(tableName, conditions, attributes, next, callback) {
