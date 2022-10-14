@@ -29,6 +29,12 @@ function getCurrentTable(tableName) {
   return current
 }
 
+function updateTable(tableName, func) {
+  let old = getCurrentTable(tableName)
+  let updated = func(old)
+  window.hcu.setters[tableName](updated)
+}
+
 export const initHcu = () => {
   if (window.hcu) {return;}
   window.hcu = {}
@@ -52,18 +58,15 @@ export const initHcu = () => {
   // Change record in memory only
   window.hcu.changeOnlyField = (tableName, id, field, value, successCallback=null) => {
     console.log(`changeOnlyField record=${tableName} id=${id} field=${field} to ${value}.`)
-    let old = getCurrentTable(tableName)
     let updatedRecord = null
-    console.log('old', old)
-    let updated = [...old].map(r => {
+    updateTable(tableName, old => (old.map(r => {
       if (r.id == id) {
         updatedRecord = {...r, [field]: value}
         return updatedRecord
       } 
       return r
-    })
-    console.log('updated', updated)
-    window.hcu.setters[tableName](updated)
+      })
+    ))
     if (successCallback) {successCallback(updatedRecord)}
   }
   // Change record in memory only
@@ -86,9 +89,7 @@ export const initHcu = () => {
   // Add record in memory only
   window.hcu.addRecord = (tableName, record, callback=null) => {
     console.log('addRecord('+tableName+')', record)
-    let old = getCurrentTable(tableName)
-    let updated = [...old, {...record, table_name: tableName}]
-    window.hcu.setters[tableName](updated)
+    updateTable(tableName, old => [...old, {...record, table_name: tableName}])
     if (callback) {callback(record)}
   }
   window.hcu.fetchRecord = (tableName, id, successCallback=null) => {
@@ -97,8 +98,7 @@ export const initHcu = () => {
       console.log('fetched', fetched)
       let old = getCurrentTable(tableName)
       if (old.find(r => r.id == fetched.id)) {throw "Error: Fetched a record already available"}
-      let updated = [...old, {...fetched, table_name: tableName}]
-      window.hcu.setters[tableName](updated)
+      updateTable(tableName, old => [...old, {...fetched, table_name: tableName}])
       if (successCallback) {successCallback(fetched)}
     }, error: (errors) => {
       console.log('ERROR AJAX FETCHING...', errors.responseText)
@@ -107,9 +107,8 @@ export const initHcu = () => {
   }
   // Remove record in memory only
   window.hcu.removeRecord = (record, successCallback=null) => {
-    let old = getCurrentTable(record.table_name)
-    let updated = old.filter(e => e.id != record.id)
-    window.hcu.setters[record.table_name](updated)
+    if (!record.table_name) { throw "Error: hcu.removeRecord record must have valid table_name" }
+    updateTable(record.table_name, old => old.filter(e => e.id != record.id))
     if (successCallback) {successCallback()}
   }
   // Destroy record definitely in database
