@@ -66,7 +66,7 @@ function appendConditions(query0, args0, conditions) {
 
 // WARNING: Conditions keys are not safe. Never use user input for conditions keys.
 if (db.updateField) {throw "Can't overide updateField"}
-db.updateField = function(table, id, field, value, conditions) {
+db.updateField = function(table, id, field, value, conditions=null) {
 
   let query0 = 'UPDATE '+db.safe(table, Object.keys(ALLOWED_COLUMNS_MOD))+' SET '+db.safe(field, ALLOWED_COLUMNS_MOD[table])+' = ?, updated_at = ? WHERE id = ?'
   let args0 = [value, utils.now(), id]

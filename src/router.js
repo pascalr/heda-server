@@ -297,8 +297,8 @@ router.post('/create_record/:table', function(req, res, next) {
 
 router.patch('/change_recipe_owner', gon.fetchAccountUsers, function(req, res, next) {
   try {
-    let recipeId = req.body.recipeId
-    let newOwnerId = req.body.newOwnerId
+    let recipeId = parseInt(req.body.recipeId).toString()
+    let newOwnerId = parseInt(req.body.newOwnerId).toString()
     if (!res.locals.users.map(u => u.id.toString()).includes(newOwnerId)) {
       throw new Error("ChangeRecipeOwner not allowed")
     }
@@ -306,6 +306,7 @@ router.patch('/change_recipe_owner', gon.fetchAccountUsers, function(req, res, n
     if (!res.locals.users.map(u => u.id).includes(recipe.user_id)) {
       throw new Error("ChangeRecipeOwner not allowed")
     }
+    //let info = db.updateField('recipes', recipeId, 'user_id', newOwnerId)
     let query = 'UPDATE recipes SET user_id = ?, updated_at = ? WHERE id = ?'
     let args = [newOwnerId, utils.now(), recipeId]
     console.log('query', query)
@@ -326,7 +327,7 @@ router.patch('/update_field/:table/:id', function(req, res, next) {
 
     let info = null
     if (table == 'users') {
-      info = db.updateField(table, req.user.user_id, field, value, null)
+      info = db.updateField(table, req.user.user_id, field, value)
     } else {
       info = db.updateField(table, id, field, value, {user_id: req.user.user_id})
     }
