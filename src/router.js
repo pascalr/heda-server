@@ -4,8 +4,8 @@ import connectEnsureLogin from 'connect-ensure-login'
 import { fileURLToPath } from 'url';
 import path from 'path';
 
-import db from './db.js';
-import gon, {initGon, fetchTable, fetchTableMiddleware, RECIPE_ATTRS} from './gon.js';
+import db, { ALLOWED_COLUMNS_MOD, ALLOWED_COLUMNS_GET, ALLOWED_TABLES_DESTROY, BEFORE_CREATE } from './db.js';
+import gon, {initGon, fetchTable, fetchTableMiddleware} from './gon.js';
 import passport from './passport.js';
 import utils from './utils.js';
 import { findRecipeKindForRecipeName } from "./lib.js"
@@ -285,28 +285,6 @@ router.get('/images/:id/:variant', function(req, res, next) {
 //  }
 //}
 
-const ALLOWED_COLUMNS_MOD = {
-  'recipes': ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id', 'ingredients', 'recipe_kind_id'],
-  'users': ['name', 'gender', 'image_slug', 'locale'],
-  'favorite_recipes': ['list_id', 'recipe_id'],
-  'tags': ['name', 'image_slug', 'position'],
-  'suggestions': ['tag_id', 'recipe_id']
-}
-// WARNING: All users have access to these
-const ALLOWED_COLUMNS_GET = {
-  'recipes': RECIPE_ATTRS
-}
-const ALLOWED_TABLES_DESTROY = ['favorite_recipes', 'recipes', 'suggestions']
-
-const BEFORE_CREATE = {
-  'recipes': (recipe, callback) => {
-    fetchTable('recipe_kinds', {}, ['name'], (recipe_kinds) => {
-      const recipeKind = findRecipeKindForRecipeName(recipe.name, recipe_kinds)
-      if (recipeKind) {recipe.recipe_kind_id = recipeKind.id}
-      callback(recipe)
-    })
-  }
-}
 
 router.post('/create_record/:table', function(req, res, next) {
   
@@ -369,22 +347,19 @@ router.patch('/change_recipe_owner', gon.fetchAccountUsers, function(req, res, n
 router.patch('/update_field/:table/:id', function(req, res, next) {
 
   try {
-    let id = req.params.id
-    let table = req.params.table
-    let field = req.body.field
-    let value = req.body.value
-    let query = 'UPDATE '+db.safe(table, Object.keys(ALLOWED_COLUMNS_MOD))+' SET '+db.safe(field, ALLOWED_COLUMNS_MOD[table])+' = ?, updated_at = ? WHERE id = ?'
-    let args = []
-    if (table != 'users') {
-      query += ' AND user_id = ?'
-      args = [value, utils.now(), id, req.user.user_id]
-    } else {
-      args = [value, utils.now(), req.user.user_id]
-    }
-    db.run(query, args, function(err) {
+    let {table, id} = req.params
+    let {field, value} = req.body
+
+    const sendResponse = (err) => {
       if (err) { return next(err); }
       res.json({status: 'ok'})
-    })
+    }
+
+    if (table == 'users') {
+      db.updateField(table, req.user.user_id, field, value, null, sendResponse)
+    } else {
+      db.updateField(table, id, field, value, {user_id: req.user.user_id}, sendResponse)
+    }
   } catch(err) {
     throw new Error(err)
   }
