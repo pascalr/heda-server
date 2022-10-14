@@ -73,9 +73,10 @@ export const initHcu = () => {
   }
   // Add record in memory only
   window.hcu.addRecord = (tableName, record, callback=null) => {
+    console.log('addRecord('+tableName+')', record)
     let old = getCurrentTable(tableName)
     let updated = [...old, {...record, table_name: tableName}]
-    window.hcu.setters[record.table_name](updated)
+    window.hcu.setters[tableName](updated)
     if (callback) {callback(record)}
   }
   window.hcu.fetchRecord = (tableName, id, successCallback=null) => {
