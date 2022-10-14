@@ -33,6 +33,7 @@ function removeDuplicateIds(records) {
 }
 
 function ensureIsArray(obj) {
+  if (!obj) {return []}
   return Array.isArray(obj) ? obj : [obj]
 }
 

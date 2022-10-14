@@ -6,7 +6,7 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Creating tags with react and bootstrap.
 => Hcu
 
-No SQL inside router. Put everything in smarter commands inside db.js
+fix create_record, use new function db.createRecord
 Comment gérer la langue des pages quand l'utilisateur n'est pas connecté????? (Page d'acceuil, Choose user, Forgot, toutes les views en fait...)
 When doing an update, check the number of changes to make sure that it worked. info.changes == 1
 TODO: Test transaction for upload_image
