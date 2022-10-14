@@ -81,7 +81,10 @@ db.destroyRecord = function(table, id, conditions) {
   const query0 = 'DELETE FROM '+db.safe(table, ALLOWED_TABLES_DESTROY)+' WHERE id = ?'
   const args0 = [id]
   const [query, args] = appendConditions(query0, args0, conditions)
-  db.prepare(query).run(...args)
+  let info = db.prepare(query).run(...args)
+  console.log('destroyRecord')
+  console.log('info.changes', info.changes)
+  if (info.changes != 1) {throw "Error destroying record from table "+table+" with id "+id}
 }
 
 //var db = null;

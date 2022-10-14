@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import toastr from 'toastr'
 
 import { ajax } from "./react/utils"
+import { t } from "./translate"
 
 export const useHcuState = (initial, options, callback=null) => {
   if (!Array.isArray(initial)) { throw "Error: useHcuState requires an array as input" }
@@ -47,23 +48,21 @@ export const initHcu = () => {
   window.hcu.__state = {}
   window.hcu.setters = {}
   window.hcu.updateField = (model, field, value, successCallback=null) => {
-    console.log(`updateField record=${model.table_name} field=${field} from ${model[field]} to ${value}.`)
+    //console.log(`updateField record=${model.table_name} field=${field} from ${model[field]} to ${value}.`)
     if (value != model[field]) { // update only if value changed
 
-      //let data = {[model.table_name+"["+field+"]"]: value}
       let data = {field, value}
       ajax({url: '/update_field/'+model.table_name+'/'+model.id, type: 'PATCH', data: data, success: () => {
         window.hcu.changeField(model, field, value, successCallback)
       }, error: (errors) => {
-        console.log('ERROR AJAX UPDATING...', errors.responseText)
-        toastr.error(errors.responseText)
-        //toastr.error("<ul>"+Object.values(JSON.parse(errors)).map(e => ("<li>"+e+"</li>"))+"</ul>", 'Error updating')
+        console.error('ERROR AJAX UPDATING...', errors.responseText)
+        toastr.error(t('Error_updating'))
       }})
     }
   }
   // Change record in memory only
   window.hcu.changeOnlyField = (tableName, id, field, value, successCallback=null) => {
-    console.log(`changeOnlyField record=${tableName} id=${id} field=${field} to ${value}.`)
+    //console.log(`changeOnlyField record=${tableName} id=${id} field=${field} to ${value}.`)
     let updatedRecord = null
     updateTable(tableName, old => (old.map(r => {
       if (r.id == id) {
@@ -77,38 +76,37 @@ export const initHcu = () => {
   }
   // Change record in memory only
   window.hcu.changeField = (record, field, value, successCallback=null) => {
-    console.log(`changeField record=${record.table_name} field=${field} from ${record[field]} to ${value}.`)
+    //console.log(`changeField record=${record.table_name} field=${field} from ${record[field]} to ${value}.`)
     window.hcu.changeOnlyField(record.table_name, record.id, field, value, successCallback)
   }
   window.hcu.createRecord = (tableName, record, successCallback=null) => {
-    console.log('createRecord('+tableName+')', record)
+    //console.log('createRecord('+tableName+')', record)
     let fields = Object.keys(record)
     let url = '/create_record/'+tableName
     ajax({url: url, type: 'POST', data: {record, fields}, success: (created) => {
-      console.log('created', created)
+      //console.log('created', created)
       window.hcu.addRecord(tableName, created, successCallback)
     }, error: (errors) => {
-      console.log('ERROR AJAX CREATING...', errors.responseText)
-      toastr.error(errors.responseText)
+      console.error('ERROR AJAX CREATING...', errors.responseText)
+      toastr.error(t('Error_creating'))
     }})
   }
   // Add record in memory only
   window.hcu.addRecord = (tableName, record, callback=null) => {
-    console.log('addRecord('+tableName+')', record)
+    //console.log('addRecord('+tableName+')', record)
     updateTable(tableName, old => [...old, {...record, table_name: tableName}])
     if (callback) {callback(record)}
   }
   window.hcu.fetchRecord = (tableName, id, successCallback=null) => {
     let url = '/fetch_record/'+tableName+'/'+id
     ajax({url: url, type: 'GET', data: {}, success: (fetched) => {
-      console.log('fetched', fetched)
       let old = getCurrentTable(tableName)
       if (old.find(r => r.id == fetched.id)) {throw "Error: Fetched a record already available"}
       updateTable(tableName, old => [...old, {...fetched, table_name: tableName}])
       if (successCallback) {successCallback(fetched)}
     }, error: (errors) => {
-      console.log('ERROR AJAX FETCHING...', errors.responseText)
-      toastr.error(errors.responseText)
+      console.error('ERROR AJAX FETCHING...', errors.responseText)
+      toastr.error(t('Error_fetching'))
     }})
   }
   // Remove record in memory only
@@ -124,8 +122,8 @@ export const initHcu = () => {
     ajax({url: url, type: 'DELETE', success: (status) => {
       window.hcu.removeRecord(record, successCallback)
     }, error: (errors) => {
-      console.log('ERROR AJAX DESTROYING...', errors.responseText)
-      toastr.error(errors.responseText)
+      console.error('ERROR AJAX DESTROYING...', errors.responseText)
+      toastr.error(t('Error_destroying'))
     }})
   }
 
@@ -145,8 +143,8 @@ export const initHcu = () => {
       })
       // TODO: Go through all the modifications and apply them in memory
     }, error: (errors) => {
-      console.log('ERROR AJAX BATCH MODIFY...', errors.responseText)
-      toastr.error(errors.responseText)
+      console.error('ERROR AJAX BATCH MODIFY...', errors.responseText)
+      toastr.error(t('Error_updating'))
     }})
   }
 }
