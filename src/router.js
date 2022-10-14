@@ -370,6 +370,7 @@ router.patch('/batch_modify', function(req, res, next) {
       })
     })
     applyMods(mods)
+    res.json({status: 'ok'})
   } catch(err) {
     throw new Error(err)
   }

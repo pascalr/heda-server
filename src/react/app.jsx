@@ -360,9 +360,6 @@ const EditTags = ({tags, images, page}) => {
     setOrderedTags(updatedList)
 
     let mods = []
-    console.log('HERE')
-    console.log('HERE')
-    console.log('HERE')
     updatedList.forEach((item,i) => {
       if (item.position != i) {
         mods.push({method: 'UPDATE', tableName: item.table_name, id: item.id, field: "position", value: i})

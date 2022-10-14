@@ -6,6 +6,12 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Creating tags with react and bootstrap.
 => Hcu
 
+!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!
+FIXME: hcu, set multiple on the same table at once does not work. It uses old every time, not updated...
+I need to update the getters to be up to date
+!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!
 Traduire les pages dans views.
 Fix change_recipe_owner with new db (each equivalent???)
 When doing an update, check the number of changes to make sure that it worked. info.changes == 1

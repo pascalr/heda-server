@@ -50,14 +50,26 @@ export const initHcu = () => {
     }
   }
   // Change record in memory only
+  window.hcu.changeOnlyField = (tableName, id, field, value, successCallback=null) => {
+    console.log(`changeOnlyField record=${tableName} id=${id} field=${field} to ${value}.`)
+    let old = getCurrentTable(tableName)
+    let updatedRecord = null
+    console.log('old', old)
+    let updated = [...old].map(r => {
+      if (r.id == id) {
+        updatedRecord = {...r, [field]: value}
+        return updatedRecord
+      } 
+      return r
+    })
+    console.log('updated', updated)
+    window.hcu.setters[tableName](updated)
+    if (successCallback) {successCallback(updatedRecord)}
+  }
+  // Change record in memory only
   window.hcu.changeField = (record, field, value, successCallback=null) => {
     console.log(`changeField record=${record.table_name} field=${field} from ${record[field]} to ${value}.`)
-    let updatedRecord = {...record}
-    updatedRecord[field] = value
-    let old = getCurrentTable(updatedRecord.table_name)
-    let updated = [...old].map(r => r.id == updatedRecord.id ? updatedRecord : r)
-    window.hcu.setters[updatedRecord.table_name](updated)
-    if (successCallback) {successCallback(updatedRecord)}
+    window.hcu.changeOnlyField(record.table_name, record.id, field, value, successCallback)
   }
   window.hcu.createRecord = (tableName, record, successCallback=null) => {
     console.log('createRecord('+tableName+')', record)
@@ -121,6 +133,11 @@ export const initHcu = () => {
   window.hcu.batchModify = (mods) => {
     let data = {mods: JSON.stringify(mods)}
     ajax({url: '/batch_modify/', type: 'PATCH', data, success: (status) => {
+      mods.forEach(({method, tableName, id, field, value}) => {
+        if (method == 'UPDATE') {
+          window.hcu.changeOnlyField(tableName, id, field, value)
+        }
+      })
       // TODO: Go through all the modifications and apply them in memory
     }, error: (errors) => {
       console.log('ERROR AJAX BATCH MODIFY...', errors.responseText)
