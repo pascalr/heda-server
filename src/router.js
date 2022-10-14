@@ -362,12 +362,14 @@ router.patch('/batch_modify', function(req, res, next) {
 
   try {
     let mods = JSON.parse(req.body.mods)
-    console.log('****************')
-    console.log('****************')
-    console.log('req.body', req.body)
-    console.log('mods', mods)
-    console.log('****************')
-    console.log('****************')
+    let applyMods = db.transaction((mods) => {
+      mods.forEach(({method, tableName, id, field, value}) => {
+        if (method == 'UPDATE') {
+          let info = db.updateField(tableName, id, field, value, {user_id: req.user.user_id})
+        }
+      })
+    })
+    applyMods(mods)
   } catch(err) {
     throw new Error(err)
   }
