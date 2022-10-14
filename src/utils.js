@@ -18,7 +18,7 @@ function now() {
   return s
 }
 
-function sortBy(list, attr) {
+export function sortBy(list, attr) {
   return list.sort((a,b) => {
     if (typeof a[attr] === 'string') {
       return a[attr].localeCompare(b[attr])

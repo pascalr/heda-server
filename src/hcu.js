@@ -11,12 +11,13 @@ export const useHcuState = (initial, options, callback=null) => {
   const [state, setState] = useState(initial.map(o => ({...o, table_name: tableName})))
 
   useEffect(() => {
+    window.hcu.__state[tableName] = state
     window.hcu.setters[tableName] = setState
   }, [])
 
-  useEffect(() => {
-    window.hcu.getters[tableName] = state
-  }, [state])
+  //useEffect(() => {
+  //  window.hcu.getters[tableName] = state
+  //}, [state])
 
   return state
 }
@@ -24,7 +25,8 @@ export const useHcuState = (initial, options, callback=null) => {
 // This method is private. Maybe do a public one, but then do a deep copy.
 function getCurrentTable(tableName) {
   if (!tableName) {throw "Error can't get table for missing missing table."}
-  let current = window.hcu.getters[tableName]
+  //let current = window.hcu.getters[tableName]
+  let current = window.hcu.__state[tableName]
   if (!current) {throw "Error missing table " + tableName + ". useHcuState not called?"}
   return current
 }
@@ -32,13 +34,17 @@ function getCurrentTable(tableName) {
 function updateTable(tableName, func) {
   let old = getCurrentTable(tableName)
   let updated = func(old)
+  // Update the state in memory too because if updateTable is called multiple times
+  // before the setState has been called, some changes will be lost.
+  window.hcu.__state[tableName] = updated
   window.hcu.setters[tableName](updated)
 }
 
 export const initHcu = () => {
   if (window.hcu) {return;}
   window.hcu = {}
-  window.hcu.getters = {}
+  //window.hcu.getters = {}
+  window.hcu.__state = {}
   window.hcu.setters = {}
   window.hcu.updateField = (model, field, value, successCallback=null) => {
     console.log(`updateField record=${model.table_name} field=${field} from ${model[field]} to ${value}.`)

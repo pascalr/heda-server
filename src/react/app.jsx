@@ -413,7 +413,7 @@ const TagIndex = ({page, machines, tags, images}) => {
   const winWidth = useWindowWidth()
   let pl = winWidth > 800 ? 0 : (winWidth % 200)/2
 
-  const buttons = tags.map(tag => {
+  const buttons = sortBy(tags, 'position').map(tag => {
     const image = images.find(i => i.slug == tag.image_slug)
     const imagePath = image ? image_variant_path(image, 'medium') : "/img/question-mark.jpg"
     return <TagButton key={tag.id} image={imagePath} title={tag.name || "Sans nom"} handleClick={() => changePage({page: PAGE_9, tagId: tag.id})} />
