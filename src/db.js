@@ -1,4 +1,3 @@
-import sqlite3 from 'sqlite3';
 import fs from 'fs';
 
 import betterSqlite3 from 'better-sqlite3'
