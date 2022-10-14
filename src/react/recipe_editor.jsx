@@ -135,10 +135,14 @@ function handleDrop(ingredientsAndHeaders, droppedItem, recipe) {
 export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipes, recipeKinds, images, users, editable, user}) => {
 
   const [showImageModal, setShowImageModal] = useState(false)
-
+  
   const recipe = recipes.find(e => e.id == recipeId)
 
-  if (!recipe || recipe.user_id != user.id) {window.hcu.changePage({page: 15, recipeId: recipeId}); return '';}
+  useEffect(() => {
+    if (!recipe || recipe.user_id != user.id) {window.hcu.changePage({page: 15, recipeId: recipeId})}
+  }, [recipes])
+
+  if (!recipe || recipe.user_id != user.id) {return '';}
 
   const ingredientsAndHeaders = parseIngredientsAndHeaders(recipe.ingredients)
   const ingredients = ingredientsAndHeaders.filter(e => e.label != null || e.qty != null)
@@ -251,9 +255,7 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
   let changeOwner = (e) => {
     let data = {recipeId: recipe.id, newOwnerId: e.target.id}
     ajax({url: '/change_recipe_owner', type: 'PATCH', data, success: () => {
-      let old = window.hcu.getters['recipes']
-      let updated = [...old].map(r => r.id == recipe.id ? {...r, user_id: e.target.id} : r)
-      window.hcu.setters['recipes'](updated)
+      window.hcu.changeField(recipe, 'user_id', e.target.id)
     }, error: (errors) => {
       console.log('ERROR AJAX UPDATING...', errors.responseText)
     }})

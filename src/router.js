@@ -295,31 +295,28 @@ router.post('/create_record/:table', function(req, res, next) {
   }
 })
 
-//router.patch('/change_recipe_owner', gon.fetchAccountUsers, function(req, res, next) {
-//  try {
-//    let recipeId = req.body.recipeId
-//    let newOwnerId = req.body.newOwnerId
-//    if (!res.locals.users.map(u => u.id.toString()).includes(newOwnerId)) {
-//      throw new Error("ChangeRecipeOwner not allowed")
-//    }
-//    db.each('SELECT id, user_id FROM recipes WHERE id = ?', recipeId, function(err, recipe) {
-//      if (err) {return next(err);}
-//      if (!res.locals.users.map(u => u.id).includes(recipe.user_id)) {
-//        throw new Error("ChangeRecipeOwner not allowed")
-//      }
-//      let query = 'UPDATE recipes SET user_id = ?, updated_at = ? WHERE id = ?'
-//      let args = [newOwnerId, utils.now(), recipeId]
-//      console.log('query', query)
-//      console.log('args', args)
-//      db.run(query, args, function(err) {
-//        if (err) { return next(err); }
-//        res.json({status: 'ok'})
-//      })
-//    })
-//  } catch(err) {
-//    throw new Error(err)
-//  }
-//});
+router.patch('/change_recipe_owner', gon.fetchAccountUsers, function(req, res, next) {
+  try {
+    let recipeId = req.body.recipeId
+    let newOwnerId = req.body.newOwnerId
+    if (!res.locals.users.map(u => u.id.toString()).includes(newOwnerId)) {
+      throw new Error("ChangeRecipeOwner not allowed")
+    }
+    let recipe = db.prepare('SELECT id, user_id FROM recipes WHERE id = ?').get(recipeId)
+    if (!res.locals.users.map(u => u.id).includes(recipe.user_id)) {
+      throw new Error("ChangeRecipeOwner not allowed")
+    }
+    let query = 'UPDATE recipes SET user_id = ?, updated_at = ? WHERE id = ?'
+    let args = [newOwnerId, utils.now(), recipeId]
+    console.log('query', query)
+    console.log('args', args)
+    db.prepare(query).run(args)
+    res.json({status: 'ok'})
+    
+  } catch(err) {
+    throw new Error(err)
+  }
+});
 
 router.patch('/update_field/:table/:id', function(req, res, next) {
 
