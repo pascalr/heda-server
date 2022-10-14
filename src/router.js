@@ -376,12 +376,8 @@ router.patch('/batch_modify', function(req, res, next) {
 router.delete('/destroy_record/:table/:id', function(req, res, next) {
 
   try {
-    let id = req.params.id
-    let table = req.params.table
-    let query = ''
-    let args = []
-    query = 'DELETE FROM '+db.safe(table, ALLOWED_TABLES_DESTROY)+' WHERE id = ? AND user_id = ?'
-    db.prepare(query).run([id, req.user.user_id])
+    let {id, table} = req.params
+    db.destroyRecord(table, id, {user_id: req.user.user_id})
     res.json({status: 'ok'})
   } catch(err) {
     throw new Error(err)

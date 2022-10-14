@@ -54,16 +54,34 @@ export const BEFORE_CREATE = {
 }
 
 // WARNING: Conditions keys are not safe. Never use user input for conditions keys.
-if (db.updateField) {throw "Can't overide updateField"}
-db.updateField = function(table, id, field, value, conditions) {
-
-  let query = 'UPDATE '+db.safe(table, Object.keys(ALLOWED_COLUMNS_MOD))+' SET '+db.safe(field, ALLOWED_COLUMNS_MOD[table])+' = ?, updated_at = ? WHERE id = ?'
-  let args = [value, utils.now(), id]
+function appendConditions(query0, args0, conditions) {
+  let query = query0
+  let args = args0
   Object.keys(conditions || {}).forEach(column => {
     query += ' AND '+column+' = ?'
     args.push(conditions[column])
   })
-  return db.prepare(query).run(args)
+  return [query, args]
+}
+
+// WARNING: Conditions keys are not safe. Never use user input for conditions keys.
+if (db.updateField) {throw "Can't overide updateField"}
+db.updateField = function(table, id, field, value, conditions) {
+
+  let query0 = 'UPDATE '+db.safe(table, Object.keys(ALLOWED_COLUMNS_MOD))+' SET '+db.safe(field, ALLOWED_COLUMNS_MOD[table])+' = ?, updated_at = ? WHERE id = ?'
+  let args0 = [value, utils.now(), id]
+  const [query, args] = appendConditions(query0, args0, conditions)
+  return db.prepare(query).run(...args)
+}
+
+// WARNING: Conditions keys are not safe. Never use user input for conditions keys.
+if (db.destroyRecord) {throw "Can't overide destroyRecord"}
+db.destroyRecord = function(table, id, conditions) {
+
+  const query0 = 'DELETE FROM '+db.safe(table, ALLOWED_TABLES_DESTROY)+' WHERE id = ?'
+  const args0 = [id]
+  const [query, args] = appendConditions(query0, args0, conditions)
+  db.prepare(query).run(...args)
 }
 
 //var db = null;
