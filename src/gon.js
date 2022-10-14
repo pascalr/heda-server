@@ -31,7 +31,7 @@ export function fetchTable(tableName, conditions, attributes, callback) {
   })
 }
 
-function fetchTableMiddleware(tableName, conditions, attributes, next, callback) {
+export function fetchTableMiddleware(tableName, conditions, attributes, next, callback) {
   fetchTable(tableName, conditions, attributes, (rows, err=null) => {
     if (err) { return next(err); }
     callback(rows)

@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 
 import db from './db.js';
-import gon, {initGon, fetchTable, RECIPE_ATTRS} from './gon.js';
+import gon, {initGon, fetchTable, fetchTableMiddleware, RECIPE_ATTRS} from './gon.js';
 import passport from './passport.js';
 import utils from './utils.js';
 import { findRecipeKindForRecipeName } from "./lib.js"
@@ -286,7 +286,7 @@ router.get('/images/:id/:variant', function(req, res, next) {
 //}
 
 const ALLOWED_COLUMNS_MOD = {
-  'recipes': ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id', 'ingredients'],
+  'recipes': ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id', 'ingredients', 'recipe_kind_id'],
   'users': ['name', 'gender', 'image_slug', 'locale'],
   'favorite_recipes': ['list_id', 'recipe_id'],
   'tags': ['name', 'image_slug', 'position'],
@@ -300,7 +300,7 @@ const ALLOWED_TABLES_DESTROY = ['favorite_recipes', 'recipes', 'suggestions']
 
 const BEFORE_CREATE = {
   'recipes': (recipe, callback) => {
-    fetchTable('recipe_kinds', {}, ['name'], () => {}, (recipe_kinds) => {
+    fetchTable('recipe_kinds', {}, ['name'], (recipe_kinds) => {
       const recipeKind = findRecipeKindForRecipeName(recipe.name, recipe_kinds)
       if (recipeKind) {recipe.recipe_kind_id = recipeKind.id}
       callback(recipe)
@@ -397,7 +397,7 @@ router.get('/fetch_record/:table/:id', function(req, res, next) {
     let table = req.params.table
     if (Object.keys(ALLOWED_COLUMNS_GET).includes(table)) {
       //fetchTable(table, {id: id, user_id: req.user.user_id}, ALLOWED_COLUMNS_GET[table], next, (records) => {
-      fetchTable(table, {id: id}, ALLOWED_COLUMNS_GET[table], next, (records) => {
+      fetchTableMiddleware(table, {id: id}, ALLOWED_COLUMNS_GET[table], next, (records) => {
         res.json({...records[0]})
       })
     } else {
