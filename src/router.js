@@ -8,7 +8,6 @@ import db, { ALLOWED_COLUMNS_MOD, ALLOWED_COLUMNS_GET, ALLOWED_TABLES_DESTROY, B
 import gon, {initGon, fetchTable, fetchTableMiddleware} from './gon.js';
 import passport from './passport.js';
 import utils from './utils.js';
-import { findRecipeKindForRecipeName } from "./lib.js"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

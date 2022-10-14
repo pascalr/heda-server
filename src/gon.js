@@ -1,15 +1,20 @@
-import db from './db.js';
+import db, {db2} from './db.js';
 import utils from './utils.js';
 
-export function fetchTable(tableName, conditions, attributes, callback) {
+export function fetchTable(tableName, conditions, attributes) {
   let s = 'SELECT '+['id',...attributes].join(', ')+' FROM '+tableName
   let a = []
   let l = Object.keys(conditions).length
   if (l != 0) {s += ' WHERE '}
-  Object.keys(conditions).forEach((cond,i) => {
+  let keys = Object.keys(conditions)
+  for (let i = 0; i < keys.length; i++) {
+    let cond = keys[i]
     let val = conditions[cond]
     if (val == null) {
       s += cond + ' IS NULL'
+    } else if (Array.isArray(val) && val.length == 0) {
+      console.log('FetchTable an empty array given as a condition. Impossible match.')
+      return []
     } else if (Array.isArray(val) && val.length > 1) {
       s += cond + ' IN ('
       val.forEach((v,i) => {
@@ -22,21 +27,16 @@ export function fetchTable(tableName, conditions, attributes, callback) {
       a.push(val)
     }
     if (i < l-1) {s += ' AND '}
-  })
+  }
   console.log('statement:', s)
   console.log('values', a)
-  db.all(s, a, function(err, rows) {
-    if (err) { return callback(null, err); }
-    callback(rows, null)
-  })
+  return db2.prepare(s).all(...a)
 }
 
 export function fetchTableMiddleware(tableName, conditions, attributes, next, callback) {
-  fetchTable(tableName, conditions, attributes, (rows, err=null) => {
-    if (err) { return next(err); }
-    callback(rows)
-    next()
-  })
+  const rows = fetchTable(tableName, conditions, attributes)
+  callback(rows)
+  next()
 }
 
 function fetchAccountUsers(req, res, next) {
@@ -113,7 +113,7 @@ function fetchMachineUsers(req, res, next) {
 
 function fetchMachines(req, res, next) {
   let ids = res.locals.machine_users.map(m=>m.id)
-  fetchTableMiddleware('machines', {id: [ids]}, ['name'], next, (records) => {
+  fetchTableMiddleware('machines', {id: ids}, ['name'], next, (records) => {
     res.locals.gon.machines = records
   })
 }
@@ -121,7 +121,7 @@ function fetchMachines(req, res, next) {
 function fetchContainers(req, res, next) {
   let ids = res.locals.gon.machines.map(m=>m.id)
   let attrs = ['jar_id', 'machine_id', 'container_format_id', 'pos_x', 'pos_y', 'pos_z', 'food_id']
-  fetchTableMiddleware('containers', {machine_id: [ids]}, attrs, next, (records) => {
+  fetchTableMiddleware('containers', {machine_id: ids}, attrs, next, (records) => {
     res.locals.gon.containers = records
   })
 }

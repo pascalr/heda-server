@@ -1,7 +1,21 @@
 import sqlite3 from 'sqlite3';
 import fs from 'fs';
 
-import {RECIPE_ATTRS} from './gon.js';
+import betterSqlite3 from 'better-sqlite3'
+// FIXME: DB_URL should be DB_PATH, it's not an URL (doesn't start with sqlite3://...)
+let dbPath = process.env.DB_URL
+console.log('Database path:', dbPath)
+console.log('Checking if database exists...')
+if (fs.existsSync(dbPath)) {
+  console.log('yes')
+} else {
+  console.log('no')
+}
+export const db2 = new betterSqlite3(dbPath, { verbose: console.log })
+console.log('Opening database successful!')
+
+import { findRecipeKindForRecipeName } from "./lib.js"
+import {fetchTable, RECIPE_ATTRS} from './gon.js';
 import utils from './utils.js';
 
 https://stackoverflow.com/questions/53299322/transactions-in-node-sqlite3
@@ -67,11 +81,10 @@ export const ALLOWED_TABLES_DESTROY = ['favorite_recipes', 'recipes', 'suggestio
 
 export const BEFORE_CREATE = {
   'recipes': (recipe, callback) => {
-    fetchTable('recipe_kinds', {}, ['name'], (recipe_kinds) => {
-      const recipeKind = findRecipeKindForRecipeName(recipe.name, recipe_kinds)
-      if (recipeKind) {recipe.recipe_kind_id = recipeKind.id}
-      callback(recipe)
-    })
+    const recipe_kinds = fetchTable('recipe_kinds', {}, ['name'])
+    const recipeKind = findRecipeKindForRecipeName(recipe.name, recipe_kinds)
+    if (recipeKind) {recipe.recipe_kind_id = recipeKind.id}
+    callback(recipe)
   }
 }
 
@@ -90,15 +103,6 @@ sqlite3.Database.prototype.updateField = function(table, id, field, value, condi
   })
 }
 
-// FIXME: DB_URL should be DB_PATH, it's not an URL (doesn't start with sqlite3://...)
-let dbPath = process.env.DB_URL
-console.log('Database path:', dbPath)
-console.log('Checking if database exists...')
-if (fs.existsSync(dbPath)) {
-  console.log('yes')
-} else {
-  console.log('no')
-}
 var db = null;
 try {
   db = new sqlite3.Database(dbPath);

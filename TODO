@@ -6,6 +6,7 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Creating tags with react and bootstrap.
 => Hcu
 
+Is it safe to do a backup by copying the sqlite3 file? What if a modification happens while copying?
 Pour les drags and drop, faire les modifications localement, sinon ça bug avec le visuel.
 onDragEnd must be synchonous: https://github.com/atlassian/react-beautiful-dnd/blob/master/docs/guides/responders.md
 Ajouter un exemple de Carrousel de suggestions de recettes dans la page d'acceuil.
