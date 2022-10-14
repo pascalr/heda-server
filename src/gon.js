@@ -1,4 +1,4 @@
-import db, {db2} from './db.js';
+import {db2} from './db.js';
 import utils from './utils.js';
 
 export function fetchTable(tableName, conditions, attributes) {

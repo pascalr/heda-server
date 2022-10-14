@@ -2,22 +2,20 @@ import passport from 'passport';
 import LocalStrategy from 'passport-local';
 import crypto from 'crypto';
 
-import db from './db.js';
+import {db2} from './db.js';
 
 passport.use(new LocalStrategy(function verify(email, password, cb) {
-  db.get('SELECT * FROM accounts WHERE email = ?', [ email ], function(err, row) {
+  const row = db2.prepare('SELECT * FROM accounts WHERE email = ?').get(email)
+  if (!row) { return cb(null, false, { message: 'Incorrect username or password.' }); }
+  
+  crypto.pbkdf2(password, row.salt, 310000, 32, 'sha256', function(err, hashedPassword) {
     if (err) { return cb(err); }
-    if (!row) { return cb(null, false, { message: 'Incorrect username or password.' }); }
-   
-    crypto.pbkdf2(password, row.salt, 310000, 32, 'sha256', function(err, hashedPassword) {
-      if (err) { return cb(err); }
-      if (!crypto.timingSafeEqual(row.encrypted_password, hashedPassword)) {
-        return cb(null, false, { message: 'Incorrect username or password.' });
-      }
-      let o = row;
-      o.account_id = o.id;
-      return cb(null, o);
-    });
+    if (!crypto.timingSafeEqual(row.encrypted_password, hashedPassword)) {
+      return cb(null, false, { message: 'Incorrect username or password.' });
+    }
+    let o = row;
+    o.account_id = o.id;
+    return cb(null, o);
   });
 }));
 
