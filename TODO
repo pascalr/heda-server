@@ -6,6 +6,8 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Creating tags with react and bootstrap.
 => Hcu
 
+When doing an update, check the number of changes to make sure that it worked. info.changes == 1
+TODO: Test transaction for upload_image
 Is it safe to do a backup by copying the sqlite3 file? What if a modification happens while copying?
 Pour les drags and drop, faire les modifications localement, sinon ça bug avec le visuel.
 onDragEnd must be synchonous: https://github.com/atlassian/react-beautiful-dnd/blob/master/docs/guides/responders.md

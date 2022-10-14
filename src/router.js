@@ -4,7 +4,7 @@ import connectEnsureLogin from 'connect-ensure-login'
 import { fileURLToPath } from 'url';
 import path from 'path';
 
-import db, { ALLOWED_COLUMNS_MOD, ALLOWED_COLUMNS_GET, ALLOWED_TABLES_DESTROY, BEFORE_CREATE } from './db.js';
+import db, { db2, ALLOWED_COLUMNS_MOD, ALLOWED_COLUMNS_GET, ALLOWED_TABLES_DESTROY, BEFORE_CREATE } from './db.js';
 import gon, {initGon, fetchTable, fetchTableMiddleware} from './gon.js';
 import passport from './passport.js';
 import utils from './utils.js';
@@ -62,11 +62,9 @@ router.post('/upload_image', function(req, res, next) {
     //  ],
     //];
 
-    db.run('INSERT INTO images (filename, user_id, created_at, updated_at) VALUES (?, ?, ?, ?)', [
-      image.filename, image.user_id, utils.now(), utils.now() 
-    ], function(err) {
-      if (err) { return next(err); }
-      image.id = this.lastID;
+    db2.transaction(() => {
+      let info = db2.prepare('INSERT INTO images (filename, user_id, created_at, updated_at) VALUES (?, ?, ?, ?)').run(image.filename, image.user_id, utils.now(), utils.now())
+      image.id = info.lastInsertRowid;
       // Use the mv() method to place the file somewhere on your server
       file.mv(path.join(IMAGE_FOLDER, image.id + '.' + ext), function(err) {
         if (err) { return res.status(500).send(err); }
@@ -82,13 +80,10 @@ router.post('/upload_image', function(req, res, next) {
           q += " AND user_id = ?"
           args = [idOrSlug, utils.now(), recordId, req.user.user_id]
         }
-        db.run(q, args, function(err) {
-          if (err) { return next(err); }
-
-          res.json(image)
-        })
+        db2.prepare(q).run(...args)
+        res.json(image)
       });
-    });
+    })()
   } catch(err) { return res.status(500).send(err) }
 
 });
