@@ -408,6 +408,22 @@ router.get('/fetch_record/:table/:id', function(req, res, next) {
   }
 });
 
+// TODO: Do all the modifications inside a single transaction, and rollback if there is an error.
+router.patch('/batch_modify', function(req, res, next) {
+
+  try {
+    let mods = req.body.mods
+    console.log('****************')
+    console.log('****************')
+    console.log('req.body', req.body)
+    console.log('mods', mods)
+    console.log('****************')
+    console.log('****************')
+  } catch(err) {
+    throw new Error(err)
+  }
+});
+
 router.delete('/destroy_record/:table/:id', function(req, res, next) {
 
   try {

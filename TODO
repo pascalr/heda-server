@@ -6,13 +6,6 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Creating tags with react and bootstrap.
 => Hcu
 
-Ideally a route for batches. Batch updates. Batch creates. Begin End Rollack. A single transaction.
-/batch => [
-  {method: 'CREATE', record: {...}},
-  {method: 'CREATE', record: {...}},
-  {method: 'UPDATE', tableName: "...", id: "...", field: "...", value: "..."}
-  {method: 'DELETE', tableName: "...", id: "..."}
-]
 Pour les drags and drop, faire les modifications localement, sinon ça bug avec le visuel.
 onDragEnd must be synchonous: https://github.com/atlassian/react-beautiful-dnd/blob/master/docs/guides/responders.md
 Ajouter un exemple de Carrousel de suggestions de recettes dans la page d'acceuil.

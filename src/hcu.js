@@ -107,7 +107,22 @@ export const initHcu = () => {
     ajax({url: url, type: 'DELETE', success: (status) => {
       window.hcu.removeRecord(record, successCallback)
     }, error: (errors) => {
-      console.log('ERROR AJAX CREATING...', errors.responseText)
+      console.log('ERROR AJAX DESTROYING...', errors.responseText)
+      toastr.error(errors.responseText)
+    }})
+  }
+
+  //mods => [
+  //  {method: 'CREATE', record: {...}},
+  //  {method: 'CREATE', record: {...}},
+  //  {method: 'UPDATE', tableName: "...", id: "...", field: "...", value: "..."}
+  //  {method: 'DELETE', tableName: "...", id: "..."}
+  //]
+  window.hcu.batchModify = (mods) => {
+    ajax({url: '/batch_modify/', type: 'PATCH', data: {mods}, success: (status) => {
+      // TODO: Go through all the modifications and apply them in memory
+    }, error: (errors) => {
+      console.log('ERROR AJAX BATCH MODIFY...', errors.responseText)
       toastr.error(errors.responseText)
     }})
   }

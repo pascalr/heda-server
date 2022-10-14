@@ -359,6 +359,17 @@ const EditTags = ({tags, images, page}) => {
 
     setOrderedTags(updatedList)
 
+    let mods = []
+    console.log('HERE')
+    console.log('HERE')
+    console.log('HERE')
+    updatedList.forEach((item,i) => {
+      if (item.position != i) {
+        mods.push({method: 'UPDATE', tableName: item.table_name, id: item.id, field: "position", value: i})
+      }
+    })
+    window.hcu.batchModify(mods)
+
     //let data = {position: destination.index+1}
     //ajax({url: user_tag_path({id: userTagId}), type: 'PATCH', data, success: () => {
     //  updatedList.forEach((el,i) => {el.position = i+1}) 

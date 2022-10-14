@@ -178,9 +178,9 @@ function fetchSuggestions(req, res, next) {
 }
 
 function fetchTags(req, res, next) {
-  let attrs = ['name', 'image_slug', 'user_id']
+  let attrs = ['name', 'image_slug', 'user_id', 'position']
   fetchTableMiddleware('tags', {user_id: req.user.user_id}, attrs, next, (records) => {
-    res.locals.gon.tags = records
+    res.locals.gon.tags = utils.sortBy(records, 'position')
   })
 }
 
