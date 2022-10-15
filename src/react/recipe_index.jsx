@@ -28,7 +28,7 @@ const removeFavoriteRecipe = (fav, recipe) => {
   window.hcu.removeRecord(recipe)
 }
 
-const RecipeListItemMenu = ({fav, recipe, editUserRecipe, user}) => {
+const RecipeListItemMenu = ({fav, recipe, editUserRecipe, user, page}) => {
 
   let toCook = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 1, recipe, user)}>{t('To_cook')}</button>
   let toTry = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 2, recipe, user)}>{t('To_try')}</button>
@@ -45,6 +45,7 @@ const RecipeListItemMenu = ({fav, recipe, editUserRecipe, user}) => {
         <li>{fav && fav.list_id == 2 ? toNotTry : toTry }</li>
         <li><button type="button" className="dropdown-item" onClick={() => editUserRecipe(recipe)}>{t('Tag')}</button></li>
         {fav ? <li><button type="button" className="dropdown-item" onClick={() => removeFavoriteRecipe(fav, recipe)}>{t('Remove_from_favorites')}</button></li> : ''}
+        {user.id != recipe.user_id ? '' : <li><LinkToPage page={{page: 16, recipeId: recipe.id}} className="dropdown-item">{t('Edit')}</LinkToPage></li>}
         {recipe.user_id == user.id ? <li><button type="button" className="dropdown-item" onClick={() => {removeRecipe(recipe)}}>{t('Delete_recipe')}</button></li> : ''}
       </ul>
     </span>
@@ -72,7 +73,7 @@ export const RecipeList = ({page, list, selected, suggestions, tags, editUserRec
               {mix ? <img src="/img/logo_001.svg" width="24" height="24"/> : ''}
             <span className='ms-2' style={{color: 'gray', fontSize: '0.78em', flexShrink: '3'}}>{recipeTags.map(tag => ` #${tag.name}`)} </span>
             <span className="flex-grow-1"/>
-            <RecipeListItemMenu {...{fav, recipe, editUserRecipe, user}} />
+            <RecipeListItemMenu {...{fav, recipe, editUserRecipe, user, page}} />
           </li>
         )
       })}
