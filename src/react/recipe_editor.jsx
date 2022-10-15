@@ -116,27 +116,16 @@ const EditableIngredientSection = ({item, index, updateIngredients, removeIngred
   </h3>
 }
 
-function handleDrop(ingredientsAndHeaders, droppedItem, recipe) {
-
-  // Ignore drop outside droppable container
-  if (!droppedItem.destination) return;
-
-  let source = droppedItem.source.index
-  let destination = droppedItem.destination.index
-  console.log("source", source)
-  console.log("destination", destination)
-
-  var updatedList = [...ingredientsAndHeaders];
-  const [reorderedItem] = updatedList.splice(source, 1);
-  updatedList.splice(destination, 0, reorderedItem);
-  window.hcu.updateField(recipe, 'ingredients', serializeIngredientsAndHeaders(updatedList))
-}
-
 export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipes, recipeKinds, images, users, editable, user}) => {
 
   const [showImageModal, setShowImageModal] = useState(false)
   
   const recipe = recipes.find(e => e.id == recipeId)
+
+  const [orderedIngredients, setOrderedIngredients] = useState(recipe.ingredients)
+  useEffect(() => {
+    setOrderedIngredients(recipe.ingredients)
+  }, [recipe])
 
   useEffect(() => {
     if (!recipe || recipe.user_id != user.id) {window.hcu.changePage({page: 15, recipeId: recipeId})}
@@ -144,11 +133,29 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
 
   if (!recipe || recipe.user_id != user.id) {return '';}
 
-  const ingredientsAndHeaders = parseIngredientsAndHeaders(recipe.ingredients)
+  const ingredientsAndHeaders = parseIngredientsAndHeaders(orderedIngredients)
   const ingredients = ingredientsAndHeaders.filter(e => e.label != null || e.qty != null)
   const mix = mixes.find(m => m.recipe_id == recipe.id)
   const recipeUser = users.find(u => u.id == recipe.user_id)
   const userName = recipeUser ? recipeUser.name : `user${recipe.user_id}`
+
+  function handleDrop(droppedItem) {
+  
+    // Ignore drop outside droppable container
+    if (!droppedItem.destination) return;
+  
+    let source = droppedItem.source.index
+    let destination = droppedItem.destination.index
+    console.log("source", source)
+    console.log("destination", destination)
+  
+    var updatedList = [...ingredientsAndHeaders];
+    const [reorderedItem] = updatedList.splice(source, 1);
+    updatedList.splice(destination, 0, reorderedItem);
+    let ings = serializeIngredientsAndHeaders(updatedList)
+    window.hcu.updateField(recipe, 'ingredients', ings)
+    setOrderedIngredients(ings)
+  }
 
   function updateIngredients() {
     window.hcu.updateField(recipe, 'ingredients', serializeIngredientsAndHeaders(ingredientsAndHeaders))
@@ -193,7 +200,7 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
 
   const IngredientList = 
     <ul className="list-group" style={{maxWidth: "800px"}}>
-      <DragDropContext onDragEnd={(droppedItem) => handleDrop(ingredientsAndHeaders, droppedItem, recipe)}>
+      <DragDropContext onDragEnd={handleDrop}>
         <Droppable droppableId="list-container">
           {(provided) => (
             <div className="list-container" {...provided.droppableProps} ref={provided.innerRef}>
