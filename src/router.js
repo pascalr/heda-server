@@ -65,6 +65,7 @@ router.post('/upload_image', function(req, res, next) {
     db.transaction(() => {
       let info = db.prepare('INSERT INTO images (filename, user_id, created_at, updated_at) VALUES (?, ?, ?, ?)').run(image.filename, image.user_id, utils.now(), utils.now())
       image.id = info.lastInsertRowid;
+      if (info.changes != 1) {return res.status(500).send("Unable to create image record in database")}
       // Use the mv() method to place the file somewhere on your server
       file.mv(path.join(IMAGE_FOLDER, image.id + '.' + ext), function(err) {
         if (err) { return res.status(500).send(err); }
@@ -78,7 +79,8 @@ router.post('/upload_image', function(req, res, next) {
           q += " AND user_id = ?"
           args = [slug, utils.now(), recordId, req.user.user_id]
         }
-        db.prepare(q).run(...args)
+        info = db.prepare(q).run(...args)
+        if (info.changes != 1) {return res.status(500).send("Unable to update image_slug in database")}
         res.json(image)
       });
     })()
@@ -248,7 +250,7 @@ router.post('/create_record/:table', function(req, res, next) {
     // I keep doing it this way because it works. Using JSON, SQLite3 does not want to be given booleans, and it probably should be an integer and not a string, but right now it is a string I believe.
     let fieldsSent = utils.ensureIsArray(req.body['fields[]'])//.filter(f => f != 'table_name')
     let obj = fieldsSent.reduce((acc, f) => ({ ...acc, [f]: req.body['record['+f+']']}), {}) 
-    let record = db.createRecord(req.params.table, obj, req.user_id)
+    let record = db.createRecord(req.params.table, obj, req.user.user_id)
     res.json({...record})
   } catch(err) {
     throw new Error(err)

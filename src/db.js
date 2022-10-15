@@ -29,16 +29,44 @@ db.safe = function(str, allowed) {
   return s
 }
 
-// TODO: Refactor all of this and put this in a schema.
-
-export const ALLOWED_COLUMNS_MOD = {
-  'recipe_kinds': ['image_slug'],
-  'recipes': ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'ingredients', 'recipe_kind_id', 'image_slug'],
-  'users': ['name', 'gender', 'image_slug', 'locale'],
-  'favorite_recipes': ['list_id', 'recipe_id'],
-  'tags': ['name', 'image_slug', 'position'],
-  'suggestions': ['tag_id', 'recipe_id']
+// TODO: Use security_key
+const mySchema = {
+  'recipe_kinds': {
+    attrs: ['image_slug'],
+  },
+  'recipes': {
+    attrs: ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'ingredients', 'recipe_kind_id', 'image_slug'],
+    security_key: ['user_id']
+  },
+  'users': {
+    attrs: ['name', 'gender', 'image_slug', 'locale'],
+    security_key: ['account_id']
+  },
+  'favorite_recipes': {
+    attrs: ['list_id', 'recipe_id'],
+    security_key: ['user_id']
+  },
+  'tags': {
+    attrs: ['name', 'image_slug', 'position'],
+    security_key: ['user_id']
+  },
+  'suggestions': {
+    attrs: ['tag_id', 'recipe_id'],
+    security_key: ['user_id']
+  }
 }
+const schema = {}
+schema.getTableList = () => {return Object.keys(mySchema)}
+schema.getFields = (table) => {return mySchema[table].attrs}
+
+//export const ALLOWED_COLUMNS_MOD = {
+//  'recipe_kinds': ['image_slug'],
+//  'recipes': ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'ingredients', 'recipe_kind_id', 'image_slug'],
+//  'users': ['name', 'gender', 'image_slug', 'locale'],
+//  'favorite_recipes': ['list_id', 'recipe_id'],
+//  'tags': ['name', 'image_slug', 'position'],
+//  'suggestions': ['tag_id', 'recipe_id']
+//}
 // WARNING: All users have access to these
 export const ALLOWED_COLUMNS_GET = {
   'recipes': RECIPE_ATTRS
@@ -69,7 +97,7 @@ function appendConditions(query0, args0, conditions) {
 if (db.updateField) {throw "Can't overide updateField"}
 db.updateField = function(table, id, field, value, conditions=null) {
 
-  let query0 = 'UPDATE '+db.safe(table, Object.keys(ALLOWED_COLUMNS_MOD))+' SET '+db.safe(field, ALLOWED_COLUMNS_MOD[table])+' = ?, updated_at = ? WHERE id = ?'
+  let query0 = 'UPDATE '+db.safe(table, schema.getTableList())+' SET '+db.safe(field, schema.getFields(table))+' = ?, updated_at = ? WHERE id = ?'
   let args0 = [value, utils.now(), id]
   const [query, args] = appendConditions(query0, args0, conditions)
   return db.prepare(query).run(...args)
@@ -91,7 +119,7 @@ db.destroyRecord = function(table, id, conditions) {
 if (db.createRecord) {throw "Can't overide createRecord"}
 db.createRecord = function(table, obj, userId) {
     
-  let safeTable = db.safe(table, Object.keys(ALLOWED_COLUMNS_MOD))
+  let safeTable = db.safe(table, schema.getTableList())
   obj.user_id = userId 
 
   if (BEFORE_CREATE[safeTable]) {
@@ -99,7 +127,7 @@ db.createRecord = function(table, obj, userId) {
   }
 
   let fields = Object.keys(obj)
-  let columns = ALLOWED_COLUMNS_MOD[safeTable]
+  let columns = schema.getFields(safeTable)
   let query = 'INSERT INTO '+safeTable+' (created_at,updated_at,'+fields.map(f => db.safe(f, [...columns, 'user_id'])).join(',')+') '
   query += 'VALUES (?,?,'+fields.map(f=>'?').join(',')+')'
   let args = [utils.now(), utils.now(), ...Object.values(obj)]
