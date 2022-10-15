@@ -287,12 +287,7 @@ router.patch('/update_field/:table/:id', function(req, res, next) {
     let {table, id} = req.params
     let {field, value} = req.body
 
-    let info = null
-    if (table == 'users') {
-      info = db.updateField(table, req.user.user_id, field, value)
-    } else {
-      info = db.updateField(table, id, field, value, {user_id: req.user.user_id})
-    }
+    let info = db.safeUpdateField(table, id, field, value, req.user)
     if (info.changes != 1) {return res.status(500).send("Unable to update record in database")}
     res.json({status: 'ok'})
   } catch(err) {

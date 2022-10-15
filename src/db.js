@@ -36,28 +36,29 @@ const mySchema = {
   },
   'recipes': {
     attrs: ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'ingredients', 'recipe_kind_id', 'image_slug'],
-    security_key: ['user_id']
+    security_key: 'user_id'
   },
   'users': {
     attrs: ['name', 'gender', 'image_slug', 'locale'],
-    security_key: ['account_id']
+    security_key: 'account_id'
   },
   'favorite_recipes': {
     attrs: ['list_id', 'recipe_id'],
-    security_key: ['user_id']
+    security_key: 'user_id'
   },
   'tags': {
     attrs: ['name', 'image_slug', 'position'],
-    security_key: ['user_id']
+    security_key: 'user_id'
   },
   'suggestions': {
     attrs: ['tag_id', 'recipe_id'],
-    security_key: ['user_id']
+    security_key: 'user_id'
   }
 }
 const schema = {}
 schema.getTableList = () => {return Object.keys(mySchema)}
 schema.getFields = (table) => {return mySchema[table].attrs}
+schema.getSecurityKey = (table) => {return mySchema[table].security_key}
 
 //export const ALLOWED_COLUMNS_MOD = {
 //  'recipe_kinds': ['image_slug'],
@@ -100,6 +101,23 @@ db.updateField = function(table, id, field, value, conditions=null) {
   let query0 = 'UPDATE '+db.safe(table, schema.getTableList())+' SET '+db.safe(field, schema.getFields(table))+' = ?, updated_at = ? WHERE id = ?'
   let args0 = [value, utils.now(), id]
   const [query, args] = appendConditions(query0, args0, conditions)
+  return db.prepare(query).run(...args)
+}
+
+function addSafetyCondition(query0, args0, user, securityKey) {
+  if (!securityKey) {throw "Error in addSafetyCondition: security must exist"}
+  if (!user[securityKey]) {throw "Error in addSafetyCondition: user must have security key"}
+  let query = query0+' AND '+securityKey+' = ?'
+  let args = [...args0, user[securityKey]]
+  return [query, args]
+}
+
+if (db.safeUpdateField) {throw "Can't overide safeUpdateField"}
+db.safeUpdateField = function(table, id, field, value, user) {
+
+  let query0 = 'UPDATE '+db.safe(table, schema.getTableList())+' SET '+db.safe(field, schema.getFields(table))+' = ?, updated_at = ? WHERE id = ?'
+  let args0 = [value, utils.now(), id]
+  const [query, args] = addSafetyCondition(query0, args0, user, schema.getSecurityKey(table))
   return db.prepare(query).run(...args)
 }
 
