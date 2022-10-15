@@ -4,7 +4,7 @@ import connectEnsureLogin from 'connect-ensure-login'
 import { fileURLToPath } from 'url';
 import path from 'path';
 
-import { db, ALLOWED_COLUMNS_MOD, ALLOWED_COLUMNS_GET, ALLOWED_TABLES_DESTROY } from './db.js';
+import { db, ALLOWED_COLUMNS_GET } from './db.js';
 import gon, {initGon, fetchTable, fetchTableMiddleware} from './gon.js';
 import passport from './passport.js';
 import utils from './utils.js';
