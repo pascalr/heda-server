@@ -4,26 +4,26 @@ import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 
 import {clearRecord, asyncUpdateModel, TextField, ImageField, RadioField} from '../form'
-import { image_variant_path } from '../routes'
+import { image_path } from '../routes'
 import { isTrue } from "../utils"
 import { t } from "../../translate"
 
 export const EditRecipeImageModal = ({recipe, recipeKinds, images, show, handleClose}) => {
 
   const recipeKind = recipeKinds.find(k => k.id == recipe.recipe_kind_id)
-  const recipeImage = recipe.image_id ? images.find(e => e.id == recipe.image_id) : null
-  let recipeKindImage = recipeKind && recipeKind.image_id ? images.find(e => e.id == recipeKind.image_id) : null
+  const recipeImage = recipe.image_slug ? images.find(e => e.slug == recipe.image_slug) : null
+  let recipeKindImage = recipeKind && recipeKind.image_slug ? images.find(e => e.slug == recipeKind.image_slug) : null
   
   const image = isTrue(recipe.use_personalised_image) ? recipeImage : recipeKindImage
-  const imagePath = image ? image_variant_path(image, 'medium') : "/img/default_recipe_01.png"
+  const imagePath = image ? image_path(image, 'medium') : "/img/default_recipe_01.png"
 
   const removeImage = () => {
     if (window.confirm(t('Confirm_delete'))) {
-      window.hcu.updateField(recipe, 'image_id', null)
+      window.hcu.updateField(recipe, 'image_slug', null)
     }
   }
           
-  //<ImageSelector record={recipe} field="image_id" maxSizeBytes={2*1000*1000} height="171px" defaultImage="/img/default_recipe_01.png" />
+  //<ImageSelector record={recipe} field="image_slug" maxSizeBytes={2*1000*1000} height="171px" defaultImage="/img/default_recipe_01.png" />
     
   return (<>
     <Modal show={show} onHide={handleClose}>
@@ -53,7 +53,7 @@ export const EditRecipeImageModal = ({recipe, recipeKinds, images, show, handleC
           {!isTrue(recipe.use_personalised_image) ? '' :
             <div style={{paddingLeft: "2em"}}>
               <div style={{height: "0.5em"}}/>
-              <ImageField record={recipe} field="image_id" maxSizeBytes={2*1000*1000} height="171px" />
+              <ImageField record={recipe} field="image_slug" maxSizeBytes={2*1000*1000} height="171px" />
               {!recipeImage ? '' : <>
                 <div style={{height: "0.5em"}}/>
                 <RadioField model={recipeImage} field="is_user_author" value={true} label="Je suis l'auteur de cette image" />

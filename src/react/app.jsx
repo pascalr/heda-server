@@ -12,7 +12,7 @@ import { findRecipeKindForRecipeName } from "../lib"
 import { RecipeList, RecipeIndex } from './recipe_index'
 import { ajax, isBlank, normalizeSearchText, preloadImage, join, bindSetter, sortBy, capitalize } from "./utils"
 import { getUrlParams } from "../utils"
-import { icon_path, image_variant_path, image_slug_variant_path } from './routes'
+import { icon_path, image_path, image_slug_variant_path } from './routes'
 import {TextField, AutocompleteInput, TextInput, CollectionSelect, ImageField, ImageSelector} from './form'
 import {PublicImageField} from './modals/public_image'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
@@ -67,7 +67,7 @@ const SuggestionsNav = ({page, tagSuggestions, categorySuggestions}) => {
   </>)
 }
 
-const RecipeSingleCarrousel = ({tag, suggestions, isCategory, recipes}) => {
+const RecipeSingleCarrousel = ({tag, suggestions, isCategory, recipes, recipeKinds}) => {
   
   const [suggestionNb, setSuggestionNb] = useState(0)
   const [maxSuggestionNb, setMaxSuggestionNb] = useState(0)
@@ -101,13 +101,6 @@ const RecipeSingleCarrousel = ({tag, suggestions, isCategory, recipes}) => {
   let suggestion = suggestions ? suggestions[suggestionNb] : null
   if (!suggestion) {console.log('no suggestion to show'); return ''}
 
-  //const preloadSuggestion = (suggestion) => {
-  //  console.log('preloading suggestion')
-  //  if (suggestion.image_id) {
-  //    preloadImage(image_variant_path(suggestion.image_id, "medium"))
-  //  }
-  //}
-  
   let handleSwipe = ({direction}) => {
     if (direction == 2) { // left
       nextSuggestion()
@@ -131,15 +124,25 @@ const RecipeSingleCarrousel = ({tag, suggestions, isCategory, recipes}) => {
   }
   
   //<button type="button" className="btn btn-danger" onClick={() => nextSuggestion()}>Non, pas cette fois</button>
+  //let suggested = null
+  //if (suggestion.recipe_id) {
+  //  suggested = recipes.find(r => r.id == suggestion.recipe_id)
+  //} else {
+  //  suggested = recipeKinds.find(r => r.id == suggestion.recipe_kind_id)
+  //}
   
   let recipe = recipes.find(r => r.id == suggestion.recipe_id)
+  const recipeKind = recipeKinds.find(k => k.id == recipe.recipe_kind_id)
+
+  const imageSlug = isTrue(recipe.use_personalised_image) ? recipe.image_slug : recipeKind && recipeKind.image_slug
+  const imageSrc = imageSlug ? image_path(imageSlug, 'medium') : "/img/default_recipe_01.png"
  
     //<Hammer onSwipe={handleSwipe}>
     //</Hammer>
   return (<>
       <div>
         <div className="over-container" style={{margin: "auto"}}>
-          <img src={suggestion.image_id ? image_variant_path({id: suggestion.image_id}, "medium") : "/img/default_recipe_01.png"} style={{maxWidth: "100vw"}} width="452" height="304" />
+          <img src={imageSrc} style={{maxWidth: "100vw"}} width="452" height="304" />
           <LinkToPage page={{page: 15, recipeId: recipe.id}}>
             <h2 className="bottom-center font-satisfy" style={{borderRadius: "0.5em", border: "1px solid #777", color: "#333", bottom: "1em", backgroundColor: "#f5f5f5", fontSize: "2em", padding: "0.2em 0.8em 0 0.2em"}}>{recipe.name}</h2>
           </LinkToPage>
@@ -154,7 +157,7 @@ const RecipeSingleCarrousel = ({tag, suggestions, isCategory, recipes}) => {
   </>)
 }
 
-const SuggestionsIndex = ({tags, suggestions, page, recipes}) => {
+const SuggestionsIndex = ({tags, suggestions, page, recipes, recipeKinds}) => {
 
   const tag = tags.find(f => f.id == page.tagId)
   if (!tag) {console.log('No tag found'); return ''}
@@ -165,11 +168,13 @@ const SuggestionsIndex = ({tags, suggestions, page, recipes}) => {
   return (<>
     <SuggestionsNav {...{page, tagSuggestions}} />
     {tag.name ? <h2 style={{textAlign: 'center'}}>{tag.name}</h2> : ''}
-    <RecipeSingleCarrousel tag={tag} suggestions={tagSuggestions} recipes={recipes} />
+    <RecipeSingleCarrousel {...{tag, suggestions: tagSuggestions, recipes, recipeKinds}} />
   </>)
 }
 
 const TagCategorySuggestions = ({page, recipeFilters, suggestions, recipes}) => {
+
+  throw "FIXME: What is this?"
 
   const tag = recipeFilters.find(f => f.id == page.filterId)
   if (!tag) {return ''}
@@ -193,15 +198,9 @@ const TagCategorySuggestions = ({page, recipeFilters, suggestions, recipes}) => 
   </>)
 }
 
-              //return (<td key={j}>
-              //  <div className="over-container clickable" style={{margin: "auto", border: `4px solid ${selected[nb] ? 'blue' : 'white'}`}} onClick={() => imageClicked(nb)}>
-//    <img src={record.image_id ? image_variant_path({id: record.image_id}, "small") : "/default_recipe_01.png"} width="255" height="171" />
-              //    <h2 className="bottom-center font-satisfy" style={{borderRadius: "0.5em", border: "1px solid #777", color: "#333", bottom: "1em", backgroundColor: "#f5f5f5", fontSize: "1.2em", padding: "0.2em 0.8em 0 0.2em"}}>{record.name}</h2>
-              //  </div>
-              //</td>)
 const RecipeImageWithTitle = ({record, selected, selectItem}) => {
   return <div className="over-container clickable d-inline-block" style={{border: `4px solid ${selected ? 'blue' : 'white'}`}} onClick={() => selectItem(record)}>
-    <img src={record.image_id ? image_variant_path({id: record.image_id}, "small") : "/img/default_recipe_01.png"} width="255" height="171" style={{maxWidth: "100vw"}} />
+    <img src={record.image_slug ? image_path(record.image_slug, "small") : "/img/default_recipe_01.png"} width="255" height="171" style={{maxWidth: "100vw"}} />
     <h2 className="bottom-center font-satisfy" style={{borderRadius: "0.5em", border: "1px solid #777", color: "#333", bottom: "1em", backgroundColor: "#f5f5f5", fontSize: "1.2em", padding: "0.2em 0.8em 0 0.2em"}}>{record.name}</h2>
   </div>
 }
@@ -317,7 +316,7 @@ const EditTag = ({page, tags, images}) => {
 
 const EditTagButton = ({tag, images}) => {
   const image = images.find(i => i.slug == tag.image_slug)
-  const imagePath = image ? image_variant_path(image, 'medium') : "/img/question-mark.jpg"
+  const imagePath = image ? image_path(image, 'medium') : "/img/question-mark.jpg"
   const handleClick = () => changePage({page: 3, tagId: tag.id})
   return (
     <div className="d-flex align-items-center" style={{padding: '5px 0'}}>
@@ -415,7 +414,7 @@ const TagIndex = ({page, machines, tags, images}) => {
 
   const buttons = sortBy(tags, 'position').map(tag => {
     const image = images.find(i => i.slug == tag.image_slug)
-    const imagePath = image ? image_variant_path(image, 'medium') : "/img/question-mark.jpg"
+    const imagePath = image ? image_path(image, 'medium') : "/img/question-mark.jpg"
     return <TagButton key={tag.id} image={imagePath} title={tag.name || "Sans nom"} handleClick={() => changePage({page: PAGE_9, tagId: tag.id})} />
   })
 
@@ -957,7 +956,7 @@ const NewRecipe = ({page, recipeKinds}) => {
   const recipeKind = findRecipeKindForRecipeName(name, recipeKinds)
   let recipeKindPreview = null
   if (recipeKind) {
-    const imagePath = image_variant_path({id: recipeKind.image_id}, 'small')
+    const imagePath = image_path(recipeKind.image_slug, 'small')
     recipeKindPreview = <>
       <img src={imagePath} width="255" height="171"/>
       <h3 style={{fontSize: '1.5rem'}}>{recipeKind.name}</h3>
@@ -1066,7 +1065,7 @@ const App = () => {
     [PAGE_6]: <MyRecipes {...{page, recipes, suggestions, favoriteRecipes, tags, mixes, recipeKinds, user, images}} />,
     [PAGE_7]: <MyBooks page={page} />,
     [PAGE_8]: <TagEditAllCategories page={page} />,
-    [PAGE_9]: <SuggestionsIndex {...{page, tags, suggestions, recipes}} />,
+    [PAGE_9]: <SuggestionsIndex {...{page, tags, suggestions, recipes, recipeKinds}} />,
     [PAGE_10]: <HedaIndex {...{page, machines}} />,
     [PAGE_11]: <Inventory {...{page, machines, machineFoods, containerQuantities, foods, containerFormats}} />,
     [PAGE_12]: <MixIndex {...{page, machines, machineFoods, mixes}} />,

@@ -6,6 +6,10 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Creating tags with react and bootstrap.
 => Hcu
 
+FIXME: JPG, Soupe aux patates et haricots blanc
+Recipe_kinds, image_slug
+Recipes, image_slug
+Create tag does not work => does not go to EditTag properly...
 fix create_record, use new function db.createRecord
 Comment gérer la langue des pages quand l'utilisateur n'est pas connecté????? (Page d'acceuil, Choose user, Forgot, toutes les views en fait...)
 When doing an update, check the number of changes to make sure that it worked. info.changes == 1
@@ -25,7 +29,6 @@ Faire une page de vente pour l'application.
     Faire une vidéo ou bien ou simulation live de l'éditeur de recette (Créer une recette n'aura jamais été aussi facile)
     Tu ne sais pas quoi manger? HedaCuisine te suggère des recettes selon des thèmes.
 
-Drag and drop tags
 Afficher les exception correctement. (Par exemple, uploader un svg au lieu d'un jpg ou png)
 Inspiration pour la page de vente peut-être: https://www.scoop.solar/
 Simplement enlever pretty quantity...

@@ -32,7 +32,8 @@ db.safe = function(str, allowed) {
 // TODO: Refactor all of this and put this in a schema.
 
 export const ALLOWED_COLUMNS_MOD = {
-  'recipes': ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id', 'ingredients', 'recipe_kind_id'],
+  'recipe_kinds': ['image_slug'],
+  'recipes': ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'ingredients', 'recipe_kind_id', 'image_slug'],
   'users': ['name', 'gender', 'image_slug', 'locale'],
   'favorite_recipes': ['list_id', 'recipe_id'],
   'tags': ['name', 'image_slug', 'position'],
@@ -87,15 +88,4 @@ db.destroyRecord = function(table, id, conditions) {
   if (info.changes != 1) {throw "Error destroying record from table "+table+" with id "+id}
 }
 
-//var db = null;
-//try {
-//  db = new sqlite3.Database(dbPath);
-//  console.log('Opening database successful!')
-//} catch (err) {
-//  console.log('Error opening sqlite3 Database:', err)
-//  console.log('Opening temp file')
-//  db = new sqlite3.Database('./temp.db');
-//}
-
-//export default db;
-//module.exports = db;
+export default db;

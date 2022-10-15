@@ -69,16 +69,14 @@ router.post('/upload_image', function(req, res, next) {
       file.mv(path.join(IMAGE_FOLDER, image.id + '.' + ext), function(err) {
         if (err) { return res.status(500).send(err); }
 
-        let idOrSlug = recordField == 'image_id' ? image.id : `${image.id}.${ext}`
-        console.log('recordField', recordField)
-        console.log('idOrSlug', idOrSlug)
-        let q = "UPDATE "+db.safe(recordTable, ['recipes', 'tags', 'users'])+" SET "+db.safe(recordField, ['image_id', 'image_slug'])+" = ?, updated_at = ? WHERE id = ?"
+        let slug = `${image.id}.${ext}`
+        let q = "UPDATE "+db.safe(recordTable, ['recipes', 'tags', 'users'])+" SET "+db.safe(recordField, ['image_slug'])+" = ?, updated_at = ? WHERE id = ?"
         let args = []
         if (recordTable == 'users') {
-          args = [idOrSlug, utils.now(), req.user.user_id]
+          args = [slug, utils.now(), req.user.user_id]
         } else {
           q += " AND user_id = ?"
-          args = [idOrSlug, utils.now(), recordId, req.user.user_id]
+          args = [slug, utils.now(), recordId, req.user.user_id]
         }
         db.prepare(q).run(...args)
         res.json(image)
@@ -242,28 +240,6 @@ router.get('/imgs/:variant/:slug', function(req, res, next) {
     console.log('Sent:', fileName);
   });
 });
-
-// Deprecated. Use slug instead.
-router.get('/images/:id/:variant', function(req, res, next) {
-
-  // TODO: Send only variants, not original
-  var fileName = parseInt(req.params.id).toString()+'.jpg';
-  res.sendFile(fileName, {root: IMAGE_FOLDER}, function (err) {
-    if (err) { return next(err); }
-    console.log('Sent:', fileName);
-  });
-});
-
-//function mapClassNameToTable(className) {
-//  switch(className) {
-//    case 'recipe': return 'recipes'; break;
-//    case 'user': return 'users'; break;
-//    case 'favorite_recipe': return 'favorite_recipes'; break;
-//    default:
-//      throw "Missing table for className " + className
-//  }
-//}
-
 
 router.post('/create_record/:table', function(req, res, next) {
   

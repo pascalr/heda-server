@@ -55,7 +55,7 @@ function mapBooleans(records, fields) {
   return records
 }
 
-export const RECIPE_ATTRS = ['user_id', 'name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'image_id', 'ingredients']
+export const RECIPE_ATTRS = ['user_id', 'name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'ingredients', 'image_slug']
 function fetchRecipes(req, res, next) {
   fetchTableMiddleware('recipes', {user_id: req.user.user_id}, RECIPE_ATTRS, next, (records) => {
     res.locals.gon.recipes = mapBooleans(utils.sortBy(records, 'name'), ['use_personalised_image'])
@@ -64,7 +64,7 @@ function fetchRecipes(req, res, next) {
 
 function fetchFriendsRecipes(req, res, next) {
   let ids = res.locals.gon.users.map(u => u.id).filter(id => id != req.user.user_id)
-  fetchTableMiddleware('recipes', {user_id: ids}, ['name', 'user_id', 'image_id', 'recipe_kind_id'], next, (records) => {
+  fetchTableMiddleware('recipes', {user_id: ids}, ['name', 'user_id', 'image_slug', 'recipe_kind_id'], next, (records) => {
     res.locals.gon.friends_recipes = utils.sortBy(records, 'name')
   })
 }
@@ -80,7 +80,7 @@ function fetchFriendsRecipes(req, res, next) {
 //}
 
 function fetchRecipeKinds(req, res, next) {
-  fetchTableMiddleware('recipe_kinds', {}, ['name', 'description_json', 'image_id'], next, (records) => {
+  fetchTableMiddleware('recipe_kinds', {}, ['name', 'description_json', 'image_slug'], next, (records) => {
     res.locals.gon.recipe_kinds = utils.sortBy(records, 'name')
   })
 }
@@ -227,10 +227,10 @@ function fetchNotes(req, res, next) {
 //}
 
 function fetchImages(req, res, next) {
-  let ids1 = res.locals.gon.recipes.map(r=>r.image_id).filter(x=>x)
-  let ids2 = res.locals.gon.recipe_kinds.map(r=>r.image_id).filter(x=>x)
-  let ids3 = res.locals.gon.tags.map(t=>(t.image_slug || '').split('.')[0]).filter(x=>x)
-  let ids = [...ids1, ...ids2, ...ids3]
+  let slugs1 = res.locals.gon.recipes.map(r=>r.image_slug).filter(x=>x)
+  let slugs2 = res.locals.gon.recipe_kinds.map(r=>r.image_slug).filter(x=>x)
+  let slugs3 = res.locals.gon.tags.map(t=>t.image_slug).filter(x=>x)
+  let ids = [...slugs1, ...slugs2, ...slugs3].map(s => s.split('.')[0])
   let attrs = ['author', 'source', 'filename', 'is_user_author']
   fetchTableMiddleware('images', {id: ids}, attrs, next, (records) => {
     res.locals.gon.images = records.map(im => {

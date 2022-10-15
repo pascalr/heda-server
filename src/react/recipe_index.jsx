@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 
 import { ajax, isBlank, normalizeSearchText } from "./utils"
-import { image_variant_path } from "./routes"
 import { EditTagsModal } from './modals/edit_tags'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import { LinkToPage } from "./lib"
