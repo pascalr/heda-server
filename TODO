@@ -6,9 +6,6 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Creating tags with react and bootstrap.
 => Hcu
 
-FIXME: JPG, Soupe aux patates et haricots blanc
-Recipe_kinds, image_slug
-Recipes, image_slug
 Create tag does not work => does not go to EditTag properly...
 fix create_record, use new function db.createRecord
 Comment gérer la langue des pages quand l'utilisateur n'est pas connecté????? (Page d'acceuil, Choose user, Forgot, toutes les views en fait...)

@@ -43,7 +43,7 @@ export const ALLOWED_COLUMNS_MOD = {
 export const ALLOWED_COLUMNS_GET = {
   'recipes': RECIPE_ATTRS
 }
-export const ALLOWED_TABLES_DESTROY = ['favorite_recipes', 'recipes', 'suggestions']
+export const ALLOWED_TABLES_DESTROY = ['favorite_recipes', 'recipes', 'suggestions', 'tags']
 
 export const BEFORE_CREATE = {
   'recipes': (recipe, callback) => {

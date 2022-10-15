@@ -258,7 +258,7 @@ router.post('/create_record/:table', function(req, res, next) {
       query += 'VALUES (?,?,'+fields.map(f=>'?').join(',')+')'
       let args = [utils.now(), utils.now(), ...values]
       let info = db.prepare(query).run(...args)
-      res.json({...obj, id: info.lastInsertRowId})
+      res.json({...obj, id: info.lastInsertRowid})
     }
 
     if (BEFORE_CREATE[safeTable]) {

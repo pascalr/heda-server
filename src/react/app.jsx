@@ -336,6 +336,10 @@ const EditTags = ({tags, images, page}) => {
   //userTags = sortBy(userTags, "position") Not necessary, done on server side
   const [orderedTags, setOrderedTags] = useState(tags)
 
+  useEffect(() => {
+    setOrderedTags(sortBy(tags, 'position'))
+  }, [tags])
+
   const tagsC= orderedTags.map((tag, index) => {
     return <Draggable key={`drag-user-tag-${tag.id}`} draggableId={`drag-user-tag-${tag.id.toString()}`} index={index}>
       {(provided) => (<>
@@ -365,12 +369,6 @@ const EditTags = ({tags, images, page}) => {
       }
     })
     window.hcu.batchModify(mods)
-
-    //let data = {position: destination.index+1}
-    //ajax({url: user_tag_path({id: userTagId}), type: 'PATCH', data, success: () => {
-    //  updatedList.forEach((el,i) => {el.position = i+1}) 
-    //  userTags.update(updatedList)
-    //}})
   }
 
   const createTag = () => {
