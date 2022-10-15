@@ -293,6 +293,7 @@ router.patch('/update_field/:table/:id', function(req, res, next) {
     } else {
       info = db.updateField(table, id, field, value, {user_id: req.user.user_id})
     }
+    if (info.changes != 1) {return res.status(500).send("Unable to update record in database")}
     res.json({status: 'ok'})
   } catch(err) {
     throw new Error(err)
@@ -326,6 +327,7 @@ router.patch('/batch_modify', function(req, res, next) {
       mods.forEach(({method, tableName, id, field, value}) => {
         if (method == 'UPDATE') {
           let info = db.updateField(tableName, id, field, value, {user_id: req.user.user_id})
+          if (info.changes != 1) {throw "Unable to update record in database"}
         }
       })
     })
