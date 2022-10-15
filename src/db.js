@@ -45,12 +45,12 @@ export const ALLOWED_COLUMNS_GET = {
 }
 export const ALLOWED_TABLES_DESTROY = ['favorite_recipes', 'recipes', 'suggestions', 'tags']
 
-export const BEFORE_CREATE = {
-  'recipes': (recipe, callback) => {
-    const recipe_kinds = fetchTable('recipe_kinds', {}, ['name'])
-    const recipeKind = findRecipeKindForRecipeName(recipe.name, recipe_kinds)
+const BEFORE_CREATE = {
+  'recipes': (recipe) => {
+    const recipeKinds = fetchTable('recipe_kinds', {}, ['name'])
+    const recipeKind = findRecipeKindForRecipeName(recipe.name, recipeKinds)
     if (recipeKind) {recipe.recipe_kind_id = recipeKind.id}
-    callback(recipe)
+    return recipe
   }
 }
 
@@ -86,6 +86,26 @@ db.destroyRecord = function(table, id, conditions) {
   console.log('destroyRecord')
   console.log('info.changes', info.changes)
   if (info.changes != 1) {throw "Error destroying record from table "+table+" with id "+id}
+}
+
+if (db.createRecord) {throw "Can't overide createRecord"}
+db.createRecord = function(table, obj, userId) {
+    
+  let safeTable = db.safe(table, Object.keys(ALLOWED_COLUMNS_MOD))
+  obj.user_id = userId 
+
+  if (BEFORE_CREATE[safeTable]) {
+    obj = BEFORE_CREATE[safeTable](obj)
+  }
+
+  let fields = Object.keys(obj)
+  let columns = ALLOWED_COLUMNS_MOD[safeTable]
+  let query = 'INSERT INTO '+safeTable+' (created_at,updated_at,'+fields.map(f => db.safe(f, [...columns, 'user_id'])).join(',')+') '
+  query += 'VALUES (?,?,'+fields.map(f=>'?').join(',')+')'
+  let args = [utils.now(), utils.now(), ...Object.values(obj)]
+  let info = db.prepare(query).run(...args)
+  if (info.changes != 1) {throw "Error creating record from in "+table+"."}
+  return {...obj, id: info.lastInsertRowid}
 }
 
 export default db;

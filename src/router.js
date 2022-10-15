@@ -4,7 +4,7 @@ import connectEnsureLogin from 'connect-ensure-login'
 import { fileURLToPath } from 'url';
 import path from 'path';
 
-import { db, ALLOWED_COLUMNS_MOD, ALLOWED_COLUMNS_GET, ALLOWED_TABLES_DESTROY, BEFORE_CREATE } from './db.js';
+import { db, ALLOWED_COLUMNS_MOD, ALLOWED_COLUMNS_GET, ALLOWED_TABLES_DESTROY } from './db.js';
 import gon, {initGon, fetchTable, fetchTableMiddleware} from './gon.js';
 import passport from './passport.js';
 import utils from './utils.js';
@@ -244,28 +244,11 @@ router.get('/imgs/:variant/:slug', function(req, res, next) {
 router.post('/create_record/:table', function(req, res, next) {
   
   try {
-    console.log('body', req.body)
-    let safeTable = db.safe(req.params.table, Object.keys(ALLOWED_COLUMNS_MOD))
+    // TODO: Simply do JSON.stringify in the client side instead of this...
     let fieldsSent = utils.ensureIsArray(req.body['fields[]'])//.filter(f => f != 'table_name')
     let obj = fieldsSent.reduce((acc, f) => ({ ...acc, [f]: req.body['record['+f+']']}), {}) 
-    obj.user_id = req.user.user_id
-
-    function updateObj(obj) {
-      let fields = Object.keys(obj)
-      let values = Object.values(obj)
-      let columns = ALLOWED_COLUMNS_MOD[safeTable]
-      let query = 'INSERT INTO '+safeTable+' (created_at,updated_at,'+fields.map(f => db.safe(f, [...columns, 'user_id'])).join(',')+') '
-      query += 'VALUES (?,?,'+fields.map(f=>'?').join(',')+')'
-      let args = [utils.now(), utils.now(), ...values]
-      let info = db.prepare(query).run(...args)
-      res.json({...obj, id: info.lastInsertRowid})
-    }
-
-    if (BEFORE_CREATE[safeTable]) {
-      BEFORE_CREATE[safeTable](obj, updateObj)
-    } else {
-      updateObj(obj)
-    }
+    let record = db.createRecord(req.params.table, obj, req.user_id)
+    res.json({...record})
   } catch(err) {
     throw new Error(err)
   }
