@@ -244,7 +244,8 @@ router.get('/imgs/:variant/:slug', function(req, res, next) {
 router.post('/create_record/:table', function(req, res, next) {
   
   try {
-    // TODO: Simply do JSON.stringify in the client side instead of this...
+    //let obj = JSON.parse(req.body.record)
+    // I keep doing it this way because it works. Using JSON, SQLite3 does not want to be given booleans, and it probably should be an integer and not a string, but right now it is a string I believe.
     let fieldsSent = utils.ensureIsArray(req.body['fields[]'])//.filter(f => f != 'table_name')
     let obj = fieldsSent.reduce((acc, f) => ({ ...acc, [f]: req.body['record['+f+']']}), {}) 
     let record = db.createRecord(req.params.table, obj, req.user_id)

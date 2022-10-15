@@ -83,6 +83,8 @@ export const initHcu = () => {
     //console.log('createRecord('+tableName+')', record)
     let fields = Object.keys(record)
     let url = '/create_record/'+tableName
+    // I keep doing it this way because it works. Using JSON, SQLite3 does not want to be given booleans, and it probably should be an integer and not a string, but right now it is a string I believe.
+    //ajax({url: url, type: 'POST', data: {record: JSON.stringify(record)}, success: (created) => {
     ajax({url: url, type: 'POST', data: {record, fields}, success: (created) => {
       //console.log('created', created)
       window.hcu.addRecord(tableName, created, successCallback)
