@@ -10,7 +10,7 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, LinkToPage } from "./lib"
 import { findRecipeKindForRecipeName } from "../lib"
 import { RecipeList, RecipeIndex } from './recipe_index'
-import { ajax, isBlank, normalizeSearchText, preloadImage, join, bindSetter, sortBy, capitalize } from "./utils"
+import { ajax, isBlank, normalizeSearchText, preloadImage, join, bindSetter, sortBy, capitalize, isTrue } from "./utils"
 import { getUrlParams } from "../utils"
 import { icon_path, image_path, image_slug_variant_path } from './routes'
 import {TextField, AutocompleteInput, TextInput, CollectionSelect, ImageField, ImageSelector} from './form'

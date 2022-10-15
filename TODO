@@ -8,6 +8,8 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Creating tags with react and bootstrap.
 => Hcu
 
+Delete this recipe (duplicate): Biscuits à l'avoine et aux raisins secs
+Pouvoir choisir de quel manière est tronquer l'image. Croustade aux pommes garder le haut de l'image.
 Comment gérer la langue des pages quand l'utilisateur n'est pas connecté????? (Page d'acceuil, Choose user, Forgot, toutes les views en fait...)
 When doing an update, check the number of changes to make sure that it worked. info.changes == 1
 Create an admin page, add a button to make a safe copy of the sqlite3 file.

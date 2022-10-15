@@ -42,3 +42,6 @@ scp root@heda-server.internal:/mnt/heda_volume/prod.db var/db/dev.db
 //https://community.fly.io/t/how-to-copy-files-off-a-vm/1651/7
 references:
 https://www.digitalocean.com/community/tutorials/how-to-set-up-wireguard-on-ubuntu-20-04
+
+## Stable diffustion
+... in a baking dish
