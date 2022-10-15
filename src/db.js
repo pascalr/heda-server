@@ -29,7 +29,8 @@ db.safe = function(str, allowed) {
   return s
 }
 
-// TODO: Use security_key
+// FIXME: Rename attrs to something more like public_attrs, because these attributes can be modified
+// when the user has a valid security key
 const mySchema = {
   'recipe_kinds': {
     attrs: ['image_slug'],
@@ -129,8 +130,16 @@ db.destroyRecord = function(table, id, conditions) {
   const args0 = [id]
   const [query, args] = appendConditions(query0, args0, conditions)
   let info = db.prepare(query).run(...args)
-  console.log('destroyRecord')
-  console.log('info.changes', info.changes)
+  if (info.changes != 1) {throw "Error destroying record from table "+table+" with id "+id}
+}
+
+if (db.safeDestroyRecord) {throw "Can't overide safeDestroyRecord"}
+db.safeDestroyRecord = function(table, id, user) {
+
+  const query0 = 'DELETE FROM '+db.safe(table, schema.getTableList())+' WHERE id = ?'
+  const args0 = [id]
+  const [query, args] = addSafetyCondition(query0, args0, user, schema.getSecurityKey(table))
+  let info = db.prepare(query).run(...args)
   if (info.changes != 1) {throw "Error destroying record from table "+table+" with id "+id}
 }
 
