@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 
 import { db, ALLOWED_COLUMNS_GET } from './db.js';
-import gon, {initGon, fetchTableMiddleware} from './gon.js';
+import gon, {initGon, fetchTableMiddleware, RECIPE_ATTRS} from './gon.js';
 import passport from './passport.js';
 import utils from './utils.js';
 
@@ -346,6 +346,32 @@ router.delete('/destroy_record/:table/:id', function(req, res, next) {
 
 router.get('/demo', function(req, res, next) {
   next()
+});
+
+router.get('/user/:id', function(req, res, next) {
+  let userId = req.params.id
+  let o = {}
+  let ids = null
+  let attrs = null
+  // FIXME: Create and use fetchRecord or findRecord, not fetchTable
+  o.user = db.fetchTable('users', {id: userId, is_public: 1}, ['name'])[0]
+  if (!o.user) {throw 'Unable to fetch user. Not existent or not public.'}
+
+  o.recipes = db.fetchTable('recipes', {user_id: userId}, RECIPE_ATTRS)
+  o.recipe_kinds = db.fetchTable('recipe_kinds', {}, ['name', 'description_json', 'image_slug'])
+
+  let slugs1 = o.recipes.map(r=>r.image_slug).filter(x=>x)
+  let slugs2 = o.recipe_kinds.map(r=>r.image_slug).filter(x=>x)
+  ids = [...slugs1, ...slugs2].map(s => s.split('.')[0])
+  attrs = ['author', 'source', 'filename', 'is_user_author']
+  o.images = db.fetchTable('images', {id: ids}, attrs).map(im => {
+    let ext = im.filename.substr(im.filename.lastIndexOf('.') + 1);
+    im.slug = `${im.id}.${ext}`
+    return im
+  })
+
+  res.locals.gon = o
+  res.render('show_user');
 });
 
 /* GET home page. */

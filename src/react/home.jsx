@@ -85,7 +85,11 @@ const Home = () => {
 
   if (!publicUsers || !isSearching) {return ''}
 
-  return <SearchBox {...{publicUsers}} />
+  return <>
+    <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0 0.5em 0'}}>
+      <SearchBox {...{publicUsers}} />
+    </div>
+  </>
 }
 
 document.addEventListener('DOMContentLoaded', () => {
