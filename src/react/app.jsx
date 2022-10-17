@@ -1017,7 +1017,7 @@ const App = () => {
     setCsrf(document.querySelector('[name="csrf-token"]').content)
   }, [])
 
-  const suggestions = useHcuState(gon.suggestions, {tableName: 'suggestions'})
+  const suggestions = useHcuState(gon.suggestions.filter(r => r.tag_id), {tableName: 'suggestions'}) // FIXME: Fix the data. tag_id is mandatory...
   const favoriteRecipes = useHcuState(gon.favorite_recipes, {tableName: 'favorite_recipes'})
   const machineFoods = useHcuState(gon.machine_foods, {tableName: 'machine_foods'})
   const mixes = useHcuState(gon.mixes, {tableName: 'mixes'})
