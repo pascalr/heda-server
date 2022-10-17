@@ -37,7 +37,14 @@ const mySchema = {
   },
   'recipes': {
     attrs: ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'ingredients', 'recipe_kind_id', 'image_slug'],
-    security_key: 'user_id'
+    security_key: 'user_id',
+
+    beforeCreate(recipe) {
+      const recipeKinds = fetchTable('recipe_kinds', {}, ['name'])
+      const recipeKind = findRecipeKindForRecipeName(recipe.name, recipeKinds)
+      if (recipeKind) {recipe.recipe_kind_id = recipeKind.id}
+      return recipe
+    }
   },
   'users': {
     attrs: ['name', 'gender', 'image_slug', 'locale'],
@@ -60,6 +67,10 @@ const schema = {}
 schema.getTableList = () => {return Object.keys(mySchema)}
 schema.getFields = (table) => {return mySchema[table].attrs}
 schema.getSecurityKey = (table) => {return mySchema[table].security_key}
+schema.beforeCreate = (table, obj) => {
+  if (!obj || !mySchema[table].beforeCreate) {return obj}
+  return mySchema[table].beforeCreate(obj)
+}
 
 //export const ALLOWED_COLUMNS_MOD = {
 //  'recipe_kinds': ['image_slug'],
@@ -74,15 +85,6 @@ export const ALLOWED_COLUMNS_GET = {
   'recipes': RECIPE_ATTRS
 }
 export const ALLOWED_TABLES_DESTROY = ['favorite_recipes', 'recipes', 'suggestions', 'tags']
-
-const BEFORE_CREATE = {
-  'recipes': (recipe) => {
-    const recipeKinds = fetchTable('recipe_kinds', {}, ['name'])
-    const recipeKind = findRecipeKindForRecipeName(recipe.name, recipeKinds)
-    if (recipeKind) {recipe.recipe_kind_id = recipeKind.id}
-    return recipe
-  }
-}
 
 // WARNING: Conditions keys are not safe. Never use user input for conditions keys.
 function appendConditions(query0, args0, conditions) {
@@ -148,10 +150,7 @@ db.createRecord = function(table, obj, userId) {
     
   let safeTable = db.safe(table, schema.getTableList())
   obj.user_id = userId 
-
-  if (BEFORE_CREATE[safeTable]) {
-    obj = BEFORE_CREATE[safeTable](obj)
-  }
+  obj = schema.beforeCreate(table, obj)
 
   let fields = Object.keys(obj)
   let columns = schema.getFields(safeTable)
