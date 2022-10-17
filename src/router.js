@@ -350,7 +350,12 @@ router.get('/demo', function(req, res, next) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  if (!req.user) { return res.render('home'); }
+  if (!req.user) {
+    res.locals.gon = {
+      public_users: db.fetchTable('users', {is_public: 1}, ['name', 'image_slug'])
+    }
+    return res.render('home');
+  }
   if (!req.user.user_id) { return res.redirect('/choose_user'); }
   next();
 }, gon.fetchAll, setProfile, function(req, res, next) {

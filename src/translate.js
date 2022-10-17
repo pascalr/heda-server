@@ -8,6 +8,8 @@ export function tr(id, locale) {
     Error_updating: 'An error has occured that prevented this record from being modified.',
   }
   let fr = {
+    Search: 'Rechercher',
+    Public_members: 'Membres publiques',
     private: 'privé',
     public: 'public',
     Visibility: 'Visibilité',

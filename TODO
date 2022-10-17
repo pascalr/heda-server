@@ -8,10 +8,7 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Creating tags with react and bootstrap.
 => Hcu
 
-FIXME: Make fetchTable secure...
 Pouvoir rechercher les utilisateurs publiques sur la page d'acceuil.
-Ajouter 'demo', qui est pareil comme mon user, mais pas logged in donc pas de modifications possible
-Bouton: [Demo beta]
 Je n'arrive pas à changer le owner de pouding au pain...
 Une page publique pour les utilisateurs? Ça montrerais quoi? Juste toute la liste des recettes?
 Image thumbnails, si le thumbnail n'existe pas, le créer. Faire ça pour toutes les variantes.
@@ -24,6 +21,7 @@ Create an admin page, add a button to make a safe copy of the sqlite3 file.
 TODO: Test transaction for upload_image
 Ajouter un exemple de Carrousel de suggestions de recettes dans la page d'acceuil.
 Ajouter un exemple de modifier une recette sur la page d'acceuil.
+FIXME: Make fetchTable secure. Remove ALLOWED_TABLES_GET, use read_attrs?
 Ah je le sais quel design que je veux! Un genre de faux design de téléphone.
 
 Sur mon site internet de CV, rajouter une ligne sur la page d'acceuil, Portfolio, avec des liens vers les meilleurs projets que j'ai fait.
