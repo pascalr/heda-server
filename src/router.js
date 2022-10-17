@@ -337,7 +337,8 @@ router.delete('/destroy_record/:table/:id', function(req, res, next) {
 
   try {
     let {id, table} = req.params
-    db.safeDestroyRecord(table, id, req.user)
+    db.destroyRecordWithDependants(table, id, req.user)
+    //db.safeDestroyRecord(table, id, req.user)
     res.json({status: 'ok'})
   } catch(err) {
     throw new Error(err)

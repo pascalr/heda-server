@@ -7,13 +7,6 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Creating a modal with react and bootstrap.
 => Creating tags with react and bootstrap.
 => Hcu
-  
-dependant_destroy: ['favorite_recipes', 'meals', 'mixes', 'recipe_comments', 'recipe_notes', 'recipe_ratings', 'recipe_steps', 'recipe_tools', 'references', 'similar_recipes', 'suggestions', 'user_recipes']
-
-Add dependant_destroy to schema for recipes:
-recipes {
-  dependant_destroy: ['book_recipes', 'favorite_recipes', 'food_recipes', 'ingredient_sections', 'items', 'meals', 'mixes', 'recipe_comments', 'recipe_ingredients', 'recipe_notes', 'recipe_ratings', 'recipe_steps', 'recipe_tools', 'references', 'similar_recipes', 'suggestions', 'user_recipes']
-}
 
 In schema, add read_attrs and write_attrs.
 In schema, add order: 'attributes_name'

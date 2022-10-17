@@ -17,6 +17,14 @@ import { findRecipeKindForRecipeName } from "./lib.js"
 import {RECIPE_ATTRS} from './gon.js';
 import utils from './utils.js';
 
+// TODO: Use long version instead of short version:
+// DELETE FROM 'mixes' WHERE 'mixes.recipe_id' = 50.0
+// instead of
+// DELETE FROM 'mixes' WHERE recipe_id = 50.0
+// I believe this is how ruby on rails does it.
+// One advantages is that it allows to use keywords, for example 'references', as key
+// Note: This does not work: DELETE FROM 'mixes' WHERE 'recipe_id' = 50.0
+
 const ALLOWED_CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
 if (db.safe) {throw "Can't overide safe"}
 db.safe = function(str, allowed) {
@@ -26,22 +34,29 @@ db.safe = function(str, allowed) {
   })
   if (str != s) {throw "Error: User tried to send unsafe value."}
   if (!allowed.includes(s)) {throw "Error: Db value not allowed ("+s+")."}
-  return s
+  return "'"+s+"'"
 }
 
 // FIXME: Rename attrs to something more like public_attrs, because these attributes can be modified
 // when the user has a valid security key
 const mySchema = {
+  'meals': {},
+  'mixes': {},
+  'recipe_comments': {},
+  'recipe_notes': {},
+  'recipe_ratings': {},
+  'recipe_tools' : {},
+  'references' : {},
   'recipe_kinds': {
     attrs: ['image_slug'],
   },
   'recipes': {
     attrs: ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'ingredients', 'recipe_kind_id', 'image_slug'],
     security_key: 'user_id',
-    dependant_destroy: {recipe_id: ['book_recipes', 'favorite_recipes', 'food_recipes', 'ingredient_sections', 'items', 'meals', 'mixes', 'recipe_comments', 'recipe_ingredients', 'recipe_notes', 'recipe_ratings', 'recipe_steps', 'recipe_tools', 'references', 'similar_recipes', 'suggestions', 'user_recipes']},
+    dependant_destroy: {recipe_id: ['favorite_recipes', 'meals', 'mixes', 'recipe_comments', 'recipe_notes', 'recipe_ratings', 'recipe_tools', 'references', 'suggestions']},
 
     before_create(recipe) {
-      const recipeKinds = fetchTable('recipe_kinds', {}, ['name'])
+      const recipeKinds = db.fetchTable('recipe_kinds', {}, ['name'])
       const recipeKind = findRecipeKindForRecipeName(recipe.name, recipeKinds)
       if (recipeKind) {recipe.recipe_kind_id = recipeKind.id}
       return recipe
@@ -76,13 +91,6 @@ schema.getSecurityKey = (table) => {return mySchema[table].security_key}
 schema.beforeCreate = (table, obj) => {
   if (!obj || !mySchema[table].before_create) {return obj}
   return mySchema[table].before_create(obj)
-}
-schema.recordBelongsToUser = (table, id, user) => {
-}
-schema.destroyTableDependants = (table) => {
-  // First, make sure that the record is allowed to be destroyed by the user
-  let o = mySchema[table].dependant_destroy || {}
-  let foreignKeys = Object.keys(o)
 }
 
 //export const ALLOWED_COLUMNS_MOD = {
@@ -148,14 +156,52 @@ db.destroyRecord = function(table, id, conditions) {
   if (info.changes != 1) {throw "Error destroying record from table "+table+" with id "+id}
 }
 
+if (db.destroyRecordWithDependants) {throw "Can't overide destroyRecordWithDependants"}
+db.destroyRecordWithDependants = function(table, id, user) {
+
+  // First, make sure that the record is allowed to be destroyed by the user
+  let q = 'SELECT id FROM ' +db.safe(table, schema.getTableList())+' WHERE id = ?'
+  let [query, args] = addSafetyCondition(q, [id], user, schema.getSecurityKey(table))
+  let r = db.prepare(query).get(...args)
+  if (!r || !r.id) {throw "Error: Record not allowed to be destroyed."}
+    
+  let destroyWithDependants = db.transaction(record => {
+
+    let o = mySchema[table].dependant_destroy || {}
+    let foreignKeys = Object.keys(o)
+    foreignKeys.forEach(foreignKey => {
+   
+      let tables = o[foreignKey]
+      tables.forEach(dependantTable => {
+        db.unsafeDestroyTableKey(dependantTable, foreignKey, record.id)
+      })
+    })
+
+    db.safeDestroyRecord(table, record.id, user)
+  })
+  destroyWithDependants(r)
+}
+
+if (db.safeDestroyTableKey) {throw "Can't overide safeDestroyTableKey"}
+db.safeDestroyTableKey = function(table, key, val, user) {
+
+  const q = 'DELETE FROM '+db.safe(table, schema.getTableList())+' WHERE '+key+' = ?'
+  const [query, args] = addSafetyCondition(q, [val], user, schema.getSecurityKey(table))
+  return db.prepare(query).run(...args)
+}
+
+if (db.unsafeDestroyTableKey) {throw "Can't overide unsafeDestroyTableKey"}
+db.unsafeDestroyTableKey = function(table, key, val) {
+
+  const q = 'DELETE FROM '+db.safe(table, schema.getTableList())+" WHERE "+key+" = ?"
+  return db.prepare(q).run(val)
+}
+
 if (db.safeDestroyRecord) {throw "Can't overide safeDestroyRecord"}
 db.safeDestroyRecord = function(table, id, user) {
 
-  const query0 = 'DELETE FROM '+db.safe(table, schema.getTableList())+' WHERE id = ?'
-  const args0 = [id]
-  const [query, args] = addSafetyCondition(query0, args0, user, schema.getSecurityKey(table))
-  let info = db.prepare(query).run(...args)
-  if (info.changes != 1) {throw "Error destroying record from table "+table+" with id "+id}
+  let info = db.safeDestroyTableKey(table, 'id', id, user)
+  if (info.changes != 1) {throw "Error destroying record from table "+table+" with "+key+" "+id}
 }
 
 if (db.createRecord) {throw "Can't overide createRecord"}
