@@ -11,7 +11,7 @@ import { Utils } from "./recipe_utils"
 import { RecipeTiptap } from './tiptap'
 import { RecipeMediumImage } from "./image"
 
-export const RecipeViewer = ({recipe, images, recipeKind}) => {
+export const RecipeViewer = ({recipe, images, recipeKind, user}) => {
 
   const ingredientsAndHeaders = parseIngredientsAndHeaders(recipe.ingredients)
   const ingredients = ingredientsAndHeaders.filter(e => e.label || e.qty)
@@ -42,10 +42,13 @@ export const RecipeViewer = ({recipe, images, recipeKind}) => {
       </ul>
     </div>
 
-  //const recipeUser = users.find(u => u.id == recipe.user_id)
-  //const userName = recipeUser ? recipeUser.name : `user${recipe.user_id}`
-
   return (<>
+    <nav aria-label="breadcrumb">
+      <ol className="breadcrumb" style={{margin: '-0.5em 0 0.5em 0'}}>
+        <li className="breadcrumb-item"><a href={'/u/'+user.id}>{user.name}</a></li>
+        <li className="breadcrumb-item active" aria-current="page">{recipe.name}</li>
+      </ol>
+    </nav>
     <div className="recipe">
       <div className="d-block d-md-flex gap-20">
         <div>
@@ -59,7 +62,7 @@ export const RecipeViewer = ({recipe, images, recipeKind}) => {
             <div className='flex-grow-1' />
           </div>
           <div style={{marginTop: '-0.8em', marginBottom: '1.2em'}}>
-            <span style={{color: 'gray'}}>{t('by')} FIXME</span>
+            <span style={{color: 'gray'}}>{t('by')} <span className="clickable" onClick={() => window.location.href="/u/"+user.id}>{user.name}</span></span>
           </div>
           <div>
             <b>{t('Preparation')} ({t('min')}): </b>
@@ -108,10 +111,11 @@ const ShowRecipe = () => {
   const [recipe, ] = useState(gon.recipe)
   const [images, ] = useState(gon.images)
   const [recipeKind, ] = useState(gon.recipe_kind)
+  const [user, ] = useState(gon.user)
 
   return <>
     <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0 0.5em 0'}}>
-      <RecipeViewer {...{recipe, images, recipeKind}} />
+      <RecipeViewer {...{recipe, images, recipeKind, user}} />
     </div>
   </>
 }

@@ -356,6 +356,10 @@ router.get('/r/:id', function(req, res, next) {
   let attrs = null
   // FIXME: Create and use fetchRecord or findRecord, not fetchTable
   o.recipe = db.fetchTable('recipes', {id: recipeId}, RECIPE_ATTRS)[0]
+  if (!o.recipe) {throw 'Unable to fetch recipe. Not existent.'}
+  // FIXME: Create and use fetchRecord or findRecord, not fetchTable
+  o.user = db.fetchTable('users', {id: o.recipe.user_id, is_public: 1}, ['name'])[0]
+  if (!o.user) {throw 'Unable to fetch recipe. No permission by user.'}
 
   if (o.recipe.recipe_kind_id) {
     let attrs = ['name', 'description_json', 'image_slug']
