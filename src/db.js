@@ -136,16 +136,6 @@ function appendConditions(query0, args0, conditions) {
   return [query, args]
 }
 
-//// WARNING: Conditions keys are not safe. Never use user input for conditions keys.
-//if (db.updateField) {throw "Can't overide updateField"}
-//db.updateField = function(table, id, field, value, conditions=null) {
-//
-//  let query0 = 'UPDATE '+db.safe(table, schema.getTableList())+' SET '+db.safe(field, schema.getWriteAttributes(table))+' = ?, updated_at = ? WHERE id = ?'
-//  let args0 = [schema.validAttr(table, field, value), utils.now(), id]
-//  const [query, args] = appendConditions(query0, args0, conditions)
-//  return db.prepare(query).run(...args)
-//}
-
 function addSafetyCondition(query0, args0, user, securityKey) {
   if (!securityKey) {throw "Error in addSafetyCondition: security must exist"}
   if (!user[securityKey]) {throw "Error in addSafetyCondition: user must have security key"}

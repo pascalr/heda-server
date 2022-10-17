@@ -268,7 +268,6 @@ router.patch('/change_recipe_owner', gon.fetchAccountUsers, function(req, res, n
     if (!res.locals.gon.users.map(u => u.id).includes(recipe.user_id)) {
       throw new Error("ChangeRecipeOwner not allowed")
     }
-    //let info = db.updateField('recipes', recipeId, 'user_id', newOwnerId)
     let query = 'UPDATE recipes SET user_id = ?, updated_at = ? WHERE id = ?'
     let args = [newOwnerId, utils.now(), recipeId]
     console.log('query', query)
