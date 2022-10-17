@@ -8,7 +8,7 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Creating tags with react and bootstrap.
 => Hcu
 
-In schema, add read_attrs and write_attrs.
+In schema, add read_attrs
 In schema, add order: 'attributes_name'
 Ajouter 'demo', qui est pareil comme mon user, mais pas logged in donc pas de modifications possible
 Bouton: [Demo beta]

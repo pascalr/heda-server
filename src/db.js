@@ -37,8 +37,6 @@ db.safe = function(str, allowed) {
   return "'"+s+"'"
 }
 
-// FIXME: Rename attrs to something more like public_attrs, because these attributes can be modified
-// when the user has a valid security key
 const mySchema = {
   'meals': {},
   'mixes': {},
@@ -48,10 +46,10 @@ const mySchema = {
   'recipe_tools' : {},
   'references' : {},
   'recipe_kinds': {
-    attrs: ['image_slug'],
+    write_attrs: ['image_slug'],
   },
   'recipes': {
-    attrs: ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'ingredients', 'recipe_kind_id', 'image_slug'],
+    write_attrs: ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'ingredients', 'recipe_kind_id', 'image_slug'],
     security_key: 'user_id',
     dependant_destroy: {recipe_id: ['favorite_recipes', 'meals', 'mixes', 'recipe_comments', 'recipe_notes', 'recipe_ratings', 'recipe_tools', 'references', 'suggestions']},
 
@@ -63,19 +61,19 @@ const mySchema = {
     }
   },
   'users': {
-    attrs: ['name', 'gender', 'image_slug', 'locale'],
+    write_attrs: ['name', 'gender', 'image_slug', 'locale'],
     security_key: 'account_id'
   },
   'favorite_recipes': {
-    attrs: ['list_id', 'recipe_id'],
+    write_attrs: ['list_id', 'recipe_id'],
     security_key: 'user_id'
   },
   'tags': {
-    attrs: ['name', 'image_slug', 'position'],
+    write_attrs: ['name', 'image_slug', 'position'],
     security_key: 'user_id'
   },
   'suggestions': {
-    attrs: ['tag_id', 'recipe_id'],
+    write_attrs: ['tag_id', 'recipe_id'],
     security_key: 'user_id'
   }
 }
@@ -86,7 +84,7 @@ const mySchema = {
 // But still allow someone to modify it?
 const schema = {}
 schema.getTableList = () => {return Object.keys(mySchema)}
-schema.getFields = (table) => {return mySchema[table].attrs}
+schema.getWriteAttributes = (table) => {return mySchema[table].write_attrs}
 schema.getSecurityKey = (table) => {return mySchema[table].security_key}
 schema.beforeCreate = (table, obj) => {
   if (!obj || !mySchema[table].before_create) {return obj}
@@ -122,7 +120,7 @@ function appendConditions(query0, args0, conditions) {
 if (db.updateField) {throw "Can't overide updateField"}
 db.updateField = function(table, id, field, value, conditions=null) {
 
-  let query0 = 'UPDATE '+db.safe(table, schema.getTableList())+' SET '+db.safe(field, schema.getFields(table))+' = ?, updated_at = ? WHERE id = ?'
+  let query0 = 'UPDATE '+db.safe(table, schema.getTableList())+' SET '+db.safe(field, schema.getWriteAttributes(table))+' = ?, updated_at = ? WHERE id = ?'
   let args0 = [value, utils.now(), id]
   const [query, args] = appendConditions(query0, args0, conditions)
   return db.prepare(query).run(...args)
@@ -139,7 +137,7 @@ function addSafetyCondition(query0, args0, user, securityKey) {
 if (db.safeUpdateField) {throw "Can't overide safeUpdateField"}
 db.safeUpdateField = function(table, id, field, value, user) {
 
-  let query0 = 'UPDATE '+db.safe(table, schema.getTableList())+' SET '+db.safe(field, schema.getFields(table))+' = ?, updated_at = ? WHERE id = ?'
+  let query0 = 'UPDATE '+db.safe(table, schema.getTableList())+' SET '+db.safe(field, schema.getWriteAttributes(table))+' = ?, updated_at = ? WHERE id = ?'
   let args0 = [value, utils.now(), id]
   const [query, args] = addSafetyCondition(query0, args0, user, schema.getSecurityKey(table))
   return db.prepare(query).run(...args)
@@ -212,7 +210,7 @@ db.createRecord = function(table, obj, userId) {
   obj = schema.beforeCreate(table, obj)
 
   let fields = Object.keys(obj)
-  let columns = schema.getFields(safeTable)
+  let columns = schema.getWriteAttributes(safeTable)
   let query = 'INSERT INTO '+safeTable+' (created_at,updated_at,'+fields.map(f => db.safe(f, [...columns, 'user_id'])).join(',')+') '
   query += 'VALUES (?,?,'+fields.map(f=>'?').join(',')+')'
   let args = [utils.now(), utils.now(), ...Object.values(obj)]
