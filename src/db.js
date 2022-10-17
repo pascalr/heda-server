@@ -40,11 +40,20 @@ db.safe = function(str, allowed) {
 const mySchema = {
   'meals': {},
   'mixes': {},
+  'images': {},
   'recipe_comments': {},
   'recipe_notes': {},
   'recipe_ratings': {},
   'recipe_tools' : {},
   'references' : {},
+  'machine_users' : {},
+  'machine_foods' : {},
+  'machines' : {},
+  'container_formats' : {},
+  'container_quantities' : {},
+  'containers' : {},
+  'foods' : {},
+  'units' : {},
   'recipe_kinds': {
     write_attrs: ['image_slug'],
   },
@@ -62,6 +71,7 @@ const mySchema = {
   },
   'users': {
     write_attrs: ['name', 'gender', 'image_slug', 'locale', 'is_public'],
+    attrs_types: {is_public: 'bool'},
     security_key: 'account_id'
   },
   'favorite_recipes': {
@@ -89,6 +99,17 @@ schema.getSecurityKey = (table) => {return mySchema[table].security_key}
 schema.beforeCreate = (table, obj) => {
   if (!obj || !mySchema[table].before_create) {return obj}
   return mySchema[table].before_create(obj)
+}
+schema.validAttr = (table, field, value) => {
+  let types = mySchema[table].attrs_types
+  if (types && types[field]) {
+    if (type == 'bool') {
+      if (value && value == '1' || value == 'true') {
+        return 1
+      }
+    }
+  }
+  return value
 }
 
 //export const ALLOWED_COLUMNS_MOD = {
@@ -121,7 +142,7 @@ if (db.updateField) {throw "Can't overide updateField"}
 db.updateField = function(table, id, field, value, conditions=null) {
 
   let query0 = 'UPDATE '+db.safe(table, schema.getTableList())+' SET '+db.safe(field, schema.getWriteAttributes(table))+' = ?, updated_at = ? WHERE id = ?'
-  let args0 = [value, utils.now(), id]
+  let args0 = [schema.validAttr(table, field, value), utils.now(), id]
   const [query, args] = appendConditions(query0, args0, conditions)
   return db.prepare(query).run(...args)
 }
@@ -222,7 +243,7 @@ db.createRecord = function(table, obj, userId) {
 if (db.fetchTable) {throw "Can't overide fetchTable"}
 db.fetchTable = function(tableName, conditions, attributes) {
 
-  let s = 'SELECT '+['id',...attributes].join(', ')+' FROM '+tableName
+  let s = 'SELECT '+['id',...attributes].join(', ')+' FROM '+db.safe(tableName, schema.getTableList())
   let a = []
   let l = Object.keys(conditions).length
   if (l != 0) {s += ' WHERE '}
