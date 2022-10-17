@@ -220,10 +220,11 @@ db.createRecord = function(table, obj, userId) {
   obj = schema.beforeCreate(table, obj)
 
   let fields = Object.keys(obj)
-  let columns = schema.getWriteAttributes(safeTable)
+  let columns = schema.getWriteAttributes(table)
   let query = 'INSERT INTO '+safeTable+' (created_at,updated_at,'+fields.map(f => db.safe(f, [...columns, 'user_id'])).join(',')+') '
   query += 'VALUES (?,?,'+fields.map(f=>'?').join(',')+')'
-  let args = [utils.now(), utils.now(), ...Object.values(obj)]
+  let args = [utils.now(), utils.now(), ...fields.map(f => schema.validAttr(table, f, obj[f]))]
+  
   let info = db.prepare(query).run(...args)
   if (info.changes != 1) {throw "Error creating record from in "+table+"."}
   return {...obj, id: info.lastInsertRowid}
