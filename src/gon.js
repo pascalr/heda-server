@@ -24,11 +24,6 @@ function mapBooleans(records, fields) {
 }
 
 export const RECIPE_ATTRS = ['user_id', 'name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'ingredients', 'image_slug']
-function fetchRecipes(req, res, next) {
-  fetchTableMiddleware('recipes', {user_id: req.user.user_id}, RECIPE_ATTRS, next, (records) => {
-    res.locals.gon.recipes = mapBooleans(utils.sortBy(records, 'name'), ['use_personalised_image'])
-  })
-}
 
 function fetchFriendsRecipes(req, res, next) {
   let ids = res.locals.gon.users.map(u => u.id).filter(id => id != req.user.user_id)
@@ -104,20 +99,6 @@ function fetchContainerQuantities(req, res, next) {
   let attrs = ['container_format_id', 'machine_food_id', 'full_qty_quarters']
   fetchTableMiddleware('container_quantities', {}, attrs, next, (records) => {
     res.locals.gon.container_quantities = records
-  })
-}
-
-function fetchFavoriteRecipes(req, res, next) {
-
-  fetchTableMiddleware('favorite_recipes', {user_id: req.user.user_id}, ['list_id', 'recipe_id'], next, (records) => {
-    res.locals.gon.favorite_recipes = utils.sortBy(records, 'name')
-  })
-}
- 
-function fetchFavoriteRecipesRecipe(req, res, next) {
-  let recipe_ids = res.locals.gon.favorite_recipes.map(r=>r.recipe_id)
-  fetchTableMiddleware('recipes', {id: recipe_ids}, RECIPE_ATTRS, next, (records) => {
-    res.locals.gon.recipes = utils.removeDuplicateIds(res.locals.gon.recipes.concat(utils.sortBy(records, 'name')))
   })
 }
 
@@ -249,8 +230,25 @@ export function initGon(req, res, next) {
   res.locals.gon = {}; next()
 }
 
+const fetchAll2 = (req, res, next) => {
+  let user = req.user
+  res.locals.gon = fetchAll3(req.user)
+  next()
+}
+
+const fetchAll3 = (user) => {
+  let o = {}
+  o.users = db.fetchTable('users', {account_id: user.account_id}, ['name', 'gender', 'image_slug', 'locale'])
+  o.recipes = mapBooleans(db.fetchTable('recipes', {user_id: user.user_id}, RECIPE_ATTRS), ['use_personalised_image'])
+  o.favorite_recipes = utils.sortBy(db.fetchTable('favorite_recipes', {user_id: user.user_id}, ['list_id', 'recipe_id']), 'name')
+  let recipeIds = o.recipes.map(r => r.id)
+  let missingRecipeIds = o.favorite_recipes.map(r=>r.recipe_id).filter(id => !recipeIds.includes(id))
+  o.recipes = [...o.recipes, ...db.fetchTable('recipes', {id: missingRecipeIds}, RECIPE_ATTRS)]
+  return o
+}
+
 // WARNING: LIST ORDER IS IMPORTANT
-const fetchAll = [initGon, fetchAccountUsers, fetchRecipes, fetchFavoriteRecipes, fetchFavoriteRecipesRecipe, fetchRecipeKinds, fetchMixes, fetchMachineUsers, fetchMachines, fetchContainerFormats, fetchContainerQuantities, fetchContainers, fetchSuggestions, fetchTags, fetchFoods, fetchUnits, fetchNotes, fetchImages, fetchMachineFoods, fetchFriendsRecipes]
+const fetchAll = [fetchAll2, fetchRecipeKinds, fetchMixes, fetchMachineUsers, fetchMachines, fetchContainerFormats, fetchContainerQuantities, fetchContainers, fetchSuggestions, fetchTags, fetchFoods, fetchUnits, fetchNotes, fetchImages, fetchMachineFoods, fetchFriendsRecipes]
 
 const gon = {fetchAll, fetchAccountUsers, fetchUserImages};
 export default gon;

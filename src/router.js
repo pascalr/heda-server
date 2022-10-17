@@ -134,8 +134,8 @@ router.get('/signup', function(req, res, next) {
 });
 
 function setProfile(req, res, next) {
-  if (!res.locals.users) next('Error set profile must be called after fetching profiles')
-  let user = res.locals.users.find(u => u.id == req.user.user_id)
+  if (!res.locals.gon.users) next('Error set profile must be called after fetching profiles')
+  let user = res.locals.gon.users.find(u => u.id == req.user.user_id)
   if (!user) {req.user.user_id = null; next('Error profile not found')}
   res.locals.gon.user = user
   res.locals.user = user
@@ -261,11 +261,11 @@ router.patch('/change_recipe_owner', gon.fetchAccountUsers, function(req, res, n
   try {
     let recipeId = parseInt(req.body.recipeId).toString()
     let newOwnerId = parseInt(req.body.newOwnerId).toString()
-    if (!res.locals.users.map(u => u.id.toString()).includes(newOwnerId)) {
+    if (!res.locals.gon.users.map(u => u.id.toString()).includes(newOwnerId)) {
       throw new Error("ChangeRecipeOwner not allowed")
     }
     let recipe = db.prepare('SELECT id, user_id FROM recipes WHERE id = ?').get(recipeId)
-    if (!res.locals.users.map(u => u.id).includes(recipe.user_id)) {
+    if (!res.locals.gon.users.map(u => u.id).includes(recipe.user_id)) {
       throw new Error("ChangeRecipeOwner not allowed")
     }
     //let info = db.updateField('recipes', recipeId, 'user_id', newOwnerId)
@@ -343,6 +343,10 @@ router.delete('/destroy_record/:table/:id', function(req, res, next) {
   } catch(err) {
     throw new Error(err)
   }
+});
+
+router.get('/demo', function(req, res, next) {
+  next()
 });
 
 /* GET home page. */
