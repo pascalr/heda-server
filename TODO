@@ -8,20 +8,12 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Creating tags with react and bootstrap.
 => Hcu
 
-Put navbar in a partial
-Pouvoir rechercher les utilisateurs publiques sur la page d'acceuil.
 Je n'arrive pas à changer le owner de pouding au pain...
-Une page publique pour les utilisateurs? Ça montrerais quoi? Juste toute la liste des recettes?
-Image thumbnails, si le thumbnail n'existe pas, le créer. Faire ça pour toutes les variantes.
-Delete this recipe (duplicate): Biscuits à l'avoine et aux raisins secs
-Destroy duplicate Pain à hotdog
-Pouvoir choisir de quel manière est tronquer l'image. Croustade aux pommes garder le haut de l'image.
-Comment gérer la langue des pages quand l'utilisateur n'est pas connecté????? (Page d'acceuil, Choose user, Forgot, toutes les views en fait...)
-When doing an update, check the number of changes to make sure that it worked. info.changes == 1
-Create an admin page, add a button to make a safe copy of the sqlite3 file.
-TODO: Test transaction for upload_image
 Ajouter un exemple de Carrousel de suggestions de recettes dans la page d'acceuil.
 Ajouter un exemple de modifier une recette sur la page d'acceuil.
+Image thumbnails, si le thumbnail n'existe pas, le créer. Faire ça pour toutes les variantes.
+Comment gérer la langue des pages quand l'utilisateur n'est pas connecté????? (Page d'acceuil, Choose user, Forgot, toutes les views en fait...)
+Create an admin page, add a button to make a safe copy of the sqlite3 file.
 FIXME: Make fetchTable secure. Remove ALLOWED_TABLES_GET, use read_attrs?
 Ah je le sais quel design que je veux! Un genre de faux design de téléphone.
 
@@ -50,7 +42,8 @@ https://www.docker.com/blog/getting-started-with-docker-using-node-jspart-i/
 Remove user_id from suggestions? Because tags avec user_id, it is redundant there. But it makes my life easier so let's keep it there for now.
 db.safe exception crashes the server...
 Print, Share, Download
-ImageSlug for recipes
+Pouvoir choisir de quel manière est tronquer l'image. Croustade aux pommes garder le haut de l'image.
+Put navbar in a partial
 
 Later:
 Periodic task to remove images which are not referenced anywhere. To remove images without a file.
