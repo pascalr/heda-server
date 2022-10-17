@@ -321,7 +321,7 @@ router.patch('/batch_modify', function(req, res, next) {
     let applyMods = db.transaction((mods) => {
       mods.forEach(({method, tableName, id, field, value}) => {
         if (method == 'UPDATE') {
-          let info = db.updateField(tableName, id, field, value, {user_id: req.user.user_id})
+          let info = db.safeUpdateField(tableName, id, field, value, {user_id: req.user.user_id})
           if (info.changes != 1) {throw "Unable to update record in database"}
         }
       })
