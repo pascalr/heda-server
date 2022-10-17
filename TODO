@@ -13,26 +13,10 @@ recipes {
   dependant_destroy: ['book_recipes', 'favorite_recipes', 'food_recipes', 'ingredient_sections', 'items', 'meals', 'mixes', 'recipe_comments', 'recipe_ingredients', 'recipe_notes', 'recipe_ratings', 'recipe_steps', 'recipe_tools', 'references', 'similar_recipes', 'suggestions', 'user_recipes']
 }
 
-FIXME: All these tables contains the attr recipe_id...
-Not mixes
-create_table "book_recipes", force: :cascade do |t|
-create_table "favorite_recipes", force: :cascade do |t|
-create_table "food_recipes", force: :cascade do |t|
-create_table "ingredient_sections", force: :cascade do |t|
-create_table "items", force: :cascade do |t|
-create_table "meals", force: :cascade do |t|
-create_table "mixes", force: :cascade do |t|
-create_table "recipe_comments", force: :cascade do |t|
-create_table "recipe_ingredients", force: :cascade do |t|
-create_table "recipe_notes", force: :cascade do |t|
-create_table "recipe_ratings", force: :cascade do |t|
-create_table "recipe_steps", force: :cascade do |t|
-create_table "recipe_tools", force: :cascade do |t|
-create_table "references", force: :cascade do |t|
-create_table "similar_recipes", force: :cascade do |t|
-create_table "suggestions", force: :cascade do |t|
-create_table "user_recipes", force: :cascade do |t|
-
+In schema, add read_attrs and write_attrs.
+In schema, add order: 'attributes_name'
+Ajouter 'demo', qui est pareil comme mon user, mais pas logged in donc pas de modifications possible
+Bouton: [Demo beta]
 Je n'arrive pas à changer le owner de pouding au pain...
 Une page publique pour les utilisateurs? Ça montrerais quoi? Juste toute la liste des recettes?
 Image thumbnails, si le thumbnail n'existe pas, le créer. Faire ça pour toutes les variantes.

@@ -1,40 +1,8 @@
 import {db} from './db.js';
 import utils from './utils.js';
 
-export function fetchTable(tableName, conditions, attributes) {
-  let s = 'SELECT '+['id',...attributes].join(', ')+' FROM '+tableName
-  let a = []
-  let l = Object.keys(conditions).length
-  if (l != 0) {s += ' WHERE '}
-  let keys = Object.keys(conditions)
-  for (let i = 0; i < keys.length; i++) {
-    let cond = keys[i]
-    let val = conditions[cond]
-    if (val == null) {
-      s += cond + ' IS NULL'
-    } else if (Array.isArray(val) && val.length == 0) {
-      console.log('FetchTable an empty array given as a condition. Impossible match.')
-      return []
-    } else if (Array.isArray(val) && val.length > 1) {
-      s += cond + ' IN ('
-      val.forEach((v,i) => {
-        s += '?' + ((i < val.length - 1) ? ', ' : '')
-        a.push(v)
-      })
-      s += ')'
-    } else {
-      s += cond + ' = ?'
-      a.push(val)
-    }
-    if (i < l-1) {s += ' AND '}
-  }
-  console.log('statement:', s)
-  console.log('values', a)
-  return db.prepare(s).all(...a)
-}
-
 export function fetchTableMiddleware(tableName, conditions, attributes, next, callback) {
-  const rows = fetchTable(tableName, conditions, attributes)
+  const rows = db.fetchTable(tableName, conditions, attributes)
   callback(rows)
   next()
 }

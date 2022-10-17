@@ -14,7 +14,7 @@ export const db = new betterSqlite3(dbPath, { verbose: console.log })
 console.log('Opening database successful!')
 
 import { findRecipeKindForRecipeName } from "./lib.js"
-import {fetchTable, RECIPE_ATTRS} from './gon.js';
+import {RECIPE_ATTRS} from './gon.js';
 import utils from './utils.js';
 
 const ALLOWED_CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
@@ -38,8 +38,9 @@ const mySchema = {
   'recipes': {
     attrs: ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'ingredients', 'recipe_kind_id', 'image_slug'],
     security_key: 'user_id',
+    dependant_destroy: {recipe_id: ['book_recipes', 'favorite_recipes', 'food_recipes', 'ingredient_sections', 'items', 'meals', 'mixes', 'recipe_comments', 'recipe_ingredients', 'recipe_notes', 'recipe_ratings', 'recipe_steps', 'recipe_tools', 'references', 'similar_recipes', 'suggestions', 'user_recipes']},
 
-    beforeCreate(recipe) {
+    before_create(recipe) {
       const recipeKinds = fetchTable('recipe_kinds', {}, ['name'])
       const recipeKind = findRecipeKindForRecipeName(recipe.name, recipeKinds)
       if (recipeKind) {recipe.recipe_kind_id = recipeKind.id}
@@ -63,13 +64,25 @@ const mySchema = {
     security_key: 'user_id'
   }
 }
+// FIXME: The real schema is mySchema.
+// TODO: Rename mySchema to schema, and rename schema to something else
+// This is not a schema, it is a way to manipulate the db. It is more actually db...
+// But it's more private, don't give access to this to outside?
+// But still allow someone to modify it?
 const schema = {}
 schema.getTableList = () => {return Object.keys(mySchema)}
 schema.getFields = (table) => {return mySchema[table].attrs}
 schema.getSecurityKey = (table) => {return mySchema[table].security_key}
 schema.beforeCreate = (table, obj) => {
-  if (!obj || !mySchema[table].beforeCreate) {return obj}
-  return mySchema[table].beforeCreate(obj)
+  if (!obj || !mySchema[table].before_create) {return obj}
+  return mySchema[table].before_create(obj)
+}
+schema.recordBelongsToUser = (table, id, user) => {
+}
+schema.destroyTableDependants = (table) => {
+  // First, make sure that the record is allowed to be destroyed by the user
+  let o = mySchema[table].dependant_destroy || {}
+  let foreignKeys = Object.keys(o)
 }
 
 //export const ALLOWED_COLUMNS_MOD = {
@@ -160,6 +173,40 @@ db.createRecord = function(table, obj, userId) {
   let info = db.prepare(query).run(...args)
   if (info.changes != 1) {throw "Error creating record from in "+table+"."}
   return {...obj, id: info.lastInsertRowid}
+}
+
+if (db.fetchTable) {throw "Can't overide fetchTable"}
+db.fetchTable = function(tableName, conditions, attributes) {
+
+  let s = 'SELECT '+['id',...attributes].join(', ')+' FROM '+tableName
+  let a = []
+  let l = Object.keys(conditions).length
+  if (l != 0) {s += ' WHERE '}
+  let keys = Object.keys(conditions)
+  for (let i = 0; i < keys.length; i++) {
+    let cond = keys[i]
+    let val = conditions[cond]
+    if (val == null) {
+      s += cond + ' IS NULL'
+    } else if (Array.isArray(val) && val.length == 0) {
+      console.log('FetchTable an empty array given as a condition. Impossible match.')
+      return []
+    } else if (Array.isArray(val) && val.length > 1) {
+      s += cond + ' IN ('
+      val.forEach((v,i) => {
+        s += '?' + ((i < val.length - 1) ? ', ' : '')
+        a.push(v)
+      })
+      s += ')'
+    } else {
+      s += cond + ' = ?'
+      a.push(val)
+    }
+    if (i < l-1) {s += ' AND '}
+  }
+  console.log('statement:', s)
+  console.log('values', a)
+  return db.prepare(s).all(...a)
 }
 
 export default db;
