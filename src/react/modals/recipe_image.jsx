@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 
-import {clearRecord, asyncUpdateModel, TextField, ImageField, RadioField} from '../form'
+import {clearRecord, TextField, ImageField, RadioField} from '../form'
 import { image_path } from '../routes'
 import { isTrue } from "../utils"
 import { t } from "../../translate"

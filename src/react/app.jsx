@@ -14,9 +14,7 @@ import { ajax, isBlank, normalizeSearchText, preloadImage, join, bindSetter, sor
 import { getUrlParams } from "../utils"
 import { icon_path, image_path, image_slug_variant_path } from './routes'
 import {TextField, AutocompleteInput, TextInput, CollectionSelect, ImageField, ImageSelector} from './form'
-import {PublicImageField} from './modals/public_image'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
-import {AddUserTagModal} from './modals/add_user_tag'
 import {RecipeEditor} from "./recipe_editor"
 import {RecipeViewer} from "./recipe_viewer"
 import { initHcu, useHcuState } from '../hcu'

@@ -9,8 +9,6 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Hcu
 
 Pouvoir rechercher les utilisateurs publiques sur la page d'acceuil.
-In schema, add read_attrs
-In schema, add order: 'attributes_name'
 Ajouter 'demo', qui est pareil comme mon user, mais pas logged in donc pas de modifications possible
 Bouton: [Demo beta]
 Je n'arrive pas à changer le owner de pouding au pain...

@@ -87,48 +87,6 @@ export const updateRecord = (oldRecord, newRecord, nested={}) => {
   return obj
 }
 
-// FIXME: There can be a race condition between onUpdate and onServerUpdate... I don't know how to handle this properly...
-// I need onServerUpdate to get the modifications from the server.
-// Why not always onServerUpdate again???
-//this.state.recipe_kind.onUpdate = (recipe_kind) => {this.setState({recipe_kind})}
-export const asyncUpdateModel = (model, diffs, options={}) => {
-
-  if (!model.onUpdate && !model.onServerUpdate) {
-    throw("asyncUpdateModelField requires the model ("+model.table_name+") to handle onUpdate or onServerUpdate")
-  }
-  let data = new FormData()
-  for(let field in diffs) {
-    model[field] = diffs[field]
-    data.append(model.table_name+"["+field+"]", diffs[field] == null ? '' : diffs[field])
-  }
-  if (model.onUpdate) { model.onUpdate(model) }
-  console.log('PATCH', urlFor(model))
-  ajax({url: urlFor(model), type: 'PATCH', data: data, success: (response) => {
-    console.log('PATCH received', response)
-    if (model.onServerUpdate) { model.onServerUpdate(response) }
-  }})
-}
-export const asyncUpdateModelField = (model, field, value, options={}) => {
-  asyncUpdateModel(model, {[field]: value}, options)
-}
-
-const updateModelField = (model, field, value, successCallback=null) => {
-  if (value != model[field]) {
-
-    let data = new FormData()
-    data.append(model.table_name+"["+field+"]", value)
-    console.log('PATCH', urlFor(model))
-    ajax({url: urlFor(model), type: 'PATCH', data: data, success: () => {
-      console.log(`Updating model ${model.table_name} field ${field} from ${model[field]} to ${value}.`)
-      model[field] = value
-      if (successCallback) {successCallback()}
-      if (model.onUpdate) {model.onUpdate(model)}
-    }, error: (errors) => {
-      toastr.error("<ul>"+Object.values(JSON.parse(errors)).map(e => ("<li>"+e+"</li>"))+"</ul>", 'Error updating')
-    }})
-  }
-}
-
 export const ImageSelector = ({record, field, maxSizeBytes, suggestions, width, height, defaultImage, ...props}) => {
   
   const imagePath = record[field] ? image_slug_variant_path(record[field], 'fixme') : defaultImage

@@ -36,6 +36,7 @@ const UserEditor = () => {
     <TextField model={user} field="name" size="8" className="editable-input" /><br/><br/>
     <b>{t('Language')}</b><br/>
     <CollectionSelect model={user} field="locale" options={['en', 'fr']} showOption={e => e} includeBlank={false}/><br/><br/>
+    <b>{t('Public')}</b><br/>
     <b>{t('Image')}</b><br/>
     <ImageSelector record={user} field="image_slug" maxSizeBytes={2*1000*1000} suggestions={suggestions} height="180px" defaultImage="/icons/person-fill.svg" />
     <hr/>

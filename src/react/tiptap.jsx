@@ -259,7 +259,7 @@ const ModelLinkComponent = ({node, updateAttributes}) => {
 const MODELS = {
   food: {placeholder: 'Aliment...', records: gon.foods, linkLabel: r => r.name, linkUrl: r => r.url},
   recipeKind: {placeholder: 'Sorte de recette...', records: gon.recipe_kinds, linkLabel: r => r.name, linkUrl: r => r.url},
-  note: {records: gon.notes, linkLabel: r => r.item_nb.toString(), linkUrl: r => `#note-${r.item_nb}`},
+  //note: {records: gon.notes, linkLabel: r => r.item_nb.toString(), linkUrl: r => `#note-${r.item_nb}`},
   //r = ['sup', {}, '[', ['a', {href: `#note-${note.item_nb}`}, note.item_nb.toString()], ']']
 }
 
@@ -298,6 +298,7 @@ const LinkModel = Node.create({
   renderHTML({node, HTMLAttributes}) {
     const HTMLAttrs = {'data-link-model': HTMLAttributes['model'], 'data-model-id': HTMLAttributes['model-id']}
     const model = MODELS[node.attrs.model]
+
     if (model && node.attrs.modelId) {
       const record = model.records.find(f => f.id == node.attrs.modelId)
       if (record) {
@@ -709,6 +710,7 @@ const Toolbar = ({ editor, ingredients }) => {
   if (editor.isActive('heading', { level: 5 })) {selectedHeader = "5"}
   // selectedHeader = editor.getAttributes('heading').level // Does not work
 
+  //<AddNoteButton editor={editor} width={width} height={height} />
   return (
     <div className="toolbar" style={{display: "flex"}}>
       <span className="toolbar-group">
@@ -730,7 +732,6 @@ const Toolbar = ({ editor, ingredients }) => {
         <StepButton editor={editor} width={width} height={height} />
         <IngredientButton editor={editor} width={width} height={height} ingredients={ingredients} />
         <MeasuringButton editor={editor} width={width} height={height} />
-        <AddNoteButton editor={editor} width={width} height={height} />
         <LinkButton editor={editor} width={width} height={height} />
         <CharButton editor={editor} width={width} height={height} />
         <MoreButton editor={editor} width={width} height={height} />
@@ -760,6 +761,7 @@ const ArticleToolbar = ({ editor }) => {
   if (editor.isActive('heading', { level: 5 })) {selectedHeader = "5"}
   // selectedHeader = editor.getAttributes('heading').level // Does not work
 
+  //<AddNoteButton editor={editor} width={width} height={height} />
   return (
     <div className="toolbar" style={{display: "flex"}}>
       <span className="toolbar-group">
@@ -780,7 +782,6 @@ const ArticleToolbar = ({ editor }) => {
       </span>
       <span className="toolbar-group">
         <ImageButton editor={editor} width={width} height={height} />
-        <AddNoteButton editor={editor} width={width} height={height} />
         <LinkButton editor={editor} width={width} height={height} />
         <CharButton editor={editor} width={width} height={height} />
         <MoreButton editor={editor} width={width} height={height} />
