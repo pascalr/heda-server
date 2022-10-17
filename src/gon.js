@@ -50,7 +50,7 @@ const fetchAll3 = (user) => {
   let ids = null
   o.users = db.fetchTable('users', {account_id: user.account_id}, ['name', 'gender', 'image_slug', 'locale', 'is_public'])
   o.recipes = mapBooleans(db.fetchTable('recipes', {user_id: user.user_id}, RECIPE_ATTRS), ['use_personalised_image'])
-  o.favorite_recipes = utils.sortBy(db.fetchTable('favorite_recipes', {user_id: user.user_id}, ['list_id', 'recipe_id']), 'name')
+  o.favorite_recipes = db.fetchTable('favorite_recipes', {user_id: user.user_id}, ['list_id', 'recipe_id'])
   let recipeIds = o.recipes.map(r => r.id)
   let missingRecipeIds = o.favorite_recipes.map(r=>r.recipe_id).filter(id => !recipeIds.includes(id))
   o.recipes = [...o.recipes, ...db.fetchTable('recipes', {id: missingRecipeIds}, RECIPE_ATTRS)]
