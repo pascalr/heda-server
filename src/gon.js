@@ -8,7 +8,7 @@ export function fetchTableMiddleware(tableName, conditions, attributes, next, ca
 }
 
 function fetchAccountUsers(req, res, next) {
-  fetchTableMiddleware('users', {account_id: req.user.account_id}, ['name', 'gender', 'image_slug', 'locale'], next, (records) => {
+  fetchTableMiddleware('users', {account_id: req.user.account_id}, ['name', 'gender', 'image_slug', 'locale', 'is_public'], next, (records) => {
     res.locals.users = records
     if (res.locals.gon) {res.locals.gon.users = records}
   })
@@ -48,7 +48,7 @@ const fetchAll3 = (user) => {
   let o = {}
   let attrs = null
   let ids = null
-  o.users = db.fetchTable('users', {account_id: user.account_id}, ['name', 'gender', 'image_slug', 'locale'])
+  o.users = db.fetchTable('users', {account_id: user.account_id}, ['name', 'gender', 'image_slug', 'locale', 'is_public'])
   o.recipes = mapBooleans(db.fetchTable('recipes', {user_id: user.user_id}, RECIPE_ATTRS), ['use_personalised_image'])
   o.favorite_recipes = utils.sortBy(db.fetchTable('favorite_recipes', {user_id: user.user_id}, ['list_id', 'recipe_id']), 'name')
   let recipeIds = o.recipes.map(r => r.id)

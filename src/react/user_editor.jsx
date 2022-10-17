@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
-import { TextField, RadioField, ImageField, ImageSelector, CollectionSelect } from './form'
+import { ToggleField, TextField, RadioField, ImageField, ImageSelector, CollectionSelect } from './form'
 import { initHcu, useHcuState } from "../hcu"
 import { ajax } from "./utils"
 import { image_slug_variant_path } from "./routes"
@@ -36,7 +36,8 @@ const UserEditor = () => {
     <TextField model={user} field="name" size="8" className="editable-input" /><br/><br/>
     <b>{t('Language')}</b><br/>
     <CollectionSelect model={user} field="locale" options={['en', 'fr']} showOption={e => e} includeBlank={false}/><br/><br/>
-    <b>{t('Public')}</b><br/>
+    <b>{t('Visibility')}</b><br/>
+    <ToggleField model={user} field="is_public" labelOn={t('public')} labelOff={t('private')} className="btn btn-primary" /><br/><br/>
     <b>{t('Image')}</b><br/>
     <ImageSelector record={user} field="image_slug" maxSizeBytes={2*1000*1000} suggestions={suggestions} height="180px" defaultImage="/icons/person-fill.svg" />
     <hr/>

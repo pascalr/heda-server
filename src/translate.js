@@ -8,6 +8,9 @@ export function tr(id, locale) {
     Error_updating: 'An error has occured that prevented this record from being modified.',
   }
   let fr = {
+    private: 'privé',
+    public: 'public',
+    Visibility: 'Visibilité',
     Edit_profile: 'Modifier le profil',
     Name: 'Nom',
     Image: 'Image',

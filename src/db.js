@@ -61,7 +61,7 @@ const mySchema = {
     }
   },
   'users': {
-    write_attrs: ['name', 'gender', 'image_slug', 'locale'],
+    write_attrs: ['name', 'gender', 'image_slug', 'locale', 'is_public'],
     security_key: 'account_id'
   },
   'favorite_recipes': {

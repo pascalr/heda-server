@@ -172,16 +172,18 @@ export const FileField = ({model, field, maxSizeBytes, onRemove, onImageCreated,
     )
   }
 }
+
+// Generates a button that when you press it, it toggles the boolean attribute.
 export const ToggleField = ({model, field, labelOn, labelOff, ...props}) => {
   console.log('rendering')
   const id = model.table_name+"_"+field
-  const name = model.table_name+"["+field+"]"
   const on = labelOn || "True"
   const off = labelOff || "False"
+  console.log('here', model[field])
   return (<>
-    <label htmlFor={id}>{model[field] ? on : off}</label> 
-    <input type="checkbox" value={model[field]||''} name={name} id={id} {...props}
-      onChange={(e) => {updateModelField(model, field, e.target.checked)}} hidden />
+    <label htmlFor={id} {...props}>{model[field] ? on : off}</label> 
+    <input type="checkbox" value={model[field]||''} id={id}
+      onChange={(e) => {window.hcu.updateField(model, field, e.target.checked)}} hidden />
   </>)
 }
 
