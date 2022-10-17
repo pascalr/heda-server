@@ -42,22 +42,9 @@ function fetchFriendsRecipes(req, res, next) {
 //  })
 //}
 
-function fetchRecipeKinds(req, res, next) {
-  fetchTableMiddleware('recipe_kinds', {}, ['name', 'description_json', 'image_slug'], next, (records) => {
-    res.locals.gon.recipe_kinds = utils.sortBy(records, 'name')
-  })
-}
-
 function fetchMachineFoods(req, res, next) {
   fetchTableMiddleware('machine_foods', {}, ['food_id', 'machine_id'], next, (records) => {
     res.locals.gon.machine_foods = records
-  })
-}
-
-function fetchMixes(req, res, next) {
-  let attrs = ['name', 'instructions', 'recipe_id', 'original_recipe_id']
-  fetchTableMiddleware('mixes', {user_id: req.user.user_id}, attrs, next, (records) => {
-    res.locals.gon.mixes = utils.sortBy(records, 'name')
   })
 }
 
@@ -67,40 +54,6 @@ function fetchMixes(req, res, next) {
 //    res.locals.gon.user_tags = utils.sortBy(records, 'position')
 //  })
 //}
-
-function fetchMachineUsers(req, res, next) {
-  fetchTableMiddleware('machine_users', {user_id: req.user.user_id}, ['machine_id'], next, (records) => {
-    res.locals.machine_users = records
-  })
-}
-
-function fetchMachines(req, res, next) {
-  let ids = res.locals.machine_users.map(m=>m.id)
-  fetchTableMiddleware('machines', {id: ids}, ['name'], next, (records) => {
-    res.locals.gon.machines = records
-  })
-}
-
-function fetchContainers(req, res, next) {
-  let ids = res.locals.gon.machines.map(m=>m.id)
-  let attrs = ['jar_id', 'machine_id', 'container_format_id', 'pos_x', 'pos_y', 'pos_z', 'food_id']
-  fetchTableMiddleware('containers', {machine_id: ids}, attrs, next, (records) => {
-    res.locals.gon.containers = records
-  })
-}
-
-function fetchContainerFormats(req, res, next) {
-  fetchTableMiddleware('container_formats', {}, ['name'], next, (records) => {
-    res.locals.gon.container_formats = records
-  })
-}
-
-function fetchContainerQuantities(req, res, next) {
-  let attrs = ['container_format_id', 'machine_food_id', 'full_qty_quarters']
-  fetchTableMiddleware('container_quantities', {}, attrs, next, (records) => {
-    res.locals.gon.container_quantities = records
-  })
-}
 
 //function fetchFavoriteRecipesNames(req, res, next) {
 //  let ids = res.locals.gon.favorite_recipes.map(r=>r.recipe_id)
@@ -238,17 +191,30 @@ const fetchAll2 = (req, res, next) => {
 
 const fetchAll3 = (user) => {
   let o = {}
+  let attrs = null
+  let ids = null
   o.users = db.fetchTable('users', {account_id: user.account_id}, ['name', 'gender', 'image_slug', 'locale'])
   o.recipes = mapBooleans(db.fetchTable('recipes', {user_id: user.user_id}, RECIPE_ATTRS), ['use_personalised_image'])
   o.favorite_recipes = utils.sortBy(db.fetchTable('favorite_recipes', {user_id: user.user_id}, ['list_id', 'recipe_id']), 'name')
   let recipeIds = o.recipes.map(r => r.id)
   let missingRecipeIds = o.favorite_recipes.map(r=>r.recipe_id).filter(id => !recipeIds.includes(id))
   o.recipes = [...o.recipes, ...db.fetchTable('recipes', {id: missingRecipeIds}, RECIPE_ATTRS)]
+  o.recipe_kinds = db.fetchTable('recipe_kinds', {}, ['name', 'description_json', 'image_slug'])
+  attrs = ['name', 'instructions', 'recipe_id', 'original_recipe_id']
+  o.mixes = db.fetchTable('mixes', {user_id: user.user_id}, attrs)
+  o.machine_users = db.fetchTable('machine_users', {user_id: user.user_id}, ['machine_id'])
+  o.machines = db.fetchTable('machines', {id: o.machine_users.map(m=>m.id)}, ['name'])
+  o.container_formats = db.fetchTable('container_formats', {}, ['name'])
+  attrs = ['container_format_id', 'machine_food_id', 'full_qty_quarters']
+  o.container_quantities = db.fetchTable('container_quantities', {}, attrs)
+  ids = o.machines.map(m=>m.id)
+  attrs = ['jar_id', 'machine_id', 'container_format_id', 'pos_x', 'pos_y', 'pos_z', 'food_id']
+  o.containers = db.fetchTable('containers', {machine_id: ids}, attrs)
   return o
 }
 
 // WARNING: LIST ORDER IS IMPORTANT
-const fetchAll = [fetchAll2, fetchRecipeKinds, fetchMixes, fetchMachineUsers, fetchMachines, fetchContainerFormats, fetchContainerQuantities, fetchContainers, fetchSuggestions, fetchTags, fetchFoods, fetchUnits, fetchNotes, fetchImages, fetchMachineFoods, fetchFriendsRecipes]
+const fetchAll = [fetchAll2, fetchSuggestions, fetchTags, fetchFoods, fetchUnits, fetchNotes, fetchImages, fetchMachineFoods, fetchFriendsRecipes]
 
 const gon = {fetchAll, fetchAccountUsers, fetchUserImages};
 export default gon;
