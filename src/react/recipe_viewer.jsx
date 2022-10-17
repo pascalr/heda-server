@@ -33,7 +33,7 @@ const MixIngredients = ({mix}) => {
   </>
 }
 
-export const RecipeViewer = ({recipeId, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipeKinds, images, user, users, recipes, suggestions, tags}) => {
+export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKinds, images, user, users, recipes, suggestions, tags}) => {
 
   const [showModal, setShowModal] = useState(false)
   useEffect(() => {

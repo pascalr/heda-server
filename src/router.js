@@ -348,7 +348,36 @@ router.get('/demo', function(req, res, next) {
   next()
 });
 
-router.get('/user/:id', function(req, res, next) {
+router.get('/r/:id', function(req, res, next) {
+
+  let recipeId = req.params.id
+  let o = {}
+  let ids = null
+  let attrs = null
+  // FIXME: Create and use fetchRecord or findRecord, not fetchTable
+  o.recipe = db.fetchTable('recipes', {id: recipeId}, RECIPE_ATTRS)[0]
+
+  if (o.recipe.recipe_kind_id) {
+    let attrs = ['name', 'description_json', 'image_slug']
+    // FIXME: Create and use fetchRecord or findRecord, not fetchTable
+    o.recipe_kind = db.fetchTable('recipe_kinds', {id: o.recipe.recipe_kind_id}, attrs)[0]
+  }
+
+  let slugs = [o.recipe.image_slug, o.recipe_kind ? o.recipe_kind.image_slug : null].filter(x=>x)
+  ids = slugs.map(s => s.split('.')[0])
+  attrs = ['author', 'source', 'filename', 'is_user_author']
+  o.images = db.fetchTable('images', {id: ids}, attrs).map(im => {
+    // FIXME
+    let ext = im.filename.substr(im.filename.lastIndexOf('.') + 1);
+    im.slug = `${im.id}.${ext}`
+    return im
+  })
+
+  res.locals.gon = o
+  res.render('show_recipe');
+});
+
+router.get('/u/:id', function(req, res, next) {
   let userId = req.params.id
   let o = {}
   let ids = null
@@ -365,6 +394,7 @@ router.get('/user/:id', function(req, res, next) {
   ids = [...slugs1, ...slugs2].map(s => s.split('.')[0])
   attrs = ['author', 'source', 'filename', 'is_user_author']
   o.images = db.fetchTable('images', {id: ids}, attrs).map(im => {
+    // FIXME
     let ext = im.filename.substr(im.filename.lastIndexOf('.') + 1);
     im.slug = `${im.id}.${ext}`
     return im

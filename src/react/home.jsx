@@ -61,7 +61,7 @@ const SearchBox = ({publicUsers}) => {
         {matchingUsers.length >= 1 ? <h2 className="h001">{t('Public_members')}</h2> : ''}
         <ul>
           {matchingUsers.map((user, current) => (
-            <li key={user.id} className="list-group-item clickable" onClick={() => window.location.href = `/user/${user.id}`}>{user.name}</li>
+            <li key={user.id} className="list-group-item clickable" onClick={() => window.location.href = `/u/${user.id}`}>{user.name}</li>
           ))}
         </ul>
       </div>

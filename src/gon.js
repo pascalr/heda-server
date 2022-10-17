@@ -79,6 +79,7 @@ const fetchAll3 = (user) => {
   ids = [...slugs1, ...slugs2, ...slugs3].map(s => s.split('.')[0])
   attrs = ['author', 'source', 'filename', 'is_user_author']
   o.images = db.fetchTable('images', {id: ids}, attrs).map(im => {
+    // FIXME
     let ext = im.filename.substr(im.filename.lastIndexOf('.') + 1);
     im.slug = `${im.id}.${ext}`
     return im
