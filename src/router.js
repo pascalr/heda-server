@@ -360,6 +360,7 @@ router.get('/r/:id', function(req, res, next) {
   // FIXME: Create and use fetchRecord or findRecord, not fetchTable
   o.user = db.fetchTable('users', {id: o.recipe.user_id, is_public: 1}, ['name'])[0]
   if (!o.user) {throw 'Unable to fetch recipe. No permission by user.'}
+  o.public_users = db.fetchTable('users', {is_public: 1}, ['name', 'image_slug'])
 
   if (o.recipe.recipe_kind_id) {
     let attrs = ['name', 'description_json', 'image_slug']
@@ -392,6 +393,7 @@ router.get('/u/:id', function(req, res, next) {
 
   o.recipes = db.fetchTable('recipes', {user_id: userId}, RECIPE_ATTRS)
   o.recipe_kinds = db.fetchTable('recipe_kinds', {}, ['name', 'description_json', 'image_slug'])
+  o.public_users = db.fetchTable('users', {is_public: 1}, ['name', 'image_slug'])
 
   let slugs1 = o.recipes.map(r=>r.image_slug).filter(x=>x)
   let slugs2 = o.recipe_kinds.map(r=>r.image_slug).filter(x=>x)

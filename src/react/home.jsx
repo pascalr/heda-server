@@ -6,7 +6,7 @@ import { isBlank, normalizeSearchText, join, sortBy, capitalize } from "./utils"
 import { image_slug_variant_path } from "./routes"
 import { t } from "../translate"
 
-const SearchBox = ({publicUsers}) => {
+export const MainSearch = ({publicUsers}) => {
 
   // Search is the text shown in the input field
   // Term is the term currently used to filter the search
@@ -69,9 +69,8 @@ const SearchBox = ({publicUsers}) => {
   </>)
 }
 
-const Home = () => {
+export const useMainSearch = () => {
 
-  const [publicUsers, ] = useState(gon.public_users)
   const [isSearching, setIsSearching] = useState(false)
           
   useEffect(() => {
@@ -83,11 +82,18 @@ const Home = () => {
     }
   }, [])
 
+  return isSearching
+}
+
+const Home = () => {
+
+  const [publicUsers, ] = useState(gon.public_users)
+  const isSearching = useMainSearch()
   if (!publicUsers || !isSearching) {return ''}
 
   return <>
     <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0 0.5em 0'}}>
-      <SearchBox {...{publicUsers}} />
+      <MainSearch {...{publicUsers}} />
     </div>
   </>
 }

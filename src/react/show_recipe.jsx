@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
+import { MainSearch, useMainSearch } from './home'
 import { parseIngredientsAndHeaders } from "./lib"
 import { RecipeThumbnailImage } from "./image"
 import { isBlank, normalizeSearchText, join, sortBy, capitalize } from "./utils"
@@ -113,8 +114,12 @@ const ShowRecipe = () => {
   const [recipeKind, ] = useState(gon.recipe_kind)
   const [user, ] = useState(gon.user)
 
+  const [publicUsers, ] = useState(gon.public_users)
+  const isSearching = useMainSearch()
+
   return <>
     <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0 0.5em 0'}}>
+      {isSearching && publicUsers ? <MainSearch {...{publicUsers}} /> : ''}
       <RecipeViewer {...{recipe, images, recipeKind, user}} />
     </div>
   </>
