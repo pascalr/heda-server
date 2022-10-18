@@ -116,28 +116,20 @@ const EditableIngredientSection = ({item, index, updateIngredients, removeIngred
   </h3>
 }
 
-export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, foods, recipes, recipeKinds, images, users, editable, user}) => {
+export const RecipeEditor = ({recipe, page, machines, mixes, machineFoods, foods, recipeKinds, images, editable, user}) => {
 
   const [showImageModal, setShowImageModal] = useState(false)
-  
-  const recipe = recipes.find(e => e.id == recipeId)
 
   const [orderedIngredients, setOrderedIngredients] = useState(recipe.ingredients)
   useEffect(() => {
     setOrderedIngredients(recipe.ingredients)
   }, [recipe])
 
-  useEffect(() => {
-    if (!recipe || recipe.user_id != user.id) {window.hcu.changePage({page: 15, recipeId: recipeId})}
-  }, [recipes])
-
   if (!recipe || recipe.user_id != user.id) {return '';}
 
   const ingredientsAndHeaders = parseIngredientsAndHeaders(orderedIngredients)
   const ingredients = ingredientsAndHeaders.filter(e => e.label != null || e.qty != null)
   const mix = mixes.find(m => m.recipe_id == recipe.id)
-  const recipeUser = users.find(u => u.id == recipe.user_id)
-  const userName = recipeUser ? recipeUser.name : `user${recipe.user_id}`
 
   function handleDrop(droppedItem) {
   
@@ -250,13 +242,13 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
   //    mixes.update([...mixes, mix])
   //  }})
   //}
-  //let mixEditor = mix ? <EditMix {...{page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, recipes}} /> : (<>
+  //let mixEditor = mix ? <EditMix {...{page, favoriteRecipes, machines, mixes, machineFoods, recipes}} /> : (<>
   //  <p>Vous pouvez ajouter des instructions pour automatiser cette recette.</p>
   //  <button type="button" className="btn btn-primary" onClick={createMix}>Ajouter</button>
   //</>)
   let mixEditor = mix ? <>
     <h2>{t('Commands')}</h2>
-    <EditMix {...{page, userRecipes, favoriteRecipes, machines, mixes, machineFoods, recipes}} />
+    <EditMix {...{page, machines, mixes, machineFoods, recipes}} />
   </> : null
 
   let changeOwner = (e) => {
@@ -289,6 +281,19 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
   //  </tbody>
   //</table>
   //<h2>Références</h2>
+          
+  //const recipeUser = users.find(u => u.id == recipe.user_id)
+  //const userName = recipeUser ? recipeUser.name : `user${recipe.user_id}`
+  //<div style={{marginTop: '-0.8em', marginBottom: '1.2em', color: 'gray'}}>
+  //  <div className="dropdown dropdown-toggle clickable" style={{padding: "0 1em"}}>
+  //    <span data-bs-toggle="dropdown">par {userName}</span>
+  //    <div className="dropdown-menu">
+  //      {users.filter(u => u.id != recipe.user_id).map(usr => {
+  //        return <a key={usr.id} id={usr.id} className="dropdown-item clickable" onClick={changeOwner}>{usr.name}</a>
+  //      })}
+  //    </div>
+  //  </div>
+  //</div>
 
   return (<>
     <div className="recipe">
@@ -312,16 +317,6 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
               <TextField model={recipe} field="name" className="plain-input" />
             </span>
           </h1>
-          <div style={{marginTop: '-0.8em', marginBottom: '1.2em', color: 'gray'}}>
-            <div className="dropdown dropdown-toggle clickable" style={{padding: "0 1em"}}>
-              <span data-bs-toggle="dropdown">par {userName}</span>
-              <div className="dropdown-menu">
-                {users.filter(u => u.id != recipe.user_id).map(usr => {
-                  return <a key={usr.id} id={usr.id} className="dropdown-item clickable" onClick={changeOwner}>{usr.name}</a>
-                })}
-              </div>
-            </div>
-          </div>
           <div>
             <b>{t('Preparation')} ({t('min')}): </b>
             <span style={{color: 'gray'}}>

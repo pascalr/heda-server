@@ -475,7 +475,7 @@ const labelForCmdType = (cmdType) => {
   return t ? t.label.fr : cmdType.id
 }
 
-const ShowMix = ({page, recipes, favoriteRecipes, machines, mixes, machineFoods}) => {
+const ShowMix = ({page, recipes, machines, mixes, machineFoods}) => {
 
   const machine = page.machineId ? machines.find(m => m.id == page.machineId) : null
   const currentMachineFoods = machine ? machineFoods.filter(m => m.machine_id == machine.id) : machineFoods
@@ -516,9 +516,9 @@ const ShowMix = ({page, recipes, favoriteRecipes, machines, mixes, machineFoods}
   </>)
 }
 
-export const EditMix = ({page, recipes, favoriteRecipes, machines, mixes, machineFoods}) => {
+export const EditMix = ({page, recipes, machines, mixes, machineFoods}) => {
 
-  const context = {recipes, favoriteRecipes, machines, mixes, machineFoods}
+  const context = {recipes, machines, mixes, machineFoods}
 
   const machine = page.machineId ? machines.find(m => m.id == page.machineId) : null
   const currentMachineFoods = machine ? machineFoods.filter(m => m.machine_id == machine.id) : machineFoods
@@ -642,11 +642,10 @@ export const EditMix = ({page, recipes, favoriteRecipes, machines, mixes, machin
     )
   })
 
-  const recipeIds = favoriteRecipes.map(r => r.recipe_id).concat(recipes.map(r => r.id))
-  const recipeNames = {}
-  favoriteRecipes.forEach(r => {recipeNames[r.recipe_id] = r.name})
-  recipes.forEach(r => {recipeNames[r.id] = r.name})
-    
+  //const recipeIds = favoriteRecipes.map(r => r.recipe_id).concat(recipes.map(r => r.id))
+  //const recipeNames = {}
+  //favoriteRecipes.forEach(r => {recipeNames[r.recipe_id] = r.name})
+  //recipes.forEach(r => {recipeNames[r.id] = r.name})
   //  <br/><br/>
   //  <h2>Recette</h2>
   //  <h3>Lier avec une recette existante:</h3>
@@ -681,7 +680,16 @@ const ShowRecipe = (props) => {
 }
 
 const EditRecipe = (props) => {
-  return <RecipeEditor {...{recipeId: props.page.recipeId, ...props}} />
+
+  const recipeId = props.page.recipeId
+  const recipe = props.recipes.find(e => e.id == recipeId)
+  useEffect(() => {
+    if (!recipe || recipe.user_id != props.user.id) {
+      window.hcu.changePage({page: 15, recipeId: recipeId})
+    }
+  }, [props.recipes])
+
+  return <RecipeEditor {...{recipe, ...props}} />
 }
 
 const MixIndex = ({page, machines, mixes, machineFoods}) => {
@@ -1043,8 +1051,8 @@ const App = () => {
     [PAGE_10]: <HedaIndex {...{page, machines}} />,
     [PAGE_11]: <Inventory {...{page, machines, machineFoods, containerQuantities, foods, containerFormats}} />,
     [PAGE_12]: <MixIndex {...{page, machines, machineFoods, mixes}} />,
-    [PAGE_13]: <ShowMix {...{page, recipes, favoriteRecipes, machines, mixes, machineFoods}} />,
-    [PAGE_14]: <EditMix {...{page, recipes, favoriteRecipes, machines, mixes, machineFoods}} />,
+    [PAGE_13]: <ShowMix {...{page, recipes, machines, mixes, machineFoods}} />,
+    [PAGE_14]: <EditMix {...{page, recipes, machines, mixes, machineFoods}} />,
     [PAGE_15]: <ShowRecipe {...{page, recipes, mixes, favoriteRecipes, recipeKinds, images, user, users, suggestions, tags}} />,
     [PAGE_16]: <EditRecipe {...{page, recipes, mixes, user, users, recipeKinds, images, machineFoods, favoriteRecipes}} />,
     [PAGE_17]: <NewRecipe {...{page, recipeKinds}} />

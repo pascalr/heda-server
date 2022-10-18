@@ -124,6 +124,9 @@ const Home = () => {
         </>
       }}</SingleCarrousel>
     </div>
+    <div style={{padding: '5em 0', backgroundColor: '#fafbfc', textAlign: 'center'}}>
+      <h2>Un éditeur de recette avancé</h2>
+    </div>
   </>
 }
 
