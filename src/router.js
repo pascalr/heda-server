@@ -39,7 +39,7 @@ router.post('/upload_image', function(req, res, next) {
   }
 
   let file = req.files['file'];
-  let ext = file.name.substr(file.name.lastIndexOf('.') + 1);
+  let ext = file.name.substr(file.name.lastIndexOf('.') + 1).toLowerCase();
   if (!['jpg', 'jpeg', 'png'].includes(ext)) {
     return res.status(500).send("Image format not supported. Expected jpg, jpeg or png. Was " + ext);
   }

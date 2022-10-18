@@ -43,6 +43,7 @@ const mySchema = {
   'images': {
     write_attrs: ['filename', 'author', 'is_user_author'],
     attrs_types: {is_user_author: 'bool'},
+    security_key: 'user_id',
   },
   'recipe_comments': {},
   'recipe_notes': {},
@@ -140,9 +141,11 @@ function addSafetyCondition(query0, args0, user, securityKey) {
 }
 
 if (db.safeUpdateField) {throw "Can't overide safeUpdateField"}
-db.safeUpdateField = function(table, id, field, value, user) {
+db.safeUpdateField = function(table, id, field, value, user, options={}) {
 
-  let query0 = 'UPDATE '+db.safe(table, schema.getTableList())+' SET '+db.safe(field, schema.getWriteAttributes(table))+' = ?, updated_at = ? WHERE id = ?'
+  let writeAttrs = schema.getWriteAttributes(table)
+  if (options.allow_write) {writeAttrs = [...writeAttrs, ...options.allow_write]}
+  let query0 = 'UPDATE '+db.safe(table, schema.getTableList())+' SET '+db.safe(field, writeAttrs)+' = ?, updated_at = ? WHERE id = ?'
   let args0 = [schema.validAttr(table, field, value), utils.now(), id]
   const [query, args] = addSafetyCondition(query0, args0, user, schema.getSecurityKey(table))
   return db.prepare(query).run(...args)
