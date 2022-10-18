@@ -8,6 +8,7 @@ export function tr(id, locale) {
     Error_updating: 'An error has occured that prevented this record from being modified.',
   }
   let fr = {
+    Login: 'Se connecter',
     Favorites: 'Favoris',
     Recipes_by: 'Les recettes de',
     Search: 'Rechercher',

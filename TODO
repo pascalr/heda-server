@@ -17,9 +17,6 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Creating tags with react and bootstrap.
 => Hcu
 
-Prendre les recettes à Céline et les attritrés à elle.
-Changer le bouton de search en X quand tu cliques dessus. Et pouvoir quitter le search...
-Faire un recipe slider pour les À cuisinner prochainement?, à essayer? et favoris?
 Pouvoir se login à partir du navbar des views.
 Je n'arrive pas à changer le owner de pouding au pain...
 Ajouter les recettes favorites dans show_user
@@ -31,6 +28,7 @@ Comment gérer la langue des pages quand l'utilisateur n'est pas connecté????? 
 Create an admin page, add a button to make a safe copy of the sqlite3 file.
 FIXME: Make fetchTable secure. Remove ALLOWED_TABLES_GET, use read_attrs?
 Ah je le sais quel design que je veux! Un genre de faux design de téléphone.
+Faire un recipe slider pour les À cuisinner prochainement?, à essayer? et favoris?
 
 Sur mon site internet de CV, rajouter une ligne sur la page d'acceuil, Portfolio, avec des liens vers les meilleurs projets que j'ai fait.
 
@@ -59,6 +57,7 @@ db.safe exception crashes the server...
 Print, Share, Download
 Pouvoir choisir de quel manière est tronquer l'image. Croustade aux pommes garder le haut de l'image.
 Put navbar in a partial
+Prendre les recettes à Céline et les attritrés à elle.
 
 Later:
 Periodic task to remove images which are not referenced anywhere. To remove images without a file.

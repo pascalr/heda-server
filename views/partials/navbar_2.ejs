@@ -2,6 +2,14 @@
   <div style="max-width: 800px; margin: auto; padding: 0.5em 0px;">
     <div class="float-end" style="margin-top: 0.25em;">
       <img id="main-search-btn" class="clickable" src="/icons/search.svg" style="margin-right: 1em;" width="24">
+      <div class="dropdown d-inline-block">
+        <button class="plain-btn dropdown-toggle" type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="margin-right: 1em; color: white;">
+          <img class="clickable" src="/icons/person-fill-white.svg" width="28">
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownUserButton">
+          <a href="/login" class="dropdown-item"><%- tr('Login')%></a>
+        </div>
+      </div>
     </div>
     <div style="margin: auto; width: fit-content; font-weight: 500; font-size: 1.5rem; color: rgb(249, 249, 249);">
       <% if (typeof renderingHome != "undefined" && renderingHome) { %>
