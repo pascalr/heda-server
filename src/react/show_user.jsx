@@ -51,8 +51,8 @@ const ShowUser = () => {
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  const root = document.getElementById('root')
-  ReactDOM.render(<ShowUser />, root)
+  const root = document.getElementById('root-u')
+  if (root) {ReactDOM.render(<ShowUser />, root)}
   //const root = createRoot(document.getElementById("root"));
   //root.render(<UserEditor/>);
 })

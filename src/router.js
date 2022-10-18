@@ -364,11 +364,11 @@ router.get('/r/:id', function(req, res, next) {
   if (!o.user) {throw 'Unable to fetch recipe. No permission by user.'}
   o.public_users = db.fetchTable('users', {is_public: 1}, ['name', 'image_slug'])
 
-  if (o.recipe.recipe_kind_id) {
-    let attrs = ['name', 'description_json', 'image_slug']
-    // FIXME: Create and use fetchRecord or findRecord, not fetchTable
-    o.recipe_kind = db.fetchTable('recipe_kinds', {id: o.recipe.recipe_kind_id}, attrs)[0]
-  }
+  //if (o.recipe.recipe_kind_id) {
+  //  let attrs = ['name', 'description_json', 'image_slug']
+  //  // FIXME: Create and use fetchRecord or findRecord, not fetchTable
+  //  o.recipe_kind = db.fetchTable('recipe_kinds', {id: o.recipe.recipe_kind_id}, attrs)[0]
+  //}
 
   let slugs = [o.recipe.image_slug, o.recipe_kind ? o.recipe_kind.image_slug : null].filter(x=>x)
   ids = slugs.map(s => s.split('.')[0])

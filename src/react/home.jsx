@@ -129,7 +129,7 @@ const Home = () => {
 document.addEventListener('DOMContentLoaded', () => {
 
   const root = document.getElementById('root-home')
-  ReactDOM.render(<Home />, root)
+  if (root) {ReactDOM.render(<Home />, root)}
   //const root = createRoot(document.getElementById("root"));
   //root.render(<UserEditor/>);
 })

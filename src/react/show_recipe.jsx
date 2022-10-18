@@ -12,7 +12,7 @@ import { Utils } from "./recipe_utils"
 import { RecipeTiptap } from './tiptap'
 import { RecipeMediumImage } from "./image"
 
-export const RecipeViewer = ({recipe, images, recipeKind, user}) => {
+export const RecipeViewer = ({recipe, images, user}) => {
 
   const ingredientsAndHeaders = parseIngredientsAndHeaders(recipe.ingredients)
   const ingredients = ingredientsAndHeaders.filter(e => e.label || e.qty)
@@ -53,7 +53,7 @@ export const RecipeViewer = ({recipe, images, recipeKind, user}) => {
     <div className="recipe">
       <div className="d-block d-md-flex gap-20">
         <div>
-          <RecipeMediumImage {...{recipe, recipeKinds: [recipeKind], images, showCredit: true}} />
+          <RecipeMediumImage {...{recipe, images, showCredit: true}} />
         </div>
         <div style={{width: '100%'}}>
           <div className='d-flex'>
@@ -111,7 +111,6 @@ const ShowRecipe = () => {
 
   const [recipe, ] = useState(gon.recipe)
   const [images, ] = useState(gon.images)
-  const [recipeKind, ] = useState(gon.recipe_kind)
   const [user, ] = useState(gon.user)
 
   const [publicUsers, ] = useState(gon.public_users)
@@ -120,15 +119,15 @@ const ShowRecipe = () => {
   return <>
     <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0'}}>
       {isSearching && publicUsers ? <MainSearch {...{publicUsers}} /> : ''}
-      <RecipeViewer {...{recipe, images, recipeKind, user}} />
+      <RecipeViewer {...{recipe, images, user}} />
     </div>
   </>
 }
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  const root = document.getElementById('root')
-  ReactDOM.render(<ShowRecipe />, root)
+  const root = document.getElementById('root-r')
+  if (root) {ReactDOM.render(<ShowRecipe />, root)}
   //const root = createRoot(document.getElementById("root"));
   //root.render(<UserEditor/>);
 })
