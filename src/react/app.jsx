@@ -49,8 +49,6 @@ const changePage = (page) => {
   //getRegister('setPage')(page)
 }
   
-const encodeRecord = (record) => (`${record.table_name == "recipe_kinds" ? '' : '_'}${record.id}`)
-
 const SuggestionsNav = ({page, tagSuggestions, categorySuggestions}) => {
   return (<>
     <ul className="nav nav-tabs">
@@ -1002,7 +1000,7 @@ const App = () => {
   const machineFoods = useHcuState(gon.machine_foods, {tableName: 'machine_foods'})
   const mixes = useHcuState(gon.mixes, {tableName: 'mixes'})
   const recipes = useHcuState(gon.recipes, {tableName: 'recipes'})
-  const recipeKinds = gon.recipe_kinds
+  const recipeKinds = []
   const images = useHcuState(gon.images, {tableName: 'images'})
   const tags = useHcuState(gon.tags, {tableName: 'tags'})
   //const notes = gon.notes
