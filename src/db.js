@@ -40,7 +40,10 @@ db.safe = function(str, allowed) {
 const mySchema = {
   'meals': {},
   'mixes': {},
-  'images': {},
+  'images': {
+    write_attrs: ['filename', 'author', 'is_user_author'],
+    attrs_types: {is_user_author: 'bool'},
+  },
   'recipe_comments': {},
   'recipe_notes': {},
   'recipe_ratings': {},
@@ -212,7 +215,7 @@ db.createRecord = function(table, obj, userId) {
   obj = schema.beforeCreate(table, obj)
 
   let fields = Object.keys(obj)
-  let columns = schema.getWriteAttributes(table)
+  let columns = schema.getWriteAttributes(table) || []
   let query = 'INSERT INTO '+safeTable+' (created_at,updated_at,'+fields.map(f => db.safe(f, [...columns, 'user_id'])).join(',')+') '
   query += 'VALUES (?,?,'+fields.map(f=>'?').join(',')+')'
   let args = [utils.now(), utils.now(), ...fields.map(f => schema.validAttr(table, f, obj[f]))]

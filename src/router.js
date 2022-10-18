@@ -34,39 +34,32 @@ router.get('/new_user', function(req, res, next) {
 
 router.post('/upload_image', function(req, res, next) {
 
-  try {
-    if (!req.files || Object.keys(req.files).length === 0) {
-      return res.status(400).send('No files were uploaded.');
-    }
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400).send('No files were uploaded.');
+  }
 
-    let file = req.files['file'];
-    let ext = file.name.substr(file.name.lastIndexOf('.') + 1);
-    if (!['jpg', 'jpeg', 'png'].includes(ext)) {
-      return res.status(500).send("Image format not supported. Expected jpg, jpeg or png. Was " + ext);
-    }
+  let file = req.files['file'];
+  let ext = file.name.substr(file.name.lastIndexOf('.') + 1);
+  if (!['jpg', 'jpeg', 'png'].includes(ext)) {
+    return res.status(500).send("Image format not supported. Expected jpg, jpeg or png. Was " + ext);
+  }
 
-    let image = {filename: file.name, user_id: req.user.user_id}
+  let image = {filename: file.name}
+  let {record_table, record_id, record_field} = req.body
 
-    let recordTable = req.body.record_table
-    let recordId = parseInt(req.body.record_id)
-    let recordField = req.body.record_field
-
-    db.transaction(() => {
-      let info = db.prepare('INSERT INTO images (filename, user_id, created_at, updated_at) VALUES (?, ?, ?, ?)').run(image.filename, image.user_id, utils.now(), utils.now())
-      image.id = info.lastInsertRowid;
-      if (info.changes != 1) {return res.status(500).send("Unable to create image record in database")}
-      // Use the mv() method to place the file somewhere on your server
-
-      let slug = `${image.id}.${ext}`
-      db.safeUpdateField(recordTable, recordId, recordField, slug, req.user)
-    })()
+  const uploadImage = db.transaction((image) => {
+    image = db.createRecord('images', image, req.user.user_id)
+    let slug = `${image.id}.${ext}`
+    db.safeUpdateField(record_table, record_id, record_field, slug, req.user)
 
     // FIXME: This should probably be inside the transaction, but this runs async.
+    // Use the mv() method to place the file somewhere on your server
     file.mv(path.join(IMAGE_FOLDER, image.id + '.' + ext), function(err) {
       if (err) { return res.status(500).send(err); }
       res.json(image)
     });
-  } catch(err) { return res.status(500).send(err) }
+  })
+  uploadImage(image)
 
 });
 
@@ -227,105 +220,81 @@ router.get('/imgs/:variant/:slug', function(req, res, next) {
 
 router.post('/create_record/:table', function(req, res, next) {
   
-  try {
-    //let obj = JSON.parse(req.body.record)
-    // I keep doing it this way because it works. Using JSON, SQLite3 does not want to be given booleans, and it probably should be an integer and not a string, but right now it is a string I believe.
-    let fieldsSent = utils.ensureIsArray(req.body['fields[]'])//.filter(f => f != 'table_name')
-    let obj = fieldsSent.reduce((acc, f) => ({ ...acc, [f]: req.body['record['+f+']']}), {}) 
-    let record = db.createRecord(req.params.table, obj, req.user.user_id)
-    res.json({...record})
-  } catch(err) {
-    throw new Error(err)
-  }
+  //let obj = JSON.parse(req.body.record)
+  // I keep doing it this way because it works. Using JSON, SQLite3 does not want to be given booleans, and it probably should be an integer and not a string, but right now it is a string I believe.
+  let fieldsSent = utils.ensureIsArray(req.body['fields[]'])//.filter(f => f != 'table_name')
+  let obj = fieldsSent.reduce((acc, f) => ({ ...acc, [f]: req.body['record['+f+']']}), {}) 
+  let record = db.createRecord(req.params.table, obj, req.user.user_id)
+  res.json({...record})
 })
 
 router.patch('/change_recipe_owner', function(req, res, next) {
-  try {
-    let recipeId = parseInt(req.body.recipeId)
-    let newOwnerId = parseInt(req.body.newOwnerId)
-  
-    let users = db.fetchTable('users', {account_id: req.user.account_id}, ['name'])
-    if (!users.map(u => u.id).includes(newOwnerId)) {
-      throw new Error("ChangeRecipeOwner not allowed")
-    }
-    let recipe = db.prepare('SELECT id, user_id FROM recipes WHERE id = ?').get(recipeId)
-    if (!users.map(u => u.id).includes(recipe.user_id)) {
-      throw new Error("ChangeRecipeOwner not allowed")
-    }
-    let query = 'UPDATE recipes SET user_id = ?, updated_at = ? WHERE id = ?'
-    let args = [newOwnerId, utils.now(), recipeId]
-    console.log('query', query)
-    console.log('args', args)
-    db.prepare(query).run(args)
-    res.json({status: 'ok'})
     
-  } catch(err) {
-    throw new Error(err)
+  let recipeId = parseInt(req.body.recipeId)
+  let newOwnerId = parseInt(req.body.newOwnerId)
+  
+  let users = db.fetchTable('users', {account_id: req.user.account_id}, ['name'])
+  if (!users.map(u => u.id).includes(newOwnerId)) {
+    throw new Error("ChangeRecipeOwner not allowed")
   }
+  let recipe = db.prepare('SELECT id, user_id FROM recipes WHERE id = ?').get(recipeId)
+  if (!users.map(u => u.id).includes(recipe.user_id)) {
+    throw new Error("ChangeRecipeOwner not allowed")
+  }
+  let query = 'UPDATE recipes SET user_id = ?, updated_at = ? WHERE id = ?'
+  let args = [newOwnerId, utils.now(), recipeId]
+  console.log('query', query)
+  console.log('args', args)
+  db.prepare(query).run(args)
+  res.json({status: 'ok'})
 });
 
 router.patch('/update_field/:table/:id', function(req, res, next) {
 
-  try {
-    let {table, id} = req.params
-    let {field, value} = req.body
+  let {table, id} = req.params
+  let {field, value} = req.body
 
-    let info = db.safeUpdateField(table, id, field, value, req.user)
-    if (info.changes != 1) {return res.status(500).send("Unable to update record in database")}
-    res.json({status: 'ok'})
-  } catch(err) {
-    throw new Error(err)
-  }
+  let info = db.safeUpdateField(table, id, field, value, req.user)
+  if (info.changes != 1) {return res.status(500).send("Unable to update record in database")}
+  res.json({status: 'ok'})
 });
 
 router.get('/fetch_record/:table/:id', function(req, res, next) {
 
-  try {
-    let id = req.params.id
-    let table = req.params.table
-    if (Object.keys(ALLOWED_COLUMNS_GET).includes(table)) {
-      //fetchTable(table, {id: id, user_id: req.user.user_id}, ALLOWED_COLUMNS_GET[table], next, (records) => {
-      // FIXME: fetchRecord and not fetchTable...
-      const records = db.fetchTable(table, {id: id}, ALLOWED_COLUMNS_GET[table])
-      res.json({...records[0]})
-    } else {
-      throw new Error("FetchRecord not allowed")
-    }
-  } catch(err) {
-    throw new Error(err)
+  let id = req.params.id
+  let table = req.params.table
+  if (Object.keys(ALLOWED_COLUMNS_GET).includes(table)) {
+    //fetchTable(table, {id: id, user_id: req.user.user_id}, ALLOWED_COLUMNS_GET[table], next, (records) => {
+    // FIXME: fetchRecord and not fetchTable...
+    const records = db.fetchTable(table, {id: id}, ALLOWED_COLUMNS_GET[table])
+    res.json({...records[0]})
+  } else {
+    throw new Error("FetchRecord not allowed")
   }
 });
 
 // TODO: Do all the modifications inside a single transaction, and rollback if there is an error.
 router.patch('/batch_modify', function(req, res, next) {
 
-  try {
-    let mods = JSON.parse(req.body.mods)
-    let applyMods = db.transaction((mods) => {
-      mods.forEach(({method, tableName, id, field, value}) => {
-        if (method == 'UPDATE') {
-          let info = db.safeUpdateField(tableName, id, field, value, {user_id: req.user.user_id})
-          if (info.changes != 1) {throw "Unable to update record in database"}
-        }
-      })
+  let mods = JSON.parse(req.body.mods)
+  let applyMods = db.transaction((mods) => {
+    mods.forEach(({method, tableName, id, field, value}) => {
+      if (method == 'UPDATE') {
+        let info = db.safeUpdateField(tableName, id, field, value, {user_id: req.user.user_id})
+        if (info.changes != 1) {throw "Unable to update record in database"}
+      }
     })
-    applyMods(mods)
-    res.json({status: 'ok'})
-  } catch(err) {
-    throw new Error(err)
-  }
+  })
+  applyMods(mods)
+  res.json({status: 'ok'})
 });
 
 router.delete('/destroy_record/:table/:id', function(req, res, next) {
 
-  try {
-    let {id, table} = req.params
-    db.destroyRecordWithDependants(table, id, req.user)
-    //db.safeDestroyRecord(table, id, req.user)
-    res.json({status: 'ok'})
-  } catch(err) {
-    throw new Error(err)
-  }
+  let {id, table} = req.params
+  db.destroyRecordWithDependants(table, id, req.user)
+  //db.safeDestroyRecord(table, id, req.user)
+  res.json({status: 'ok'})
 });
 
 router.get('/demo', function(req, res, next) {

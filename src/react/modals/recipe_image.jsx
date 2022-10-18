@@ -19,6 +19,7 @@ export const EditRecipeImageModal = ({recipe, recipeKinds, images, show, handleC
     }
   }
 
+  console.log('images', images)
   console.log('image', image)
   console.log('imagePath', imagePath)
     
