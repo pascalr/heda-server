@@ -1,3 +1,21 @@
-<h1><%= message %></h1>
-<h2><%= error.status %></h2>
-<pre><%= error.stack %></pre>
+<!doctype html>
+<html lang="en">
+  <head>
+    <%- include('partials/head') %>
+  </head>
+  <body>
+    <%- include('partials/navbar_2') %>
+    <div id="root"></div>
+    <div style="max-width: 800px; margin: auto; padding: 0.5em 0; text-align: center;">
+      <br><br><br>
+      <img src="/sorry.gif" style="margin: auto;">
+      <br><br><br>
+      <h1 class="h003"><%- tr('Sorry_error') %></h1>
+    </div>
+  </body>
+</html>
+
+<script>
+  window.gon = <%- JSON.stringify(gon) %>
+</script>
+<script src="/build/home.js" type="text/javascript"/></script>

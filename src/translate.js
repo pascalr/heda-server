@@ -6,8 +6,10 @@ export function tr(id, locale) {
     Error_fetching: 'An error has occured that prevented this record from being showned.',
     Error_creating: 'An error has occured that prevented this record from being created.',
     Error_updating: 'An error has occured that prevented this record from being modified.',
+    Sorry_error: 'We are very sorry, but something went wrong.',
   }
   let fr = {
+    Sorry_error: "Nous sommes vraiment désolé, mais une erreur s'est produite.",
     Login: 'Se connecter',
     Favorites: 'Favoris',
     Recipes_by: 'Les recettes de',

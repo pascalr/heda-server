@@ -118,7 +118,7 @@ const ShowRecipe = () => {
   const isSearching = useMainSearch()
 
   return <>
-    <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0 0.5em 0'}}>
+    <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0'}}>
       {isSearching && publicUsers ? <MainSearch {...{publicUsers}} /> : ''}
       <RecipeViewer {...{recipe, images, recipeKind, user}} />
     </div>

@@ -85,32 +85,32 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  if (req.app.get('env') === 'development') {
+
+    if (typeof err === 'string') {
+      res.locals.message = err;
+      res.locals.error = {};
+    } else {
+      res.locals.message = err.message;
+      res.locals.error = err;
+    }
+
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error_dev');
+
+  } else {
+    console.log('ERROR', err)
+    res.redirect('/error');
+  }
 });
-
-/**
- * Get port from environment and store in Express.
- */
 
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-/**
- * Create HTTP server.
- */
-
 var server = http.createServer(app);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
+// Listen on provided port, on all network interfaces.
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
@@ -118,18 +118,15 @@ server.on('listening', onListening);
 /**
  * Normalize a port into a number, string, or false.
  */
-
 function normalizePort(val) {
   var port = parseInt(val, 10);
 
   if (isNaN(port)) {
-    // named pipe
-    return val;
+    return val; // named pipe
   }
 
   if (port >= 0) {
-    // port number
-    return port;
+    return port; // port number
   }
 
   return false;
@@ -138,7 +135,6 @@ function normalizePort(val) {
 /**
  * Event listener for HTTP server "error" event.
  */
-
 function onError(error) {
   if (error.syscall !== 'listen') {
     throw error;
@@ -166,7 +162,6 @@ function onError(error) {
 /**
  * Event listener for HTTP server "listening" event.
  */
-
 function onListening() {
   var addr = server.address();
   var bind = typeof addr === 'string'

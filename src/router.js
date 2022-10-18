@@ -387,15 +387,19 @@ router.get('/u/:id', function(req, res, next) {
   let o = {}
   let ids = null
   let attrs = null
-  // FIXME: Create and use fetchRecord or findRecord, not fetchTable
-  o.user = db.fetchTable('users', {id: userId, is_public: 1}, ['name'])[0]
+
+  o.publicUsers = db.fetchTable('users', {is_public: 1}, ['name'])
+  let publicUsersIds = o.publicUsers.map(u => u.id)
+  o.user = o.publicUsers.find(u => u.id == userId)
+
   if (!o.user) {throw 'Unable to fetch user. Not existent or not public.'}
 
   o.recipes = db.fetchTable('recipes', {user_id: userId}, RECIPE_ATTRS)
   o.favorite_recipes = db.fetchTable('favorite_recipes', {user_id: userId}, ['list_id', 'recipe_id'])
   let recipeIds = o.recipes.map(r => r.id)
   let missingRecipeIds = o.favorite_recipes.map(r=>r.recipe_id).filter(id => !recipeIds.includes(id))
-  o.recipes = [...o.recipes, ...db.fetchTable('recipes', {id: missingRecipeIds}, RECIPE_ATTRS)]
+  let favRecipes = db.fetchTable('recipes', {id: missingRecipeIds}, RECIPE_ATTRS).filter(r => publicUsersIds.includes(r.user_id))
+  o.recipes = [...o.recipes, ...favRecipes]
   o.recipe_kinds = db.fetchTable('recipe_kinds', {}, ['name', 'description_json', 'image_slug'])
   o.public_users = db.fetchTable('users', {is_public: 1}, ['name', 'image_slug'])
 
@@ -413,6 +417,13 @@ router.get('/u/:id', function(req, res, next) {
   res.locals.gon = o
   res.render('show_user');
 });
+
+router.get('/error', function(req, res, next) {
+  res.locals.gon = {
+    public_users: db.fetchTable('users', {is_public: 1}, ['name', 'image_slug'])
+  }
+  return res.render('error');
+})
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

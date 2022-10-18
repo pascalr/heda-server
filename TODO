@@ -29,6 +29,7 @@ Create an admin page, add a button to make a safe copy of the sqlite3 file.
 FIXME: Make fetchTable secure. Remove ALLOWED_TABLES_GET, use read_attrs?
 Ah je le sais quel design que je veux! Un genre de faux design de téléphone.
 Faire un recipe slider pour les À cuisinner prochainement?, à essayer? et favoris?
+Une belle page d'erreur.
 
 Sur mon site internet de CV, rajouter une ligne sur la page d'acceuil, Portfolio, avec des liens vers les meilleurs projets que j'ai fait.
 
@@ -84,6 +85,7 @@ Expressjs mobile development???
 
 Later (optimize):
 Delegate all the db data sorting to the client to avoid load on the server.
+When finding by id, use an hash instead of an array
 
 Later (security):
 Do double security to prevent SQL injection. Sanitize all the input AND make sure that the item is whitelisted.

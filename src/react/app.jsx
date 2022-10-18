@@ -1093,7 +1093,7 @@ const App = () => {
   //   Icon color: black
   return (<>
     <nav style={{backgroundColor: '#212529', marginBottom: '0.5em', borderBottom: '1px solid #cee2f0'}}>
-      <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0 0.5em 0'}}>
+      <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0'}}>
         <div className="float-start" style={{margin: '0.3em 0 0 0.5em'}}>
           {moveBtn}
         </div>

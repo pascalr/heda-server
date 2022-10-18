@@ -93,10 +93,12 @@ img {
 .h001 {
   font-size: 1.2rem;
 }
-
 .h002 {
   font-size: 0.8rem;
   color: gray;
+}
+.h003 {
+  font-size: 1.5rem;
 }
 
 /* font sizes */
