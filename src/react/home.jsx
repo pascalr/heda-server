@@ -103,15 +103,16 @@ const Home = () => {
     </div>
     <div style={{padding: '5em 0'}}>
       <div className="text-center">
-        <div className="d-flex flex-column" style={{marginTop: '4em', gap: '4em'}}>
+        <div className="d-flex flex-column" style={{gap: '4em'}}>
           <h1 style={{fontSize: '3.5em'}}>Heda cuisine</h1>
-          <h2>Heda suggère des recettes pour souper</h2>
+          <h2>Des recettes personnalisées pour toi</h2>
           <a className="btn btn-primary" style={{padding: '0.5em 3em', margin: 'auto'}} href="/login">Sign in</a>
         </div>
       </div>
     </div>
-    <div style={{padding: '5em 0', backgroundColor: '#fafbfc'}}>
-      <h1>Des suggestions de recettes</h1>
+    <div style={{padding: '5em 0', backgroundColor: '#fafbfc', textAlign: 'center'}}>
+      <h2>Suggestions par catégories</h2>
+      <h3></h3>
       <SingleCarrousel items={recipes}>{({item}) => {
         let recipe = item
         return <>
