@@ -107,3 +107,8 @@ input[type="checkbox"] {
   opacity: 0.2;
   cursor: auto;
 }
+
+.font-satisfy {
+  font-family: "Satisfy", cursive;
+  font-weight: bold;
+}

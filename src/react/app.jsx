@@ -18,7 +18,7 @@ import { DeleteConfirmButton } from './components/delete_confirm_button'
 import {RecipeEditor} from "./recipe_editor"
 import {RecipeViewer} from "./recipe_viewer"
 import { initHcu, useHcuState } from '../hcu'
-import { RecipeThumbnailImage } from "./image"
+import { RecipeThumbnailImage, RecipeMediumImage } from "./image"
 import { t } from "../translate"
 import { FOOD_EMOJIS, ANIMAL_EMOJIS, OTHER_EMOJIS, TO_REMOVE_EMOJIS, SMILEYS } from "./emojis"
 
@@ -65,28 +65,21 @@ const SuggestionsNav = ({page, tagSuggestions, categorySuggestions}) => {
   </>)
 }
 
-const RecipeSingleCarrousel = ({tag, suggestions, isCategory, recipes, recipeKinds}) => {
+export const SingleCarrousel = ({items, children}) => {
   
-  const [suggestionNb, setSuggestionNb] = useState(0)
-  const [maxSuggestionNb, setMaxSuggestionNb] = useState(0)
+  const [itemNb, setItemNb] = useState(0)
 
-  const nextSuggestion = () => {
-    if (suggestions && suggestionNb < suggestions.length-1) {
-      let nb = suggestionNb + 1
-      setSuggestionNb(nb)
-      if (nb > maxSuggestionNb) { setMaxSuggestionNb(nb) }
-    }
-    //if (suggestionNb+2 < suggestions.length-1 && suggestionNb == maxSuggestionNb) {
-    //  preloadSuggestion(suggestions[suggestionNb])
-    //}
+  const nextItem = () => {
+    if (itemNb < items.length-1) { setItemNb(itemNb + 1) }
   }
-  const previousSuggestion = () => {
-    setSuggestionNb(suggestionNb <= 0 ? 0 : suggestionNb - 1)
+
+  const previousItem = () => {
+    setItemNb(itemNb <= 0 ? 0 : itemNb - 1)
   }
   
   let onKeyDown = ({key}) => {
-    if (key == "ArrowLeft") {previousSuggestion()}
-    if (key == "ArrowRight") {nextSuggestion()}
+    if (key == "ArrowLeft") {previousItem()}
+    if (key == "ArrowRight") {nextItem()}
   }
 
   useEffect(() => {
@@ -96,8 +89,10 @@ const RecipeSingleCarrousel = ({tag, suggestions, isCategory, recipes, recipeKin
     }
   }, [])
   
-  let suggestion = suggestions ? suggestions[suggestionNb] : null
-  if (!suggestion) {console.log('no suggestion to show'); return ''}
+  if (!items || items.length == 0) {console.log('no items to show'); return ''}
+  //if (!children || children.length != 1) {throw "Error carroussel must have one and only one children."}
+  if (!children) {throw "Error carroussel must have one and only one children."}
+  let item = items[itemNb]
 
   let handleSwipe = ({direction}) => {
     if (direction == 2) { // left
@@ -106,53 +101,40 @@ const RecipeSingleCarrousel = ({tag, suggestions, isCategory, recipes, recipeKin
       previousSuggestion()
     }
   }
-
-  const sendStats = () => {
-    // TODO
-    //if (!isCategory) {
-    //  let skipped = []
-    //  for (let i = 0; i < suggestionNb; i++) {
-    //    skipped.push(encodeRecord(suggestions[i]))
-    //  }
-    //  for (let i = suggestionNb+1; i <= maxSuggestionNb; i++) {
-    //    skipped.push(encodeRecord(suggestions[i]))
-    //  }
-    //  ajax({url: send_data_suggestions_path(), type: 'PATCH', data: {filterId: tag.id, skipped, selected: encodeRecord(suggestion)}})
-    //}
-  }
   
-  //<button type="button" className="btn btn-danger" onClick={() => nextSuggestion()}>Non, pas cette fois</button>
-  //let suggested = null
-  //if (suggestion.recipe_id) {
-  //  suggested = recipes.find(r => r.id == suggestion.recipe_id)
-  //} else {
-  //  suggested = recipeKinds.find(r => r.id == suggestion.recipe_kind_id)
-  //}
-  
-  let recipe = recipes.find(r => r.id == suggestion.recipe_id)
-  const recipeKind = recipeKinds.find(k => k.id == recipe.recipe_kind_id)
+  //let recipe = recipes.find(r => r.id == suggestion.recipe_id)
+  //const recipeKind = recipeKinds.find(k => k.id == recipe.recipe_kind_id)
 
-  const imageSlug = isTrue(recipe.use_personalised_image) ? recipe.image_slug : recipeKind && recipeKind.image_slug
-  const imageSrc = imageSlug ? image_path(imageSlug, 'medium') : "/img/default_recipe_01.png"
  
     //<Hammer onSwipe={handleSwipe}>
     //</Hammer>
   return (<>
       <div>
         <div className="over-container" style={{margin: "auto"}}>
-          <img src={imageSrc} style={{maxWidth: "100vw"}} width="452" height="304" />
-          <LinkToPage page={{page: 15, recipeId: recipe.id}}>
-            <h2 className="bottom-center font-satisfy" style={{borderRadius: "0.5em", border: "1px solid #777", color: "#333", bottom: "1em", backgroundColor: "#f5f5f5", fontSize: "2em", padding: "0.2em 0.8em 0 0.2em"}}>{recipe.name}</h2>
-          </LinkToPage>
+          {children({item})}
           <div className="left-center">
-            <img className="clickable" src={icon_path("custom-chevron-left.svg")} width="45" height="90" onClick={previousSuggestion} aria-disabled={suggestionNb <= 0} />
+            <img className="clickable" src={icon_path("custom-chevron-left.svg")} width="45" height="90" onClick={previousItem} aria-disabled={itemNb <= 0} />
           </div>
           <div className="right-center">
-            <img className="clickable" src={icon_path("custom-chevron-right.svg")} width="45" height="90" onClick={nextSuggestion} aria-disabled={suggestionNb >= suggestions.length-1} />
+            <img className="clickable" src={icon_path("custom-chevron-right.svg")} width="45" height="90" onClick={nextItem} aria-disabled={itemNb >= items.length-1} />
           </div>
         </div>
       </div>
   </>)
+}
+
+const RecipeSingleCarrousel = ({tag, suggestions, isCategory, recipes, recipeKinds}) => {
+  return <>
+    <SingleCarrousel items={suggestions}>{({item}) => {
+      let recipe = recipes.find(r => r.id == item.recipe_id)
+      return <>
+        <RecipeMediumImage {...{recipe, recipeKinds}} />
+        <LinkToPage page={{page: 15, recipeId: recipe.id}}>
+          <h2 className="bottom-center font-satisfy" style={{borderRadius: "0.5em", border: "1px solid #777", color: "#000", bottom: "1em", backgroundColor: "rgba(245, 245, 245, 0.7)", fontSize: "2em", padding: "0.2em 0.2em 0.1em 0.2em"}}>{recipe.name}</h2>
+        </LinkToPage>
+      </>
+    }}</SingleCarrousel>
+  </>
 }
 
 const SuggestionsIndex = ({tags, suggestions, page, recipes, recipeKinds}) => {
@@ -1136,7 +1118,7 @@ const App = () => {
 document.addEventListener('DOMContentLoaded', () => {
 
   const root = document.getElementById('root')
-  ReactDOM.render(<App/>, root)
+  if (root) {ReactDOM.render(<App/>, root)}
   //const root = createRoot(document.getElementById("root"));
   //root.render(<App/>);
 })

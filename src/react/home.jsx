@@ -2,9 +2,11 @@ import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
+import { RecipeMediumImage } from "./image"
 import { isBlank, normalizeSearchText, join, sortBy, capitalize } from "./utils"
 import { image_slug_variant_path } from "./routes"
 import { t } from "../translate"
+import { SingleCarrousel } from "./app"
 
 export const MainSearch = ({publicUsers}) => {
 
@@ -92,19 +94,40 @@ export const useMainSearch = () => {
 const Home = () => {
 
   const [publicUsers, ] = useState(gon.public_users)
+  const [recipes, ] = useState(gon.recipes)
   const isSearching = useMainSearch()
-  if (!publicUsers || !isSearching) {return ''}
 
   return <>
     <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0 0.5em 0'}}>
-      <MainSearch {...{publicUsers}} />
+      {isSearching ? <MainSearch {...{publicUsers}} /> : ''}
+    </div>
+    <div style={{padding: '5em 0'}}>
+      <div className="text-center">
+        <div className="d-flex flex-column" style={{marginTop: '4em', gap: '4em'}}>
+          <h1 style={{fontSize: '3.5em'}}>Heda cuisine</h1>
+          <h2>Heda suggère des recettes pour souper</h2>
+          <a className="btn btn-primary" style={{padding: '0.5em 3em', margin: 'auto'}} href="/login">Sign in</a>
+        </div>
+      </div>
+    </div>
+    <div style={{padding: '5em 0', backgroundColor: '#fafbfc'}}>
+      <h1>Des suggestions de recettes</h1>
+      <SingleCarrousel items={recipes}>{({item}) => {
+        let recipe = item
+        return <>
+          <RecipeMediumImage {...{recipe}} />
+          <a href={`/r/${recipe.id}`}>
+            <h2 className="bottom-center font-satisfy" style={{borderRadius: "0.5em", border: "1px solid #777", color: "#000", bottom: "1em", backgroundColor: "rgba(245, 245, 245, 0.7)", fontSize: "2em", padding: "0.2em 0.2em 0.1em 0.2em"}}>{recipe.name}</h2>
+          </a>
+        </>
+      }}</SingleCarrousel>
     </div>
   </>
 }
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  const root = document.getElementById('root')
+  const root = document.getElementById('root-home')
   ReactDOM.render(<Home />, root)
   //const root = createRoot(document.getElementById("root"));
   //root.render(<UserEditor/>);
