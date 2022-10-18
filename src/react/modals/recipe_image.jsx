@@ -11,7 +11,7 @@ import { t } from "../../translate"
 export const EditRecipeImageModal = ({recipe, recipeKinds, images, show, handleClose}) => {
 
   const image = recipe.image_slug ? images.find(e => e.slug == recipe.image_slug) : null
-  const imagePath = image ? image_path(image, 'medium') : "/img/default_recipe_01.png"
+  const imagePath = recipe.image_slug ? image_path(recipe.image_slug, 'medium') : "/img/default_recipe_01.png"
 
   const removeImage = () => {
     if (window.confirm(t('Confirm_delete'))) {
@@ -21,7 +21,9 @@ export const EditRecipeImageModal = ({recipe, recipeKinds, images, show, handleC
 
   console.log('images', images)
   console.log('image', image)
+  console.log('slug', recipe.image_slug)
   console.log('imagePath', imagePath)
+  console.log('recipe', recipe)
     
   return (<>
     <Modal show={show} onHide={handleClose}>

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
+import { RecipeEditor } from "./recipe_editor"
 import { RecipeMediumImage } from "./image"
 import { isBlank, normalizeSearchText, join, sortBy, capitalize } from "./utils"
 import { image_slug_variant_path } from "./routes"
@@ -95,6 +96,7 @@ const Home = () => {
 
   const [publicUsers, ] = useState(gon.public_users)
   const [recipes, ] = useState(gon.recipes)
+  const [recipe, ] = useState(gon.recipe)
   const isSearching = useMainSearch()
 
   return <>
@@ -124,8 +126,11 @@ const Home = () => {
         </>
       }}</SingleCarrousel>
     </div>
-    <div style={{padding: '5em 0', backgroundColor: '#fafbfc', textAlign: 'center'}}>
+    <div className="trunk" style={{padding: '5em 0'}}>
       <h2>Un éditeur de recette avancé</h2>
+      <div style={{border: "2px solid black", padding: '0.5em', borderRadius: '5px'}}>
+        <RecipeEditor recipe={recipe} images={[]} mixes={[]} foods={[]} editable={true} user={{id: recipe.user_id}} />
+      </div>
     </div>
   </>
 }
