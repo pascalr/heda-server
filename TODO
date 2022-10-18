@@ -18,6 +18,7 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Hcu
 
 Home page recipe editor uploadImage go through hcu???
+Ne pas pouvoir sélectionner les recettes.
 Create DummyHcu that only does local changes. Usefull for the home page recipe editor.
 Les recettes dans /u/5 doivent être des liens pour pouvoir faire click droig, open in new tab.
 FIXME: Env not working. Not sending to Joey I'm sorry page
