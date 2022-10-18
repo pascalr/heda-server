@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 import Autosuggest from 'react-autosuggest'
 
+import { ajax } from "./utils"
 import { RecipeTiptap, BubbleTiptap } from './tiptap'
 import { LinkToPage, parseIngredientsAndHeaders } from "./lib"
 import { Utils } from "./recipe_utils"
@@ -124,8 +125,19 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
 
   //console.log(model)
   
+  let changeOwner = (e) => {
+    let data = {recipeId: recipe.id, newOwnerId: user.id}
+    ajax({url: '/change_recipe_owner', type: 'PATCH', data, success: () => {
+      window.hcu.changeField(recipe, 'user_id', user.id)
+    }, error: (errors) => {
+      console.log('ERROR AJAX UPDATING...', errors.responseText)
+    }})
+  }
+  
   const recipeUser = users.find(u => u.id == recipe.user_id)
   const userName = recipeUser ? recipeUser.name : `user${recipe.user_id}`
+
+  const recipeBelongsToSiblings = users.map(u => u.id).filter(id => id != user.id).includes(recipe.user_id)
 
   return (<>
     <EditTagsModal {...{recipe, tags, suggestions, showModal, setShowModal}} />
@@ -153,6 +165,7 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
               <div className="dropdown-menu">
                 {user.id != recipe.user_id ? '' : <LinkToPage page={{...page, page: 16}} className="dropdown-item">{t('Edit')}</LinkToPage>}
                 <button type="button" className="dropdown-item" onClick={() => setShowModal(true)}>{t('Tag')}</button>
+                {recipeBelongsToSiblings ? <button type="button" className="dropdown-item" onClick={changeOwner}>{t('Attribute_to_this_profile')}</button> : ''}
                 {recipe.user_id == user.id ? <li><button type="button" className="dropdown-item" onClick={() => {removeRecipe(recipe); window.hcu.changePage({page: 6})}}>{t('Delete_recipe')}</button></li> : ''}
               </div>
             </span>

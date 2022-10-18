@@ -93,11 +93,14 @@ export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, re
 
   recipes.forEach((recipe) => {
     f = favoriteRecipes.find(r => r.recipe_id == recipe.id)
-    if (!f) { userRecipes.push({recipe: recipe, fav: f}) }
+    if (recipe.user_id == user.id || !f) { userRecipes.push({recipe: recipe, fav: f}) }
     else if (f.list_id == 1) { toCookList.push({recipe: recipe, fav: f}) }
     else if (f.list_id == 2) { toTryList.push({recipe: recipe, fav: f}) }
     else { otherList.push({recipe: recipe, fav: f}) }
   })
+
+  console.log('userRecipes', userRecipes)
+  console.log('otherList', otherList)
 
   let editUserRecipe = (recipe) => {
     setRecipeToEdit(recipe)

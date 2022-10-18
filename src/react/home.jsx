@@ -53,7 +53,7 @@ export const MainSearch = ({publicUsers}) => {
 
   return (<>
     <div style={{transition: 'height 1s', margin: '1em'}}>
-      <input ref={inputField} type="search" placeholder={`${t('Search')}...`} onChange={(e) => {setTerm(e.target.value); setSearch(e.target.value)}} autoComplete="off" style={{width: "100%"}} onKeyDown={onKeyDown} value={search}/>
+      <input ref={inputField} type="search" placeholder={`${t('Search_for_a_public_member')}...`} onChange={(e) => {setTerm(e.target.value); setSearch(e.target.value)}} autoComplete="off" style={{width: "100%"}} onKeyDown={onKeyDown} value={search}/>
       <br/><br/>
       <div style={{height: 'calc(100vh - 125px)', overflowY: 'scroll'}}>
         {matchingUsers.length >= 1 ? <h2 className="h001">{t('Public_members')}</h2> : ''}

@@ -9,11 +9,13 @@ export function tr(id, locale) {
     Sorry_error: 'We are very sorry, but something went wrong.',
   }
   let fr = {
+    Attribute_to_this_profile: "Attribuer à ce profil",
     Sorry_error: "Nous sommes vraiment désolé, mais une erreur s'est produite.",
     Login: 'Se connecter',
     Favorites: 'Favoris',
     Recipes_by: 'Les recettes de',
     Search: 'Rechercher',
+    Search_for_a_public_member: 'Rechercher un membre publique',
     Public_members: 'Membres publiques',
     private: 'privé',
     public: 'public',
