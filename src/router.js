@@ -257,15 +257,17 @@ router.post('/create_record/:table', function(req, res, next) {
   }
 })
 
-router.patch('/change_recipe_owner', gon.fetchAccountUsers, function(req, res, next) {
+router.patch('/change_recipe_owner', function(req, res, next) {
   try {
-    let recipeId = parseInt(req.body.recipeId).toString()
-    let newOwnerId = parseInt(req.body.newOwnerId).toString()
-    if (!res.locals.gon.users.map(u => u.id.toString()).includes(newOwnerId)) {
+    let recipeId = parseInt(req.body.recipeId)
+    let newOwnerId = parseInt(req.body.newOwnerId)
+  
+    let users = db.fetchTable('users', {account_id: req.user.account_id}, ['name'])
+    if (!users.map(u => u.id).includes(newOwnerId)) {
       throw new Error("ChangeRecipeOwner not allowed")
     }
     let recipe = db.prepare('SELECT id, user_id FROM recipes WHERE id = ?').get(recipeId)
-    if (!res.locals.gon.users.map(u => u.id).includes(recipe.user_id)) {
+    if (!users.map(u => u.id).includes(recipe.user_id)) {
       throw new Error("ChangeRecipeOwner not allowed")
     }
     let query = 'UPDATE recipes SET user_id = ?, updated_at = ? WHERE id = ?'
@@ -301,9 +303,9 @@ router.get('/fetch_record/:table/:id', function(req, res, next) {
     let table = req.params.table
     if (Object.keys(ALLOWED_COLUMNS_GET).includes(table)) {
       //fetchTable(table, {id: id, user_id: req.user.user_id}, ALLOWED_COLUMNS_GET[table], next, (records) => {
-      fetchTableMiddleware(table, {id: id}, ALLOWED_COLUMNS_GET[table], next, (records) => {
-        res.json({...records[0]})
-      })
+      // FIXME: fetchRecord and not fetchTable...
+      const records = db.fetchTable(table, {id: id}, ALLOWED_COLUMNS_GET[table])
+      res.json({...records[0]})
     } else {
       throw new Error("FetchRecord not allowed")
     }

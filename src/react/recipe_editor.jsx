@@ -261,12 +261,11 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
 
   let changeOwner = (e) => {
     let data = {recipeId: recipe.id, newOwnerId: e.target.id}
-    window.hcu.changeField(recipe, 'user_id', e.target.id)
-    //ajax({url: '/change_recipe_owner', type: 'PATCH', data, success: () => {
-    //  window.hcu.changeField(recipe, 'user_id', e.target.id)
-    //}, error: (errors) => {
-    //  console.log('ERROR AJAX UPDATING...', errors.responseText)
-    //}})
+    ajax({url: '/change_recipe_owner', type: 'PATCH', data, success: () => {
+      window.hcu.changeField(recipe, 'user_id', e.target.id)
+    }, error: (errors) => {
+      console.log('ERROR AJAX UPDATING...', errors.responseText)
+    }})
   }
         
   //<h3>Notes</h3>

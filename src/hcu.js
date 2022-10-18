@@ -58,6 +58,8 @@ export const initHcu = () => {
         console.error('ERROR AJAX UPDATING...', errors.responseText)
         toastr.error(t('Error_updating'))
       }})
+    } else {
+      console.log('Skipping updateField, value not modified.')
     }
   }
   // Change record in memory only
