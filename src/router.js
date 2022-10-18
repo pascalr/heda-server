@@ -48,42 +48,24 @@ router.post('/upload_image', function(req, res, next) {
     let image = {filename: file.name, user_id: req.user.user_id}
 
     let recordTable = req.body.record_table
-    let recordId = req.body.record_id
+    let recordId = parseInt(req.body.record_id)
     let recordField = req.body.record_field
-
-    // TODO: Do a transaction like explained here: https://stackoverflow.com/questions/53299322/transactions-in-node-sqlite3
-    // I've already copied the code inside db.js
-    // But I can't use runBatchAsync because I need the lastId in the second statement
-    // But I could simply use runAsync
-    // It's just too complicated for now
-    //let statements = [
-    //  ['INSERT INTO images (filename, user_id, created_at, updated_at) VALUES (?, ?, ?, ?)',
-    //    [image.name, image.user_id, utils.now(), utils.now()]
-    //  ],
-    //];
 
     db.transaction(() => {
       let info = db.prepare('INSERT INTO images (filename, user_id, created_at, updated_at) VALUES (?, ?, ?, ?)').run(image.filename, image.user_id, utils.now(), utils.now())
       image.id = info.lastInsertRowid;
       if (info.changes != 1) {return res.status(500).send("Unable to create image record in database")}
       // Use the mv() method to place the file somewhere on your server
-      file.mv(path.join(IMAGE_FOLDER, image.id + '.' + ext), function(err) {
-        if (err) { return res.status(500).send(err); }
 
-        let slug = `${image.id}.${ext}`
-        let q = "UPDATE "+db.safe(recordTable, ['recipes', 'tags', 'users'])+" SET "+db.safe(recordField, ['image_slug'])+" = ?, updated_at = ? WHERE id = ?"
-        let args = []
-        if (recordTable == 'users') {
-          args = [slug, utils.now(), req.user.user_id]
-        } else {
-          q += " AND user_id = ?"
-          args = [slug, utils.now(), recordId, req.user.user_id]
-        }
-        info = db.prepare(q).run(...args)
-        if (info.changes != 1) {return res.status(500).send("Unable to update image_slug in database")}
-        res.json(image)
-      });
+      let slug = `${image.id}.${ext}`
+      db.safeUpdateField(recordTable, recordId, recordField, slug, req.user)
     })()
+
+    // FIXME: This should probably be inside the transaction, but this runs async.
+    file.mv(path.join(IMAGE_FOLDER, image.id + '.' + ext), function(err) {
+      if (err) { return res.status(500).send(err); }
+      res.json(image)
+    });
   } catch(err) { return res.status(500).send(err) }
 
 });
