@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 
-import {clearRecord, TextField, ImageField, RadioField} from '../form'
+import {clearRecord, ImageSelector, TextField, ImageField, RadioField} from '../form'
 import { image_path } from '../routes'
 import { isTrue } from "../utils"
 import { t } from "../../translate"
@@ -18,56 +18,33 @@ export const EditRecipeImageModal = ({recipe, recipeKinds, images, show, handleC
       window.hcu.updateField(recipe, 'image_slug', null)
     }
   }
-          
-  //<ImageSelector record={recipe} field="image_slug" maxSizeBytes={2*1000*1000} height="171px" defaultImage="/img/default_recipe_01.png" />
+
+  console.log('image', image)
+  console.log('imagePath', imagePath)
     
   return (<>
     <Modal show={show} onHide={handleClose}>
       <Modal.Dialog>
         <Modal.Body>
           <button style={{float: "right"}} type="button" className="btn-close" onClick={handleClose}></button>
-          <h5 className="modal-title">Aperçu</h5>
-          <div>
-            <div style={{width: "fit-content"}}>
-              <img style={{maxWidth: "100vh", height: "auto"}} src={imagePath} width="255" height="171"/>
-            </div>
-          </div>
-          <hr/>
-          {!recipeKindImage ?
-            <div className="disabled">
-              <RadioField model={recipe} field="use_personalised_image" value={'foo'} label="Utiliser l'image de la catégorie de cette recette"/>
+          <h2 className="h003">Choisir une image</h2>
+          <ImageSelector record={recipe} field="image_slug" maxSizeBytes={2*1000*1000} height="171px" defaultImage="/img/default_recipe_01.png" />
+          {!image ? '' : <>
+            <div style={{height: "0.5em"}}/>
+            <RadioField model={image} field="is_user_author" value={true} label="Je suis l'auteur de cette image" />
+            <div style={{height: "0.5em"}}/>
+            <RadioField model={image} field="is_user_author" value={false} label="L'image est sous une license qui permet son usage" />
+            <div style={{height: "0.5em"}}/>
+            <div className={image.is_user_author ? 'disabled' : undefined} style={{paddingLeft: "2em"}}>
+              <label htmlFor="author">Author</label>
+              <TextField model={image} field="author" id="author"/>
               <div style={{height: "0.5em"}}/>
-              <div style={{paddingLeft: "2em"}}>
-                <p><i>(Aucune catégorie correspondante.)</i></p>
-              </div>
+              <label htmlFor="source">Source</label>
+              <TextField model={image} field="source" id="author"/>
             </div>
-          :
-            <RadioField model={recipe} field="use_personalised_image" value={false} label="Utiliser l'image de la catégorie de cette recette"/>
-          }
-          <div style={{height: "0.5em"}}/>
-          <RadioField model={recipe} field="use_personalised_image" value={true} label="Utiliser une image personnalisée"/>
-          {!isTrue(recipe.use_personalised_image) ? '' :
-            <div style={{paddingLeft: "2em"}}>
-              <div style={{height: "0.5em"}}/>
-              <ImageField record={recipe} field="image_slug" maxSizeBytes={2*1000*1000} height="171px" />
-              {!recipeImage ? '' : <>
-                <div style={{height: "0.5em"}}/>
-                <RadioField model={recipeImage} field="is_user_author" value={true} label="Je suis l'auteur de cette image" />
-                <div style={{height: "0.5em"}}/>
-                <RadioField model={recipeImage} field="is_user_author" value={false} label="L'image est sous une license qui permet son usage" />
-                <div style={{height: "0.5em"}}/>
-                <div className={recipeImage.is_user_author ? 'disabled' : undefined} style={{paddingLeft: "2em"}}>
-                  <label htmlFor="author">Author</label>
-                  <TextField model={recipeImage} field="author" id="author"/>
-                  <div style={{height: "0.5em"}}/>
-                  <label htmlFor="source">Source</label>
-                  <TextField model={recipeImage} field="source" id="author"/>
-                </div>
-                <br/>
-                <button type="button" className="btn btn-danger" onClick={removeImage}>{t('Delete')}</button>
-              </>}
-            </div>
-          }
+          </>}
+          <br/><br/>
+          <button className="btn btn-primary" type="button" onClick={handleClose}>{t('Ok')}</button>
         </Modal.Body>
       </Modal.Dialog>
     </Modal>

@@ -94,7 +94,7 @@ export const ImageSelector = ({record, field, maxSizeBytes, suggestions, width, 
   return <>
     <div className='d-flex align-items-center'>
       <img style={{height, width}} src={imagePath} />
-      <DeleteConfirmButton id={`del-im-${record.id}`} onDeleteConfirm={() => window.hcu.updateField(record, field, null)} message="Je veux enlever cette image?" />
+      {record[field] ? <DeleteConfirmButton id={`del-im-${record.id}`} onDeleteConfirm={() => window.hcu.updateField(record, field, null)} message="Je veux enlever cette image?" /> : ''}
     </div>
     <ImageField {...{record, field, maxSizeBytes}} />
     {record[field] || !suggestions || suggestions.length == 0 ? '' : <>

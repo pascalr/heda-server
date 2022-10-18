@@ -21,7 +21,7 @@ const RecipeImage = ({recipe, images, showCredit, width, height, variant}) => {
     <div style={{width: `${width}px`, height: `${height}px`, overflow: 'hidden', flexShrink: '0'}}>
       <img src={imagePath} width={width} height={height} style={{transform: `translateY(calc(-50% + ${height/2}px))`}} />
     </div>
-    {showCredit ? <ImageCredit {...{imageSlug, images}} /> : ''}
+    {showCredit ? <ImageCredit {...{imageSlug: recipe.image_slug, images}} /> : ''}
   </>
 }
 
