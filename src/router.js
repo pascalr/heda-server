@@ -44,12 +44,15 @@ router.post('/upload_image', function(req, res, next) {
     return res.status(500).send("Image format not supported. Expected jpg, jpeg or png. Was " + ext);
   }
 
-  let image = {filename: file.name}
   let {record_table, record_id, record_field} = req.body
 
-  const uploadImage = db.transaction((image) => {
-    image = db.createRecord('images', image, req.user.user_id)
-    let slug = `${image.id}.${ext}`
+  db.transaction(() => {
+
+    let lastId = db.prepare('SELECT MAX(id) from images').get()['MAX(id)']
+    let slug = `${lastId+1}.${ext}`
+    let image = {filename: file.name, slug}
+    image = db.createRecord('images', image, req.user.user_id, {allow_write: ['slug']})
+    if (image.id != lastId +1) {throw "Database invalid state for images."}
     db.safeUpdateField(record_table, record_id, record_field, slug, req.user)
 
     // FIXME: This should probably be inside the transaction, but this runs async.
@@ -58,8 +61,7 @@ router.post('/upload_image', function(req, res, next) {
       if (err) { return res.status(500).send(err); }
       res.json(image)
     });
-  })
-  uploadImage(image)
+  })()
 
 });
 

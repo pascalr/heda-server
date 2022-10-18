@@ -41,7 +41,7 @@ const mySchema = {
   'meals': {},
   'mixes': {},
   'images': {
-    write_attrs: ['filename', 'author', 'is_user_author'],
+    write_attrs: ['filename', 'author', 'is_user_author', 'source'],
     attrs_types: {is_user_author: 'bool'},
     security_key: 'user_id',
   },
@@ -211,7 +211,7 @@ db.safeDestroyRecord = function(table, id, user) {
 }
 
 if (db.createRecord) {throw "Can't overide createRecord"}
-db.createRecord = function(table, obj, userId) {
+db.createRecord = function(table, obj, userId, options={}) {
     
   let safeTable = db.safe(table, schema.getTableList())
   obj.user_id = userId 
@@ -219,6 +219,7 @@ db.createRecord = function(table, obj, userId) {
 
   let fields = Object.keys(obj)
   let columns = schema.getWriteAttributes(table) || []
+  if (options.allow_write) {columns = [...columns, ...options.allow_write]}
   let query = 'INSERT INTO '+safeTable+' (created_at,updated_at,'+fields.map(f => db.safe(f, [...columns, 'user_id'])).join(',')+') '
   query += 'VALUES (?,?,'+fields.map(f=>'?').join(',')+')'
   let args = [utils.now(), utils.now(), ...fields.map(f => schema.validAttr(table, f, obj[f]))]
