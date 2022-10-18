@@ -375,7 +375,7 @@ router.get('/', function(req, res, next) {
   if (!req.user) {
     res.locals.gon = {
       public_users: db.fetchTable('users', {is_public: 1}, ['name', 'image_slug']),
-      recipes: db.fetchTable('recipes', {id: [1]}, RECIPE_ATTRS)
+      recipes: db.fetchTable('recipes', {id: [113, 129, 669, 88, 323, 670, 672, 689]}, RECIPE_ATTRS)
     }
     res.locals.renderingHome = true
     return res.render('home');

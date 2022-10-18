@@ -111,8 +111,8 @@ const Home = () => {
       </div>
     </div>
     <div style={{padding: '5em 0', backgroundColor: '#fafbfc', textAlign: 'center'}}>
-      <h2>Suggestions par catégories</h2>
-      <h3></h3>
+      <h2>Suggestions by categories</h2>
+      <h3>Desserts</h3>
       <SingleCarrousel items={recipes}>{({item}) => {
         let recipe = item
         return <>

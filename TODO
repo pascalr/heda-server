@@ -1,5 +1,3 @@
-REMOVE use_personalised_image and update modal
-
 Endroits où j'ai postulé:
 - Evidence Prime (Healthcare)
 - Videri (Écrans)
@@ -19,6 +17,7 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Creating tags with react and bootstrap.
 => Hcu
 
+L'image de Muffins aux chocolat est plus large et ça bug
 Des suggestions d'images pour les recettes.
 Set image_slug for all recipes and fuck off RecipeKind for now. Don't handle image through RecipeKind.
 Set image_slug directly on recipe.
