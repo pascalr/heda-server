@@ -947,7 +947,7 @@ const NewRecipe = ({page, recipeKinds}) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    const record = {name, use_personalised_image: usePersonalisedImage}
+    const record = {name}
     window.hcu.createRecord('recipes', record, (created) => {
       window.hcu.changePage({...page, page: 16, recipeId: created.id})
     })
@@ -960,8 +960,6 @@ const NewRecipe = ({page, recipeKinds}) => {
       <b>{t('Name')}:</b><br/>
       <input name="name" value={name} onChange={(e) => {setName(e.target.value)}} />
       <br/><br/>
-      <b>{t('Category')}:</b><br/>
-      {recipeKind ? recipeKindPreview : <p>{t('No_matching_category_found')}</p>}
       <button type="submit" className="btn btn-primary">{t('Create')}</button>
     </form>
   </>

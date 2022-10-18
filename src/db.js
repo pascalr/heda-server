@@ -58,7 +58,7 @@ const mySchema = {
     write_attrs: ['image_slug'],
   },
   'recipes': {
-    write_attrs: ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'ingredients', 'recipe_kind_id', 'image_slug'],
+    write_attrs: ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'ingredients', 'recipe_kind_id', 'image_slug'],
     security_key: 'user_id',
     dependant_destroy: {recipe_id: ['favorite_recipes', 'meals', 'mixes', 'recipe_comments', 'recipe_notes', 'recipe_ratings', 'recipe_tools', 'references', 'suggestions']},
 
@@ -111,14 +111,6 @@ schema.validAttr = (table, field, value) => {
   return value
 }
 
-//export const ALLOWED_COLUMNS_MOD = {
-//  'recipe_kinds': ['image_slug'],
-//  'recipes': ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'ingredients', 'recipe_kind_id', 'image_slug'],
-//  'users': ['name', 'gender', 'image_slug', 'locale'],
-//  'favorite_recipes': ['list_id', 'recipe_id'],
-//  'tags': ['name', 'image_slug', 'position'],
-//  'suggestions': ['tag_id', 'recipe_id']
-//}
 // WARNING: All users have access to these
 export const ALLOWED_COLUMNS_GET = {
   'recipes': RECIPE_ATTRS

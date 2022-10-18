@@ -19,6 +19,7 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Creating tags with react and bootstrap.
 => Hcu
 
+Des suggestions d'images pour les recettes.
 Set image_slug for all recipes and fuck off RecipeKind for now. Don't handle image through RecipeKind.
 Set image_slug directly on recipe.
 Pouvoir rechercher des recettes publiques? En attendant de refaire fonctionner RecipeKind, ça serait bien...

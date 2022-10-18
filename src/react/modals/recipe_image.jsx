@@ -10,11 +10,7 @@ import { t } from "../../translate"
 
 export const EditRecipeImageModal = ({recipe, recipeKinds, images, show, handleClose}) => {
 
-  const recipeKind = recipeKinds.find(k => k.id == recipe.recipe_kind_id)
-  const recipeImage = recipe.image_slug ? images.find(e => e.slug == recipe.image_slug) : null
-  let recipeKindImage = recipeKind && recipeKind.image_slug ? images.find(e => e.slug == recipeKind.image_slug) : null
-  
-  const image = isTrue(recipe.use_personalised_image) ? recipeImage : recipeKindImage
+  const image = recipe.image_slug ? images.find(e => e.slug == recipe.image_slug) : null
   const imagePath = image ? image_path(image, 'medium') : "/img/default_recipe_01.png"
 
   const removeImage = () => {

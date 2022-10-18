@@ -23,7 +23,7 @@ function mapBooleans(records, fields) {
   return records
 }
 
-export const RECIPE_ATTRS = ['user_id', 'name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'use_personalised_image', 'ingredients', 'image_slug']
+export const RECIPE_ATTRS = ['user_id', 'name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'ingredients', 'image_slug']
 
 
 function fetchUserImages(req, res, next) {
@@ -49,7 +49,7 @@ const fetchAll3 = (user) => {
   let attrs = null
   let ids = null
   o.users = db.fetchTable('users', {account_id: user.account_id}, ['name', 'gender', 'image_slug', 'locale', 'is_public'])
-  o.recipes = mapBooleans(db.fetchTable('recipes', {user_id: user.user_id}, RECIPE_ATTRS), ['use_personalised_image'])
+  o.recipes = db.fetchTable('recipes', {user_id: user.user_id}, RECIPE_ATTRS)
   o.favorite_recipes = db.fetchTable('favorite_recipes', {user_id: user.user_id}, ['list_id', 'recipe_id'])
   let recipeIds = o.recipes.map(r => r.id)
   let missingRecipeIds = o.favorite_recipes.map(r=>r.recipe_id).filter(id => !recipeIds.includes(id))

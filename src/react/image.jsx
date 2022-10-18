@@ -15,10 +15,8 @@ const ImageCredit = ({imageSlug, images}) => {
 }
 
 // Variant can be "thumb", "small", "medium"
-const RecipeImage = ({recipe, recipeKinds, images, showCredit, width, height, variant}) => {
-  const recipeKind = (recipeKinds || []).find(k => k && k.id == recipe.recipe_kind_id)
-  const imageSlug = isTrue(recipe.use_personalised_image) ? recipe.image_slug : recipeKind && recipeKind.image_slug
-  const imagePath = imageSlug ? image_path(imageSlug, variant) : "/img/default_recipe_01.png"
+const RecipeImage = ({recipe, images, showCredit, width, height, variant}) => {
+  const imagePath = recipe.image_slug ? image_path(recipe.image_slug, variant) : "/img/default_recipe_01.png"
   return <>
     <div style={{width: `${width}px`, height: `${height}px`, overflow: 'hidden', flexShrink: '0'}}>
       <img src={imagePath} width={width} height={height} style={{transform: `translateY(calc(-50% + ${height/2}px))`}} />
