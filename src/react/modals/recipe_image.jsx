@@ -18,12 +18,6 @@ export const EditRecipeImageModal = ({recipe, recipeKinds, images, show, handleC
       window.hcu.updateField(recipe, 'image_slug', null)
     }
   }
-
-  console.log('images', images)
-  console.log('image', image)
-  console.log('slug', recipe.image_slug)
-  console.log('imagePath', imagePath)
-  console.log('recipe', recipe)
     
   return (<>
     <Modal show={show} onHide={handleClose}>

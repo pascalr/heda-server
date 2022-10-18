@@ -17,6 +17,7 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Creating tags with react and bootstrap.
 => Hcu
 
+Home page recipe editor uploadImage go through hcu???
 Create DummyHcu that only does local changes. Usefull for the home page recipe editor.
 Les recettes dans /u/5 doivent être des liens pour pouvoir faire click droig, open in new tab.
 FIXME: Env not working. Not sending to Joey I'm sorry page

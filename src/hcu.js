@@ -25,7 +25,7 @@ export const useHcuState = (initial, options, callback=null) => {
 
 // This method is private. Maybe do a public one, but then do a deep copy.
 function getCurrentTable(tableName) {
-  if (!tableName) {throw "Error can't get table for missing missing table."}
+  if (!tableName) {throw "Error can't get table for missing table: "+tableName}
   //let current = window.hcu.getters[tableName]
   let current = window.hcu.__state[tableName]
   if (!current) {throw "Error missing table " + tableName + ". useHcuState not called?"}
@@ -150,5 +150,10 @@ export const initHcu = () => {
       console.error('ERROR AJAX BATCH MODIFY...', errors.responseText)
       toastr.error(t('Error_updating'))
     }})
+  }
+  window.hcu.makeDummy = () => {
+    window.hcu.destroyRecord = window.hcu.removeRecord
+    window.hcu.createRecord = window.hcu.addRecord
+    window.hcu.updateField = window.hcu.changeField
   }
 }

@@ -8,6 +8,7 @@ import { isBlank, normalizeSearchText, join, sortBy, capitalize } from "./utils"
 import { image_slug_variant_path } from "./routes"
 import { t } from "../translate"
 import { SingleCarrousel } from "./app"
+import { initHcu, useHcuState } from '../hcu'
 
 export const MainSearch = ({publicUsers}) => {
 
@@ -96,8 +97,10 @@ const Home = () => {
 
   const [publicUsers, ] = useState(gon.public_users)
   const [recipes, ] = useState(gon.recipes)
-  const [recipe, ] = useState(gon.recipe)
+  const recipe = useHcuState([gon.recipe], {tableName: 'recipes'})[0]
   const isSearching = useMainSearch()
+  
+  if (!window.hcu) {initHcu(); window.hcu.makeDummy() }
 
   return <>
     <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0 0.5em 0'}}>

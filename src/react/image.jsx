@@ -18,7 +18,7 @@ const ImageCredit = ({imageSlug, images}) => {
 const RecipeImage = ({recipe, images, showCredit, width, height, variant}) => {
   const imagePath = recipe.image_slug ? image_path(recipe.image_slug, variant) : "/img/default_recipe_01.png"
   return <>
-    <div style={{width: `${width}px`, height: `${height}px`, overflow: 'hidden', flexShrink: '0'}}>
+    <div style={{maxWidth: `${width}px`, maxHeight: `${height}px`, overflow: 'hidden', flexShrink: '0'}}>
       <img src={imagePath} width={width} height={height} style={{transform: `translateY(calc(-50% + ${height/2}px))`}} />
     </div>
     {showCredit ? <ImageCredit {...{imageSlug: recipe.image_slug, images}} /> : ''}

@@ -119,7 +119,9 @@ export function ajax(params) {
       formData.append(k, convertFormDataValue(v))
     }
 
-    let _csrf = document.querySelector('[name="csrf-token"]').content
+    let _csrfContainer = document.querySelector('[name="csrf-token"]')
+    if (!_csrfContainer) {console.log("Can't modify state missing csrf token.")}
+    let _csrf = _csrfContainer.content
     formData.append('_csrf', _csrf)
 
     fetch(params.url, {
