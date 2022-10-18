@@ -420,6 +420,7 @@ router.get('/', function(req, res, next) {
     res.locals.gon = {
       public_users: db.fetchTable('users', {is_public: 1}, ['name', 'image_slug'])
     }
+    res.locals.renderingHome = true
     return res.render('home');
   }
   if (!req.user.user_id) { return res.redirect('/choose_user'); }

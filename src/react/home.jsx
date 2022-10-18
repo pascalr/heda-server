@@ -33,9 +33,7 @@ export const MainSearch = ({publicUsers}) => {
       r.name && ~normalizeSearchText(r.name).indexOf(normalized)
     ))
   }
-  console.log('publicUsers', publicUsers)
   let matchingUsers = filterItems(publicUsers)
-  console.log('matchingUsers', matchingUsers)
   let allMatching = [...matchingUsers]
 
   let select = (pos) => {
@@ -74,7 +72,13 @@ export const useMainSearch = () => {
   const [isSearching, setIsSearching] = useState(false)
           
   useEffect(() => {
-    const toggleSearch = () => {setIsSearching(!isSearching)}
+    const toggleSearch = (e) => {
+      let t = e.target
+      let searching = !(t.dataset.searching && t.dataset.searching != 'false')
+      t.dataset.searching = searching
+      t.src = searching ? '/icons/x-lg-white.svg' : '/icons/search.svg'
+      setIsSearching(searching)
+    }
     let e = document.getElementById("main-search-btn")
     e.addEventListener('click', toggleSearch, false)
     return () => {
