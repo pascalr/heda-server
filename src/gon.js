@@ -77,13 +77,8 @@ const fetchAll3 = (user) => {
   //let slugs2 = o.recipe_kinds.map(r=>r.image_slug).filter(x=>x)
   let slugs3 = o.tags.map(t=>t.image_slug).filter(x=>x)
   ids = [...slugs1, ...slugs3].map(s => s.split('.')[0])
-  attrs = ['author', 'source', 'filename', 'is_user_author']
-  o.images = db.fetchTable('images', {id: ids}, attrs).map(im => {
-    // FIXME
-    let ext = im.filename.substr(im.filename.lastIndexOf('.') + 1);
-    im.slug = `${im.id}.${ext}`
-    return im
-  })
+  attrs = ['author', 'source', 'filename', 'is_user_author', 'slug']
+  o.images = db.fetchTable('images', {id: ids}, attrs)
 
   o.machine_foods = db.fetchTable('machine_foods', {}, ['food_id', 'machine_id'])
   ids = o.users.map(u => u.id).filter(id => id != user.user_id)

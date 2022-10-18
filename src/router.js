@@ -323,13 +323,8 @@ router.get('/r/:id', function(req, res, next) {
 
   let slugs = [o.recipe.image_slug, o.recipe_kind ? o.recipe_kind.image_slug : null].filter(x=>x)
   ids = slugs.map(s => s.split('.')[0])
-  attrs = ['author', 'source', 'filename', 'is_user_author']
-  o.images = db.fetchTable('images', {id: ids}, attrs).map(im => {
-    // FIXME
-    let ext = im.filename.substr(im.filename.lastIndexOf('.') + 1);
-    im.slug = `${im.id}.${ext}`
-    return im
-  })
+  attrs = ['author', 'source', 'filename', 'is_user_author', 'slug']
+  o.images = db.fetchTable('images', {id: ids}, attrs)
 
   res.locals.gon = o
   res.render('show_recipe');
@@ -359,13 +354,8 @@ router.get('/u/:id', function(req, res, next) {
   let slugs1 = o.recipes.map(r=>r.image_slug).filter(x=>x)
   let slugs2 = o.recipe_kinds.map(r=>r.image_slug).filter(x=>x)
   ids = [...slugs1, ...slugs2].map(s => s.split('.')[0])
-  attrs = ['author', 'source', 'filename', 'is_user_author']
-  o.images = db.fetchTable('images', {id: ids}, attrs).map(im => {
-    // FIXME
-    let ext = im.filename.substr(im.filename.lastIndexOf('.') + 1);
-    im.slug = `${im.id}.${ext}`
-    return im
-  })
+  attrs = ['author', 'source', 'filename', 'is_user_author', 'slug']
+  o.images = db.fetchTable('images', {id: ids}, attrs)
 
   res.locals.gon = o
   res.render('show_user');
