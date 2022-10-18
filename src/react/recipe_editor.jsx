@@ -305,6 +305,7 @@ export const RecipeEditor = ({recipeId, page, userRecipes, favoriteRecipes, mach
             </div>
           </div> 
         </div>
+        <div style={{height: '20px', width: '0'}}></div>
         <div style={{width: '100%'}}>
           <h1>
             <span className="recipe-title">

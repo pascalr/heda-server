@@ -455,14 +455,14 @@ const parseIngredient = (ingredient) => {
   if (ingredient.includes(";")) {
     const [qty, foodName] = Quantity.parseQuantityAndFoodName(ingredient)
     prettyQty = Utils.prettyQuantityFor(qty.raw, foodName)
-    food = gon.foods.find(food => food.name == foodName)
+    //food = gon.foods.find(food => food.name == foodName)
     name = foodName
   // (200 mL) deprecated, use ;
   } else if (ingredient.startsWith("(")) { // old version
     const raw = ingredient.slice(1,-1)
     const [qty, foodName] = Quantity.parseQuantityAndFoodName(raw)
     prettyQty = Utils.prettyQuantityFor(qty.raw, foodName)
-    food = gon.foods.find(food => food.name == foodName)
+    //food = gon.foods.find(food => food.name == foodName)
     name = foodName
     // 1 => ingredient nb 1
   } else {

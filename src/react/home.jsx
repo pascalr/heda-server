@@ -112,6 +112,7 @@ const Home = () => {
     </div>
     <div style={{padding: '5em 0', backgroundColor: '#fafbfc', textAlign: 'center'}}>
       <h2>Suggestions by categories</h2>
+      <br/><br/>
       <h3>Desserts</h3>
       <SingleCarrousel items={recipes}>{({item}) => {
         let recipe = item

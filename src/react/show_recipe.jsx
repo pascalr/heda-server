@@ -52,9 +52,8 @@ export const RecipeViewer = ({recipe, images, user}) => {
     </nav>
     <div className="recipe">
       <div className="d-block d-md-flex gap-20">
-        <div>
-          <RecipeMediumImage {...{recipe, images, showCredit: true}} />
-        </div>
+        <div><RecipeMediumImage {...{recipe, images, showCredit: true}} /></div>
+        <div style={{height: '20px', width: '0'}}></div>
         <div style={{width: '100%'}}>
           <div className='d-flex'>
             <h1>

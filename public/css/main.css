@@ -7,6 +7,9 @@
   padding: 0 0.3em;
 }
 
+.recipe-list {
+  padding-left: 1rem; 
+}
 .recipe-list li {
   list-style-type: none;
   padding: 0.25em;
