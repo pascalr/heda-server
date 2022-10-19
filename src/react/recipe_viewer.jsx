@@ -160,7 +160,7 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
             </h1>
             <div className='flex-grow-1' />
             <span className="dropdown" style={{padding: "0 1rem"}}>
-              <img className="clickable" data-bs-toggle="dropdown" src="/icons/list.svg"/>
+              <img className="clickable" data-bs-toggle="dropdown" src="/icons/list.svg" width="24"/>
               <div className="dropdown-menu">
                 {user.id != recipe.user_id ? '' : <LinkToPage page={{...page, page: 16}} className="dropdown-item">{t('Edit')}</LinkToPage>}
                 <button type="button" className="dropdown-item" onClick={() => setShowModal(true)}>{t('Tag')}</button>

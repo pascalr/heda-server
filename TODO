@@ -17,14 +17,16 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Creating tags with react and bootstrap.
 => Hcu
 
-Home page recipe editor uploadImage go through hcu???
-Ne pas pouvoir sélectionner les recettes.
 Create DummyHcu that only does local changes. Usefull for the home page recipe editor.
 Les recettes dans /u/5 doivent être des liens pour pouvoir faire click droig, open in new tab.
+Sur la page d'acceuil, peut-être montrer plus qu'une recette, montrer un peu une recette à droite et une à gauche?
+Home page recipe editor uploadImage go through hcu???
 FIXME: Env not working. Not sending to Joey I'm sorry page
+Ne pas pouvoir sélectionner dans recipe show.
 L'image de Muffins aux chocolat est plus large et ça bug
 Fix les notes. Par exemple dans la recette de pain aux bananes. Rajouter toutes les notes manuellement dans les recettes.
 Des suggestions d'images pour les recettes.
+Remettre HammerJS
 Set image_slug for all recipes and fuck off RecipeKind for now. Don't handle image through RecipeKind.
 Set image_slug directly on recipe.
 Pouvoir rechercher des recettes publiques? En attendant de refaire fonctionner RecipeKind, ça serait bien...

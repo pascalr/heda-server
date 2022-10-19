@@ -52,6 +52,7 @@ img {
   text-align: center;
   width: fit-content;
   height: fit-content;
+  max-width: 100%;
 }
 .over-container .left-center {
   position: absolute;
