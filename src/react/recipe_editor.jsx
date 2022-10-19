@@ -6,7 +6,7 @@ import Autosuggest from 'react-autosuggest'
 import { ajax } from "./utils"
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import { RecipeTiptap, BubbleTiptap } from './tiptap'
-import {AutocompleteInput, updateRecord, TextField, CollectionSelect} from './form'
+import {AutocompleteInput, updateRecord, TextField, CollectionSelect, TextAreaField} from './form'
 import { parseIngredientsAndHeaders, parseIngredientsOldFormat, serializeIngredientsAndHeaders } from './lib'
 import {EditRecipeImageModal} from './modals/recipe_image'
 import {PasteIngredientsButton} from './modals/paste_ingredients'
@@ -314,7 +314,7 @@ export const RecipeEditor = ({recipe, page, machines, mixes, machineFoods, foods
         <div style={{width: '100%'}}>
           <h1>
             <span className="recipe-title">
-              <TextField model={recipe} field="name" className="plain-input" />
+              <TextAreaField model={recipe} inputStyle={{width: '100%', lineHeight: '1em'}} field="name" className="plain-input" />
             </span>
           </h1>
           <div>
