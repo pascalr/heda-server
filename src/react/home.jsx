@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
 import { RecipeEditor } from "./recipe_editor"
-import { RecipeMediumImage } from "./image"
+import { RecipeMediumImage, RecipeSmallImage } from "./image"
 import { isBlank, normalizeSearchText, join, sortBy, capitalize } from "./utils"
 import { image_slug_variant_path } from "./routes"
 import { t } from "../translate"
@@ -107,11 +107,16 @@ const Home = () => {
       {isSearching ? <MainSearch {...{publicUsers}} /> : ''}
     </div>
     <div style={{padding: '5em 0'}}>
-      <div className="text-center">
-        <div className="d-flex flex-column" style={{gap: '4em'}}>
-          <h1 style={{fontSize: '3.5em'}}>Heda cuisine</h1>
-          <h2>Des recettes personnalisées pour toi</h2>
+      <div className="d-flex">
+        <div>
+          <h1 style={{fontSize: '2.5em'}}>Heda cuisine!!!</h1>
+          <h4>Des recettes personnalisées</h4>
+          <p>Crée tes recettes, ne les perds jamais et partage avec tes amis. Reçoit des suggestions de recettes personalisées.</p>
           <a className="btn btn-primary" style={{padding: '0.5em 3em', margin: 'auto'}} href="/login">Sign in</a>
+        </div>
+        <div>
+          <h2>Recettes en vedettes</h2>
+          <RecipeSmallImage {...{recipe}} />
         </div>
       </div>
     </div>

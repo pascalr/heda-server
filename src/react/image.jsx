@@ -32,3 +32,7 @@ export const RecipeMediumImage = (props) => {
 export const RecipeThumbnailImage = (props) => {
   return <RecipeImage {...{...props, width: 71, height: 48}} />
 }
+
+export const RecipeSmallImage = (props) => {
+  return <RecipeImage {...{...props, width: 255, height: 171}} />
+}
