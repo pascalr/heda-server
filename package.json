@@ -8,15 +8,8 @@
     "images:backup": "rsync -v --recursive root@heda-server.internal:/mnt/heda_volume/images/ volume/images/",
     "db:open": "sqlitebrowser var/db/dev.db",
     "db:backup": "scp root@heda-server.internal:/mnt/heda_volume/prod.db var/db/dev.db",
-    "dev": "npm run build:all && nodemon -e js,ejs --trace-uncaught -r dotenv/config ./src/server.js",
-    "build:js": "npm run build && npm run build:user_editor && npm run build:home && npm run build:show_user && npm run build:show_recipe",
-    "build:all": "npm run build:css && npm run build:js",
-    "build": "esbuild src/react/app.jsx --bundle --sourcemap --outfile=public/build/app.js",
-    "build:show_user": "esbuild src/react/show_user.jsx --bundle --sourcemap --outfile=public/build/show_user.js",
-    "build:show_recipe": "esbuild src/react/show_recipe.jsx --bundle --sourcemap --outfile=public/build/show_recipe.js",
-    "build:user_editor": "esbuild src/react/user_editor.jsx --bundle --sourcemap --outfile=public/build/user_editor.js",
-    "build:home": "esbuild src/react/home.jsx --bundle --sourcemap --outfile=public/build/home.js",
-    "build:prod": "esbuild src/react/app.jsx --bundle --minify --outfile=public/build/app.js",
+    "dev": "npm run build:css && nodemon -e js,ejs -w views --trace-uncaught -r dotenv/config ./src/server.js",
+    "build:all": "npm run build:css",
     "build:css": "sass src/scss/prose_mirror.scss:public/build/prose_mirror.css src/scss/imports.scss:public/build/imports.css"
   },
   "dependencies": {

@@ -112,7 +112,7 @@ const Home = () => {
         <div style={{width: '25em', maxWidth: '100%', margin: 'auto', fontFamily: 'Montserra'}}>
           <h1 className="fs-25">Heda cuisine</h1>
           <h5><i>Des recettes personnalisées</i></h5>
-          <p className="py-3 fs-095">Accède à tes recettes de n'importe où. Partage avec ta famille et tes amis. Reçoit des suggestions de recettes personalisées.</p>
+          <p className="py-3 fs-095">Accèdez à vos recettes de n'importe où. Partagez avec votre famille et vos amis. Reçevez des suggestions de recettes personalisées.</p>
           <a className="btn btn-primary" style={{padding: '0.5em 3em', margin: 'auto'}} href="/login">Sign in</a>
         </div>
         <div className='flex-grow-1' style={{height: '3em'}}></div>
@@ -127,11 +127,11 @@ const Home = () => {
         <div className='flex-grow-1' style={{order: 1}}></div>
         <div style={{maxWidth: '30em', margin: 'auto', order: 4}}>
           <h2>Suggestions par catégories</h2>
-          <p>Arrêtez de vous casser la tête pour savoir quoi cuisiner. Organise tes recettes par catégorie pour avoir des suggestions selon tes besoins. Par exemple:</p>
+          <p>Arrêtez de vous casser la tête pour savoir quoi cuisiner. Organisez vos recettes par catégories pour avoir des suggestions selon vos besoins. Par exemple:</p>
           <ul>
             <li>Une recette rapide de semaine</li>
-            <li>Un gros repas avec des restant pour les lunchs</li>
-            <li>Des occasions spécial comme noël</li>
+            <li>Un gros repas avec des restants pour les lunchs</li>
+            <li>Des occasions spéciales comme noël</li>
           </ul>
         </div>
         <div className='flex-grow-1' style={{height: '1em', order: 3}}></div>
@@ -153,7 +153,7 @@ const Home = () => {
     <div className="trunk" style={{padding: '5em 0.3em'}}>
       <div className="ff-montserra mb-2">
         <h2>Un éditeur de recette spécialisé</h2>
-        <p>Créer des recettes rapidement à l'aide d'un éditeur de recette spécialisé. Explorer par vous même ce qu'il peut faire ici-bas!</p>
+        <p>Créez des recettes rapidement à l'aide d'un éditeur de recette spécialisé. Explorez par vous-même ce qu'il peut faire ici-bas!</p>
       </div>
       <div style={{border: "2px solid black", padding: '0.5em', borderRadius: '5px'}}>
         <RecipeEditor recipe={recipe} images={[]} mixes={[]} foods={[]} editable={true} user={{id: recipe.user_id}} />

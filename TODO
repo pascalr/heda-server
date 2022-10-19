@@ -17,6 +17,7 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Creating tags with react and bootstrap.
 => Hcu
 
+Watch for sass files automatically: https://www.npmjs.com/package/sass
 TODO: Support 320px
 Français/Anglais la page d'acceuil
 Fix image slug for Macaroni au fromage à la courge butternut
