@@ -126,7 +126,7 @@ const Home = () => {
       <div className="d-block d-md-flex ff-montserra" style={{maxWidth: '70em', margin: 'auto'}}>
         <div className='flex-grow-1' style={{order: 1}}></div>
         <div style={{maxWidth: '30em', margin: 'auto', order: 4}}>
-          <h2>Suggestions by categories</h2>
+          <h2>Suggestions par catégories</h2>
           <p>Arrêtez de vous casser la tête pour savoir quoi cuisiner. Organise tes recettes par catégorie pour avoir des suggestions selon tes besoins. Par exemple:</p>
           <ul>
             <li>Une recette rapide de semaine</li>
@@ -136,7 +136,7 @@ const Home = () => {
         </div>
         <div className='flex-grow-1' style={{height: '1em', order: 3}}></div>
         <div style={{order: 2}}>
-          <h3 className="text-center">Desserts</h3>
+          <h3 className="text-center">Désserts</h3>
           <SingleCarrousel items={recipes}>{({item}) => {
             let recipe = item
             return <>
