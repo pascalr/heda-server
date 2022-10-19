@@ -118,7 +118,7 @@ export const MoreButton = ({editor, width, height}) => (
       </svg>
     </button> 
     <ul className="dropdown-menu" aria-labelledby="moreDropdown">
-      <li key="2"><a className="dropdown-item" style={{cursor: 'pointer'}} onClick={() => editor.chain().focus().toggleStep().run()}>Ajouter une première étape</a></li>
+      <li key="2"><a className="dropdown-item" style={{cursor: 'pointer'}} onClick={() => editor.chain().focus().toggleStep({first: true}).run()}>Ajouter une première étape</a></li>
     </ul>
   </span>
 )

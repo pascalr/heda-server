@@ -130,7 +130,7 @@ const Home = () => {
       }}</SingleCarrousel>
     </div>
     <div className="trunk" style={{padding: '5em 0'}}>
-      <h2>Un éditeur de recette avancé</h2>
+      <h2>Un éditeur de recette spécialisé</h2>
       <div style={{border: "2px solid black", padding: '0.5em', borderRadius: '5px'}}>
         <RecipeEditor recipe={recipe} images={[]} mixes={[]} foods={[]} editable={true} user={{id: recipe.user_id}} />
       </div>

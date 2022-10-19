@@ -281,7 +281,6 @@ export const CollectionSelect = ({model, field, options, showOption, includeBlan
 
 // cols, rows, placeholder
 export const TextAreaField = ({ref, model, field, props, inputStyle, changeCallback=null}) => {
-  console.log('model', model)
   const [value, setValue] = useState(model[field])
 
   return (
