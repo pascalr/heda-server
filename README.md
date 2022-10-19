@@ -1,5 +1,14 @@
 # Heda Server
 
+## Live reload
+nodemon is used to live reload front-end pages (views)
+livereload is used to live reload compiled back-end pages (public/build)
+connect-livereload is used to refresh the browser page automatically
+// npm install --save-dev chokidar
+TODO: Watch esbuild to rebuild files on changes: https://github.com/zaydek/esbuild-hot-reload/blob/master/serve.js
+// https://stackoverflow.com/questions/24750395/reload-express-js-routes-changes-without-manually-restarting-server
+// https://bytearcher.com/articles/refresh-changes-browser-express-livereload-nodemon/
+
 ## .env
 Store secret API and credentials inside .env
 Add

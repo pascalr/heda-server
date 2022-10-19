@@ -8,7 +8,7 @@
     "images:backup": "rsync -v --recursive root@heda-server.internal:/mnt/heda_volume/images/ volume/images/",
     "db:open": "sqlitebrowser var/db/dev.db",
     "db:backup": "scp root@heda-server.internal:/mnt/heda_volume/prod.db var/db/dev.db",
-    "dev": "npm run build:all && node --trace-uncaught -r dotenv/config ./src/server.js",
+    "dev": "npm run build:all && nodemon -e js,ejs --trace-uncaught -r dotenv/config ./src/server.js",
     "build:js": "npm run build && npm run build:user_editor && npm run build:home && npm run build:show_user && npm run build:show_recipe",
     "build:all": "npm run build:css && npm run build:js",
     "build": "esbuild src/react/app.jsx --bundle --sourcemap --outfile=public/build/app.js",
@@ -67,5 +67,10 @@
     "sass": "^1.54.9",
     "toastr": "^2.1.4",
     "watch": "~0.13.0"
+  },
+  "devDependencies": {
+    "connect-livereload": "^0.6.1",
+    "livereload": "^0.9.3",
+    "nodemon": "^2.0.20"
   }
 }

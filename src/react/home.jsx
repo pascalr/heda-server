@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
 import { RecipeEditor } from "./recipe_editor"
-import { RecipeMediumImage, RecipeSmallImage } from "./image"
+import { RecipeMediumImage, RecipeImage } from "./image"
 import { isBlank, normalizeSearchText, join, sortBy, capitalize } from "./utils"
 import { image_slug_variant_path } from "./routes"
 import { t } from "../translate"
@@ -106,21 +106,23 @@ const Home = () => {
     <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0 0.5em 0'}}>
       {isSearching ? <MainSearch {...{publicUsers}} /> : ''}
     </div>
-    <div style={{padding: '5em 0'}}>
-      <div className="d-flex">
-        <div>
-          <h1 style={{fontSize: '2.5em'}}>Heda cuisine!!!</h1>
-          <h4>Des recettes personnalisées</h4>
-          <p>Crée tes recettes, ne les perds jamais et partage avec tes amis. Reçoit des suggestions de recettes personalisées.</p>
+    <div style={{padding: '3em 0.3em 5em 0.3em'}}>
+      <div className="d-block d-md-flex">
+        <div className='flex-grow-1'></div>
+        <div style={{width: '25em', maxWidth: '100%', margin: 'auto', fontFamily: 'Montserra'}}>
+          <h1 className="fs-25">Heda cuisine</h1>
+          <h5><i>Des recettes personnalisées</i></h5>
+          <p className="py-3 fs-095">Accède à tes recettes de n'importe où. Partage avec ta famille et tes amis. Reçoit des suggestions de recettes personalisées.</p>
           <a className="btn btn-primary" style={{padding: '0.5em 3em', margin: 'auto'}} href="/login">Sign in</a>
         </div>
-        <div>
-          <h2>Recettes en vedettes</h2>
-          <RecipeSmallImage {...{recipe}} />
+        <div className='flex-grow-1' style={{height: '5em'}}></div>
+        <div style={{width: '25em', maxWidth: '100%', margin: 'auto'}}>
+          <RecipeImage {...{recipe: {image_slug: '131.jpeg'}}} width="380" height="300" />
         </div>
+        <div className='flex-grow-1'></div>
       </div>
     </div>
-    <div style={{padding: '5em 0', backgroundColor: '#fafbfc', textAlign: 'center'}}>
+    <div className="ff-montserra" style={{padding: '5em 0', backgroundColor: '#fafbfc', textAlign: 'center'}}>
       <h2>Suggestions by categories</h2>
       <br/><br/>
       <h3>Desserts</h3>

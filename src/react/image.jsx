@@ -15,7 +15,7 @@ const ImageCredit = ({imageSlug, images}) => {
 }
 
 // Variant can be "thumb", "small", "medium"
-const RecipeImage = ({recipe, images, showCredit, width, height, variant}) => {
+export const RecipeImage = ({recipe, images, showCredit, width, height, variant}) => {
   const imagePath = recipe.image_slug ? image_path(recipe.image_slug, variant) : "/img/default_recipe_01.png"
   return <>
     <div style={{width: `${width}px`, height: `${height}px`, maxWidth: '100%', overflow: 'hidden', flexShrink: '0'}}>

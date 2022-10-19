@@ -17,6 +17,9 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Creating tags with react and bootstrap.
 => Hcu
 
+Fix image slug for Macaroni au fromage à la courge butternut
+Use minified js for prod.
+Pouvoir voir les modifications d'UI que je fais live, comme avec create-react-app
 Create DummyHcu that only does local changes. Usefull for the home page recipe editor.
 Les recettes dans /u/5 doivent être des liens pour pouvoir faire click droig, open in new tab.
 Sur la page d'acceuil, peut-être montrer plus qu'une recette, montrer un peu une recette à droite et une à gauche?

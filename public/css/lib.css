@@ -91,6 +91,7 @@ img {
 }
 
 /* hxxx is a styling used for texts. The number is just an id, it does not have any meaning. */
+/* Ouin pas sûr, je pense je préfère être plus explicit. fsr-08 gray au lieu de h002... */
 .h001 {
   font-size: 1.2rem;
 }
@@ -107,8 +108,18 @@ img {
 .fsr-08 { font-size: 0.8rem; }
 .fs-09 { font-size: 0.9em; }
 .fsr-09 { font-size: 0.9rem; }
+.fs-095 { font-size: 0.95em; }
+.fsr-095 { font-size: 0.95rem; }
 .fs-12 { font-size: 1.2em; }
 .fsr-12 { font-size: 1.2rem; }
+.fs-15 { font-size: 1.5em; }
+.fsr-15 { font-size: 1.5rem; }
+.fs-2 { font-size: 2em; }
+.fsr-2 { font-size: 2rem; }
+.fs-25 { font-size: 2.5em; }
+.fsr-25 { font-size: 2.5rem; }
+
+.ff-montserra {font-family: 'Montserra'}
 
 /* Relative keeps the position of the element in the page, but it takes up space. */
 /* Absolute takes no space, but it needs to have a parent which is positioned. */

@@ -16,6 +16,10 @@ import fs from 'fs';
 const debug = debugModule('todos:server');
 import fileUpload from 'express-fileupload';
 
+// FIXME: How to import in dev only?
+import livereload from 'livereload';
+import connectLivereload from 'connect-livereload';
+
 import { tr } from './translate.js'
 
 // pass the session to the connect sqlite3 module
@@ -30,6 +34,25 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 var app = express();
+
+// LIVE RELOAD IN DEV
+if (process.env.ENVIRONMENT == "dev") {
+  console.log('Setting live reload for development environment.')
+
+  // open livereload high port and start to watch public directory for changes
+  const liveReloadServer = livereload.createServer();
+  liveReloadServer.watch(path.join(__dirname, 'public'));
+  
+  // ping browser on Express boot, once browser has reconnected and handshaken
+  liveReloadServer.server.once("connection", () => {
+    setTimeout(() => {
+      liveReloadServer.refresh("/");
+    }, 100);
+  });
+  
+  // monkey patch every served HTML so they know of changes
+  app.use(connectLivereload());
+}
 
 // view engine setup
 app.set('views', path.join(path.join(__dirname, '..'), 'views'));
