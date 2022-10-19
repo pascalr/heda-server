@@ -715,9 +715,12 @@ const Toolbar = ({ editor, ingredients, setShowHelpModal }) => {
   //<MeasuringButton editor={editor} width={width} height={height} />
   //<LinkButton editor={editor} width={width} height={height} />
   return (
-    <div className="toolbar" style={{display: "flex"}}>
+    <div className="toolbar flex-wrap">
+      <span className="float-end">
+        <HelpButton {...{editor, width, height, setShowHelpModal}} />
+      </span>
       <span className="toolbar-group">
-        <select value={selectedHeader} style={{display: "flex", alignItems: "center"}} onChange={(e) => {
+        <select value={selectedHeader} onChange={(e) => {
           let val = parseInt(e.target.value)
           if (!val) {
             editor.chain().focus().setParagraph().run()
@@ -742,8 +745,6 @@ const Toolbar = ({ editor, ingredients, setShowHelpModal }) => {
         <ItalicButton editor={editor} width={width} height={height} />
         <StrikeButton editor={editor} width={width} height={height} />
       </span>
-      <span className='flex-grow-1'/>
-      <HelpButton {...{editor, width, height, setShowHelpModal}} />
     </div>
   )
 }

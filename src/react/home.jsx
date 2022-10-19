@@ -106,7 +106,7 @@ const Home = () => {
     <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0 0.5em 0'}}>
       {isSearching ? <MainSearch {...{publicUsers}} /> : ''}
     </div>
-    <div style={{padding: '3em 0.3em 5em 0.3em'}}>
+    <div style={{padding: '3em 0.3em 5em 0.3em', maxWidth: '70em', margin: 'auto'}}>
       <div className="d-block d-md-flex">
         <div className='flex-grow-1'></div>
         <div style={{width: '25em', maxWidth: '100%', margin: 'auto', fontFamily: 'Montserra'}}>
@@ -115,17 +115,25 @@ const Home = () => {
           <p className="py-3 fs-095">Accède à tes recettes de n'importe où. Partage avec ta famille et tes amis. Reçoit des suggestions de recettes personalisées.</p>
           <a className="btn btn-primary" style={{padding: '0.5em 3em', margin: 'auto'}} href="/login">Sign in</a>
         </div>
-        <div className='flex-grow-1' style={{height: '5em'}}></div>
+        <div className='flex-grow-1' style={{height: '3em'}}></div>
         <div style={{width: '25em', maxWidth: '100%', margin: 'auto'}}>
           <RecipeImage {...{recipe: {image_slug: '131.jpeg'}}} width="380" height="300" />
         </div>
         <div className='flex-grow-1'></div>
       </div>
     </div>
-    <div className="ff-montserra" style={{padding: '5em 0', backgroundColor: '#fafbfc', textAlign: 'center'}}>
-      <h2>Suggestions by categories</h2>
+    <div className="ff-montserra" style={{padding: '5em 0.3em', backgroundColor: '#fafbfc'}}>
+      <div style={{maxWidth: '30em', margin: 'auto'}}>
+        <h2>Suggestions by categories</h2>
+        <p>Arrêtez de vous casser la tête pour savoir quoi cuisiner. Organise tes recettes par catégorie pour avoir des suggestions selon tes besoins. Par exemple:</p>
+        <ul>
+          <li>Une recette rapide de semaine</li>
+          <li>Un gros repas avec des restant pour les lunchs</li>
+          <li>Des occasions spécial comme noël</li>
+        </ul>
+      </div>
       <br/><br/>
-      <h3>Desserts</h3>
+      <h3 className="text-center">Desserts</h3>
       <SingleCarrousel items={recipes}>{({item}) => {
         let recipe = item
         return <>
@@ -136,7 +144,7 @@ const Home = () => {
         </>
       }}</SingleCarrousel>
     </div>
-    <div className="trunk" style={{padding: '5em 0'}}>
+    <div className="trunk" style={{padding: '5em 0.3em'}}>
       <h2>Un éditeur de recette spécialisé</h2>
       <div style={{border: "2px solid black", padding: '0.5em', borderRadius: '5px'}}>
         <RecipeEditor recipe={recipe} images={[]} mixes={[]} foods={[]} editable={true} user={{id: recipe.user_id}} />
