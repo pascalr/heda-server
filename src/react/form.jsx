@@ -267,12 +267,12 @@ export const CollectionSelect = ({model, field, options, showOption, includeBlan
 }
 
 // cols, rows, placeholder
-export const TextAreaField = ({ref, model, field, props, inputStyle, changeCallback=null}) => {
+export const TextAreaField = ({ref, model, field, changeCallback=null, ...props}) => {
   const [value, setValue] = useState(model[field])
 
   return (
     <div className="field">
-      <textarea value={value||''} name={field} id={field} style={inputStyle} {...props} onChange={(e) => {
+      <textarea value={value||''} name={field} id={field} {...props} onChange={(e) => {
         setValue(e.target.value);
         if(changeCallback) {changeCallback(e.target.value)}
       }} onBlur={() => window.hcu.updateField(model, field, value)} />

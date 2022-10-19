@@ -17,6 +17,8 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Creating tags with react and bootstrap.
 => Hcu
 
+TODO: Support 320px
+Français/Anglais la page d'acceuil
 Fix image slug for Macaroni au fromage à la courge butternut
 Use minified js for prod.
 Pouvoir voir les modifications d'UI que je fais live, comme avec create-react-app

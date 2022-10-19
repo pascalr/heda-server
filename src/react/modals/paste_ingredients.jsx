@@ -13,6 +13,12 @@ export const PasteIngredientsButton = (props) => {
   </>)
 }
 
+let example = `  # Pâte à crêpe
+  2 t; farine
+  4; oeuf
+  ; lait
+`
+
 const PasteIngredientsModal = ({recipe, show, handleClose}) => {
   return (<>
     <Modal show={show} onHide={handleClose}>
@@ -25,9 +31,11 @@ const PasteIngredientsModal = ({recipe, show, handleClose}) => {
         <h5>Notes</h5>
         <ol>
           <li>Entrer un ingrédient par ligne.</li>
-          <li>Les noms de sections d'ingrédients ne sont pas encore supportés dans ce mode. Il faut les ajouter par après.</li>
-          <li>Il n'est pas obligatoire de séparer les quantités du nom des aliments pas un point-virgule, mais c'est recommandé si le programme n'arrive pas à faire la séparation automatiquement.</li>
+          <li>Séparer la quantité de l'ingrédient par un point-virgule.</li>
+          <li>Les sections commencent par «#».</li>
         </ol>
+        <h6>Exemple (crêpes)</h6>
+        <pre>{example}</pre>
       </Modal.Body>
     </Modal>
   </>)
