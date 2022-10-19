@@ -29,6 +29,7 @@ import { Node, mergeAttributes, nodeInputRule, textblockTypeInputRule } from '@t
 import {ImageButton, HelpButton, StepButton, IngredientButton, AddNoteButton, MeasuringButton, CharButton, BoldButton, ItalicButton, MoreButton, StrikeButton, LinkButton, SubscriptButton, SuperscriptButton} from './buttons'
 
 import { parseIngredientsOldFormat } from "./lib"
+import { HelpTiptapModal } from "./modals/help_tiptap"
 
 // TODO: Check if anything in the data is null, and show a useful error if it is.
 function safeRenderHTML(html) {
@@ -697,7 +698,7 @@ const IngredientListNode = Node.create({
 
 })
 
-const Toolbar = ({ editor, ingredients }) => {
+const Toolbar = ({ editor, ingredients, setShowHelpModal }) => {
   if (!editor) {return null}
 
   const width = 24
@@ -742,7 +743,7 @@ const Toolbar = ({ editor, ingredients }) => {
         <StrikeButton editor={editor} width={width} height={height} />
       </span>
       <span className='flex-grow-1'/>
-      <HelpButton editor={editor} width={width} height={height} />
+      <HelpButton {...{editor, width, height, setShowHelpModal}} />
     </div>
   )
 }
@@ -835,6 +836,8 @@ export const recipeEditor = (content, editable=true) => {
 
 export const RecipeTiptap = ({recipe, editable, ingredients}) => {
 
+  const [showHelpModal, setShowHelpModal] = useState(false)
+
   gon.recipe = recipe // For tiptap
   gon.recipe_ingredients = parseIngredientsOldFormat(recipe.ingredients)
 
@@ -851,7 +854,8 @@ export const RecipeTiptap = ({recipe, editable, ingredients}) => {
 
   return (
     <div>
-      {editable ? <Toolbar editor={editor} ingredients={ingredients} /> : ''}
+      <HelpTiptapModal showModal={showHelpModal} setShowModal={setShowHelpModal} />
+      {editable ? <Toolbar {...{editor, ingredients, setShowHelpModal}} /> : ''}
       <EditorContent editor={editor} />
     </div>
   )

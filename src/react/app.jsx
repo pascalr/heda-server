@@ -689,7 +689,10 @@ const EditRecipe = (props) => {
     }
   }, [props.recipes])
 
-  return <RecipeEditor {...{recipe, ...props}} />
+  return <>
+    <RecipeEditor {...{recipe, ...props}} />
+    <br/><br/><br/><br/><br/><br/><br/><br/>
+  </>
 }
 
 const MixIndex = ({page, machines, mixes, machineFoods}) => {

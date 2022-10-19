@@ -15,39 +15,6 @@ import { RecipeMediumImage } from "./image"
 import { RecipeUtils } from "./recipe_utils"
 import { t } from "../translate"
 
-const InstructionsShortcuts = props => (
-  <>
-    <button type="button" className="btn btn-small dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#show-shortcuts">
-      Voir les racourcis claviers
-    </button>
-    <div className="collapse" id="show-shortcuts">
-      <h2>Racourcis claviers</h2>
-      <ul>
-        <li><b>#</b>: Commencer une ligne avec «#» pour chaque étape de la recette.</li>
-        <li><b>$</b>: Commencer une ligne avec «$» pour un grand titre.</li>
-        <li><b>$$</b>: Commencer une ligne avec «$$» pour un moyen titre.</li>
-        <li><b>$$$</b>: Commencer une ligne avec «$$$» pour un petit titre.</li>
-        <li><b>/</b>: Commencer une ligne avec «/» pour faire un paragraph en italique.</li>
-        <li><b>{"{3}"}</b>: Afficher l'ingrédient 3</li>
-        <li><b>{"{3-5}"}</b>: Afficher les ingrédients 3, 4 et 5</li>
-        <li><b>{"{3,5}"}</b>: Afficher les ingrédients 3 et 5</li>
-        <li><b>{"{3;}"}</b>: TODO: Afficher le nombre 3 qui scale avec la recette</li>
-        <li><b>{"{3;pomme}"}</b>: TODO: Afficher la quantité 3 pomme qui scale avec la recette</li>
-        <li><b>{"{2;pomme,3-5}"}</b>: TODO: Afficher la quantité 3 pomme qui scale avec la recette et les ingrédients 3, 4 et 5.</li>
-        <li><b>[1]</b>: TODO: Lien vers la note 1</li>
-        <li><b>[1;Section name]</b>: TODO: Lien vers la section de l'article</li>
-        <li><b>[note: 1]</b></li>
-        <li><b>[link_note: 1]</b></li>
-        <li><b>[recipe: 100]</b></li>
-        <li><b>[food: 100]</b></li>
-        <li><b>[url: "http://www.hedacuisine.com/"]</b></li>
-        <li><b>[label: "home", url: "http://www.hedacuisine.com/"]</b></li>
-        <li><b>[img: 10]</b></li>
-      </ul>
-    </div>
-  </>
-)
-
 const NewIngredient = ({foods, updateIngredients, addIngredient}) => {
   
   const [qty, setQty] = useState('')
@@ -320,19 +287,19 @@ export const RecipeEditor = ({recipe, page, machines, mixes, machineFoods, foods
           <div>
             <b>{t('Preparation')} ({t('min')}): </b>
             <span style={{color: 'gray'}}>
-              <TextField model={recipe} field="preparation_time" className="editable-input" />
+              <TextField model={recipe} field="preparation_time" className="editable-input" size="8"/>
             </span>
           </div>
           <div>
             <b>{t('Cooking')} ({t('min')}): </b>
             <span style={{color: 'gray'}}>
-              <TextField model={recipe} field="cooking_time" className="editable-input" />
+              <TextField model={recipe} field="cooking_time" className="editable-input" size="8" />
             </span>
           </div>
           <div>
             <b>{t('Total')} ({t('min')}): </b>
             <span style={{color: 'gray'}}>
-              <TextField model={recipe} field="total_time" className="editable-input" />
+              <TextField model={recipe} field="total_time" className="editable-input" size="8" />
             </span>
           </div>
           <div>
@@ -361,9 +328,7 @@ export const RecipeEditor = ({recipe, page, machines, mixes, machineFoods, foods
       
         <h2>{t('Instructions')}</h2>
         <RecipeTiptap recipe={recipe} editable={true} ingredients={ingredients} />
-        {editable ? <InstructionsShortcuts/> : ''}
       </div>
-      <br/><br/><br/><br/><br/><br/><br/><br/>
     </div>
   </>)
 }
