@@ -297,7 +297,7 @@ export const RecipeEditor = ({recipe, page, machines, mixes, machineFoods, foods
 
   return (<>
     <div className="recipe">
-      <div className="d-block d-md-flex" style={{gap: '20px'}}>
+      <div className="d-block d-md-flex">
         <div>
           <div className="over-container">
             <EditRecipeImageModal {...{recipe, recipeKinds, images}} show={showImageModal}
@@ -310,7 +310,7 @@ export const RecipeEditor = ({recipe, page, machines, mixes, machineFoods, foods
             </div>
           </div> 
         </div>
-        <div style={{height: '20px', width: '0'}}></div>
+        <div style={{height: '20px', minWidth: '20px'}}></div>
         <div style={{width: '100%'}}>
           <h1>
             <span className="recipe-title">
