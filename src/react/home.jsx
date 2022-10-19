@@ -122,30 +122,39 @@ const Home = () => {
         <div className='flex-grow-1'></div>
       </div>
     </div>
-    <div className="ff-montserra" style={{padding: '5em 0.3em', backgroundColor: '#fafbfc'}}>
-      <div style={{maxWidth: '30em', margin: 'auto'}}>
-        <h2>Suggestions by categories</h2>
-        <p>Arrêtez de vous casser la tête pour savoir quoi cuisiner. Organise tes recettes par catégorie pour avoir des suggestions selon tes besoins. Par exemple:</p>
-        <ul>
-          <li>Une recette rapide de semaine</li>
-          <li>Un gros repas avec des restant pour les lunchs</li>
-          <li>Des occasions spécial comme noël</li>
-        </ul>
+    <div style={{padding: '5em 0.3em', backgroundColor: '#fafbfc'}}>
+      <div className="d-block d-md-flex ff-montserra" style={{maxWidth: '70em', margin: 'auto'}}>
+        <div className='flex-grow-1' style={{order: 1}}></div>
+        <div style={{maxWidth: '30em', margin: 'auto', order: 4}}>
+          <h2>Suggestions by categories</h2>
+          <p>Arrêtez de vous casser la tête pour savoir quoi cuisiner. Organise tes recettes par catégorie pour avoir des suggestions selon tes besoins. Par exemple:</p>
+          <ul>
+            <li>Une recette rapide de semaine</li>
+            <li>Un gros repas avec des restant pour les lunchs</li>
+            <li>Des occasions spécial comme noël</li>
+          </ul>
+        </div>
+        <div className='flex-grow-1' style={{height: '1em', order: 3}}></div>
+        <div style={{order: 2}}>
+          <h3 className="text-center">Desserts</h3>
+          <SingleCarrousel items={recipes}>{({item}) => {
+            let recipe = item
+            return <>
+              <RecipeMediumImage {...{recipe}} />
+              <a href={`/r/${recipe.id}`}>
+                <h2 className="bottom-center font-satisfy" style={{borderRadius: "0.5em", border: "1px solid #777", color: "#000", bottom: "1em", backgroundColor: "rgba(245, 245, 245, 0.7)", fontSize: "2em", padding: "0.2em 0.2em 0.1em 0.2em"}}>{recipe.name}</h2>
+              </a>
+            </>
+          }}</SingleCarrousel>
+        </div>
+        <div className='flex-grow-1' style={{order: 5}}></div>
       </div>
-      <br/><br/>
-      <h3 className="text-center">Desserts</h3>
-      <SingleCarrousel items={recipes}>{({item}) => {
-        let recipe = item
-        return <>
-          <RecipeMediumImage {...{recipe}} />
-          <a href={`/r/${recipe.id}`}>
-            <h2 className="bottom-center font-satisfy" style={{borderRadius: "0.5em", border: "1px solid #777", color: "#000", bottom: "1em", backgroundColor: "rgba(245, 245, 245, 0.7)", fontSize: "2em", padding: "0.2em 0.2em 0.1em 0.2em"}}>{recipe.name}</h2>
-          </a>
-        </>
-      }}</SingleCarrousel>
     </div>
     <div className="trunk" style={{padding: '5em 0.3em'}}>
-      <h2>Un éditeur de recette spécialisé</h2>
+      <div className="ff-montserra mb-2">
+        <h2>Un éditeur de recette spécialisé</h2>
+        <p>Créer des recettes rapidement à l'aide d'un éditeur de recette spécialisé. Explorer par vous même ce qu'il peut faire ici-bas!</p>
+      </div>
       <div style={{border: "2px solid black", padding: '0.5em', borderRadius: '5px'}}>
         <RecipeEditor recipe={recipe} images={[]} mixes={[]} foods={[]} editable={true} user={{id: recipe.user_id}} />
       </div>
