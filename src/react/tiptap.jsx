@@ -818,11 +818,14 @@ export const ArticleTiptap = ({model, json_field, html_field, url}) => {
   )
 }
 
-export const RecipeExtensions = [
-  Bold, Italic, Document, Paragraph, Strike, Text, CustomHeading,
-  History, IngredientNode, IngredientListNode, StepNode, LinkModel
-]
+const editorSelectable = (node, editable) => editable ? node : node.extend({selectable: false})
+
 export const recipeEditor = (content, editable=true) => {
+
+  const RecipeExtensions = [
+    Bold, Italic, Document, Paragraph, Strike, Text, CustomHeading,
+    History, IngredientNode, editorSelectable(IngredientListNode, editable), StepNode, LinkModel
+  ]
   return {
     extensions: RecipeExtensions,
     content,
