@@ -23,6 +23,7 @@ export function parseIngredientsOldFormat(text) {
 
 export function parseIngredientsAndHeaders(text) {
   if (!text) {return []}
+  let itemNb = 0
   return text.split("\n").map((line,i) => {
     if (line.length <= 0) {return null;}
     const key = `${i}-${line}`
@@ -31,7 +32,8 @@ export function parseIngredientsAndHeaders(text) {
       return {key: key, header: line.substr(1).trim()}
     }
     let args = line.split(";")
-    return {key: key, qty: args[0].trim(), label: args[1].trim()}
+    itemNb += 1
+    return {key: key, qty: args[0].trim(), label: args[1].trim(), item_nb: itemNb}
   }).filter(e => e)
 }
 

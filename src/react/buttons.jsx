@@ -24,6 +24,8 @@ export const StepButton = ({editor, width, height}) => (
     </svg>
   </button> 
 )
+
+//<li key="99999999999999"><a className="dropdown-item" style={{cursor: 'pointer'}}>Ajouter une liste...</a></li>
 export const IngredientButton = ({editor, width, height, ingredients}) => (
   <span className="dropdown">
     <button type="button" title="Ajouter un ingrédient ou une liste d'ingrédient" className="dropdown-toggle" id="ingDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -48,9 +50,8 @@ export const IngredientButton = ({editor, width, height, ingredients}) => (
       </svg>
     </button>
     <ul className="dropdown-menu" aria-labelledby="ingDropdown">
-      <li key="99999999999999"><a className="dropdown-item" style={{cursor: 'pointer'}}>Ajouter une liste...</a></li>
       {Object.values(ingredients || {}).map(ing => {
-        let text = Utils.prettyQuantityFor(ing.raw, ing.name)
+        let text = Utils.prettyQuantityFor(ing.qty, ing.label)+ing.label
         return <li key={ing.key}><a className="dropdown-item" style={{cursor: 'pointer'}} onClick={() => editor.chain().focus().insertIngredient(ing.item_nb).run()}>{text}<span style={{color: "#0d6efd"}}>{ing.name}</span></a></li>
       })}
     </ul>

@@ -711,10 +711,8 @@ const Toolbar = ({ editor, ingredients }) => {
   // selectedHeader = editor.getAttributes('heading').level // Does not work
 
   //<AddNoteButton editor={editor} width={width} height={height} />
-  //<IngredientButton editor={editor} width={width} height={height} ingredients={ingredients} />
   //<MeasuringButton editor={editor} width={width} height={height} />
   //<LinkButton editor={editor} width={width} height={height} />
-  //<CharButton editor={editor} width={width} height={height} />
   return (
     <div className="toolbar" style={{display: "flex"}}>
       <span className="toolbar-group">
@@ -734,6 +732,8 @@ const Toolbar = ({ editor, ingredients }) => {
       </span>
       <span className="toolbar-group">
         <StepButton editor={editor} width={width} height={height} />
+        <IngredientButton editor={editor} width={width} height={height} ingredients={ingredients} />
+        <CharButton editor={editor} width={width} height={height} />
         <MoreButton editor={editor} width={width} height={height} />
       </span>
       <span className="toolbar-group">
