@@ -40,30 +40,30 @@ if (!process.env.NODE_ENV) {
   process.env.NODE_ENV = process.env.ENVIRONMENT
 }
 
-// Setup js file builder
-const builder = await build({
-  // Bundles JavaScript.
-  bundle: true,
-  // Defines env variables for bundled JavaScript; here `process.env.NODE_ENV`
-  // is propagated with a fallback.
-  define: { "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "development") },
-  // Bundles JavaScript from (see `outfile`).
-  entryPoints: ["src/react/app.jsx", "src/react/user_editor.jsx", "src/react/home.jsx", "src/react/show_user.jsx", "src/react/show_recipe.jsx"],
-  // Uses incremental compilation (see `chokidar.on`).
-  incremental: true,
-  // Removes whitespace, etc. depending on `NODE_ENV=...`.
-  minify: process.env.NODE_ENV === "production" || process.env.NODE_ENV === "prod",
-  // Bundles JavaScript to (see `entryPoints`).
-  outdir: "public/build",
-
-  sourcemap: true,
-})
-
 var app = express();
 
 // LIVE RELOAD IN DEV
 if (process.env.ENVIRONMENT == "dev") {
   console.log('Setting live reload for development environment.')
+
+  // Setup js file builder
+  const builder = await build({
+    // Bundles JavaScript.
+    bundle: true,
+    // Defines env variables for bundled JavaScript; here `process.env.NODE_ENV`
+    // is propagated with a fallback.
+    define: { "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "development") },
+    // Bundles JavaScript from (see `outfile`).
+    entryPoints: ["src/react/app.jsx", "src/react/user_editor.jsx", "src/react/home.jsx", "src/react/show_user.jsx", "src/react/show_recipe.jsx"],
+    // Uses incremental compilation (see `chokidar.on`).
+    incremental: true,
+    // Removes whitespace, etc. depending on `NODE_ENV=...`.
+    minify: process.env.NODE_ENV === "production" || process.env.NODE_ENV === "prod",
+    // Bundles JavaScript to (see `entryPoints`).
+    outdir: "public/build",
+  
+    sourcemap: true,
+  })
 
   // open livereload high port and start to watch public directory for changes
   const liveReloadServer = livereload.createServer();
