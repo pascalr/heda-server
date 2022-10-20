@@ -13,17 +13,9 @@ img {
   width: auto;
 }
 
-.plain-link {
+.plain-link, .plain-link:visited, .plain-link:hover, .plain-link:active {
   text-decoration: none;
-}
-.plain-link:visited {
-  text-decoration: none;
-}
-.plain-link:hover {
-  text-decoration: none;
-}
-.plain-link:active {
-  text-decoration: none;
+  color: inherit;
 }
 
 .plain-btn, .btn-image {
@@ -110,6 +102,8 @@ img {
 .fsr-09 { font-size: 0.9rem; }
 .fs-095 { font-size: 0.95em; }
 .fsr-095 { font-size: 0.95rem; }
+.fs-11 { font-size: 1.1em; }
+.fsr-11 { font-size: 1.1rem; }
 .fs-12 { font-size: 1.2em; }
 .fsr-12 { font-size: 1.2rem; }
 .fs-15 { font-size: 1.5em; }

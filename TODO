@@ -1,3 +1,9 @@
+Mettre mes fichiers dans une librairie publique: node-bootstrap-webapp
+
+There should be an opposite of «.» in numbers.
+1.2 == 1 + 0.2
+1?2 == 1 - 0.2
+
 Endroits où j'ai postulé:
 - Evidence Prime (Healthcare)
 - Videri (Écrans)
@@ -22,11 +28,7 @@ TODO: Support 320px
 Français/Anglais la page d'acceuil
 Fix image slug for Macaroni au fromage à la courge butternut
 Use minified js for prod. (after using Docker, because I am confused I don't even understand how it works right now...)
-Les recettes dans /u/5 doivent être des liens pour pouvoir faire click droig, open in new tab.
 Sur la page d'acceuil, peut-être montrer plus qu'une recette, montrer un peu une recette à droite et une à gauche?
-Home page recipe editor uploadImage go through hcu???
-FIXME: Env not working. Not sending to Joey I'm sorry page
-Ne pas pouvoir sélectionner dans recipe show.
 L'image de Muffins aux chocolat est plus large et ça bug
 Fix les notes. Par exemple dans la recette de pain aux bananes. Rajouter toutes les notes manuellement dans les recettes.
 Des suggestions d'images pour les recettes.

@@ -10,13 +10,15 @@ import { t } from "../translate"
 
 const RecipeItem = ({recipe, images, recipeKinds}) => {
   return (
-    <li className="clickable" style={{fontSize: '1.1rem'}} onClick={() => window.location.href = "/r/"+recipe.id}>
-      <div className="d-flex align-items-center">
-        <RecipeThumbnailImage {...{recipe, recipeKinds, images}} />
-        <div style={{marginRight: '0.5em'}}></div>
-        <span>{recipe.name}</span>
-      </div>
-    </li>
+    <a href={"/r/"+recipe.id} className="plain-link">
+      <li style={{fontSize: '1.1rem'}}>
+        <div className="d-flex align-items-center">
+          <RecipeThumbnailImage {...{recipe, recipeKinds, images}} />
+          <div style={{marginRight: '0.5em'}}></div>
+          <span>{recipe.name}</span>
+        </div>
+      </li>
+    </a>
   )
 }
 

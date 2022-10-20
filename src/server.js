@@ -162,7 +162,8 @@ app.use(function(req, res, next) {
 // error handler
 app.use(function(err, req, res, next) {
 
-  if (req.app.get('env') === 'development') {
+  //if (req.app.get('env') === 'development') {
+  if (process.env.ENVIRONMENT == "dev") {
 
     if (typeof err === 'string') {
       res.locals.message = err;
