@@ -18,6 +18,7 @@ import fileUpload from 'express-fileupload';
 
 import { build } from "esbuild";
 import chokidar from "chokidar";
+import sass from 'sass';
 
 // FIXME: How to import in dev only?
 import livereload from 'livereload';
@@ -66,6 +67,7 @@ if (process.env.ENVIRONMENT == "dev") {
   })
 
   // open livereload high port and start to watch public directory for changes
+  //const liveReloadServer = livereload.createServer({exts: ['js', 'css'], applyCSSLive: false});
   const liveReloadServer = livereload.createServer();
   liveReloadServer.watch(path.join(__dirname, '../public/build/'));
   
@@ -79,7 +81,6 @@ if (process.env.ENVIRONMENT == "dev") {
   // monkey patch every served HTML so they know of changes
   app.use(connectLivereload());
 
-  // `chokidar` watcher source changes.
   // Setup watch for building js files
   chokidar.watch("src/**/*.{js,jsx}", {
       interval: 0, // No delay
@@ -87,6 +88,22 @@ if (process.env.ENVIRONMENT == "dev") {
       console.log('************** REBUILDING JS ***************')
       // Rebuilds esbuild (incrementally -- see `build.incremental`).
       builder.rebuild()
+    })
+  
+  // Setup watch for building sass files
+  chokidar.watch("src/**/*.scss", {
+      interval: 0, // No delay
+    }).on("all", (type, filename) => {
+      console.log('************** REBUILDING CSS ***************')
+      let p = path.join(__dirname, filename.substr(4))
+      let name = path.basename(filename)
+      name = name.substr(0, name.length-4)+'css'
+      let out = path.join(__dirname, '../public/build', name)
+      const result = sass.compile(p);
+      console.log('out', out)
+      fs.writeFile(out, result.css, function (err) {
+        if (err) return console.log(err);
+      });
     })
 }
 
