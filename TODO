@@ -18,13 +18,10 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Hcu
 
 Page d'acceuil 320px
-Watch for sass files automatically: https://www.npmjs.com/package/sass
 TODO: Support 320px
 Français/Anglais la page d'acceuil
 Fix image slug for Macaroni au fromage à la courge butternut
-Use minified js for prod.
-Pouvoir voir les modifications d'UI que je fais live, comme avec create-react-app
-Create DummyHcu that only does local changes. Usefull for the home page recipe editor.
+Use minified js for prod. (after using Docker, because I am confused I don't even understand how it works right now...)
 Les recettes dans /u/5 doivent être des liens pour pouvoir faire click droig, open in new tab.
 Sur la page d'acceuil, peut-être montrer plus qu'une recette, montrer un peu une recette à droite et une à gauche?
 Home page recipe editor uploadImage go through hcu???

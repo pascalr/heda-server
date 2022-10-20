@@ -16,7 +16,7 @@
     "build:user_editor": "esbuild src/react/user_editor.jsx --bundle --sourcemap --outfile=public/build/user_editor.js",
     "build:home": "esbuild src/react/home.jsx --bundle --sourcemap --outfile=public/build/home.js",
     "build:prod": "esbuild src/react/app.jsx --bundle --minify --outfile=public/build/app.js",
-    "build:css": "sass src/scss/prose_mirror.scss:public/build/prose_mirror.css src/scss/imports.scss:public/build/imports.css"
+    "build:css": "sass src/style/prose_mirror.scss:public/build/prose_mirror.css src/style/imports.scss:public/build/imports.css"
   },
   "dependencies": {
     "@aeaton/prosemirror-commands": "^2.0.2",
