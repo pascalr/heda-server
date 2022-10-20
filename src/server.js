@@ -41,6 +41,11 @@ if (!process.env.NODE_ENV) {
   process.env.NODE_ENV = process.env.ENVIRONMENT
 }
 
+// Backup database every day
+//setInterval(() => {
+//  db.doBackup()
+//}, 24*60*60*1000)
+
 var app = express();
 
 // LIVE RELOAD IN DEV

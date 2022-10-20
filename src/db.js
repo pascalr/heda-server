@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 
 import betterSqlite3 from 'better-sqlite3'
 // FIXME: DB_URL should be DB_PATH, it's not an URL (doesn't start with sqlite3://...)
@@ -227,6 +228,20 @@ db.createRecord = function(table, obj, userId, options={}) {
   let info = db.prepare(query).run(...args)
   if (info.changes != 1) {throw "Error creating record from in "+table+"."}
   return {...obj, id: info.lastInsertRowid}
+}
+
+if (db.doBackup) {throw "Can't overide doBackup"}
+db.doBackup = function() {
+
+  let outDir = process.env.DB_BACKUP_DIR
+  if (!outDir) {throw "Error backing up db: missing environment variable DB_BACKUP_DIR"}
+  
+  let date = new Date()
+  let filename = `${date.getFullYear()}_${date.getMonth()}_${date.getDay()}_${date.getHours()}_${date.getMinutes()}_${date.getSeconds()}.db`
+
+  console.log('Starting backup up database.')
+  db.backup(path.join(outDir, filename))
+  console.log('Database backup completed.')
 }
 
 if (db.fetchTable) {throw "Can't overide fetchTable"}
