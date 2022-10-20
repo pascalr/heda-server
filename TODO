@@ -17,6 +17,7 @@ L'idée est de le faire pour moi aussi. Comme cheatsheet.
 => Creating tags with react and bootstrap.
 => Hcu
 
+TODO: Test fly deploy with build changes...
 Watch for sass files automatically: https://www.npmjs.com/package/sass
 TODO: Support 320px
 Français/Anglais la page d'acceuil

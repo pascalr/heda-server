@@ -134,7 +134,7 @@ const Home = () => {
             <li>Des occasions spéciales comme noël</li>
           </ul>
         </div>
-        <div className='flex-grow-1' style={{height: '1em', order: 3}}></div>
+        <div className='flex-grow-1' style={{width: '2em', height: '1em', order: 3}}></div>
         <div style={{order: 2}}>
           <h3 className="text-center">Désserts</h3>
           <SingleCarrousel items={recipes}>{({item}) => {
