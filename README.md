@@ -55,3 +55,7 @@ https://www.digitalocean.com/community/tutorials/how-to-set-up-wireguard-on-ubun
 ## Stable diffustion
 ... in a baking dish
 ... on a plate (this way the image is less zoomed on the food)
+
+## Docker
+docker images # to list all docker images
+TODO: Only copy min js files inside the docker image
