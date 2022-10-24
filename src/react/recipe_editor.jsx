@@ -32,12 +32,10 @@ const NewIngredient = ({foods, updateIngredients, addIngredient}) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="d-flex align-items-center flex-wrap" style={{gap: '5px'}}>
-        <input type="text" size="8" className="editable-input" value={qty||''} name="qty" onChange={(e) => setQty(e.target.value)} style={{marginLeft: '1.65rem'}} ref={qtyInputField} />
-        de{/*" de " ou bien " - " si la quantité n'a pas d'unité => _1_____ - oeuf*/}
-        <input type="text" size="24" value={label||''} name="label" onChange={(e) => setLabel(e.target.value)} />
-        <button type="submit" className="btn btn-sm btn-primary">Ajouter</button>
-      </div>
+      <input type="text" size="8" className="editable-input" value={qty||''} name="qty" onChange={(e) => setQty(e.target.value)} style={{marginLeft: '1.65rem'}} ref={qtyInputField} />
+      <div className="d-inline-block mx-2" style={{width: '1em'}}>de</div>
+      <input type="text" value={label||''} name="label" style={{maxWidth: '32vw'}} onChange={(e) => setLabel(e.target.value)} />
+      <button type="submit" className="btn btn-sm btn-primary ms-2">Ajouter</button>
     </form>
   )
 }
@@ -59,14 +57,15 @@ const EditableIngredient = ({recipe, ingredient, itemNb, foods, mixes, updateIng
 
   let preposition = RecipeUtils.needsPreposition(qty) ? RecipeUtils.prettyPreposition(label) : ''
   return (
-    <div className="d-flex align-items-center flex-wrap" style={{gap: '5px'}}>
+    <div>
+      <div className="float-end">
+        {mix ? <img className="clickable" style={{marginRight: '0.4em'}} src="/icons/arrow-down-up.svg" width="16" height="16" onClick={moveIngToMix}></img> : '' }
+        <DeleteConfirmButton id={`ing-${ingredient.key}`} onDeleteConfirm={() => removeIngredientOrHeader(itemNb-1)} message="Je veux enlever cet ingrédient?" />
+      </div>
       <span style={{padding: "0 10px 0 0"}}><b>{itemNb}.</b></span>
       <input type="text" size="8" className="editable-input" value={qty||''} name="qty" onChange={(e) => setQty(e.target.value)} onBlur={(e) => {ingredient.qty = qty; updateIngredients()}} />
-      <div style={{width: '1em'}}>{preposition}</div>
-      <input className="food-name" type="text" size="24" value={label||''} name="label" onChange={(e) => setLabel(e.target.value)} onBlur={(e) => {ingredient.label = label; updateIngredients()}} style={{border: '1px solid #ccc'}} />
-      <div className='flex-grow-1' />
-      {mix ? <img className="clickable" style={{marginRight: '0.4em'}} src="/icons/arrow-down-up.svg" width="16" height="16" onClick={moveIngToMix}></img> : '' }
-      <DeleteConfirmButton id={`ing-${ingredient.key}`} onDeleteConfirm={() => removeIngredientOrHeader(itemNb-1)} message="Je veux enlever cet ingrédient?" />
+      <div className="d-inline-block mx-2" style={{width: '1em'}}>{preposition}</div>
+      <input className="food-name" type="text" value={label||''} name="label" onChange={(e) => setLabel(e.target.value)} onBlur={(e) => {ingredient.label = label; updateIngredients()}} style={{border: '1px solid #ccc', maxWidth: '45vw'}} />
     </div>
   )
 }

@@ -10,10 +10,9 @@ RECHERCHE: https://ca.indeed.com/jobs?q=ruby+on+rails&l=Remote&from=searchOnHP&v
 Regarder ce que mon ancien site reference à l'air
 
 Fix public search.
-Se connecter use linkTo inside of react...
 Page d'acceuil 320px
 TODO: Support 320px
-Français/Anglais la page d'acceuil
+Purée de courge poivrée: null set et poivre
 Fix image slug for Macaroni au fromage à la courge butternut
 Use minified js for prod. (after using Docker, because I am confused I don't even understand how it works right now...)
 Sur la page d'acceuil, peut-être montrer plus qu'une recette, montrer un peu une recette à droite et une à gauche?

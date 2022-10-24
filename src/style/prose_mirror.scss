@@ -136,7 +136,7 @@ span[data-ingredient] {
 }
 
 .toolbar-group {
-  padding: 0 1.5em;
+  padding: 0 min(1.5em, 2.75vw);
   display: inline-block;
 }
 
