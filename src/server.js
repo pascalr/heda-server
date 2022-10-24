@@ -15,6 +15,7 @@ import debugModule from 'debug';
 import fs from 'fs';
 const debug = debugModule('todos:server');
 import fileUpload from 'express-fileupload';
+import _ from 'lodash';
 
 import { build } from "esbuild";
 import chokidar from "chokidar";
@@ -118,15 +119,28 @@ app.set('view engine', 'ejs');
 
 // TODO: Put these functions inside helpers
 app.locals.pluralize = pluralize;
-app.locals.getPathFromUrl = (url) => {
+const getPathFromUrl = (url) => {
   if (!url) {return ''}
   return url.split(/[?#]/, 1)[0];
 }
+app.locals.getPathFromUrl = getPathFromUrl
 // FIXME: Should I sanitize the inputs?
-app.locals.linkTo = (label, href, {className}) => {
+app.locals.linkTo = (req, label, href, {className}) => {
+
+  let locale = req.query.locale;
+  let path = getPathFromUrl(href);
+  let current = _.pick(getUrlParams(req.originalUrl), 'locale');
+  let params = {...current, ...getUrlParams(href)}
+  console.log('2', params)
+  let url = path
+  if (params && Object.keys(params).length >= 1) {
+    url += '?' + new URLSearchParams(params).toString()
+  }
+  console.log('3', url)
+
   let q = '<a '
   if (className) {q += 'class="'+className+'" '}
-  q += 'href="'+href+'"'
+  q += 'href="'+url+'"'
   q += '>'+label+'</a>'
   return q
 }
@@ -168,6 +182,7 @@ app.use(function(req, res, next) {
   res.locals.csrfToken = req.csrfToken();
   res.locals.href = req.url;
   res.locals.locale = req.query.locale || 'EN';
+  res.locals.req = req;
   next();
 });
 
