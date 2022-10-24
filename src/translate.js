@@ -7,8 +7,12 @@ export function tr(id, locale) {
     Error_creating: 'An error has occured that prevented this record from being created.',
     Error_updating: 'An error has occured that prevented this record from being modified.',
     Sorry_error: 'We are very sorry, but something went wrong.',
+    Help_login: 'Already have an account?',
+    Help_signup: "Don't have an account?",
   }
   let fr = {
+    Help_login: 'Vous avez déjà un compte?',
+    Help_signup: "Vous n'avez pas de compte?",
     Attribute_to_this_profile: "Attribuer à ce profil",
     Sorry_error: "Nous sommes vraiment désolé, mais une erreur s'est produite.",
     Login: 'Se connecter',
@@ -52,6 +56,7 @@ export function tr(id, locale) {
     Modify: 'Modifier',
     Edit: 'Modifier',
     Tag: 'Tagger',
+    Sign_up: 'Créer un compte',
     Category: 'Catégorie',
     No_matching_category_found: 'Aucune catégorie correspondante',
     Ingredients: 'Ingrédients',
