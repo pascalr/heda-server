@@ -122,6 +122,14 @@ app.locals.getPathFromUrl = (url) => {
   if (!url) {return ''}
   return url.split(/[?#]/, 1)[0];
 }
+// FIXME: Should I sanitize the inputs?
+app.locals.linkTo = (label, href, {className}) => {
+  let q = '<a '
+  if (className) {q += 'class="'+className+'" '}
+  q += 'href="'+href+'"'
+  q += '>'+label+'</a>'
+  return q
+}
 app.locals.tr = tr;
 
 app.use(logger('dev'));

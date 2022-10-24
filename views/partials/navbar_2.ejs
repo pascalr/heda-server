@@ -2,7 +2,7 @@
   <div style="max-width: 800px; margin: auto; padding: 0.5em 0px;">
     <div class="float-start fs-15 px-3">
       <% let otherLocale = (locale == 'EN') ? 'FR' : 'EN' %>
-      <a class="nav-btn" href="<%- getPathFromUrl(href) %>?locale=<%- otherLocale%>"><%- otherLocale %></a>
+      <%- linkTo(otherLocale, getPathFromUrl(href)+'?locale='+otherLocale, {className: "nav-btn"}) %>
     </div>
     <div class="float-end" style="margin-top: 0.25em;">
       <img id="main-search-btn" class="clickable" src="/icons/search.svg" style="margin-right: 1em;" width="24">
