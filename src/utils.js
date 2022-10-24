@@ -3,6 +3,20 @@ function padStr(i) {
   return (i < 10) ? "0" + i : "" + i;
 }
 
+// TODO: Use this inside views too instead of linkTo ???
+export function localeHref(href) {
+
+  let path = getPathFromUrl(href);
+  let locale = getUrlParams(window.location.href).locale
+  let params = locale ? {locale} : {}
+  params = {...params, ...getUrlParams(href)}
+  let url = path
+  if (params && Object.keys(params).length >= 1) {
+    url += '?' + new URLSearchParams(params).toString()
+  }
+  return url
+}
+
 // Get the time of now. Format looks like: 2022-09-20T17:48:11.522Z
 // The format is comptatible with Ruby on Rails.
 // FIXME: This is not tested, I am not sure this is compatible...
@@ -43,6 +57,11 @@ function stringToPrimitive(str) {
   let f = parseFloat(str)
   if (f.toString() == str) {return f}
   return str
+}
+
+export function getPathFromUrl(url) {
+  if (!url) {return ''}
+  return url.split(/[?#]/, 1)[0];
 }
 
 export function getUrlParams(url=null) {

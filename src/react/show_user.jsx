@@ -7,10 +7,11 @@ import { RecipeThumbnailImage } from "./image"
 import { isBlank, normalizeSearchText, join, sortBy, capitalize } from "./utils"
 import { image_slug_variant_path } from "./routes"
 import { t } from "../translate"
+import { localeHref, getUrlParams } from "../utils"
 
 const RecipeItem = ({recipe, images, recipeKinds}) => {
   return (
-    <a href={"/r/"+recipe.id} className="plain-link">
+    <a href={localeHref("/r/"+recipe.id)} className="plain-link">
       <li style={{fontSize: '1.1rem'}}>
         <div className="d-flex align-items-center">
           <RecipeThumbnailImage {...{recipe, recipeKinds, images}} />
@@ -53,6 +54,7 @@ const ShowUser = () => {
 
 document.addEventListener('DOMContentLoaded', () => {
 
+  window.locale = getUrlParams(window.location.href).locale
   const root = document.getElementById('root-u')
   if (root) {ReactDOM.render(<ShowUser />, root)}
   //const root = createRoot(document.getElementById("root"));

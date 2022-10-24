@@ -9,6 +9,7 @@ import { image_slug_variant_path } from "./routes"
 import { t } from "../translate"
 import { SingleCarrousel } from "./app"
 import { initHcu, useHcuState } from '../hcu'
+import { localeHref, getUrlParams } from "../utils"
 
 export const MainSearch = ({publicUsers}) => {
 
@@ -63,7 +64,7 @@ export const MainSearch = ({publicUsers}) => {
         {matchingUsers.length >= 1 ? <h2 className="h001">{t('Public_members')}</h2> : ''}
         <ul>
           {matchingUsers.map((user, current) => (
-            <li key={user.id} className="list-group-item clickable" onClick={() => window.location.href = `/u/${user.id}`}>{user.name}</li>
+            <li key={user.id} className="list-group-item"><a href={localeHref(`/u/${user.id}`)}>{user.name}</a></li>
           ))}
         </ul>
       </div>
@@ -111,9 +112,9 @@ const Home = () => {
         <div className='flex-grow-1'></div>
         <div style={{width: '25em', maxWidth: '100%', margin: 'auto', fontFamily: 'Montserra'}}>
           <h1 className="fs-25">Heda cuisine</h1>
-          <h5><i>Des recettes personnalisées</i></h5>
-          <p className="py-3 fs-095">Accèdez à vos recettes de n'importe où. Partagez avec votre famille et vos amis. Reçevez des suggestions de recettes personalisées.</p>
-          <a className="btn btn-primary" style={{padding: '0.5em 3em', margin: 'auto'}} href="/login">Sign in</a>
+          <h5><i>{t('Home_2')}</i></h5>
+          <p className="py-3 fs-095">{t('Home_1')}</p>
+          <a className="btn btn-primary" style={{padding: '0.5em 3em', margin: 'auto'}} href={localeHref("/login")}>{t('Sign_in')}</a>
         </div>
         <div className='flex-grow-1' style={{height: '3em'}}></div>
         <div style={{width: '25em', maxWidth: '100%', margin: 'auto'}}>
@@ -126,22 +127,22 @@ const Home = () => {
       <div className="d-block d-md-flex ff-montserra" style={{maxWidth: '70em', margin: 'auto'}}>
         <div className='flex-grow-1' style={{order: 1}}></div>
         <div style={{maxWidth: '30em', margin: 'auto', order: 4}}>
-          <h2>Suggestions par catégories</h2>
-          <p>Arrêtez de vous casser la tête pour savoir quoi cuisiner. Organisez vos recettes par catégories pour avoir des suggestions selon vos besoins. Par exemple:</p>
+          <h2>{t('Home_3')}</h2>
+          <p>{t('Home_4')}</p>
           <ul>
-            <li>Une recette rapide de semaine</li>
-            <li>Un gros repas avec des restants pour les lunchs</li>
-            <li>Des occasions spéciales comme noël</li>
+            <li>{t('Home_5')}</li>
+            <li>{t('Home_6')}</li>
+            <li>{t('Home_7')}</li>
           </ul>
         </div>
         <div className='flex-grow-1' style={{width: '2em', height: '1em', order: 3}}></div>
         <div style={{order: 2}}>
-          <h3 className="text-center">Désserts</h3>
+          <h3 className="text-center">{t('Home_8')}</h3>
           <SingleCarrousel items={recipes}>{({item}) => {
             let recipe = item
             return <>
               <RecipeMediumImage {...{recipe}} />
-              <a href={`/r/${recipe.id}`}>
+              <a href={localeHref(`/r/${recipe.id}`)}>
                 <h2 className="bottom-center font-satisfy" style={{borderRadius: "0.5em", border: "1px solid #777", color: "#000", bottom: "1em", backgroundColor: "rgba(245, 245, 245, 0.7)", fontSize: "2em", padding: "0.2em 0.2em 0.1em 0.2em"}}>{recipe.name}</h2>
               </a>
             </>
@@ -152,8 +153,8 @@ const Home = () => {
     </div>
     <div className="trunk" style={{padding: '5em 0.3em'}}>
       <div className="ff-montserra mb-2">
-        <h2>Un éditeur de recette spécialisé</h2>
-        <p>Créez des recettes rapidement à l'aide d'un éditeur de recette spécialisé. Explorez par vous-même ce qu'il peut faire ici-bas!</p>
+        <h2>{t('Home_9')}</h2>
+        <p>{t('Home_10')}</p>
       </div>
       <div style={{border: "2px solid black", padding: '0.5em', borderRadius: '5px'}}>
         <RecipeEditor recipe={recipe} images={[]} mixes={[]} foods={[]} editable={true} user={{id: recipe.user_id}} />
@@ -164,6 +165,7 @@ const Home = () => {
 
 document.addEventListener('DOMContentLoaded', () => {
 
+  window.locale = getUrlParams(window.location.href).locale
   const root = document.getElementById('root-home')
   if (root) {ReactDOM.render(<Home />, root)}
   //const root = createRoot(document.getElementById("root"));

@@ -128,16 +128,13 @@ app.locals.getPathFromUrl = getPathFromUrl
 const linkToBegin = (req, href, options={}) => {
 
   const {className} = options
-  let locale = req.query.locale;
   let path = getPathFromUrl(href);
   let current = _.pick(getUrlParams(req.originalUrl), 'locale');
   let params = {...current, ...getUrlParams(href)}
-  console.log('2', params)
   let url = path
   if (params && Object.keys(params).length >= 1) {
     url += '?' + new URLSearchParams(params).toString()
   }
-  console.log('3', url)
 
   let q = '<a '
   if (className) {q += 'class="'+className+'" '}

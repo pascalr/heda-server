@@ -11,6 +11,7 @@ import { t } from "../translate"
 import { Utils } from "./recipe_utils"
 import { RecipeTiptap } from './tiptap'
 import { RecipeMediumImage } from "./image"
+import { getUrlParams } from "../utils"
 
 export const RecipeViewer = ({recipe, images, user}) => {
 
@@ -125,6 +126,7 @@ const ShowRecipe = () => {
 
 document.addEventListener('DOMContentLoaded', () => {
 
+  window.locale = getUrlParams(window.location.href).locale
   const root = document.getElementById('root-r')
   if (root) {ReactDOM.render(<ShowRecipe />, root)}
   //const root = createRoot(document.getElementById("root"));
