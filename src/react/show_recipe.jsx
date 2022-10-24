@@ -11,7 +11,7 @@ import { t } from "../translate"
 import { Utils } from "./recipe_utils"
 import { RecipeTiptap } from './tiptap'
 import { RecipeMediumImage } from "./image"
-import { getUrlParams } from "../utils"
+import { getUrlParams, localeHref } from "../utils"
 
 export const RecipeViewer = ({recipe, images, user}) => {
 
@@ -47,7 +47,7 @@ export const RecipeViewer = ({recipe, images, user}) => {
   return (<>
     <nav aria-label="breadcrumb">
       <ol className="breadcrumb" style={{margin: '-0.5em 0 0.5em 0'}}>
-        <li className="breadcrumb-item"><a href={'/u/'+user.id}>{user.name}</a></li>
+        <li className="breadcrumb-item"><a href={localeHref('/u/'+user.id)}>{user.name}</a></li>
         <li className="breadcrumb-item active" aria-current="page">{recipe.name}</li>
       </ol>
     </nav>
@@ -63,7 +63,7 @@ export const RecipeViewer = ({recipe, images, user}) => {
             <div className='flex-grow-1' />
           </div>
           <div style={{marginTop: '-0.8em', marginBottom: '1.2em'}}>
-            <span style={{color: 'gray'}}>{t('by')} <span className="clickable" onClick={() => window.location.href="/u/"+user.id}>{user.name}</span></span>
+            <span style={{color: 'gray'}}>{t('by')} <a href={localeHref("/u/"+user.id)}>{user.name}</a></span>
           </div>
           <div>
             <b>{t('Preparation')} ({t('min')}): </b>
