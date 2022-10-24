@@ -1,5 +1,9 @@
 <nav style="background-color: rgb(33, 37, 41); margin-bottom: 0.5em; border-bottom: 1px solid rgb(206, 226, 240);">
   <div style="max-width: 800px; margin: auto; padding: 0.5em 0px;">
+    <div class="float-start fs-15 px-3">
+      <% let otherLocale = (locale == 'EN') ? 'FR' : 'EN' %>
+      <a class="nav-btn" href="<%- getPathFromUrl(href) %>?locale=<%- otherLocale%>"><%- otherLocale %></a>
+    </div>
     <div class="float-end" style="margin-top: 0.25em;">
       <img id="main-search-btn" class="clickable" src="/icons/search.svg" style="margin-right: 1em;" width="24">
       <div class="dropdown d-inline-block">

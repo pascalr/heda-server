@@ -116,7 +116,12 @@ if (process.env.ENVIRONMENT == "dev") {
 app.set('views', path.join(path.join(__dirname, '..'), 'views'));
 app.set('view engine', 'ejs');
 
+// TODO: Put these functions inside helpers
 app.locals.pluralize = pluralize;
+app.locals.getPathFromUrl = (url) => {
+  if (!url) {return ''}
+  return url.split(/[?#]/, 1)[0];
+}
 app.locals.tr = tr;
 
 app.use(logger('dev'));
@@ -153,6 +158,8 @@ app.use(function(req, res, next) {
 });
 app.use(function(req, res, next) {
   res.locals.csrfToken = req.csrfToken();
+  res.locals.href = req.url;
+  res.locals.locale = req.query.locale || 'EN';
   next();
 });
 

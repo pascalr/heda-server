@@ -121,3 +121,11 @@ input[type="checkbox"] {
   font-family: "Satisfy", cursive;
   font-weight: bold;
 }
+
+.nav-btn {
+  color: #ddd;
+  text-decoration: none;
+}
+.nav-btn:hover {
+  color: #fff;
+}

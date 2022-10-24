@@ -59,3 +59,17 @@ https://www.digitalocean.com/community/tutorials/how-to-set-up-wireguard-on-ubun
 ## Docker
 docker images # to list all docker images
 TODO: Only copy min js files inside the docker image
+
+## Healthy programming
+
+I have an unhealthy habit of constantly trying to improve. When you have a clear goal, it's Ok it does not matter very much.
+
+So let's say I start writing an app. I have a lot of things to do. A have a lot of ideas.
+I start working and everything goes great.
+But then I'm in the middle of writing the app and I start to lose focus. I start to think to much about the how and not enough about the what.
+By the end when I'm about to finish the app, I am constantly wanting to rewrite everything a better way.
+It's fine, do it better for the next project. But who cares for this one.
+If I change how something is done, THERE MUST BE A VALID REASON. I need a what.
+
+
+THE ABSOLUTE WORST THING I COULD DO RIGHT NOW IS TO TRY TO IMPROVE THE CODE IN THE HOPE THAT SOMEONE SEES IT WHEN I POST FOR A JOB... I WOULD GET STUCK IN A CONSTANT LOOP OF IMPROVEMENT AND DEPRESSION...
