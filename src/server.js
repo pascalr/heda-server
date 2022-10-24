@@ -125,8 +125,9 @@ const getPathFromUrl = (url) => {
 }
 app.locals.getPathFromUrl = getPathFromUrl
 // FIXME: Should I sanitize the inputs?
-app.locals.linkTo = (req, label, href, {className}) => {
+const linkToBegin = (req, href, options={}) => {
 
+  const {className} = options
   let locale = req.query.locale;
   let path = getPathFromUrl(href);
   let current = _.pick(getUrlParams(req.originalUrl), 'locale');
@@ -141,9 +142,15 @@ app.locals.linkTo = (req, label, href, {className}) => {
   let q = '<a '
   if (className) {q += 'class="'+className+'" '}
   q += 'href="'+url+'"'
-  q += '>'+label+'</a>'
+  q += '>'
   return q
 }
+app.locals.linkToBegin = linkToBegin
+// FIXME: Should I sanitize the inputs?
+app.locals.linkTo = (req, label, href, options={}) => {
+  return linkToBegin(req, href, options)+label+'</a>'
+}
+app.locals.linkToEnd = () => ('</a>')
 app.locals.tr = tr;
 
 app.use(logger('dev'));

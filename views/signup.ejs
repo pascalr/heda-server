@@ -23,7 +23,10 @@
         <button class="btn btn-primary form-control" type="submit">Sign up</button>
       </form>
       <hr>
-      <p class="help">Already have an account? <a href="/login">Sign in</a></p>
+      <p class="help">
+        Already have an account?
+        <%- linkTo(req, tr('Login', locale), "/login" %>
+      </p>
     </div>
   </body>
 </html>

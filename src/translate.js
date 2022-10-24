@@ -70,7 +70,7 @@ export function tr(id, locale) {
     Error_creating: 'Une erreur est survenue qui a empêché de créer cet item.',
     Error_updating: 'Une erreur est survenue qui a empêché la modification cet item.',
   }
-  if (locale == 'fr') {
+  if (locale == 'fr' || locale == 'FR') {
     if (!fr[id]) {console.log('Missing translation for '+id+' in '+locale)}
     else {return fr[id]}
   }

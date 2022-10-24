@@ -11,7 +11,7 @@
           <img class="clickable" src="/icons/person-fill-white.svg" width="28">
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownUserButton">
-          <a href="/login" class="dropdown-item"><%- tr('Login')%></a>
+          <%- linkTo(req, tr('Login', locale), "/login", {className: "dropdown-item"}) %>
         </div>
       </div>
     </div>
