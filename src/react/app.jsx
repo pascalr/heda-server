@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
+import { useDrag } from '@use-gesture/react'
 //import { createRoot } from 'react-dom/client';
-
-//import Hammer from "react-hammerjs"
-//var windowHistory = window.history // window.history.back() => same as back in browser
-//import history from 'history/hash'
 
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, LinkToPage } from "./lib"
@@ -66,6 +63,7 @@ const SuggestionsNav = ({page, tagSuggestions, categorySuggestions}) => {
 export const SingleCarrousel = ({items, children}) => {
   
   const [itemNb, setItemNb] = useState(0)
+  const [position, setPosition] = useState({x: 0, y: 0})
 
   const nextItem = () => {
     if (itemNb < items.length-1) { setItemNb(itemNb + 1) }
@@ -74,6 +72,11 @@ export const SingleCarrousel = ({items, children}) => {
   const previousItem = () => {
     setItemNb(itemNb <= 0 ? 0 : itemNb - 1)
   }
+
+  const bind = useDrag(({swipe: [swipeX]}) => {
+    if (swipeX == 1) { previousItem() }
+    else if (swipeX == -1) nextItem()
+  })
   
   let onKeyDown = ({key}) => {
     if (key == "ArrowLeft") {previousItem()}
@@ -92,32 +95,18 @@ export const SingleCarrousel = ({items, children}) => {
   if (!children) {throw "Error carroussel must have one and only one children."}
   let item = items[itemNb]
 
-  let handleSwipe = ({direction}) => {
-    if (direction == 2) { // left
-      nextSuggestion()
-    } else if (direction == 4) { // right
-      previousSuggestion()
-    }
-  }
-  
-  //let recipe = recipes.find(r => r.id == suggestion.recipe_id)
-  //const recipeKind = recipeKinds.find(k => k.id == recipe.recipe_kind_id)
-
- 
-    //<Hammer onSwipe={handleSwipe}>
-    //</Hammer>
   return (<>
-      <div>
-        <div className="over-container" style={{margin: "auto"}}>
-          {children({item})}
-          <div className="left-center">
-            <img className="clickable" src={icon_path("custom-chevron-left.svg")} width="45" height="90" onClick={previousItem} aria-disabled={itemNb <= 0} />
-          </div>
-          <div className="right-center">
-            <img className="clickable" src={icon_path("custom-chevron-right.svg")} width="45" height="90" onClick={nextItem} aria-disabled={itemNb >= items.length-1} />
-          </div>
+    <div {...bind()}>
+      <div className="over-container" style={{margin: "auto"}}>
+        {children({item})}
+        <div className="left-center">
+          <img className="clickable" src={icon_path("custom-chevron-left.svg")} width="45" height="90" onClick={previousItem} aria-disabled={itemNb <= 0} />
+        </div>
+        <div className="right-center">
+          <img className="clickable" src={icon_path("custom-chevron-right.svg")} width="45" height="90" onClick={nextItem} aria-disabled={itemNb >= items.length-1} />
         </div>
       </div>
+    </div>
   </>)
 }
 

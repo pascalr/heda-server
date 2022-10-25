@@ -139,7 +139,7 @@ const Home = () => {
 
   return <>
     <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0 0.5em 0'}}>
-      {isSearching ? <MainSearch {...{publicUsers}} /> : ''}
+      {isSearching ? <MainSearch /> : ''}
     </div>
     <div style={{padding: '3em 0.3em 5em 0.3em', maxWidth: '70em', margin: 'auto'}}>
       <div className="d-block d-md-flex">

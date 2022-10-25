@@ -1,6 +1,7 @@
 Endroits où j'ai postulé:
 - Evidence Prime (Healthcare)
 - Videri (Écrans)
+- BrainFinance
 
 Endrois à postuler lorsque je vais mon site à montrer:
 RECHERCHE: https://ca.indeed.com/jobs?q=ruby+on+rails&l=Remote&from=searchOnHP&vjk=17400c9ed4de047f
@@ -15,7 +16,6 @@ Fix les notes. Par exemple dans la recette de pain aux bananes. Rajouter toutes 
 Rajouter le crédit photo des biscuits aux brisures de chocolat.
 Prendre les recettes à Céline et les attritrés à elle.
 Autre:
-Use minified js for prod. (by using Docker)
 Des suggestions d'images pour les recettes.
 Remettre HammerJS
 Image thumbnails, si le thumbnail n'existe pas, le créer. Faire ça pour toutes les variantes.
@@ -39,6 +39,7 @@ Rename hcu methods:
 updateField OK, changeField => updateFieldLocally, this way it is more explicit that no ajax will be called...
 
 Later:
+Use minified js for prod. (by using Docker)
 Periodic task to remove images which are not referenced anywhere. To remove images without a file.
 Add max file size to images
 Add max image count to users
@@ -129,3 +130,20 @@ app.use((req, res, next) => {
   next()
 })
 window.locale = getUrlParams(window.location.href).locale
+
+
+Hi,
+
+You say the ideal candidate is a self-starter, driven to learn new technologies, and contribute to the success of the team. I believe I am all those things.
+
+I've tried many programming languages and I keep reading on Hacker News about new technologies that come out. I am independent, but I can also work well in a team.
+
+I don't have the best CV. I've learned the profession by myself and as professional experience as a developer I've only worked for Hopper for a year when I was 17 years old. I have since scattered in electromechanics, mechanical engineering and by trying to lunch a business building a robotic arm that cooks.
+
+I have always been programming on side projects mostly in React and in Ruby on Rails. You can see some of it on my personal website at: https://pascalr.github.io/cv/en/.
+
+I sincerely hope we have a chance to meet.
+
+Thank you and have a good day!
+
+Pascal
