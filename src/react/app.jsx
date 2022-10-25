@@ -834,7 +834,7 @@ const useTransition = (initial, current, final) => {
   return state
 }
 
-const RecipeListItem = ({recipe, current, tags, recipeKinds, page, selected, users, user, images, selectedRef}) => {
+const RecipeListItem = ({recipe, current, page, selected, users, user, images, selectedRef}) => {
   let userName = null
   let isSelected = current == selected
   if (user.id != recipe.user_id) {
@@ -845,7 +845,7 @@ const RecipeListItem = ({recipe, current, tags, recipeKinds, page, selected, use
     <li key={recipe.id} ref={isSelected ? selectedRef : null}>
       <LinkToPage page={{...page, page: 15, recipeId: recipe.id}} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
         <div className="d-flex align-items-center">
-          <RecipeThumbnailImage {...{recipe, recipeKinds, images}} />
+          <RecipeThumbnailImage {...{recipe, images}} />
           <div style={{marginRight: '0.5em'}}></div>
           {userName ? <div><div>{recipe.name}</div><div className="h002">{t('by_2')} {userName}</div></div> : recipe.name}
         </div>

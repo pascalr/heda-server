@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
 import { RecipeEditor } from "./recipe_editor"
-import { RecipeMediumImage, RecipeImage } from "./image"
-import { isBlank, normalizeSearchText, join, sortBy, capitalize } from "./utils"
+import { RecipeThumbnailImage, RecipeMediumImage, RecipeImage } from "./image"
+import { ajax, isBlank, normalizeSearchText, join, sortBy, capitalize } from "./utils"
 import { image_slug_variant_path } from "./routes"
 import { t } from "../translate"
 import { SingleCarrousel } from "./app"
@@ -18,12 +18,23 @@ export const MainSearch = ({publicUsers}) => {
   const [search, setSearch] = useState('')
   const [term, setTerm] = useState('')
   const [selected, setSelected] = useState(-1)
+  const [searchResults, setSearchResults] = useState([])
   const inputField = useRef(null)
   const selectedRef = useRef(null)
 
   useEffect(() => {
     inputField.current.focus()
   }, [])
+  
+  useEffect(() => {
+    if (term.length >= 3) {
+      ajax({url: "/search?q="+term, type: 'GET', success: ({results}) => {
+        setSearchResults(results.recipes)
+      }, error: (errors) => {
+        console.error('Fetch search results error...', errors.responseText)
+      }})
+    }
+  }, [term])
   
   useEffect(() => {
     //displayRef.current.scrollTop = 56.2*(selected||0)
@@ -58,7 +69,7 @@ export const MainSearch = ({publicUsers}) => {
 
   return (<>
     <div style={{transition: 'height 1s', margin: '1em'}}>
-      <input ref={inputField} type="search" placeholder={`${t('Search_for_a_public_member')}...`} onChange={(e) => {setTerm(e.target.value); setSearch(e.target.value)}} autoComplete="off" style={{width: "100%"}} onKeyDown={onKeyDown} value={search}/>
+      <input ref={inputField} type="search" placeholder={`${t('Search')}...`} onChange={(e) => {setTerm(e.target.value); setSearch(e.target.value)}} autoComplete="off" style={{width: "100%"}} onKeyDown={onKeyDown} value={search}/>
       <br/><br/>
       <div style={{height: 'calc(100vh - 125px)', overflowY: 'scroll'}}>
         {matchingUsers.length >= 1 ? <h2 className="h001">{t('Public_members')}</h2> : ''}
@@ -66,6 +77,23 @@ export const MainSearch = ({publicUsers}) => {
           {matchingUsers.map((user, current) => (
             <li key={user.id} className="list-group-item"><a href={localeHref(`/u/${user.id}`)}>{user.name}</a></li>
           ))}
+        </ul>
+        {searchResults.length >= 1 ? <h2 className="h001">{t('Recipes')}</h2> : ''}
+        <ul className="recipe-list">
+          {searchResults.map((recipe, current) => {
+            let isSelected = current == selected
+            return (
+              <li key={recipe.id} ref={isSelected ? selectedRef : null}>
+                <a href={localeHref('/r/'+recipe.id)} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
+                  <div className="d-flex align-items-center">
+                    <RecipeThumbnailImage {...{recipe}} />
+                    <div style={{marginRight: '0.5em'}}></div>
+                    <div><div>{recipe.name}</div><div className="h002">{t('by_2')} TODO</div></div>
+                  </div>
+                </a>
+              </li>
+            )
+          })}
         </ul>
       </div>
     </div>

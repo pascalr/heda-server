@@ -68,7 +68,6 @@ export function getPathFromUrl(url) {
 export function getUrlParams(url=null) {
   var r = {};
   if (!url) {url = window.location.href}
-  console.log('url', url)
   let s = url.split('?', 2)
   if (s.length < 2) {return []}
   let params = s[1]

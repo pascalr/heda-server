@@ -42,6 +42,7 @@ export function tr(id, locale) {
     Login: 'Se connecter',
     Favorites: 'Favoris',
     Recipes_by: 'Les recettes de',
+    Recipes: 'Recettes',
     Search: 'Rechercher',
     Search_for_a_public_member: 'Rechercher un membre publique',
     Public_members: 'Membres publics',
