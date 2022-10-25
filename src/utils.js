@@ -4,10 +4,11 @@ function padStr(i) {
 }
 
 // TODO: Use this inside views too instead of linkTo ???
-export function localeHref(href) {
+export function localeHref(href, currentUrl=null) {
 
+  if (!currentUrl) {currentUrl = window.location.href}
   let path = getPathFromUrl(href);
-  let locale = getUrlParams(window.location.href).locale
+  let locale = getUrlParams(currentUrl).locale
   let params = locale ? {locale} : {}
   params = {...params, ...getUrlParams(href)}
   let url = path

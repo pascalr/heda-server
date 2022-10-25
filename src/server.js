@@ -33,7 +33,7 @@ import SQLiteStoreModule from 'connect-sqlite3'
 const SQLiteStore = SQLiteStoreModule(session);
 
 import router from './router.js';
-import { getUrlParams } from './utils.js';
+import { getUrlParams, localeHref } from './utils.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -122,6 +122,9 @@ app.locals.pluralize = pluralize;
 const getPathFromUrl = (url) => {
   if (!url) {return ''}
   return url.split(/[?#]/, 1)[0];
+}
+app.locals.localeHref = (req, url) => {
+  return localeHref(url, req.originalUrl)
 }
 app.locals.getPathFromUrl = getPathFromUrl
 // FIXME: Should I sanitize the inputs?
