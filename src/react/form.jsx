@@ -4,6 +4,7 @@ import autocomplete from 'js-autocomplete';
 import { normalizeSearchText, colorToHexString, hexStringToColor, Utils, ajax } from './utils'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 
+import { handleError } from './lib'
 import { image_slug_variant_path } from "./routes"
 import { t } from '../translate'
 
@@ -135,7 +136,8 @@ export const ImageField = ({record, field, maxSizeBytes, ...props}) => {
       let ext = image.filename.substr(image.filename.lastIndexOf('.') + 1);
       let val = `${image.id}.${ext}`
       window.hcu.changeField(record, field, val)
-    }})
+    }, error: handleError('Error_updating')
+    })
   }
   return <input type="file" name='file' {...props} onChange={handleChange} />
 }

@@ -8,6 +8,7 @@ import { db, ALLOWED_COLUMNS_GET } from './db.js';
 import gon, {initGon, fetchTableMiddleware, RECIPE_ATTRS} from './gon.js';
 import passport from './passport.js';
 import { localeHref, now, ensureIsArray } from './utils.js';
+import { tr } from './translate.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -53,7 +54,8 @@ router.post('/upload_image', function(req, res, next) {
   let file = req.files['file'];
   let ext = file.name.substr(file.name.lastIndexOf('.') + 1).toLowerCase();
   if (!['jpg', 'jpeg', 'png'].includes(ext)) {
-    return res.status(500).send("Image format not supported. Expected jpg, jpeg or png. Was " + ext);
+    // FIXME: Send the user locale from the client side in order to translate properly.
+    return res.status(500).json({publicError: tr('Image_format_not_supported') + ext});
   }
 
   let {record_table, record_id, record_field} = req.body

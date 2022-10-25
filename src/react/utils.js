@@ -137,15 +137,24 @@ export function ajax(params) {
       body: formData 
       //body: JSON.stringify({_csrf, testing: '1212'})
     }).then(response => {
-      if (response.ok) {
-        return response.json()
-      } else {
-        console.log('Fetch error')
-        if (params.error) { params.error(response) }
-      }
-    }).then(json => {
-      if (params.success) { params.success(json) }
+      response.json().then((json) => {
+        if (response.ok) {
+          if (params.success) { params.success(json) }
+        } else {
+          if (params.error) { params.error(json) }
+        }
+      })
     })
+    //}).then(response => {
+    //  if (response.ok) {
+    //    return response.json()
+    //  } else {
+    //    console.log('Fetch error')
+    //    if (params.error) { params.error(response) }
+    //  }
+    //}).then(json => {
+    //  if (params.success) { params.success(json) }
+    //})
 
   } else {
     let data = {...params.data}

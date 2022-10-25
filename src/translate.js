@@ -20,8 +20,10 @@ export function tr(id, locale) {
     Home_9: "A specialized recipe editor",
     Home_10: "Create your recipes quickly with a specialized recipe editor. Explore by yourself what it can do with the live editor below!",
     Who_cooking: "Who's cooking?",
+    Image_format_not_supported: "Image format not supported. Expected jpg, jpeg or png. Was ",
   }
   let fr = {
+    Image_format_not_supported: "Le format d'image n'est pas supporté. Les formats jpg, jpeg ou png sont valide, mais le format reçu était ",
     Username: "Nom d'utilisateur",
     Password: "Mot de passe",
     Who_cooking: "Qui cuisine?",
@@ -37,7 +39,7 @@ export function tr(id, locale) {
     Home_10: "Créez des recettes rapidement à l'aide d'un éditeur de recette spécialisé. Explorez par vous-même ce qu'il peut faire ici-bas!",
     Help_login: 'Vous avez déjà un compte?',
     Help_signup: "Vous n'avez pas de compte?",
-    Attribute_to_this_profile: "Attribuer à ce profil",
+    Attribute_to_this_profil: "Attribuer à ce profil",
     Sorry_error: "Nous sommes vraiment désolé, mais une erreur s'est produite.",
     Login: 'Se connecter',
     Favorites: 'Favoris',

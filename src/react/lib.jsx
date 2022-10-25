@@ -1,6 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import toastr from 'toastr'
 
 import { ajax, omit, join, bindSetter, capitalize } from "./utils"
+import { t } from '../translate'
+
+// errorId: 'Error_updating'
+export const handleError = (errorId) => (response) => {
+  console.log('response', response)
+  if (response.publicError) {
+    console.error('ERROR...', response.publicError)
+    toastr.error(t(errorId)+' '+response.publicError)
+  } else {
+    console.error('ERROR...', response.responseText)
+    toastr.error(t(errorId))
+  }
+}
 
 export function serializeIngredientsAndHeaders(ingredients) {
   return ingredients.map(ing => {
