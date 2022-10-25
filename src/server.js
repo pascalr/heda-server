@@ -9,7 +9,6 @@ import csrf from 'csurf';
 import passport from 'passport';
 import logger from 'morgan';
 import { fileURLToPath } from 'url';
-import pluralize from 'pluralize';
 import http from 'http';
 import debugModule from 'debug';
 import fs from 'fs';
@@ -17,15 +16,8 @@ const debug = debugModule('todos:server');
 import fileUpload from 'express-fileupload';
 import _ from 'lodash';
 
-import { build } from "esbuild";
-import chokidar from "chokidar";
-import sass from 'sass';
-
-// FIXME: How to import in dev only?
-import livereload from 'livereload';
-import connectLivereload from 'connect-livereload';
-
 import { tr } from './translate.js'
+import { enableLiveReload } from './livereload.js'
 
 // pass the session to the connect sqlite3 module
 // allowing it to inherit from session.Store
@@ -52,65 +44,7 @@ var app = express();
 // LIVE RELOAD IN DEV
 if (process.env.ENVIRONMENT == "dev") {
   console.log('Setting live reload for development environment.')
-
-  // Setup js file builder
-  const builder = await build({
-    // Bundles JavaScript.
-    bundle: true,
-    // Defines env variables for bundled JavaScript; here `process.env.NODE_ENV`
-    // is propagated with a fallback.
-    define: { "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "development") },
-    // Bundles JavaScript from (see `outfile`).
-    entryPoints: ["src/react/app.jsx", "src/react/user_editor.jsx", "src/react/home.jsx", "src/react/show_user.jsx", "src/react/show_recipe.jsx"],
-    // Uses incremental compilation (see `chokidar.on`).
-    incremental: true,
-    // Removes whitespace, etc. depending on `NODE_ENV=...`.
-    minify: process.env.NODE_ENV === "production" || process.env.NODE_ENV === "prod",
-    // Bundles JavaScript to (see `entryPoints`).
-    outdir: "public/build",
-  
-    sourcemap: true,
-  })
-
-  // open livereload high port and start to watch public directory for changes
-  //const liveReloadServer = livereload.createServer({exts: ['js', 'css'], applyCSSLive: false});
-  const liveReloadServer = livereload.createServer();
-  liveReloadServer.watch(path.join(__dirname, '../public/build/'));
-  
-  // ping browser on Express boot, once browser has reconnected and handshaken
-  liveReloadServer.server.once("connection", () => {
-    setTimeout(() => {
-      liveReloadServer.refresh("/");
-    }, 100);
-  });
-  
-  // monkey patch every served HTML so they know of changes
-  app.use(connectLivereload());
-
-  // Setup watch for building js files
-  chokidar.watch("src/**/*.{js,jsx}", {
-      interval: 0, // No delay
-    }).on("change", () => {
-      console.log('************** REBUILDING JS ***************')
-      // Rebuilds esbuild (incrementally -- see `build.incremental`).
-      builder.rebuild()
-    })
-  
-  // Setup watch for building sass files
-  chokidar.watch("src/**/*.scss", {
-      interval: 0, // No delay
-    }).on("all", (type, filename) => {
-      console.log('************** REBUILDING CSS ***************')
-      let p = path.join(__dirname, filename.substr(4))
-      let name = path.basename(filename)
-      name = name.substr(0, name.length-4)+'css'
-      let out = path.join(__dirname, '../public/build', name)
-      const result = sass.compile(p);
-      console.log('out', out)
-      fs.writeFile(out, result.css, function (err) {
-        if (err) return console.log(err);
-      });
-    })
+  enableLiveReload(app)
 }
 
 // view engine setup
@@ -118,7 +52,6 @@ app.set('views', path.join(path.join(__dirname, '..'), 'views'));
 app.set('view engine', 'ejs');
 
 // TODO: Put these functions inside helpers
-app.locals.pluralize = pluralize;
 const getPathFromUrl = (url) => {
   if (!url) {return ''}
   return url.split(/[?#]/, 1)[0];
