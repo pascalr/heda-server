@@ -13,12 +13,7 @@ Data:
 Fix image slug for Macaroni au fromage à la courge butternut
 Fix les notes. Par exemple dans la recette de pain aux bananes. Rajouter toutes les notes manuellement dans les recettes.
 Autre:
-Who's cooking? in french...
-Fix public search.
-https://www.npmjs.com/package/sonic-channel
-Pouvoir rechercher des recettes publiques? En attendant de refaire fonctionner RecipeKind, ça serait bien...
 Use minified js for prod. (by using Docker)
-In public and private search, search by tokens and not exact search
 Des suggestions d'images pour les recettes.
 Remettre HammerJS
 Image thumbnails, si le thumbnail n'existe pas, le créer. Faire ça pour toutes les variantes.
