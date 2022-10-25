@@ -73,8 +73,8 @@ export const MainSearch = () => {
           {searchResults.users.map((user, current) => {
             let isSelected = current == selected
             return (
-              <li key={user.id} className="list-group-item">
-                <a href={localeHref(`/u/${user.id}`)}>
+              <li key={user.id} className="list-group-item" ref={isSelected ? selectedRef : null}>
+                <a href={localeHref(`/u/${user.id}`)} className={isSelected ? "selected" : undefined}>
                   <div className="d-flex align-items-center">
                     <UserThumbnailImage {...{user}} />
                     <div style={{marginRight: '0.5em'}}></div>

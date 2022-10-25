@@ -17,7 +17,6 @@ Rajouter le crédit photo des biscuits aux brisures de chocolat.
 Prendre les recettes à Céline et les attritrés à elle.
 Autre:
 Des suggestions d'images pour les recettes.
-Remettre HammerJS
 Image thumbnails, si le thumbnail n'existe pas, le créer. Faire ça pour toutes les variantes.
 FIXME: Make fetchTable secure. Remove ALLOWED_TABLES_GET, use read_attrs?
 Ah je le sais quel design que je veux! Un genre de faux design de téléphone.
