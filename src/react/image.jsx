@@ -36,3 +36,7 @@ export const RecipeThumbnailImage = (props) => {
 export const RecipeSmallImage = (props) => {
   return <RecipeImage {...{...props, width: 255, height: 171}} />
 }
+
+export const UserThumbnailImage = ({user}) => {
+  return <img src={'/imgs/user_thumb/'+user.image_slug} width="36" height="36" style={{width: 'auto', height: '64px'}} />
+}

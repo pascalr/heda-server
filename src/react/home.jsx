@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
 import { RecipeEditor } from "./recipe_editor"
-import { RecipeThumbnailImage, RecipeMediumImage, RecipeImage } from "./image"
+import { UserThumbnailImage, RecipeThumbnailImage, RecipeMediumImage, RecipeImage } from "./image"
 import { ajax, isBlank, normalizeSearchText, join, sortBy, capitalize } from "./utils"
 import { image_slug_variant_path } from "./routes"
 import { t } from "../translate"
@@ -18,7 +18,7 @@ export const MainSearch = ({publicUsers}) => {
   const [search, setSearch] = useState('')
   const [term, setTerm] = useState('')
   const [selected, setSelected] = useState(-1)
-  const [searchResults, setSearchResults] = useState([])
+  const [searchResults, setSearchResults] = useState({users: [], recipes: []})
   const inputField = useRef(null)
   const selectedRef = useRef(null)
 
@@ -29,7 +29,7 @@ export const MainSearch = ({publicUsers}) => {
   useEffect(() => {
     if (term.length >= 3) {
       ajax({url: "/search?q="+term, type: 'GET', success: ({results}) => {
-        setSearchResults(results.recipes)
+        setSearchResults(results)
       }, error: (errors) => {
         console.error('Fetch search results error...', errors.responseText)
       }})
@@ -72,15 +72,23 @@ export const MainSearch = ({publicUsers}) => {
       <input ref={inputField} type="search" placeholder={`${t('Search')}...`} onChange={(e) => {setTerm(e.target.value); setSearch(e.target.value)}} autoComplete="off" style={{width: "100%"}} onKeyDown={onKeyDown} value={search}/>
       <br/><br/>
       <div style={{height: 'calc(100vh - 125px)', overflowY: 'scroll'}}>
-        {matchingUsers.length >= 1 ? <h2 className="h001">{t('Public_members')}</h2> : ''}
+        {searchResults.users.length >= 1 ? <h2 className="h001">{t('Public_members')}</h2> : ''}
         <ul>
-          {matchingUsers.map((user, current) => (
-            <li key={user.id} className="list-group-item"><a href={localeHref(`/u/${user.id}`)}>{user.name}</a></li>
+          {searchResults.users.map((user, current) => (
+            <li key={user.id} className="list-group-item">
+              <a href={localeHref(`/u/${user.id}`)}>
+                <div className="d-flex align-items-center">
+                  <UserThumbnailImage {...{user}} />
+                  <div style={{marginRight: '0.5em'}}></div>
+                  {user.name}
+                </div>
+              </a>
+            </li>
           ))}
         </ul>
-        {searchResults.length >= 1 ? <h2 className="h001">{t('Recipes')}</h2> : ''}
+        {searchResults.recipes.length >= 1 ? <h2 className="h001">{t('Recipes')}</h2> : ''}
         <ul className="recipe-list">
-          {searchResults.map((recipe, current) => {
+          {searchResults.recipes.map((recipe, current) => {
             let isSelected = current == selected
             return (
               <li key={recipe.id} ref={isSelected ? selectedRef : null}>
