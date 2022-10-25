@@ -40,7 +40,7 @@ export function tr(id, locale) {
     Recipes_by: 'Les recettes de',
     Search: 'Rechercher',
     Search_for_a_public_member: 'Rechercher un membre publique',
-    Public_members: 'Membres publiques',
+    Public_members: 'Membres publics',
     private: 'privé',
     public: 'public',
     Visibility: 'Visibilité',

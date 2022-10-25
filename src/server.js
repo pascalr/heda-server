@@ -90,7 +90,7 @@ if (process.env.ENVIRONMENT == "dev") {
   // Setup watch for building js files
   chokidar.watch("src/**/*.{js,jsx}", {
       interval: 0, // No delay
-    }).on("all", () => {
+    }).on("change", () => {
       console.log('************** REBUILDING JS ***************')
       // Rebuilds esbuild (incrementally -- see `build.incremental`).
       builder.rebuild()

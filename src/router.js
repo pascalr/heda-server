@@ -20,6 +20,16 @@ const ensureLogIn = connectEnsureLogin.ensureLoggedIn;
 const ensureLoggedIn = ensureLogIn();
 const router = express.Router();
 
+router.get('/search', function(req, res, next) {
+  let query = req.query.q
+  let tokens = query.replace(' ', '%')
+
+  // TODO: Create another field for recipes called name_search, where it is in lowercase and where there are no accents
+  let recipes = db.prepare("SELECT id, name, image_slug FROM recipes WHERE name LIKE '%"+tokens+"%' COLLATE NOCASE;").all()
+
+  res.json({query, results: {recipes}})
+});
+
 router.get('/login', function(req, res, next) {
   res.render('login');
 });

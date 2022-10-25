@@ -9,25 +9,19 @@ RECHERCHE: https://ca.indeed.com/jobs?q=ruby+on+rails&l=Remote&from=searchOnHP&v
 
 Regarder ce que mon ancien site reference à l'air
 
-Fix public search.
-Page d'acceuil 320px
-TODO: Support 320px
+Data:
 Purée de courge poivrée: null set et poivre
 Fix image slug for Macaroni au fromage à la courge butternut
-Use minified js for prod. (after using Docker, because I am confused I don't even understand how it works right now...)
-Sur la page d'acceuil, peut-être montrer plus qu'une recette, montrer un peu une recette à droite et une à gauche?
-L'image de Muffins aux chocolat est plus large et ça bug
 Fix les notes. Par exemple dans la recette de pain aux bananes. Rajouter toutes les notes manuellement dans les recettes.
+Autre:
+Fix public search.
+https://www.npmjs.com/package/sonic-channel
+Pouvoir rechercher des recettes publiques? En attendant de refaire fonctionner RecipeKind, ça serait bien...
+Use minified js for prod. (by using Docker)
+In public and private search, search by tokens and not exact search
 Des suggestions d'images pour les recettes.
 Remettre HammerJS
-Set image_slug for all recipes and fuck off RecipeKind for now. Don't handle image through RecipeKind.
-Set image_slug directly on recipe.
-Pouvoir rechercher des recettes publiques? En attendant de refaire fonctionner RecipeKind, ça serait bien...
-Ajouter un exemple de Carrousel de suggestions de recettes dans la page d'acceuil.
-Ajouter un exemple de modifier une recette sur la page d'acceuil.
 Image thumbnails, si le thumbnail n'existe pas, le créer. Faire ça pour toutes les variantes.
-Comment gérer la langue des pages quand l'utilisateur n'est pas connecté????? (Page d'acceuil, Choose user, Forgot, toutes les views en fait...)
-Create an admin page, add a button to make a safe copy of the sqlite3 file.
 FIXME: Make fetchTable secure. Remove ALLOWED_TABLES_GET, use read_attrs?
 Ah je le sais quel design que je veux! Un genre de faux design de téléphone.
 Faire un recipe slider pour les À cuisinner prochainement?, à essayer? et favoris?
