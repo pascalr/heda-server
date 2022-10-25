@@ -113,12 +113,11 @@ const ShowRecipe = () => {
   const [images, ] = useState(gon.images)
   const [user, ] = useState(gon.user)
 
-  const [publicUsers, ] = useState(gon.public_users)
   const isSearching = useMainSearch()
 
   return <>
     <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0'}}>
-      {isSearching && publicUsers ? <MainSearch {...{publicUsers}} /> : ''}
+      {isSearching ? <MainSearch /> : ''}
       <RecipeViewer {...{recipe, images, user}} />
     </div>
   </>

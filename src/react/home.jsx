@@ -11,7 +11,7 @@ import { SingleCarrousel } from "./app"
 import { initHcu, useHcuState } from '../hcu'
 import { localeHref, getUrlParams } from "../utils"
 
-export const MainSearch = ({publicUsers}) => {
+export const MainSearch = () => {
 
   // Search is the text shown in the input field
   // Term is the term currently used to filter the search
@@ -41,16 +41,7 @@ export const MainSearch = ({publicUsers}) => {
     if (selectedRef.current) { selectedRef.current.scrollIntoView(false) }
   }, [selected])
 
-  const filterItems = (items) => {
-    if (isBlank(term)) {return items}
-    //if (isBlank(term) || term.length < minChars) {return []}
-    const normalized = normalizeSearchText(term)
-    return items.filter(r => (
-      r.name && ~normalizeSearchText(r.name).indexOf(normalized)
-    ))
-  }
-  let matchingUsers = filterItems(publicUsers)
-  let allMatching = [...matchingUsers]
+  const allMatching = [...searchResults.users, ...searchResults.recipes]
 
   let select = (pos) => {
     setSelected(pos)
@@ -60,8 +51,13 @@ export const MainSearch = ({publicUsers}) => {
   let onKeyDown = ({key}) => {
     if (key == "ArrowDown") {select(selected >= allMatching.length-1 ? -1 : selected+1)}
     else if (key == "ArrowUp") {select(selected < 0 ? allMatching.length-1 : selected-1)}
-    else if (key == "Enter") {changePage({...page, page: PAGE_15, recipeId: allMatching[selected].id})}
-    else if (key == "Escape") {
+    else if (key == "Enter") {
+      if (selected >= searchResults.users.length) {
+        window.location.href = localeHref("/r/"+allMatching[selected].id)
+      } else {
+        window.location.href = localeHref("/u/"+allMatching[selected].id)
+      }
+    } else if (key == "Escape") {
       if (!term || term == '') { setIsSearching(false) }
       else { setSearch(''); setTerm('') }
     }
@@ -74,29 +70,32 @@ export const MainSearch = ({publicUsers}) => {
       <div style={{height: 'calc(100vh - 125px)', overflowY: 'scroll'}}>
         {searchResults.users.length >= 1 ? <h2 className="h001">{t('Public_members')}</h2> : ''}
         <ul>
-          {searchResults.users.map((user, current) => (
-            <li key={user.id} className="list-group-item">
-              <a href={localeHref(`/u/${user.id}`)}>
-                <div className="d-flex align-items-center">
-                  <UserThumbnailImage {...{user}} />
-                  <div style={{marginRight: '0.5em'}}></div>
-                  {user.name}
-                </div>
-              </a>
-            </li>
-          ))}
+          {searchResults.users.map((user, current) => {
+            let isSelected = current == selected
+            return (
+              <li key={user.id} className="list-group-item">
+                <a href={localeHref(`/u/${user.id}`)}>
+                  <div className="d-flex align-items-center">
+                    <UserThumbnailImage {...{user}} />
+                    <div style={{marginRight: '0.5em'}}></div>
+                    {user.name}
+                  </div>
+                </a>
+              </li>
+            )
+          })}
         </ul>
         {searchResults.recipes.length >= 1 ? <h2 className="h001">{t('Recipes')}</h2> : ''}
         <ul className="recipe-list">
           {searchResults.recipes.map((recipe, current) => {
-            let isSelected = current == selected
+            let isSelected = (current+searchResults.users.length) == selected
             return (
               <li key={recipe.id} ref={isSelected ? selectedRef : null}>
                 <a href={localeHref('/r/'+recipe.id)} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
                   <div className="d-flex align-items-center">
                     <RecipeThumbnailImage {...{recipe}} />
                     <div style={{marginRight: '0.5em'}}></div>
-                    <div><div>{recipe.name}</div><div className="h002">{t('by_2')} TODO</div></div>
+                    <div><div>{recipe.name}</div><div className="h002">{t('by_2')} {recipe.user_name}</div></div>
                   </div>
                 </a>
               </li>
@@ -132,7 +131,6 @@ export const useMainSearch = () => {
 
 const Home = () => {
 
-  const [publicUsers, ] = useState(gon.public_users)
   const [recipes, ] = useState(gon.recipes)
   const recipe = useHcuState([gon.recipe], {tableName: 'recipes'})[0]
   const isSearching = useMainSearch()

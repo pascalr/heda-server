@@ -31,7 +31,6 @@ const ShowUser = () => {
   const [user, ] = useState(gon.user)
   //const [favoriteRecipes, ] = useState(gon.favorite_recipes)
 
-  const [publicUsers, ] = useState(gon.public_users)
   const isSearching = useMainSearch()
 
   const userRecipes = recipes.filter(r => r.user_id == user.id)
@@ -39,7 +38,7 @@ const ShowUser = () => {
 
   return <>
     <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0'}}>
-      {isSearching && publicUsers ? <MainSearch {...{publicUsers}} /> : ''}
+      {isSearching  ? <MainSearch /> : ''}
       <h3 className="h001">{t('Recipes_by')} {user.name}</h3>
       <ul className="recipe-list">
         {userRecipes.map(r => <RecipeItem key={r.id} {...{recipe: r, images, recipeKinds}} />)}

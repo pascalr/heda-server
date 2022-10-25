@@ -25,7 +25,7 @@ router.get('/search', function(req, res, next) {
   let tokens = query.replace(' ', '%')
 
   // TODO: Create another field for recipes called name_search, where it is in lowercase and where there are no accents
-  let recipes = db.prepare("SELECT recipes.id, recipes.name, recipes.image_slug FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.is_public = 1 AND recipes.name LIKE '%"+tokens+"%' COLLATE NOCASE LIMIT 30;").all()
+  let recipes = db.prepare("SELECT recipes.id, recipes.name, recipes.image_slug, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.is_public = 1 AND recipes.name LIKE '%"+tokens+"%' COLLATE NOCASE LIMIT 30;").all()
   
   let users = db.prepare("SELECT id, name, image_slug FROM users WHERE is_public = 1 AND name LIKE '%"+tokens+"%' COLLATE NOCASE LIMIT 30;").all()
 
@@ -338,7 +338,6 @@ router.get('/r/:id', function(req, res, next) {
   // FIXME: Create and use fetchRecord or findRecord, not fetchTable
   o.user = db.fetchTable('users', {id: o.recipe.user_id, is_public: 1}, ['name'])[0]
   if (!o.user) {throw 'Unable to fetch recipe. No permission by user.'}
-  o.public_users = db.fetchTable('users', {is_public: 1}, ['name', 'image_slug'])
 
   //if (o.recipe.recipe_kind_id) {
   //  let attrs = ['name', 'description_json', 'image_slug']
@@ -361,9 +360,9 @@ router.get('/u/:id', function(req, res, next) {
   let ids = null
   let attrs = null
 
-  o.publicUsers = db.fetchTable('users', {is_public: 1}, ['name'])
-  let publicUsersIds = o.publicUsers.map(u => u.id)
-  o.user = o.publicUsers.find(u => u.id == userId)
+  let publicUsers = db.fetchTable('users', {is_public: 1}, ['name'])
+  let publicUsersIds = publicUsers.map(u => u.id)
+  o.user = publicUsers.find(u => u.id == userId)
 
   if (!o.user) {throw 'Unable to fetch user. Not existent or not public.'}
 
@@ -374,7 +373,6 @@ router.get('/u/:id', function(req, res, next) {
   let favRecipes = db.fetchTable('recipes', {id: missingRecipeIds}, RECIPE_ATTRS).filter(r => publicUsersIds.includes(r.user_id))
   o.recipes = [...o.recipes, ...favRecipes]
   o.recipe_kinds = db.fetchTable('recipe_kinds', {}, ['name', 'description_json', 'image_slug'])
-  o.public_users = db.fetchTable('users', {is_public: 1}, ['name', 'image_slug'])
 
   let slugs1 = o.recipes.map(r=>r.image_slug).filter(x=>x)
   let slugs2 = o.recipe_kinds.map(r=>r.image_slug).filter(x=>x)
@@ -387,9 +385,6 @@ router.get('/u/:id', function(req, res, next) {
 });
 
 router.get('/error', function(req, res, next) {
-  res.locals.gon = {
-    public_users: db.fetchTable('users', {is_public: 1}, ['name', 'image_slug'])
-  }
   return res.render('error');
 })
 
@@ -397,7 +392,6 @@ router.get('/error', function(req, res, next) {
 router.get('/', function(req, res, next) {
   if (!req.user) {
     res.locals.gon = {
-      public_users: db.fetchTable('users', {is_public: 1}, ['name', 'image_slug']),
       recipes: db.fetchTable('recipes', {id: [113, 129, 669, 88, 323, 670, 672, 689]}, RECIPE_ATTRS),
       recipe: db.fetchTable('recipes', {id: 82}, RECIPE_ATTRS)[0] // FIXME: Should be fetchRecord
     }
