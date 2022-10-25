@@ -19,8 +19,12 @@ export function tr(id, locale) {
     Home_8: "Desserts",
     Home_9: "A specialized recipe editor",
     Home_10: "Create your recipes quickly with a specialized recipe editor. Explore by yourself what it can do with the live editor below!",
+    Who_cooking: "Who's cooking?",
   }
   let fr = {
+    Username: "Nom d'utilisateur",
+    Password: "Mot de passe",
+    Who_cooking: "Qui cuisine?",
     Home_1: "Accèdez à vos recettes de n'importe où. Partagez avec votre famille et vos amis. Reçevez des suggestions de recettes personalisées.",
     Home_2: "Des recettes personnalisées",
     Home_3: "Suggestions par catégories",

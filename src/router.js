@@ -7,7 +7,7 @@ import path from 'path';
 import { db, ALLOWED_COLUMNS_GET } from './db.js';
 import gon, {initGon, fetchTableMiddleware, RECIPE_ATTRS} from './gon.js';
 import passport from './passport.js';
-import utils from './utils.js';
+import { localeHref, now, ensureIsArray } from './utils.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -77,7 +77,7 @@ router.post('/upload_image', function(req, res, next) {
 
 router.post('/create_user', function(req, res, next) {
   if (!req.user.account_id) {return next('Must be logged in to create profile')}
-  let info = db.prepare('INSERT INTO users (name, account_id, created_at, updated_at) VALUES (?, ?, ?, ?)').run(req.body.name, req.user.account_id, utils.now(), utils.now())
+  let info = db.prepare('INSERT INTO users (name, account_id, created_at, updated_at) VALUES (?, ?, ?, ?)').run(req.body.name, req.user.account_id, now(), now())
   req.user.user_id = info.lastInsertRowid;
   res.redirect('/');
 });
@@ -103,16 +103,27 @@ router.post('/change_user', function(req, res, next) {
   res.redirect('/');
 });
 
-router.post('/login/password', passport.authenticate('local', {
-  successReturnToOrRedirect: '/choose_user',
-  failureRedirect: '/login',
-  failureMessage: true
-}));
+router.post('/login/password', function(req, res, next) {
+  console.log('********************************')
+  console.log('1', req.originalUrl)
+  console.log('2', localeHref('/choose_user', req.originalUrl))
+  passport.authenticate('local', {
+    successReturnToOrRedirect: localeHref('/choose_user', req.originalUrl),
+    failureRedirect: '/login',
+    failureMessage: true
+  })(req, res, next);
+});
+
+//router.post('/login/password', passport.authenticate('local', {
+//  successReturnToOrRedirect: '/choose_user',
+//  failureRedirect: '/login',
+//  failureMessage: true
+//}));
 
 router.post('/logout', function(req, res, next) {
   req.logout(function(err) {
     if (err) { return next(err); }
-    res.redirect('/');
+    res.redirect(localeHref('/', req.originalUrl));
   });
 });
 
@@ -146,7 +157,7 @@ router.post('/signup', function(req, res, next) {
   var salt = crypto.randomBytes(16);
   crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', function(err, hashedPassword) {
     if (err) { return next(err); }
-    const info = db.prepare('INSERT INTO accounts (email, encrypted_password, salt, created_at, updated_at) VALUES (?, ?, ?, ?, ?)').run(req.body.email, hashedPassword, salt, utils.now(), utils.now())
+    const info = db.prepare('INSERT INTO accounts (email, encrypted_password, salt, created_at, updated_at) VALUES (?, ?, ?, ?, ?)').run(req.body.email, hashedPassword, salt, now(), now())
     var user = {
       account_id: info.lastInsertRowid,
       email: req.body.email
@@ -201,7 +212,7 @@ router.post('/reset', function (req, res, next) {
   var salt = crypto.randomBytes(16);
   crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', function(err, hashedPassword) {
     if (err) { return next(err); }
-    let info = db.prepare('UPDATE accounts SET encrypted_password = ?, salt = ?, updated_at = ? WHERE reset_password_token = ?').run(hashedPassword, salt, utils.now(), req.body.token)
+    let info = db.prepare('UPDATE accounts SET encrypted_password = ?, salt = ?, updated_at = ? WHERE reset_password_token = ?').run(hashedPassword, salt, now(), req.body.token)
     var user = {
       id: this.lastInsertRowid,
       username: req.body.username
@@ -234,7 +245,7 @@ router.post('/create_record/:table', function(req, res, next) {
   
   //let obj = JSON.parse(req.body.record)
   // I keep doing it this way because it works. Using JSON, SQLite3 does not want to be given booleans, and it probably should be an integer and not a string, but right now it is a string I believe.
-  let fieldsSent = utils.ensureIsArray(req.body['fields[]'])//.filter(f => f != 'table_name')
+  let fieldsSent = ensureIsArray(req.body['fields[]'])//.filter(f => f != 'table_name')
   let obj = fieldsSent.reduce((acc, f) => ({ ...acc, [f]: req.body['record['+f+']']}), {}) 
   let record = db.createRecord(req.params.table, obj, req.user.user_id)
   res.json({...record})
@@ -254,7 +265,7 @@ router.patch('/change_recipe_owner', function(req, res, next) {
     throw new Error("ChangeRecipeOwner not allowed")
   }
   let query = 'UPDATE recipes SET user_id = ?, updated_at = ? WHERE id = ?'
-  let args = [newOwnerId, utils.now(), recipeId]
+  let args = [newOwnerId, now(), recipeId]
   console.log('query', query)
   console.log('args', args)
   db.prepare(query).run(args)

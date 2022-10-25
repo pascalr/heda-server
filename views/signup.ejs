@@ -7,20 +7,20 @@
   <body>
     <div class="form-container">
       <h2>HedaCuisine</h2>
-      <h1>Sign up</h1>
-      <form action="/signup" method="post">
+      <h1><%- tr('Sign_up', locale) %></h1>
+      <form action="<%- localeHref(req, '/signup') %>" method="post">
         <div>
-          <label for="email">Email</label>
+          <label for="email"><%- tr('Email', locale) %></label>
           <input id="email" name="email" class="form-control" type="text" autocomplete="email" required>
         </div>
         <br/>
         <div>
-          <label for="new-password">Password</label>
+          <label for="new-password"><%- tr('Password', locale) %></label>
           <input id="new-password" name="password" class="form-control" type="password" autocomplete="new-password" required>
         </div>
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <br/>
-        <button class="btn btn-primary form-control" type="submit">Sign up</button>
+        <button class="btn btn-primary form-control" type="submit"><%- tr('Sign_up', locale) %></button>
       </form>
       <hr>
       <p class="help">

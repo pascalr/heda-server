@@ -1,5 +1,5 @@
 // https://stackoverflow.com/questions/5914020/javascript-date-to-string
-function padStr(i) {
+export function padStr(i) {
   return (i < 10) ? "0" + i : "" + i;
 }
 
@@ -21,7 +21,7 @@ export function localeHref(href, currentUrl=null) {
 // Get the time of now. Format looks like: 2022-09-20T17:48:11.522Z
 // The format is comptatible with Ruby on Rails.
 // FIXME: This is not tested, I am not sure this is compatible...
-function now() {
+export function now() {
   let n = new Date();
   let s = padStr(n.getFullYear()) + '-' +
           padStr(1 + n.getMonth()) + '-' +
@@ -43,16 +43,16 @@ export function sortBy(list, attr) {
   })
 }
 
-function removeDuplicateIds(records) {
+export function removeDuplicateIds(records) {
   return [...new Map(records.map((r) => [r.id, r])).values()];
 }
 
-function ensureIsArray(obj) {
+export function ensureIsArray(obj) {
   if (!obj) {return []}
   return Array.isArray(obj) ? obj : [obj]
 }
 
-function stringToPrimitive(str) {
+export function stringToPrimitive(str) {
   let i = parseInt(str)
   if (i.toString() == str) {return i}
   let f = parseFloat(str)
@@ -68,6 +68,7 @@ export function getPathFromUrl(url) {
 export function getUrlParams(url=null) {
   var r = {};
   if (!url) {url = window.location.href}
+  console.log('url', url)
   let s = url.split('?', 2)
   if (s.length < 2) {return []}
   let params = s[1]

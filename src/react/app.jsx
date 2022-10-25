@@ -1094,7 +1094,7 @@ const App = () => {
             </button>
             <div className="dropdown-menu" aria-labelledby="dropdownUserButton">
               <a href="/edit_profile" className="dropdown-item">{t('My_profile')}</a>
-              <form action="/logout" method="post">
+              <form action={user.locale ? "/logout?locale="+user.locale : "/logout"} method="post">
                 <button className="dropdown-item" type="submit">{t('Logout')}</button>
                 <input type="hidden" name="_csrf" value={_csrf}/>
               </form>

@@ -7,30 +7,30 @@
   <body>
     <div class="form-container">
       <h2><%- linkTo(req, "HedaCuisine", "/", {className: "plain-link"}) %></h2>
-      <h1>Sign in</h1>
+      <h1><%- tr('Sign_in', locale) %></h1>
       <% if (hasMessages) { %>
         <% messages.forEach(function(message) { %>
         <p><%= message %></p>
         <% }); %>
       <% } %>
-      <form action="/login/password" method="post">
+      <form action="<%- localeHref(req, '/login/password') %>" method="post">
         <div>
-          <label for="username">Username</label><br/>
+          <label for="username"><%- tr('Email', locale) %></label><br/>
           <input id="username" name="username" class="form-control" type="text" autocomplete="username" required autofocus>
         </div>
         <br/>
         <div>
-          <label for="current-password">Password</label><br/>
+          <label for="current-password"><%- tr('Password', locale) %></label><br/>
           <input id="current-password" name="password" class="form-control" type="password" autocomplete="current-password" required>
         </div>
         <br/>
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-        <button class="btn btn-primary form-control" type="submit">Sign in</button>
+        <button class="btn btn-primary form-control" type="submit"><%- tr('Sign_in', locale) %></button>
       </form>
       <hr>
       <p class="help">
         <%- tr('Help_signup', locale) %>
-        <%- linkTo(req, tr('Sign up', locale), "/signup") %>
+        <%- linkTo(req, tr('Sign_up', locale), "/signup") %>
       </p>
     </div>
   </body>
