@@ -457,14 +457,14 @@ const HomePage = ({page, tags, recipes, suggestions}) => {
     acc[suggestion.tag_id] = !prev ? [suggestion.recipe_id] : [...prev, suggestion.recipe_id]
     return acc
   }, {})
+  const sTags = sortBy(tags, "position")
 
   return <>
     <HomeTabs {...{page}} />
-    {Object.keys(recipeIdsByTags).map(tagId => {
-      const tag = tags.find(t => t.id == tagId)
-      const unsortedItems = recipeIdsByTags[tagId].map(recipeId => recipes.find(r => r.id == recipeId))
+    {sTags.map(tag => {
+      if (!recipeIdsByTags[tag.id]) {return ''}
+      const unsortedItems = recipeIdsByTags[tag.id].map(recipeId => recipes.find(r => r.id == recipeId))
       const items = sortBy(unsortedItems, 'image_slug').reverse() // Show recipes with images first
-      console.log('items', items.map(i => i.image_slug))
       return <div key={tag.id}>
         <h2 className="fs-14 bold">{tag.name}</h2>
         <Carrousel {...{items, nbView}}>{item => <>
