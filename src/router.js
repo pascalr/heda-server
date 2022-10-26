@@ -413,9 +413,13 @@ const ensureAdmin = (req, res, next) => {
 }
 
 // ADMIN ROUTES
+router.get('/admin', ensureAdmin, function(req, res, next) {
+  res.render('admin')
+})
+
 router.post('/backup_db', ensureAdmin, function(req, res, next) {
   db.doBackup()
-  res.send('ok')
+  res.send('Database backup successful.')
 })
 
 function handleError(err, req, res, next) {
