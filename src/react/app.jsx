@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import { useDrag } from '@use-gesture/react'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { Swiper, SwiperSlide, useSwiper, useSwiperSlide } from 'swiper/react';
+import _ from 'lodash';
 //import { createRoot } from 'react-dom/client';
 
 import 'swiper/css';
@@ -440,7 +441,7 @@ const HomeTabs = ({page}) => {
   const currentPage = page.page
   return <>
     <ul className="nav nav-tabs mb-3">
-      <HomeTab {...{isActive: currentPage == PAGE_1, title: 'Suggestions', page: {page: PAGE_1}}} />
+      <HomeTab {...{isActive: currentPage == PAGE_1 || !page.page, title: 'Suggestions', page: {page: PAGE_1}}} />
       <HomeTab {...{isActive: currentPage == PAGE_6, title: 'Mes recettes', page: {page: PAGE_6}}} />
       <HomeTab {...{isActive: currentPage == PAGE_4, title: 'Paramètres', page: {page: PAGE_4}}} />
     </ul>
@@ -452,18 +453,19 @@ const HomePage = ({page, tags, recipes, suggestions}) => {
   const winWidth = useWindowWidth()
   const nbView = Math.ceil((Math.min(winWidth, 800) / 300)-0.5)
 
-  let recipeIdsByTags = suggestions.reduce((acc, suggestion) => {
-    let prev = acc[suggestion.tag_id]
-    acc[suggestion.tag_id] = !prev ? [suggestion.recipe_id] : [...prev, suggestion.recipe_id]
-    return acc
-  }, {})
+  let suggestionsByTagId = _.groupBy(suggestions, ({tag_id}) => tag_id)
+  //let recipeIdsByTags = suggestions.reduce((acc, suggestion) => {
+  //  let prev = acc[suggestion.tag_id]
+  //  acc[suggestion.tag_id] = !prev ? [suggestion.recipe_id] : [...prev, suggestion.recipe_id]
+  //  return acc
+  //}, {})
   const sTags = sortBy(tags, "position")
 
   return <>
     <HomeTabs {...{page}} />
     {sTags.map(tag => {
-      if (!recipeIdsByTags[tag.id]) {return ''}
-      const unsortedItems = recipeIdsByTags[tag.id].map(recipeId => recipes.find(r => r.id == recipeId))
+      if (!suggestionsByTagId[tag.id]) {return ''}
+      const unsortedItems = suggestionsByTagId[tag.id].map(sugg => recipes.find(r => r.id == sugg.recipe_id))
       const items = sortBy(unsortedItems, 'image_slug').reverse() // Show recipes with images first
       return <div key={tag.id}>
         <h2 className="fs-14 bold">{tag.name}</h2>
@@ -1118,25 +1120,6 @@ const App = () => {
   const user = gon.user
   window.locale = user.locale
 
-  const parentPages = {
-    [PAGE_2]: PAGE_1,
-    [PAGE_3]: PAGE_4,
-    [PAGE_4]: PAGE_1,
-    //[PAGE_5]: PAGE_3,
-    [PAGE_6]: PAGE_1,
-    [PAGE_7]: PAGE_1,
-    [PAGE_8]: PAGE_3, // TagEditAllCategories => EditTag
-    [PAGE_9]: PAGE_1,
-    [PAGE_10]: PAGE_1,
-    [PAGE_11]: PAGE_10,
-    [PAGE_12]: PAGE_10,
-    [PAGE_13]: PAGE_12,
-    [PAGE_14]: PAGE_13,
-    [PAGE_15]: PAGE_6,
-    [PAGE_16]: PAGE_15,
-    [PAGE_17]: PAGE_6,
-  }
-
   // [PAGE_1]: <TagIndex {...{page, machines, tags, images}} />,
   const pages = {
     [PAGE_1]: <HomePage {...{page, recipes, tags, suggestions}} />,
@@ -1158,16 +1141,9 @@ const App = () => {
     [PAGE_17]: <NewRecipe {...{page, recipeKinds}} />
   }
 
-  // I don't want a back system, I want a up system. So if you are given a nested link, you can go up.
-  const goUp = () => {
-    if (page.page && parentPages[page.page]) {
-      changePage({...page, page: parentPages[page.page]})
-    }
-  }
-
   let moveBtn = ''
-  if (!isSearching && page.page && parentPages[page.page]) {
-    moveBtn = <img className="clickable" src={icon_path("arrow-up-square-white.svg")} width="32" style={{paddingLeft: "0.5em"}} onClick={goUp} />
+  if (!isSearching) {
+    moveBtn = <img className="clickable" src={icon_path("arrow-left-square-white.svg")} width="32" style={{paddingLeft: "0.5em"}} onClick={() => window.history.back()} />
   }
 
   let otherProfiles = users.filter(u => u.id != user.id)
