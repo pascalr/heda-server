@@ -91,10 +91,12 @@ app.use(fileUpload());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+// FIXME: This is bad because it serves all files. Only route for the specific css files required.
 app.use(express.static(path.join(__dirname, '../node_modules/bootstrap/dist/')));
 app.use(express.static(path.join(__dirname, '../node_modules/@popperjs/core/dist/')));
 app.use(express.static(path.join(__dirname, '../node_modules/toastr/')));
 app.use(express.static(path.join(__dirname, '../node_modules/prosemirror-menu/style/')));
+app.use(express.static(path.join(__dirname, '../node_modules/swiper/')));
 app.use(express.static(path.join(__dirname, '../public')));
 
 if (!fs.existsSync('./var')) {

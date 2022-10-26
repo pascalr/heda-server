@@ -67,6 +67,7 @@
     "react-bootstrap": "^2.5.0",
     "react-dom": "^17.0.1",
     "sass": "^1.54.9",
+    "swiper": "^8.4.4",
     "toastr": "^2.1.4",
     "watch": "~0.13.0"
   },

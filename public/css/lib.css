@@ -106,16 +106,23 @@ img {
 .fsr-11 { font-size: 1.1rem; }
 .fs-12 { font-size: 1.2em; }
 .fsr-12 { font-size: 1.2rem; }
+.fs-14 { font-size: 1.4em; }
+.fsr-14 { font-size: 1.4rem; }
 .fs-15 { font-size: 1.5em; }
 .fsr-15 { font-size: 1.5rem; }
+.fs-18 { font-size: 1.8em; }
+.fsr-18 { font-size: 1.8rem; }
 .fs-2 { font-size: 2em; }
 .fsr-2 { font-size: 2rem; }
 .fs-25 { font-size: 2.5em; }
 .fsr-25 { font-size: 2.5rem; }
 
 .ff-montserra {font-family: 'Montserra'}
+.ff-satisfy {font-family: "Satisfy", cursive}
 
 .white { color: white; }
+
+.bold { font-weight: bold; }
 
 /* Relative keeps the position of the element in the page, but it takes up space. */
 /* Absolute takes no space, but it needs to have a parent which is positioned. */

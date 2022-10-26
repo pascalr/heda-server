@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 import { useDrag } from '@use-gesture/react'
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { Swiper, SwiperSlide, useSwiper, useSwiperSlide } from 'swiper/react';
 //import { createRoot } from 'react-dom/client';
 
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import 'swiper/css';
+
 import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, LinkToPage } from "./lib"
 import { findRecipeKindForRecipeName } from "../lib"
 import { RecipeList, RecipeIndex } from './recipe_index'
@@ -15,7 +18,7 @@ import { DeleteConfirmButton } from './components/delete_confirm_button'
 import {RecipeEditor} from "./recipe_editor"
 import {RecipeViewer} from "./recipe_viewer"
 import { initHcu, useHcuState } from '../hcu'
-import { RecipeThumbnailImage, RecipeMediumImage } from "./image"
+import { RecipeThumbnailImage, RecipeSmallImage, RecipeMediumImage } from "./image"
 import { t } from "../translate"
 import { FOOD_EMOJIS, ANIMAL_EMOJIS, OTHER_EMOJIS, TO_REMOVE_EMOJIS, SMILEYS } from "./emojis"
 
@@ -372,6 +375,78 @@ const TagButton = ({title, image, handleClick}) => {
     </div>
   )
 }
+
+const SlidePreviousButton = ({idx}) => {
+  const swiper = useSwiper();
+  let disabled = idx == 0
+  const handleClick = () => disabled ? null : swiper.slidePrev()
+  return (
+    <button className="plain-btn" aria-disabled={disabled} onClick={handleClick}>
+      <img src="icons/custom-chevron-left.svg" width="45" height="90"/>
+    </button>
+  );
+}
+
+const SlideNextButton = ({idx, nbItems, nbView}) => {
+  const swiper = useSwiper();
+  let disabled = idx == nbItems-nbView
+  const handleClick = () => disabled ? null : swiper.slideNext()
+  return (
+    <button className="plain-btn" aria-disabled={disabled} onClick={handleClick}>
+      <img src="icons/custom-chevron-right.svg" width="45" height="90"/>
+    </button>
+  );
+}
+
+const Carrousel = ({items, nbView}) => {
+
+  const [idx, setIdx] = useState(0)
+
+  return <>
+    <Swiper
+      spaceBetween={20}
+      slidesPerView={nbView}
+      onSlideChange={({activeIndex}) => setIdx(activeIndex)}
+    >
+      {items.map(item => {
+        return <div key={item.id}>
+          <SwiperSlide key={item.id}>
+            <div className="d-flex flex-column align-items-center text-center ff-satisfy fs-18">
+              <RecipeSmallImage {...{recipe: item}} />
+              <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
+            </div>
+          </SwiperSlide>
+        </div>
+      })}
+      <SlidePreviousButton {...{idx}} />
+      <SlideNextButton {...{idx, nbView, nbItems: items.length}} />
+    </Swiper>
+  </>
+}
+
+const HomePage = ({page, tags, recipes, suggestions}) => {
+
+  const winWidth = useWindowWidth()
+  const nbView = Math.ceil((Math.min(winWidth, 800) / 300)-0.5)
+
+  let recipeIdsByTags = suggestions.reduce((acc, suggestion) => {
+    let prev = acc[suggestion.tag_id]
+    acc[suggestion.tag_id] = !prev ? [suggestion.recipe_id] : [...prev, suggestion.recipe_id]
+    return acc
+  }, {})
+
+  return <>
+    {Object.keys(recipeIdsByTags).map(tagId => {
+      const tag = tags.find(t => t.id == tagId)
+      const items = recipeIdsByTags[tagId].map(recipeId => recipes.find(r => r.id == recipeId))
+      return <div key={tag.id}>
+        <h2 className="fs-14 bold">{tag.name}</h2>
+        <Carrousel {...{items, nbView}} />
+      </div>
+    })}
+  </> 
+}
+
 const TagIndex = ({page, machines, tags, images}) => {
 
   const winWidth = useWindowWidth()
@@ -1030,8 +1105,9 @@ const App = () => {
     [PAGE_17]: PAGE_6,
   }
 
+  // [PAGE_1]: <TagIndex {...{page, machines, tags, images}} />,
   const pages = {
-    [PAGE_1]: <TagIndex {...{page, machines, tags, images}} />,
+    [PAGE_1]: <HomePage {...{page, recipes, tags, suggestions}} />,
     [PAGE_2]: <TagCategorySuggestions {...{page, suggestions, recipes}} />,
     [PAGE_3]: <EditTag {...{page, tags, images}} />,
     [PAGE_4]: <EditTags {...{tags, page, images}} />,
