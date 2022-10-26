@@ -10,12 +10,11 @@ RECHERCHE: https://ca.indeed.com/jobs?q=ruby+on+rails&l=Remote&from=searchOnHP&v
 
 Regarder ce que mon ancien site reference à l'air
 
-Data:
-Fix les notes. Par exemple dans la recette de pain aux bananes. Rajouter toutes les notes manuellement dans les recettes.
 Autre:
+Sur la page d'acceuil, au lieu du single slider, rajouter un exemple avec 2 ou 3 slider.
 Rajouter des liens vers les notes (Pain à la main, pain à la machine à pain, pain aux bananes, salade russe)
-Remove tag link inside recipes.
-Error page is not working I believe: https://www.hedacuisine.com/error not working
+Remove tag link inside recipes. (Wait for Celine)
+Test Error page is not working I believe: https://www.hedacuisine.com/error not working
 Traduire recipe_image modal.
 Traduire edit_tags modal.
 Traduire paste_ingredients modal.
@@ -24,8 +23,7 @@ Des suggestions d'images pour les recettes.
 Image thumbnails, si le thumbnail n'existe pas, le créer. Faire ça pour toutes les variantes.
 FIXME: Make fetchTable secure. Remove ALLOWED_TABLES_GET, use read_attrs?
 Ah je le sais quel design que je veux! Un genre de faux design de téléphone.
-Faire un recipe slider pour les À cuisinner prochainement?, à essayer? et favoris?
-Une belle page d'erreur.
+Faire un recipe slider pour les À cuisinner prochainement?, à essayer? et favoris? (Ouin, peut-être simplement les enlever des mes recettes, et les mettres dans mes suggestions...)
 
 Sur mon site internet de CV, rajouter une ligne sur la page d'acceuil, Portfolio, avec des liens vers les meilleurs projets que j'ai fait.
 
@@ -34,12 +32,9 @@ Sur mon site internet de CV, rajouter une ligne sur la page d'acceuil, Portfolio
 
 Longer sessions (1 month!), refresh le 1 mois lorsque l'utilisateur se connecte?, ne pas avoir à se logger souvent.
 Quand tu déplaces des ingrédients, modifier le json pour changer les numéros d'ingrédients.
-SuggestionsIndex AutresRecettes
 Use Docker instead of Herkou build pack
 https://www.docker.com/blog/getting-started-with-docker-using-node-jspart-i/
 Print, Share, Download
-Rename hcu methods:
-updateField OK, changeField => updateFieldLocally, this way it is more explicit that no ajax will be called...
 
 Later:
 Use minified js for prod. (by using Docker)
@@ -52,7 +47,9 @@ Conversions d'unités
 Pouvoir changer les tags des recettes
 Pouvoir cliquer sur un utilisateur et voir ses recettes.
 How to handle orphans? Destroy FavoriteRecipe when Recipe is destroyed? Or once in a while, clean up all orphans?
-Use fetch instead of jquery.ajax
+Use fetch instead of jquery.ajax. pk???
+Rename hcu methods:
+updateField OK, changeField => updateFieldLocally, this way it is more explicit that no ajax will be called...
 
 Later (other users):
 Faire des tests.
