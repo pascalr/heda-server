@@ -10,8 +10,8 @@ import 'swiper/css';
 import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, LinkToPage } from "./lib"
 import { findRecipeKindForRecipeName } from "../lib"
 import { RecipeList, RecipeIndex } from './recipe_index'
-import { ajax, isBlank, normalizeSearchText, preloadImage, join, bindSetter, sortBy, capitalize, isTrue } from "./utils"
-import { getUrlParams } from "../utils"
+import { ajax, isBlank, normalizeSearchText, preloadImage, join, bindSetter, capitalize, isTrue } from "./utils"
+import { getUrlParams, sortBy } from "../utils"
 import { icon_path, image_path, image_slug_variant_path } from './routes'
 import {TextField, AutocompleteInput, TextInput, CollectionSelect, ImageField, ImageSelector} from './form'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
@@ -439,12 +439,16 @@ const HomePage = ({page, tags, recipes, suggestions}) => {
   return <>
     {Object.keys(recipeIdsByTags).map(tagId => {
       const tag = tags.find(t => t.id == tagId)
-      const items = recipeIdsByTags[tagId].map(recipeId => recipes.find(r => r.id == recipeId))
+      const unsortedItems = recipeIdsByTags[tagId].map(recipeId => recipes.find(r => r.id == recipeId))
+      const items = sortBy(unsortedItems, 'image_slug').reverse() // Show recipes with images first
+      console.log('items', items.map(i => i.image_slug))
       return <div key={tag.id}>
         <h2 className="fs-14 bold">{tag.name}</h2>
         <Carrousel {...{items, nbView}}>{item => <>
-          <RecipeSmallImage {...{recipe: item}} />
-          <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
+          <div className="clickable" onClick={() => changePage({page: PAGE_15, recipeId: item.id})}>
+            <RecipeSmallImage {...{recipe: item}} />
+            <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
+          </div>
         </>}</Carrousel>
       </div>
     })}

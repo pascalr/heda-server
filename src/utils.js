@@ -35,7 +35,11 @@ export function now() {
 
 export function sortBy(list, attr) {
   return list.sort((a,b) => {
-    if (typeof a[attr] === 'string') {
+    if (a[attr] == null) {
+      return b[attr] == null ? 0 : -1
+    } else if (b[attr] == null) {
+      return 1
+    } else if (typeof a[attr] === 'string') {
       return a[attr].localeCompare(b[attr])
     } else {
       return a[attr] - b[attr]

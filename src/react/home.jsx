@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom'
 
 import { RecipeEditor } from "./recipe_editor"
 import { UserThumbnailImage, RecipeThumbnailImage, RecipeMediumImage, RecipeImage } from "./image"
-import { ajax, isBlank, normalizeSearchText, join, sortBy, capitalize } from "./utils"
+import { ajax, isBlank, normalizeSearchText, join, capitalize } from "./utils"
 import { image_slug_variant_path } from "./routes"
 import { t } from "../translate"
 import { SingleCarrousel } from "./app"

@@ -64,17 +64,6 @@ export function hexStringToColor(hex) {
   return parseInt(hex.slice(1), 16)
 }
 
-export function sortBy(list, attr) {
-  return list.sort((a,b) => {
-    if (typeof a[attr] === 'string') {
-      return a[attr].localeCompare(b[attr])
-    } else {
-      return a[attr] - b[attr]
-    }
-  })
-
-}
-
 export function addExtensionToPath(ext, path) {
   if (path == null) {return null}
   ext = ext[0] == "." ? ext : "."+ext
