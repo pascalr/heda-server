@@ -237,10 +237,13 @@ db.doBackup = function() {
   if (!outDir) {throw "Error backing up db: missing environment variable DB_BACKUP_DIR"}
   
   let date = new Date()
-  let filename = `${date.getFullYear()}_${date.getMonth()}_${date.getDay()}_${date.getHours()}_${date.getMinutes()}_${date.getSeconds()}.db`
+  const months = ["janvier","fevrier","mars","avril","mai","juin","juillet","aout","septembre","octobre","novembre","decembre"];
+  let month = months[date.getMonth()];
+  let filename = `${date.getFullYear()}_${month}_${date.getDate()}_${date.getHours()}_${date.getMinutes()}_${date.getSeconds()}.db`
 
-  console.log('Starting backup up database.')
-  db.backup(path.join(outDir, filename))
+  let name = path.join(outDir, filename)
+  console.log('Starting backup up database to: ', name)
+  db.backup(name)
   console.log('Database backup completed.')
 }
 

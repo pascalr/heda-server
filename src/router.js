@@ -406,6 +406,18 @@ router.get('/', function(req, res, next) {
   res.render('index', { account: req.user });
 });
 
+
+const ensureAdmin = (req, res, next) => {
+  if (req.user.is_admin) {return next()}
+  return next('Error account must be an admin.')
+}
+
+// ADMIN ROUTES
+router.post('/backup_db', ensureAdmin, function(req, res, next) {
+  db.doBackup()
+  res.send('ok')
+})
+
 function handleError(err, req, res, next) {
   if (err) { return next(err); }
   return res.redirect('/' + (req.body.filter || ''));

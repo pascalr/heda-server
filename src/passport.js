@@ -15,6 +15,7 @@ passport.use(new LocalStrategy(function verify(email, password, cb) {
     }
     let o = row;
     o.account_id = o.id;
+    o.is_admin = o.admin;
     return cb(null, o);
   });
 }));
@@ -34,9 +35,9 @@ passport.use(new LocalStrategy(function verify(email, password, cb) {
  * fetch todo records and render the user element in the navigation bar, that
  * information is stored in the session.
  */
-passport.serializeUser(function(user, cb) {
+passport.serializeUser(function(account, cb) {
   process.nextTick(function() {
-    cb(null, { account_id: user.account_id, email: user.email, locale: user.locale });
+    cb(null, { is_admin: account.is_admin, account_id: account.account_id, email: account.email, locale: account.locale });
   });
 });
 
