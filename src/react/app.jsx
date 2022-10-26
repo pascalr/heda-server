@@ -348,6 +348,7 @@ const EditTags = ({tags, images, page}) => {
   }
 
   return (<>
+    <HomeTabs {...{page}} />
     <div className="d-flex gap-15 align-items-center">
       <h2>{t('Tags')}</h2>
       <button type="button" className="btn btn-outline-primary btn-sm" onClick={createTag}>{t('Create_tag')}</button>
@@ -425,6 +426,25 @@ const Carrousel = ({items, nbView, children}) => {
   </div>
 }
 
+const HomeTab = ({isActive, title, page}) => {
+  let klass = "nav-link clickable" +(isActive ? ' active' : '')
+  return <>
+    <li className="nav-item">
+      <div className={klass} onClick={() => changePage(page)}>{title}</div>
+    </li>
+  </>
+}
+const HomeTabs = ({page}) => {
+  const currentPage = page.page
+  return <>
+    <ul className="nav nav-tabs mb-2">
+      <HomeTab {...{isActive: currentPage == PAGE_1, title: 'Suggestions', page: {page: PAGE_1}}} />
+      <HomeTab {...{isActive: currentPage == PAGE_6, title: 'Mes recettes', page: {page: PAGE_6}}} />
+      <HomeTab {...{isActive: currentPage == PAGE_4, title: 'Paramètres', page: {page: PAGE_4}}} />
+    </ul>
+  </>
+}
+
 const HomePage = ({page, tags, recipes, suggestions}) => {
 
   const winWidth = useWindowWidth()
@@ -437,6 +457,7 @@ const HomePage = ({page, tags, recipes, suggestions}) => {
   }, {})
 
   return <>
+    <HomeTabs {...{page}} />
     {Object.keys(recipeIdsByTags).map(tagId => {
       const tag = tags.find(t => t.id == tagId)
       const unsortedItems = recipeIdsByTags[tagId].map(recipeId => recipes.find(r => r.id == recipeId))
@@ -997,6 +1018,7 @@ const SearchBox = ({recipes, recipeKinds, tags, page, friendsRecipes, users, use
 const MyRecipes = (props) => {
 
   return (<>
+    <HomeTabs {...{page: props.page}} />
     <div className="d-flex gap-20 align-items-center">
       <h2>{t('My_recipes')}</h2>
       <LinkToPage page={{...props.page, page: 17}} className="btn btn-outline-primary btn-sm">{t('New_recipe')}</LinkToPage>
