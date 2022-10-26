@@ -398,9 +398,11 @@ const SlideNextButton = ({idx, nbItems, nbView}) => {
   );
 }
 
-const Carrousel = ({items, nbView}) => {
+const Carrousel = ({items, nbView, children}) => {
 
   const [idx, setIdx] = useState(0)
+  
+  if (!children) {throw "Error carroussel must have one and only one children."}
 
   return <>
     <Swiper
@@ -408,16 +410,15 @@ const Carrousel = ({items, nbView}) => {
       slidesPerView={nbView}
       onSlideChange={({activeIndex}) => setIdx(activeIndex)}
     >
-      {items.map(item => {
-        return <div key={item.id}>
-          <SwiperSlide key={item.id}>
-            <div className="d-flex flex-column align-items-center text-center ff-satisfy fs-18">
-              <RecipeSmallImage {...{recipe: item}} />
-              <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
-            </div>
-          </SwiperSlide>
-        </div>
-      })}
+        {items.map(item => {
+          return <div key={item.id}>
+            <SwiperSlide key={item.id}>
+              <div className="d-flex flex-column align-items-center text-center ff-satisfy fs-18">
+                {children(item)}
+              </div>
+            </SwiperSlide>
+          </div>
+        })}
       <SlidePreviousButton {...{idx}} />
       <SlideNextButton {...{idx, nbView, nbItems: items.length}} />
     </Swiper>
@@ -441,7 +442,10 @@ const HomePage = ({page, tags, recipes, suggestions}) => {
       const items = recipeIdsByTags[tagId].map(recipeId => recipes.find(r => r.id == recipeId))
       return <div key={tag.id}>
         <h2 className="fs-14 bold">{tag.name}</h2>
-        <Carrousel {...{items, nbView}} />
+        <Carrousel {...{items, nbView}}>{item => <>
+          <RecipeSmallImage {...{recipe: item}} />
+          <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
+        </>}</Carrousel>
       </div>
     })}
   </> 
