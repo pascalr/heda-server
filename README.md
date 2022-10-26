@@ -60,6 +60,10 @@ https://www.digitalocean.com/community/tutorials/how-to-set-up-wireguard-on-ubun
 docker images # to list all docker images
 TODO: Only copy min js files inside the docker image
 
+To run docker without using sudo, add user to docker group:
+sudo usermod -aG docker $USER
+Then restart ubuntu.
+
 ## Healthy programming
 
 I have an unhealthy habit of constantly trying to improve. When you have a clear goal, it's Ok it does not matter very much.

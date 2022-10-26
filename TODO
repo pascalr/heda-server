@@ -17,6 +17,7 @@ Fix les notes. Par exemple dans la recette de pain aux bananes. Rajouter toutes 
 Rajouter le crédit photo des biscuits aux brisures de chocolat.
 Prendre les recettes à Céline et les attritrés à elle.
 Autre:
+Traduire recipe_image modal.
 Des suggestions d'images pour les recettes.
 Image thumbnails, si le thumbnail n'existe pas, le créer. Faire ça pour toutes les variantes.
 FIXME: Make fetchTable secure. Remove ALLOWED_TABLES_GET, use read_attrs?
@@ -147,3 +148,7 @@ I sincerely hope we have a chance to meet.
 Thank you and have a good day!
 
 Pascal
+
+Images:
+Belle image de tupperwares
+https://www.istockphoto.com/photo/plastic-containers-gm177253491-20034693?utm_source=pixabay&utm_medium=affiliate&utm_campaign=SRP_image_sponsored&utm_content=https%3A%2F%2Fpixabay.com%2Fimages%2Fsearch%2Ftupperware%2F%3Fmanual_search%3D1&utm_term=tupperware
