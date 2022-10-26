@@ -451,7 +451,7 @@ const HomeTabs = ({page}) => {
 const HomePage = ({page, tags, recipes, suggestions}) => {
 
   const winWidth = useWindowWidth()
-  const nbView = Math.ceil((Math.min(winWidth, 800) / 300)-0.5)
+  const nbView = Math.min(3, winWidth / 300)
 
   let suggestionsByTagId = _.groupBy(suggestions, ({tag_id}) => tag_id)
   //let recipeIdsByTags = suggestions.reduce((acc, suggestion) => {
