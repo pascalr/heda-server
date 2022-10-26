@@ -10,9 +10,11 @@ RECHERCHE: https://ca.indeed.com/jobs?q=ruby+on+rails&l=Remote&from=searchOnHP&v
 
 Regarder ce que mon ancien site reference à l'air
 
-Autre:
+It would be nice if people who disable javascript load the page first with javascript, but then stop using javascript. So at least it renders once.
+Static javascript home page only.
 If the user was logged from another page, handle this properly and show a helpful error message if the user tries to modify anything...
 Rajouter des liens vers les notes (Pain à la main, pain à la machine à pain, pain aux bananes, salade russe)
+In the home page, don't fetch from the db, just hard code the recipes images slug and names.
 Remove tag link inside recipes. (Wait for Celine)
 Test Error page is not working I believe: https://www.hedacuisine.com/error not working
 Des suggestions d'images pour les recettes.
