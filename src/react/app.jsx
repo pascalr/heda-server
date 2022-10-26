@@ -377,7 +377,8 @@ const TagButton = ({title, image, handleClick}) => {
   )
 }
 
-const SlidePreviousButton = ({idx, swiper}) => {
+const SlidePreviousButton = ({idx, nbItems, nbView, swiper}) => {
+  if (nbItems <= nbView) {return ''}
   let disabled = idx == 0
   const handleClick = () => disabled ? null : swiper.slidePrev()
   return (
@@ -388,6 +389,7 @@ const SlidePreviousButton = ({idx, swiper}) => {
 }
 
 const SlideNextButton = ({idx, nbItems, nbView, swiper}) => {
+  if (nbItems <= nbView) {return ''}
   let disabled = idx == nbItems-nbView
   const handleClick = () => disabled ? null : swiper.slideNext()
   return (
@@ -421,7 +423,7 @@ const Carrousel = ({items, nbView, children}) => {
         </div>
       })}
     </Swiper>
-    <SlidePreviousButton {...{swiper, idx}} />
+    <SlidePreviousButton {...{swiper, idx, nbView, nbItems: items.length}} />
     <SlideNextButton {...{swiper, idx, nbView, nbItems: items.length}} />
   </div>
 }
@@ -437,7 +439,7 @@ const HomeTab = ({isActive, title, page}) => {
 const HomeTabs = ({page}) => {
   const currentPage = page.page
   return <>
-    <ul className="nav nav-tabs mb-2">
+    <ul className="nav nav-tabs mb-3">
       <HomeTab {...{isActive: currentPage == PAGE_1, title: 'Suggestions', page: {page: PAGE_1}}} />
       <HomeTab {...{isActive: currentPage == PAGE_6, title: 'Mes recettes', page: {page: PAGE_6}}} />
       <HomeTab {...{isActive: currentPage == PAGE_4, title: 'Paramètres', page: {page: PAGE_4}}} />
