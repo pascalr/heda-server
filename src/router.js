@@ -394,7 +394,8 @@ router.get('/error', function(req, res, next) {
 router.get('/', function(req, res, next) {
   if (!req.user) {
     res.locals.gon = {
-      recipes: db.fetchTable('recipes', {id: [113, 129, 669, 88, 323, 670, 672, 689]}, RECIPE_ATTRS),
+      recipes1: db.fetchTable('recipes', {id: [113, 129, 669, 88, 323, 670, 672, 689]}, RECIPE_ATTRS),
+      recipes2: db.fetchTable('recipes', {id: [755, 757, 66, 558]}, RECIPE_ATTRS),
       recipe: db.fetchTable('recipes', {id: 82}, RECIPE_ATTRS)[0] // FIXME: Should be fetchRecord
     }
     res.locals.renderingHome = true

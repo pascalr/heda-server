@@ -3,11 +3,11 @@ import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
 import { RecipeEditor } from "./recipe_editor"
-import { UserThumbnailImage, RecipeThumbnailImage, RecipeMediumImage, RecipeImage } from "./image"
+import { UserThumbnailImage, RecipeSmallImage, RecipeThumbnailImage, RecipeMediumImage, RecipeImage } from "./image"
 import { ajax, isBlank, normalizeSearchText, join, capitalize } from "./utils"
 import { image_slug_variant_path } from "./routes"
 import { t } from "../translate"
-import { SingleCarrousel } from "./app"
+import { SingleCarrousel, Carrousel } from "./app"
 import { initHcu, useHcuState } from '../hcu'
 import { localeHref, getUrlParams } from "../utils"
 
@@ -131,7 +131,8 @@ export const useMainSearch = () => {
 
 const Home = () => {
 
-  const [recipes, ] = useState(gon.recipes)
+  const [recipes1, ] = useState(gon.recipes1)
+  const [recipes2, ] = useState(gon.recipes2)
   const recipe = useHcuState([gon.recipe], {tableName: 'recipes'})[0]
   const isSearching = useMainSearch()
   
@@ -158,31 +159,25 @@ const Home = () => {
       </div>
     </div>
     <div style={{padding: '5em 0.3em', backgroundColor: '#fafbfc'}}>
-      <div className="d-block d-md-flex ff-montserra" style={{maxWidth: '70em', margin: 'auto'}}>
-        <div className='flex-grow-1' style={{order: 1}}></div>
-        <div style={{maxWidth: '30em', margin: 'auto', order: 4}}>
-          <h2>{t('Home_3')}</h2>
-          <p>{t('Home_4')}</p>
-          <ul>
-            <li>{t('Home_5')}</li>
-            <li>{t('Home_6')}</li>
-            <li>{t('Home_7')}</li>
-          </ul>
-        </div>
-        <div className='flex-grow-1' style={{width: '2em', height: '1em', order: 3}}></div>
-        <div style={{order: 2}}>
-          <h3 className="text-center">{t('Home_8')}</h3>
-          <SingleCarrousel items={recipes}>{({item}) => {
-            let recipe = item
-            return <>
-              <RecipeMediumImage {...{recipe}} />
-              <a href={localeHref(`/r/${recipe.id}`)}>
-                <h2 className="bottom-center font-satisfy" style={{borderRadius: "0.5em", border: "1px solid #777", color: "#000", bottom: "1em", backgroundColor: "rgba(245, 245, 245, 0.7)", fontSize: "2em", padding: "0.2em 0.2em 0.1em 0.2em"}}>{recipe.name}</h2>
-              </a>
-            </>
-          }}</SingleCarrousel>
-        </div>
-        <div className='flex-grow-1' style={{order: 5}}></div>
+      <div style={{maxWidth: '40em', margin: 'auto'}}>
+        <h2>{t('Home_3')}</h2>
+        <p>{t('Home_4')}</p>
+      </div>
+      <div className="trunk">
+        <h3>{t('Home_8')}</h3>
+        <Carrousel {...{items: recipes1}}>{item => <>
+          <a href={"/r/"+item.id} className="plain-link">
+            <RecipeSmallImage {...{recipe: item}} />
+            <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
+          </a>
+        </>}</Carrousel>
+        <h3>{t('Many_meals')}</h3>
+        <Carrousel {...{items: recipes2}}>{item => <>
+          <a href={"/r/"+item.id} className="plain-link">
+            <RecipeSmallImage {...{recipe: item}} />
+            <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
+          </a>
+        </>}</Carrousel>
       </div>
     </div>
     <div className="trunk" style={{padding: '5em 0.3em'}}>

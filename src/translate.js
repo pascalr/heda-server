@@ -13,9 +13,6 @@ export function tr(id, locale) {
     Home_2: "Personalised recipes",
     Home_3: "Suggestions by categories",
     Home_4: "Stop wondering what to eat. Organize your recipes by categories to get suggestions based on your needs. For example:",
-    Home_5: "A quick recipe for the week",
-    Home_6: "A big meal with lots of left overs",
-    Home_7: "Special occasions like Christmas",
     Home_8: "Desserts",
     Home_9: "A specialized recipe editor",
     Home_10: "Create your recipes quickly with a specialized recipe editor. Explore by yourself what it can do with the live editor below!",
@@ -37,6 +34,7 @@ export function tr(id, locale) {
     n11: "Show ingredients 3 and 5",
   }
   let fr = {
+    Many_meals: "Plusieurs repas",
     Current_tags: "Tags actuels",
     Add_a_tag: "Ajouter un tag",
     Notes: "Notes",
@@ -67,9 +65,6 @@ export function tr(id, locale) {
     Home_2: "Des recettes personnalisées",
     Home_3: "Suggestions par catégories",
     Home_4: "Arrêtez de vous casser la tête pour savoir quoi cuisiner. Organisez vos recettes par catégories pour avoir des suggestions selon vos besoins. Par exemple:",
-    Home_5: "Une recette rapide de semaine",
-    Home_6: "Un gros repas avec des restants pour les lunchs",
-    Home_7: "Des occasions spéciales comme noël",
     Home_8: "Désserts",
     Home_9: "Un éditeur de recette spécialisé",
     Home_10: "Créez des recettes rapidement à l'aide d'un éditeur de recette spécialisé. Explorez par vous-même ce qu'il peut faire ici-bas!",

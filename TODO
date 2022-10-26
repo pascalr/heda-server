@@ -11,7 +11,7 @@ RECHERCHE: https://ca.indeed.com/jobs?q=ruby+on+rails&l=Remote&from=searchOnHP&v
 Regarder ce que mon ancien site reference à l'air
 
 Autre:
-Sur la page d'acceuil, au lieu du single slider, rajouter un exemple avec 2 ou 3 slider.
+If the user was logged from another page, handle this properly and show a helpful error message if the user tries to modify anything...
 Rajouter des liens vers les notes (Pain à la main, pain à la machine à pain, pain aux bananes, salade russe)
 Remove tag link inside recipes. (Wait for Celine)
 Test Error page is not working I believe: https://www.hedacuisine.com/error not working

@@ -400,10 +400,13 @@ const SlideNextButton = ({idx, nbItems, nbView, swiper}) => {
   );
 }
 
-const Carrousel = ({items, nbView, children}) => {
+export const Carrousel = ({items, children}) => {
 
   const [idx, setIdx] = useState(0)
   const [swiper, setSwiper] = useState(null)
+
+  const winWidth = useWindowWidth()
+  const nbView = Math.min(3, winWidth / 300)
   
   if (!children) {throw "Error carroussel must have one and only one children."}
 
@@ -449,9 +452,6 @@ const HomeTabs = ({page}) => {
 
 const HomePage = ({page, tags, recipes, suggestions}) => {
 
-  const winWidth = useWindowWidth()
-  const nbView = Math.min(3, winWidth / 300)
-
   let suggestionsByTagId = _.groupBy(suggestions, ({tag_id}) => tag_id)
   //let recipeIdsByTags = suggestions.reduce((acc, suggestion) => {
   //  let prev = acc[suggestion.tag_id]
@@ -470,7 +470,7 @@ const HomePage = ({page, tags, recipes, suggestions}) => {
       const items = [...shuffle(itemsWithImages), ...shuffle(itemsWithoutImages)]
       return <div key={tag.id}>
         <h2 className="fs-14 bold">{tag.name}</h2>
-        <Carrousel {...{items, nbView}}>{item => <>
+        <Carrousel {...{items}}>{item => <>
           <LinkToPage {...{className: 'plain-link', page: {page: PAGE_15, recipeId: item.id}}}>
             <RecipeSmallImage {...{recipe: item}} />
             <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
