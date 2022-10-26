@@ -15,10 +15,6 @@ Sur la page d'acceuil, au lieu du single slider, rajouter un exemple avec 2 ou 3
 Rajouter des liens vers les notes (Pain à la main, pain à la machine à pain, pain aux bananes, salade russe)
 Remove tag link inside recipes. (Wait for Celine)
 Test Error page is not working I believe: https://www.hedacuisine.com/error not working
-Traduire recipe_image modal.
-Traduire edit_tags modal.
-Traduire paste_ingredients modal.
-Traduire help_tiptap modal.
 Des suggestions d'images pour les recettes.
 Image thumbnails, si le thumbnail n'existe pas, le créer. Faire ça pour toutes les variantes.
 FIXME: Make fetchTable secure. Remove ALLOWED_TABLES_GET, use read_attrs?

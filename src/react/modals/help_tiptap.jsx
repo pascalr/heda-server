@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Modal from 'react-bootstrap/Modal'
 
+import { t } from "../../translate"
+
 //<li><b>{"{3;}"}</b>: TODO: Afficher le nombre 3 qui scale avec la recette</li>
 //<li><b>{"{3;pomme}"}</b>: TODO: Afficher la quantité 3 pomme qui scale avec la recette</li>
 //<li><b>{"{2;pomme,3-5}"}</b>: TODO: Afficher la quantité 3 pomme qui scale avec la recette et les ingrédients 3, 4 et 5.</li>
@@ -15,16 +17,16 @@ import Modal from 'react-bootstrap/Modal'
 //<li><b>[img: 10]</b></li>
 const InstructionsShortcuts = props => (<>
   <div style={{fontSize: '0.9em'}}>
-    <h2>Racourcis claviers</h2>
+    <h2>{t('Keyboard_shortcuts')}</h2>
     <ul>
-      <li><b>#</b>: Commencer une ligne avec «#» pour chaque étape de la recette.</li>
-      <li><b>$</b>: Commencer une ligne avec «$» pour un grand titre.</li>
-      <li><b>$$</b>: Commencer une ligne avec «$$» pour un moyen titre.</li>
-      <li><b>$$$</b>: Commencer une ligne avec «$$$» pour un petit titre.</li>
-      <li><b>/</b>: Commencer une ligne avec «/» pour faire un paragraph en italique.</li>
-      <li><b>{"{3}"}</b>: Afficher l'ingrédient 3</li>
-      <li><b>{"{3-5}"}</b>: Afficher les ingrédients 3, 4 et 5</li>
-      <li><b>{"{3,5}"}</b>: Afficher les ingrédients 3 et 5</li>
+      <li><b>#</b>: {t('n4')}</li>
+      <li><b>$</b>: {t('n5')}</li>
+      <li><b>$$</b>: {t('n6')}</li>
+      <li><b>$$$</b>: {t('n7')}</li>
+      <li><b>/</b>: {t('n8')}</li>
+      <li><b>{"{3}"}</b>: {t('n9')}</li>
+      <li><b>{"{3-5}"}</b>: {t('n10')}</li>
+      <li><b>{"{3,5}"}</b>: {t('n11')}</li>
     </ul>
   </div>
 </>)
