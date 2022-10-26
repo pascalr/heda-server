@@ -12,7 +12,7 @@ import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, LinkToPage } from
 import { findRecipeKindForRecipeName } from "../lib"
 import { RecipeList, RecipeIndex } from './recipe_index'
 import { ajax, isBlank, normalizeSearchText, preloadImage, join, bindSetter, capitalize, isTrue } from "./utils"
-import { getUrlParams, sortBy } from "../utils"
+import { getUrlParams, sortBy, shuffle } from "../utils"
 import { icon_path, image_path, image_slug_variant_path } from './routes'
 import {TextField, AutocompleteInput, TextInput, CollectionSelect, ImageField, ImageSelector} from './form'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
@@ -465,7 +465,9 @@ const HomePage = ({page, tags, recipes, suggestions}) => {
     {sTags.map(tag => {
       if (!suggestionsByTagId[tag.id]) {return ''}
       const unsortedItems = suggestionsByTagId[tag.id].map(sugg => recipes.find(r => r.id == sugg.recipe_id))
-      const items = sortBy(unsortedItems, 'image_slug').reverse() // Show recipes with images first
+      const itemsWithImages = unsortedItems.filter(r => r.image_slug)
+      const itemsWithoutImages = unsortedItems.filter(r => !r.image_slug)
+      const items = [...shuffle(itemsWithImages), ...shuffle(itemsWithoutImages)]
       return <div key={tag.id}>
         <h2 className="fs-14 bold">{tag.name}</h2>
         <Carrousel {...{items, nbView}}>{item => <>
