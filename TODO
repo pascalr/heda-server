@@ -13,11 +13,8 @@ Regarder ce que mon ancien site reference à l'air
 Data:
 Fix image slug for Macaroni au fromage à la courge butternut
 Fix les notes. Par exemple dans la recette de pain aux bananes. Rajouter toutes les notes manuellement dans les recettes.
-Rajouter le crédit photo des biscuits aux brisures de chocolat.
-Prendre les recettes à Céline et les attritrés à elle.
 Autre:
-Un back au lieu d'un up.
-FIX changePage. The must is that they should all be links or buttons. If I should do right click, open in new tab, it should work.
+Remove tag link inside recipes.
 Error page is not working I believe: https://www.hedacuisine.com/error not working
 Traduire recipe_image modal.
 Des suggestions d'images pour les recettes.

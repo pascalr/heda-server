@@ -430,10 +430,9 @@ const Carrousel = ({items, nbView, children}) => {
 }
 
 const HomeTab = ({isActive, title, page}) => {
-  let klass = "nav-link clickable" +(isActive ? ' active' : '')
   return <>
     <li className="nav-item">
-      <div className={klass} onClick={() => changePage(page)}>{title}</div>
+      <LinkToPage {...{page, className: 'nav-link', active: isActive}}>{title}</LinkToPage>
     </li>
   </>
 }
@@ -470,10 +469,10 @@ const HomePage = ({page, tags, recipes, suggestions}) => {
       return <div key={tag.id}>
         <h2 className="fs-14 bold">{tag.name}</h2>
         <Carrousel {...{items, nbView}}>{item => <>
-          <div className="clickable" onClick={() => changePage({page: PAGE_15, recipeId: item.id})}>
+          <LinkToPage {...{className: 'plain-link', page: {page: PAGE_15, recipeId: item.id}}}>
             <RecipeSmallImage {...{recipe: item}} />
             <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
-          </div>
+          </LinkToPage>
         </>}</Carrousel>
       </div>
     })}
