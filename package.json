@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node ./src/server.js",
     "images:backup": "rsync -v --recursive root@heda-server.internal:/mnt/heda_volume/images/ volume/images/",
+    "download_homepage": "node src/bin/download_homepage.js",
     "db:open": "sqlitebrowser var/db/dev.db",
     "db:pull": "scp root@heda-server.internal:/mnt/heda_volume/prod.db var/db/dev.db",
     "olddev": "node --trace-uncaught -r dotenv/config ./src/server.js",
@@ -68,6 +69,7 @@
   "devDependencies": {
     "connect-livereload": "^0.6.1",
     "livereload": "^0.9.3",
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.20",
+    "puppeteer": "^2.0.20"
   }
 }

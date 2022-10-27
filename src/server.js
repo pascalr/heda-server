@@ -91,7 +91,7 @@ app.locals.loadScript = (path) => {
 //  if (process.env.NODE_ENV === 'production') {
 //    return "<script src='"+path+".min.js' type='text/javascript'/></script>"
 //  } else {
-    return "<script src='"+path+".js' type='text/javascript' defer /></script>"
+    return "<script src='"+path+".js' type='text/javascript' /></script>"
 //  }
 }
 app.locals.SearchWhiteIcon = SearchWhiteIcon

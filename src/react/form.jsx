@@ -29,8 +29,7 @@ export const TextInputField = ({model, field}) => {
 export const AutocompleteInput = ({minChars, name, defaultValue, choices, placeholder, onSelect, inputRef, onBlur}) => {
 
   let selected = false
-
-  inputRef ||= useRef(null);
+  inputRef = inputRef || useRef(null);
   useEffect(() => { // Same as componentDidMount
 
     if (inputRef.current) {

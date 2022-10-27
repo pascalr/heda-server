@@ -11,6 +11,7 @@ RECHERCHE: https://ca.indeed.com/jobs?q=ruby+on+rails&l=Remote&from=searchOnHP&v
 Regarder ce que mon ancien site reference à l'air
 
 Convertir les images à genre 200kb et moins...
+FIXME: HTML lang="en"
 LazyLoad images.
 It would be nice if people who disable javascript load the page first with javascript, but then stop using javascript. So at least it renders once.
 Static javascript home page only.

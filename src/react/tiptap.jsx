@@ -257,7 +257,7 @@ export const InlineDocument = Node.create({
 //  )
 //}
 
-if (!window.gon) {window.gon = {}} // Ugly as fuck
+if (typeof gon === 'undefined') {var gon = {}}
 const MODELS = {
   food: {placeholder: 'Aliment...', records: gon.foods, linkLabel: r => r.name, linkUrl: r => r.url},
   recipeKind: {placeholder: 'Sorte de recette...', records: gon.recipe_kinds, linkLabel: r => r.name, linkUrl: r => r.url},

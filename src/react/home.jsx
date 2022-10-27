@@ -6,7 +6,7 @@ import { RecipeEditor } from "./recipe_editor"
 import { UserThumbnailImage, RecipeSmallImage, RecipeThumbnailImage, RecipeImage } from "./image"
 import { ajax } from "./utils"
 import { t } from "../translate"
-import { Carrousel } from "./app"
+import { Carrousel } from "./carrousel"
 import { initHcu, useHcuState } from '../hcu'
 import { localeHref, getUrlParams } from "../utils"
 import { useMainSearch, MainSearch } from './main_search'
@@ -78,7 +78,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.locale = getUrlParams(window.location.href).locale
   const root = document.getElementById('root-home')
-  if (root) {ReactDOM.render(<Home />, root)}
-  //const root = createRoot(document.getElementById("root"));
-  //root.render(<UserEditor/>);
+  if (root) { ReactDOM.render(<Home />, root) }
 })
