@@ -18,6 +18,7 @@ import _ from 'lodash';
 
 import { tr } from './translate.js'
 import { enableLiveReload } from './livereload.js'
+import { SearchWhiteIcon, PersonFillWhiteIcon } from './build/image.js'
 
 // pass the session to the connect sqlite3 module
 // allowing it to inherit from session.Store
@@ -90,9 +91,11 @@ app.locals.loadScript = (path) => {
 //  if (process.env.NODE_ENV === 'production') {
 //    return "<script src='"+path+".min.js' type='text/javascript'/></script>"
 //  } else {
-    return "<script src='"+path+".js' type='text/javascript'/></script>"
+    return "<script src='"+path+".js' type='text/javascript' defer /></script>"
 //  }
 }
+app.locals.SearchWhiteIcon = SearchWhiteIcon
+app.locals.PersonFillWhiteIcon = PersonFillWhiteIcon 
 
 app.use(logger('dev'));
 app.use(fileUpload());

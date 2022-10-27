@@ -10,6 +10,7 @@ import connectLivereload from 'connect-livereload';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// FIXME: Share entrypoints with build_prod...
 export async function enableLiveReload(app) {
 
   // Setup js file builder

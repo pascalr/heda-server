@@ -9,9 +9,10 @@
     "db:open": "sqlitebrowser var/db/dev.db",
     "db:pull": "scp root@heda-server.internal:/mnt/heda_volume/prod.db var/db/dev.db",
     "olddev": "node --trace-uncaught -r dotenv/config ./src/server.js",
-    "dev": "nodemon -e js,ejs -w views --trace-uncaught -r dotenv/config ./src/server.js",
+    "dev": "npm run build:server && nodemon -e js,ejs -w views --trace-uncaught -r dotenv/config ./src/server.js",
     "build": "npm run build:css && node src/build_prod.js",
-    "build:css": "sass src/style/prose_mirror.scss:public/build/prose_mirror.css src/style/imports.scss:public/build/imports.css"
+    "build:css": "sass src/style/prose_mirror.scss:public/build/prose_mirror.css src/style/imports.scss:public/build/imports.css",
+    "build:server": "node src/build_server.js"
   },
   "dependencies": {
     "express": "~4.16.1",

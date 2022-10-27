@@ -7,10 +7,10 @@
       </a>
     </div>
     <div class="float-end" style="margin-top: 0.25em;">
-      <img id="main-search-btn" class="clickable" src="/icons/search.svg" style="margin-right: 1em;" width="24">
+      <img id="main-search-btn" class="clickable" src="<%- SearchWhiteIcon %>" style="margin-right: 1em;" width="24">
       <div class="dropdown d-inline-block">
         <button class="plain-btn dropdown-toggle" type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="margin-right: 1em; color: white;">
-          <img class="clickable" src="/icons/person-fill-white.svg" width="28">
+          <img class="clickable" src="<%- PersonFillWhiteIcon %>" width="28">
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownUserButton">
           <%- linkTo(req, tr('Login', locale), "/login", {className: "dropdown-item"}) %>
