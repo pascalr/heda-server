@@ -15,9 +15,9 @@
 </html>
 
 <script>
-  window.gon = <%- JSON.stringify(gon) %>
+  window.gon = <%- JSON.stringify((typeof gon !== 'undefined') ? gon : null) %>
   Promise.all(Array.from(document.images).filter(img => !img.complete).map(img => new Promise(resolve => { img.onload = img.onerror = resolve; }))).then(() => {
-    console.log('images finished loading');
+    // Wait for images before loading script
     var element = document.createElement("script");
     element.src = "/build/home.js";
     document.body.appendChild(element);

@@ -32,7 +32,6 @@ export function join(str1, str2) {
 }
 
 export function preloadImage(url) {
-  console.log('Preloading url ', url)
   var img = new Image();
   img.src = url;
 }

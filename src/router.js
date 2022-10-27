@@ -395,11 +395,12 @@ router.get('/error', function(req, res, next) {
 /* GET home page. */
 router.get('/', function(req, res, next) {
   if (!req.user) {
-    res.locals.gon = {
-      recipes1: db.fetchTable('recipes', {id: [113, 129, 669, 88, 323, 670, 672, 689]}, RECIPE_ATTRS),
-      recipes2: db.fetchTable('recipes', {id: [755, 757, 66, 558]}, RECIPE_ATTRS),
-      recipe: db.fetchTable('recipes', {id: 82}, RECIPE_ATTRS)[0] // FIXME: Should be fetchRecord
-    }
+    // Use this to generate gon, but then use JSON.stringify(gon) and copy paste directly inside home.jsx
+    //res.locals.gon = {
+    //  recipes1: db.fetchTable('recipes', {id: [113, 129, 669, 88, 323, 670, 672, 689]}, ['name', 'image_slug']),
+    //  recipes2: db.fetchTable('recipes', {id: [755, 757, 66, 558]}, ['name', 'image_slug']),
+    //  recipe: db.fetchTable('recipes', {id: 82}, RECIPE_ATTRS)[0] // FIXME: Should be fetchRecord
+    //}
     res.locals.renderingHome = true
     return res.render('home');
   }

@@ -12,10 +12,6 @@ Regarder ce que mon ancien site reference à l'air
 
 A pretty search
 Convertir les images à genre 200kb et moins...
-FIXME: HTML lang="en"
-LazyLoad images.
-It would be nice if people who disable javascript load the page first with javascript, but then stop using javascript. So at least it renders once.
-Static javascript home page only.
 If the user was logged from another page, handle this properly and show a helpful error message if the user tries to modify anything...
 Rajouter des liens vers les notes (Pain à la main, pain à la machine à pain, pain aux bananes, salade russe)
 In the home page, don't fetch from the db, just hard code the recipes images slug and names.
