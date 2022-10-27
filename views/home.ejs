@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="en" style="height: 100%;">
+<html lang="<%- locale %>">
   <head>
     <%- include('partials/head') %>
     <link rel="stylesheet" href="/build/prose_mirror.css">
     <link rel="stylesheet" href="/build/imports.css">
     <link rel="stylesheet" href="/build/toastr.min.css">
   </head>
-  <body style="height: 100%;">
+  <body>
     <%- include('partials/navbar') %>
     <div id="root-home">
       <%- include('../public/homepage.html') %>

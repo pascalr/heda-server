@@ -109,19 +109,23 @@ export function ajax(params) {
     _csrf = _csrfContainer.content
   }
 
+  let url = params.url
   let body = null
-  if (params.data instanceof FormData) {
+  if (params.type == "GET") {
+    if (params.data) {throw "Error ajax GET request cannnot have data, use query params instead."}
+    //url += '?' + new URLSearchParams(params).toString()
+  } else if (params.data instanceof FormData) {
 
     body = new FormData()
     for (let [k, v] of params.data) {
       let v1 = convertFormDataValue(v)
       body.append(k, convertFormDataValue(v))
     }
-    if (params.type !== 'GET') { body.append('_csrf', _csrf) }
+    body.append('_csrf', _csrf)
 
   } else {
     body = {...params.data}
-    if (params.type !== 'GET') {body._csrf = _csrf}
+    body._csrf = _csrf
     body = JSON.stringify(body),
 
     headers = {'Content-Type': 'application/json'}
