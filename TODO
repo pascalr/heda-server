@@ -10,6 +10,7 @@ RECHERCHE: https://ca.indeed.com/jobs?q=ruby+on+rails&l=Remote&from=searchOnHP&v
 
 Regarder ce que mon ancien site reference à l'air
 
+Smaller js file. Error is 2.9M right now...
 It would be nice if people who disable javascript load the page first with javascript, but then stop using javascript. So at least it renders once.
 Static javascript home page only.
 If the user was logged from another page, handle this properly and show a helpful error message if the user tries to modify anything...

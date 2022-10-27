@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
-import { MainSearch, useMainSearch } from './home'
+import { useMainSearch, MainSearch } from './main_search'
 import { getUrlParams } from "../utils"
 
 const ShowError = () => {

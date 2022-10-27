@@ -3,6 +3,9 @@ import React from 'react'
 import { isTrue } from "./utils"
 import {image_path, image_slug_variant_path } from './routes'
 
+import DefaultRecipeImage from '../../public/img/default_recipe_01.png'
+  
+
 const ImageCredit = ({imageSlug, images}) => {
   const image = images.find(i => i.slug == imageSlug)
   if (!image || !image.author || !image.source) {return ''}
@@ -16,7 +19,7 @@ const ImageCredit = ({imageSlug, images}) => {
 
 // Variant can be "thumb", "small", "medium"
 export const RecipeImage = ({recipe, images, showCredit, width, height, variant}) => {
-  const imagePath = recipe.image_slug ? image_path(recipe.image_slug, variant) : "/img/default_recipe_01.png"
+  const imagePath = recipe.image_slug ? image_path(recipe.image_slug, variant) : DefaultRecipeImage
   return <>
     <div style={{width: `${width}px`, height: `${height}px`, maxWidth: '100%', overflow: 'hidden', flexShrink: '0'}}>
       <img src={imagePath} width={width} height={height} style={{transform: `translateY(calc(-50% + ${height/2}px))`}} />

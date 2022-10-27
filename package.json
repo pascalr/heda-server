@@ -20,6 +20,8 @@
     "build:css": "sass src/style/prose_mirror.scss:public/build/prose_mirror.css src/style/imports.scss:public/build/imports.css"
   },
   "dependencies": {
+    "express": "~4.16.1",
+    "dotenv": "^16.0.2",
     "@aeaton/prosemirror-commands": "^2.0.2",
     "@aeaton/react-prosemirror": "^2.0.3",
     "@popperjs/core": "^2.11.6",
@@ -32,7 +34,6 @@
     "@tiptap/starter-kit": "^2.0.0-beta.196",
     "@tiptap/suggestion": "^2.0.0-beta.196",
     "@use-gesture/react": "^10.2.20",
-    "backblaze": "^2.3.0",
     "better-sqlite3": "^7.6.2",
     "bootstrap": "^5.2.1",
     "connect-ensure-login": "^0.1.1",
@@ -40,10 +41,8 @@
     "cookie-parser": "~1.4.4",
     "csurf": "^1.11.0",
     "debug": "~2.6.9",
-    "dotenv": "^16.0.2",
     "ejs": "~3.1.8",
     "esbuild": "^0.15.8",
-    "express": "~4.16.1",
     "express-fileupload": "^1.4.0",
     "express-session": "^1.17.2",
     "http-errors": "~1.6.3",

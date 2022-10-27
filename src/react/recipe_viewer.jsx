@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
-import Autosuggest from 'react-autosuggest'
 
 import { ajax } from "./utils"
 import { RecipeTiptap, BubbleTiptap } from './tiptap'

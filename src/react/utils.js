@@ -1,4 +1,4 @@
-import $ from 'jquery'
+//import $ from 'jquery'
 
 export function isTrue(val) {
   return val && val != 'false'
@@ -100,40 +100,58 @@ export function ajax(params) {
   console.log('ajax', params)
   if (!params.url) {throw "ajax missing params url"}
 
-  if (params.data instanceof FormData) {
+  let headers = {}
 
-    let formData = new FormData()
-    for (let [k, v] of params.data) {
-      let v1 = convertFormDataValue(v)
-      formData.append(k, convertFormDataValue(v))
-    }
-
+  let _csrf = null
+  if (params.type !== 'GET') {
     let _csrfContainer = document.querySelector('[name="csrf-token"]')
     if (!_csrfContainer) {console.log("Can't modify state missing csrf token.")}
-    let _csrf = _csrfContainer.content
-    formData.append('_csrf', _csrf)
+    _csrf = _csrfContainer.content
+  }
 
-    fetch(params.url, {
-      method: params.type,
-      mode: 'cors', // no-cors, *cors, same-origin
-      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: 'same-origin', // include, *same-origin, omit
-      //headers: {
-      //  'Content-Type': 'application/json'
-      //},
-      redirect: 'follow', // manual, *follow, error
-      referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: formData 
-      //body: JSON.stringify({_csrf, testing: '1212'})
-    }).then(response => {
-      response.json().then((json) => {
-        if (response.ok) {
-          if (params.success) { params.success(json) }
-        } else {
-          if (params.error) { params.error(json) }
-        }
-      })
+  let body = null
+  if (params.data instanceof FormData) {
+
+    body = new FormData()
+    for (let [k, v] of params.data) {
+      let v1 = convertFormDataValue(v)
+      body.append(k, convertFormDataValue(v))
+    }
+    if (params.type !== 'GET') { body.append('_csrf', _csrf) }
+
+  } else {
+    body = {...params.data}
+    if (params.type !== 'GET') {body._csrf = _csrf}
+    body = JSON.stringify(body),
+
+    headers = {'Content-Type': 'application/json'}
+  }
+  
+  const handleResponse = (ok, data) => {
+    if (ok) {
+      if (params.success) { params.success(data) }
+    } else {
+      if (params.error) { params.error(data) }
+    }
+  }
+
+  fetch(params.url, {
+    method: params.type,
+    mode: 'cors', // no-cors, *cors, same-origin
+    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: 'same-origin', // include, *same-origin, omit
+    redirect: 'follow', // manual, *follow, error
+    referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    body, headers
+  }).then(response => {
+    response.text().then((text) => {
+      try {
+        handleResponse(response.ok, JSON.parse(text))
+      } catch(err) {
+        handleResponse(response.ok, text)
+      }
     })
+  })
     //}).then(response => {
     //  if (response.ok) {
     //    return response.json()
@@ -145,22 +163,22 @@ export function ajax(params) {
     //  if (params.success) { params.success(json) }
     //})
 
-  } else {
-    let data = {...params.data}
-    //let _csrf = $('[name="csrf-token"]').content
-    if (params.type !== 'GET') {
-      data._csrf = document.querySelector('[name="csrf-token"]').content
-    }
-    $.ajax({
-      type: params.type,
-      url: params.url, //addExtensionToPath("json", params.url),
-      data,
-      //contentType: "application/json",
-      //data: JSON.stringify(data),
-      success: params.success,
-      error: params.error,
-    });
-  }
+  //} else {
+  //  let data = {...params.data}
+  //  //let _csrf = $('[name="csrf-token"]').content
+  //  if (params.type !== 'GET') {
+  //    data._csrf = document.querySelector('[name="csrf-token"]').content
+  //  }
+  //  $.ajax({
+  //    type: params.type,
+  //    url: params.url, //addExtensionToPath("json", params.url),
+  //    data,
+  //    //contentType: "application/json",
+  //    //data: JSON.stringify(data),
+  //    success: params.success,
+  //    error: params.error,
+  //  });
+  //}
 }
 
 // https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript

@@ -27,7 +27,12 @@ export async function enableLiveReload(app) {
     minify: process.env.NODE_ENV === "production" || process.env.NODE_ENV === "prod",
     // Bundles JavaScript to (see `entryPoints`).
     outdir: "public/build",
-  
+    loader: {
+      '.jpg': 'dataurl',
+      '.jpeg': 'dataurl',
+      '.png': 'dataurl',
+      '.svg': 'dataurl'
+    },
     sourcemap: true,
   })
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
-import { MainSearch, useMainSearch } from './home'
+import { MainSearch, useMainSearch } from './main_search'
 import { RecipeThumbnailImage } from "./image"
 import { isBlank, normalizeSearchText, join, capitalize } from "./utils"
 import { image_slug_variant_path } from "./routes"

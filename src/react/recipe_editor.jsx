@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import Autosuggest from 'react-autosuggest'
 
 import { ajax } from "./utils"
 import { DeleteConfirmButton } from './components/delete_confirm_button'
