@@ -4,7 +4,6 @@ import { isTrue } from "./utils"
 import {image_path, image_slug_variant_path } from './routes'
 
 import DefaultRecipeImage from '../../public/img/default_recipe_01.png'
-  
 
 const ImageCredit = ({imageSlug, images}) => {
   const image = images.find(i => i.slug == imageSlug)
