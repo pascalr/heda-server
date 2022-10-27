@@ -85,6 +85,13 @@ app.locals.linkTo = (req, label, href, options={}) => {
 }
 app.locals.linkToEnd = () => ('</a>')
 app.locals.tr = tr;
+app.locals.loadScript = (path) => {
+  if (process.env.NODE_ENV === 'production') {
+    return "<script src='"+path+".min.js' type='text/javascript'/></script>"
+  } else {
+    return "<script src='"+path+".js' type='text/javascript'/></script>"
+  }
+}
 
 app.use(logger('dev'));
 app.use(fileUpload());
