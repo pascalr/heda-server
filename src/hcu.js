@@ -103,7 +103,7 @@ export const initHcu = () => {
   }
   window.hcu.fetchRecord = (tableName, id, successCallback=null) => {
     let url = '/fetch_record/'+tableName+'/'+id
-    ajax({url: url, type: 'GET', data: {}, success: (fetched) => {
+    ajax({url: url, type: 'GET', success: (fetched) => {
       let old = getCurrentTable(tableName)
       if (old.find(r => r.id == fetched.id)) {throw "Error: Fetched a record already available"}
       updateTable(tableName, old => [...old, {...fetched, table_name: tableName}])

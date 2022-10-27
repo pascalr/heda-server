@@ -2,6 +2,7 @@ import express from 'express';
 import crypto from 'crypto';
 import connectEnsureLogin from 'connect-ensure-login'
 import { fileURLToPath } from 'url';
+import sharp from 'sharp'
 import path from 'path';
 
 import { db, ALLOWED_COLUMNS_GET } from './db.js';
@@ -69,12 +70,13 @@ router.post('/upload_image', function(req, res, next) {
     if (image.id != lastId +1) {throw "Database invalid state for images."}
     db.safeUpdateField(record_table, record_id, record_field, slug, req.user)
 
+    let out = path.join(IMAGE_FOLDER, image.id + '.' + ext)
+    // Make image both dimensions a maximum of 800px
     // FIXME: This should probably be inside the transaction, but this runs async.
-    // Use the mv() method to place the file somewhere on your server
-    file.mv(path.join(IMAGE_FOLDER, image.id + '.' + ext), function(err) {
-      if (err) { return res.status(500).send(err); }
+    sharp(file.data).resize({width: 800, height: 800, fit: 'inside', withoutEnlargement: true}).toFile(out).then(() => {
+      console.log('Successfuly resized image')
       res.json(image)
-    });
+    })
   })()
 
 });
