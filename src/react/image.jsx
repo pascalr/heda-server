@@ -1,8 +1,8 @@
 import React from 'react'
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 import { isTrue } from "./utils"
 import {image_path, image_slug_variant_path } from './routes'
-
 import DefaultRecipeImage from '../../public/img/default_recipe_01.png'
 
 const ImageCredit = ({imageSlug, images}) => {
@@ -21,7 +21,7 @@ export const RecipeImage = ({recipe, images, showCredit, width, height, variant}
   const imagePath = recipe.image_slug ? image_path(recipe.image_slug, variant) : DefaultRecipeImage
   return <>
     <div style={{width: `${width}px`, height: `${height}px`, maxWidth: '100%', overflow: 'hidden', flexShrink: '0'}}>
-      <img src={imagePath} width={width} height={height} style={{transform: `translateY(calc(-50% + ${height/2}px))`}} />
+      <LazyLoadImage src={imagePath} width={width} height={height} style={{transform: `translateY(calc(-50% + ${height/2}px))`}} />
     </div>
     {showCredit ? <ImageCredit {...{imageSlug: recipe.image_slug, images}} /> : ''}
   </>

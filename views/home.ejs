@@ -16,5 +16,10 @@
 
 <script>
   window.gon = <%- JSON.stringify(gon) %>
+  Promise.all(Array.from(document.images).filter(img => !img.complete).map(img => new Promise(resolve => { img.onload = img.onerror = resolve; }))).then(() => {
+    console.log('images finished loading');
+    var element = document.createElement("script");
+    element.src = "/build/home.js";
+    document.body.appendChild(element);
+});
 </script>
-<%- loadScript("/build/home") %>

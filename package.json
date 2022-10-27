@@ -16,8 +16,6 @@
     "build:server": "node src/build_server.js"
   },
   "dependencies": {
-    "express": "~4.16.1",
-    "dotenv": "^16.0.2",
     "@aeaton/prosemirror-commands": "^2.0.2",
     "@aeaton/react-prosemirror": "^2.0.3",
     "@popperjs/core": "^2.11.6",
@@ -37,8 +35,10 @@
     "cookie-parser": "~1.4.4",
     "csurf": "^1.11.0",
     "debug": "~2.6.9",
+    "dotenv": "^16.0.2",
     "ejs": "~3.1.8",
     "esbuild": "^0.15.8",
+    "express": "~4.16.1",
     "express-fileupload": "^1.4.0",
     "express-session": "^1.17.2",
     "http-errors": "~1.6.3",
@@ -61,6 +61,7 @@
     "react-beautiful-dnd": "^13.1.1",
     "react-bootstrap": "^2.5.0",
     "react-dom": "^17.0.1",
+    "react-lazy-load-image-component": "^1.5.5",
     "sass": "^1.54.9",
     "swiper": "^8.4.4",
     "toastr": "^2.1.4",
