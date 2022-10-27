@@ -140,15 +140,7 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
 
   return (<>
     <EditTagsModal {...{recipe, tags, suggestions, showModal, setShowModal}} />
-    <div style={{fontSize: '0.8em', marginBottom: '0.5em'}}>
-      <b>Tags:</b>&nbsp;
-      <span>
-        {!recipeTags || recipeTags.length == 0 ? 'Aucun' : recipeTags.map(tag => 
-          <LinkToPage key={tag.id} page={{page: 9, tagId: tag.id}} className="plain-link h002">#{tag.name}&nbsp;</LinkToPage>
-        )}
-      </span>
-    </div>
-    <div className="recipe">
+    <div className="recipe mt-3">
       <div className="d-block d-md-flex" style={{gap: '20px'}}>
         <div><RecipeMediumImage {...{recipe, images, showCredit: true}} /></div>
         <div style={{height: '20px', width: '0'}}></div>
