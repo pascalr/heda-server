@@ -70,13 +70,33 @@ router.post('/upload_image', function(req, res, next) {
     if (image.id != lastId +1) {throw "Database invalid state for images."}
     db.safeUpdateField(record_table, record_id, record_field, slug, req.user)
 
-    let out = path.join(IMAGE_FOLDER, image.id + '.' + ext)
-    // Make image both dimensions a maximum of 800px
-    // FIXME: This should probably be inside the transaction, but this runs async.
-    sharp(file.data).resize({width: 800, height: 800, fit: 'inside', withoutEnlargement: true}).toFile(out).then(() => {
-      console.log('Successfuly resized image')
-      res.json(image)
-    })
+    const promises = [];
+    let stream = sharp(file.data)
+
+    // OPTIMIZE: It would be better if the latter resized use the previous one?
+    let out1 = path.join(IMAGE_FOLDER, image.id + '.' + ext)
+    let opts = {width: 800, height: 800, fit: 'inside', withoutEnlargement: true}
+    promises.push(stream.clone().resize(opts).toFile(out1));
+
+    let out2 = path.join(IMAGE_FOLDER, "medium", image.id + '.' + ext)
+    opts = {width: 452, height: 304, fit: 'cover', withoutEnlargement: true}
+    promises.push(stream.clone().resize(opts).toFile(out2));
+
+    let out3 = path.join(IMAGE_FOLDER, "thumb", image.id + '.' + ext)
+    opts = {width: 71, height: 48, fit: 'cover', withoutEnlargement: true}
+    promises.push(stream.clone().resize(opts).toFile(out3));
+    
+    Promise.all(promises)
+      .then(r => { console.log("Done processing image!"); res.json(image) })
+          
+      .catch(err => {
+        console.error("Error processing files, let's clean it up", err);
+        try {
+          fs.unlinkSync(out1);
+          fs.unlinkSync(out2);
+          fs.unlinkSync(out3);
+        } catch (e) {}
+      });
   })()
 
 });
