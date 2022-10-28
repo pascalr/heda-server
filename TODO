@@ -10,6 +10,7 @@ RECHERCHE: https://ca.indeed.com/jobs?q=ruby+on+rails&l=Remote&from=searchOnHP&v
 
 Regarder ce que mon ancien site reference à l'air
 
+Preload image does not seem to work well...
 A pretty search
 Fix le data des images (générer medium et thumb) et utiliser ces fichiers.
 Créer un dossier /images/original pour mettre les images originales

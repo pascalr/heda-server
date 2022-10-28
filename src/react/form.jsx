@@ -103,7 +103,7 @@ export const ImageSelector = ({record, field, maxSizeBytes, suggestions, width, 
       <div className="d-flex align-items-center flex-wrap">
         {suggestions.map(slug => (
           <div key={slug} style={{width: "fit-content"}}>
-            <img className="clickable" style={{height: "100px"}} src={image_slug_variant_path(slug, "square")} height="80" onClick={() => window.hcu.updateField(record, field, slug)} />
+            <img className="clickable" style={{height: "100px"}} src={image_slug_variant_path(slug, "small")} height="80" onClick={() => window.hcu.updateField(record, field, slug)} />
           </div>
         ))}
       </div>

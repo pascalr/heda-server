@@ -11,7 +11,7 @@
       <div class="d-flex align-items-center flex-wrap" style="justify-content: center; gap: 1em;">
         <% users.forEach(function(user) { %>
           <div class='account-user' style='cursor: pointer;' data-user-id='<%= user.id %>'>
-            <img style="height: 150px;" src="<%= user.image_slug ? `/imgs/square/${user.image_slug}` : '/img/tux-cooking.svg' %>" height="150"/>
+            <img style="height: 150px;" src="<%= user.image_slug ? `/imgs/original/${user.image_slug}` : '/img/tux-cooking.svg' %>" height="150"/>
             <div style="text-align: center;"><%= user.name %></div>
           </div>
         <% }) %>
