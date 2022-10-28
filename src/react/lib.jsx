@@ -4,6 +4,23 @@ import toastr from 'toastr'
 import { ajax, omit, join, bindSetter, capitalize } from "./utils"
 import { t } from '../translate'
 
+/**
+ * Delay for a single render frame. This way the initial element is rendered, then
+ * the transition can take place.
+ *
+ * Usage:
+ * const [bool, setBool] = useState(false)
+ * const boolTransition = useTransition(bool)
+ * return <div style={{width: boolTransition ? "100%" : "10px", transition: 'width 1s'}}></div>
+ */
+export const useTransition = (variable) => {
+  const [v, setV] = useState(variable) 
+  useEffect(() => {
+    setV(variable)
+  }, [variable])
+  return v
+}
+
 // errorId: 'Error_updating'
 export const handleError = (errorId) => (response) => {
   console.log('response', response)
