@@ -17,7 +17,6 @@ import {RecipeViewer} from "./recipe_viewer"
 import { initHcu, useHcuState } from '../hcu'
 import { RecipeThumbnailImage, RecipeSmallImage, RecipeMediumImage } from "./image"
 import { t } from "../translate"
-import { FOOD_EMOJIS, ANIMAL_EMOJIS, OTHER_EMOJIS, TO_REMOVE_EMOJIS, SMILEYS } from "./emojis"
 import { Carrousel } from './carrousel'
 import {EditMix} from './recipe_editor'
 import { AppSearch } from './main_search'

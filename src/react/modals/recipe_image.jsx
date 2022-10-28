@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 import Modal from 'react-bootstrap/Modal'
-import Button from 'react-bootstrap/Button'
 
 import {clearRecord, ImageSelector, TextField, ImageField, RadioField} from '../form'
 import { image_path } from '../routes'
