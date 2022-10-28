@@ -265,6 +265,17 @@ const MODELS = {
   //r = ['sup', {}, '[', ['a', {href: `#note-${note.item_nb}`}, note.item_nb.toString()], ']']
 }
 
+const DeprecatedLinkModel = Node.create({
+  name: 'link-model',
+  priority: 1000,
+  group: 'inline',
+  inline: true,
+  selectable: true,
+  renderHTML({node, HTMLAttributes}) {
+    return ['span', {}, '']
+  },
+})
+
 //const LinkModel = Node.create({
 //  name: 'link-model',
 //  priority: 1000,
@@ -826,7 +837,7 @@ const editorSelectable = (node, editable) => editable ? node : node.extend({sele
 export const recipeEditor = (content, editable=true) => {
 
   const RecipeExtensions = [
-    Bold, Italic, Document, Paragraph, Strike, Text, CustomHeading,
+    Bold, Italic, Document, Paragraph, Strike, Text, CustomHeading, DeprecatedLinkModel,
     History, IngredientNode, editorSelectable(IngredientListNode, editable), StepNode
   ]
   return {
