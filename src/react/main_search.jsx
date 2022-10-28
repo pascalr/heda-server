@@ -53,6 +53,31 @@ const SearchResults = ({searchResults, selected, selectedRef}) => {
   </>
 }
 
+export const PublicNavbar = ({locale, renderingHome, setIsSearching}) => {
+  let otherLocale = (locale.toLowerCase() == 'en') ? 'FR' : 'EN'
+  return <>
+    <div className="float-start fs-15 px-3">
+      <a href={localeHref(getPathFromUrl(window.location.href)+'?locale='+otherLocale)} className="nav-btn" rel="alternate" hrefLang={otherLocale.toLowerCase()}>
+        {otherLocale}
+      </a>
+    </div>
+    <div className="float-end" style={{marginTop: '0.25em'}}>
+      <img className="clickable" src={SearchWhiteIcon} style={{marginRight: '1em'}} width="24" onClick={() => setIsSearching(true)}/>
+      <div className="dropdown d-inline-block">
+        <button className="plain-btn dropdown-toggle" type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style={{marginRight: '1em', color: 'white'}}>
+          <img className="clickable" src={PersonFillWhiteIcon} width="28"/>
+        </button>
+        <div className="dropdown-menu" aria-labelledby="dropdownUserButton">
+          <a href={localeHref("/login")} className="dropdown-item">{t('Login', locale)}</a>
+        </div>
+      </div>
+    </div>
+    <div style={{margin: 'auto', width: 'fit-content', fontWeight: '500', fontSize: '1.5rem', color: 'rgb(249, 249, 249)'}}>
+      { renderingHome ? 'HedaCuisine' : <a href={localeHref("/")} className="plain-link white">HedaCuisine</a>}
+    </div>
+  </>
+}
+
 export const MainSearch = ({locale, renderingHome}) => {
 
   const [searchResults, setSearchResults] = useState({users: [], recipes: []})
@@ -123,30 +148,6 @@ export const BaseSearch = ({locale, renderingHome, user, allMatching, onItemChoo
       else { setSearch(''); setTerm('') }
     }
   }
-  
-  let otherLocale = (locale.toLowerCase() == 'en') ? 'FR' : 'EN'
-
-  const normalMode = <>
-    <div className="float-start fs-15 px-3">
-      <a href={localeHref(getPathFromUrl(window.location.href)+'?locale='+otherLocale)} className="nav-btn" rel="alternate" hrefLang={otherLocale.toLowerCase()}>
-        {otherLocale}
-      </a>
-    </div>
-    <div className="float-end" style={{marginTop: '0.25em'}}>
-      <img className="clickable" src={SearchWhiteIcon} style={{marginRight: '1em'}} width="24" onClick={() => setIsSearching(true)}/>
-      <div className="dropdown d-inline-block">
-        <button className="plain-btn dropdown-toggle" type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style={{marginRight: '1em', color: 'white'}}>
-          <img className="clickable" src={PersonFillWhiteIcon} width="28"/>
-        </button>
-        <div className="dropdown-menu" aria-labelledby="dropdownUserButton">
-          <a href={localeHref("/login")} className="dropdown-item">{t('Login', locale)}</a>
-        </div>
-      </div>
-    </div>
-    <div style={{margin: 'auto', width: 'fit-content', fontWeight: '500', fontSize: '1.5rem', color: 'rgb(249, 249, 249)'}}>
-      { renderingHome ? 'HedaCuisine' : <a href={localeHref("/")} className="plain-link white">HedaCuisine</a>}
-    </div>
-  </>
 
   const searchMode = <>
     <div style={{position: 'relative', margin: '0.5em 1em 0 1em'}}>
@@ -161,7 +162,7 @@ export const BaseSearch = ({locale, renderingHome, user, allMatching, onItemChoo
   return (<>
     <nav style={{backgroundColor: 'rgb(33, 37, 41)', marginBottom: '0.5em', borderBottom: '1px solid rgb(206, 226, 240)'}}>
       <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0', height: '52px'}}>
-        {isSearching ? searchMode : normalMode}
+        {isSearching ? searchMode : <PublicNavbar {...{locale, renderingHome, setIsSearching}}/>}
       </div>
     </nav>
   </>)
