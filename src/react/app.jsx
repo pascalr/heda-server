@@ -266,42 +266,36 @@ const TagEditAllCategories = ({page, recipeFilters}) => {
   </>)
 }
 
-const EditTag = ({page, tags, images}) => {
+const EditTag = ({page, tags}) => {
   const [name, setName] = useState('')
   //const filter = page && page.filterId ? recipeFilters.find(f => f.id == page.filterId) : null
   const tag = page && page.tagId ? tags.find(f => f.id == page.tagId) : null
   if (!tag) {console.log("Can't edit tag, did not exist."); return '';}
   
-  let suggestions = ['114.jpg', '115.jpg', '116.jpg', '117.jpg', '118.jpg', '119.jpg', '120.jpg', '121.jpg', '122.jpg', '123.jpg']
-
   return (<>
     <h2>{t('Modify_tag')}</h2>
     <h3>{t('Name')}</h3>
     <TextField model={tag} field="name" />
-    <br/>
-    <h3>{t('Image')}</h3>
-    <ImageSelector record={tag} field="image_slug" maxSizeBytes={2*1000*1000} suggestions={suggestions} height="120px" defaultImage="/img/question-mark.jpg" />
+    <br/><br/>
+    <LinkToPage {...{page: {page: PAGE_4}, className: "btn btn-primary"}}>Ok</LinkToPage>
   </>)
 }
 
-const EditTagButton = ({tag, images}) => {
-  const image = images.find(i => i.slug == tag.image_slug)
-  const imagePath = image ? image_path(image, 'medium') : "/img/question-mark.jpg"
+const EditTagButton = ({tag}) => {
   const handleClick = () => changePage({page: 3, tagId: tag.id})
   return (
     <div className="d-flex align-items-center" style={{padding: '5px 0'}}>
-      <img src='/icons/arrows-move.svg' width="28" height="28" />
+      <img src='/icons/arrows-move.svg' width="20" height="20" />
       <div className="me-3"/>
       <div className="clickable" onClick={handleClick}>
-        <img className="me-1" src={imagePath} width="60" height="60" />
-        <b>#{tag.name || "Sans nom"}</b>
+        <b>{tag.name || t("No_name")}</b>
       </div>
       <div className="me-3"/>
       <DeleteConfirmButton id={`del-user-tag-${tag.id}`} onDeleteConfirm={() => window.hcu.destroyRecord(tag)} message="Je veux retirer cette étiquette?" />
     </div>
   )
 }
-const EditTags = ({tags, images, page}) => {
+const EditTags = ({tags, page}) => {
 
   //userTags = sortBy(userTags, "position") Not necessary, done on server side
   const [orderedTags, setOrderedTags] = useState(tags)
@@ -314,7 +308,7 @@ const EditTags = ({tags, images, page}) => {
     return <Draggable key={`drag-user-tag-${tag.id}`} draggableId={`drag-user-tag-${tag.id.toString()}`} index={index}>
       {(provided) => (<>
         <div className="item-container" ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
-          <EditTagButton {...{tag, images}} />
+          <EditTagButton {...{tag}} />
         </div>
       </>)}
     </Draggable>
@@ -911,8 +905,8 @@ const App = () => {
   const pages = {
     [PAGE_1]: <HomePage {...{page, recipes, tags, suggestions}} />,
     [PAGE_2]: <TagCategorySuggestions {...{page, suggestions, recipes}} />,
-    [PAGE_3]: <EditTag {...{page, tags, images}} />,
-    [PAGE_4]: <EditTags {...{tags, page, images}} />,
+    [PAGE_3]: <EditTag {...{page, tags}} />,
+    [PAGE_4]: <EditTags {...{tags, page}} />,
     //5: <TrainFilter page={page} recipeFilters={recipeFilters} />,
     [PAGE_6]: <MyRecipes {...{page, recipes, suggestions, favoriteRecipes, tags, mixes, recipeKinds, user, images}} />,
     [PAGE_7]: <MyBooks page={page} />,

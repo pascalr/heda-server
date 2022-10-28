@@ -34,6 +34,7 @@ export function tr(id, locale) {
     n11: "Show ingredients 3 and 5",
   }
   let fr = {
+    No_name: "Sans nom",
     Many_meals: "Plusieurs repas",
     Current_tags: "Tags actuels",
     Add_a_tag: "Ajouter un tag",
