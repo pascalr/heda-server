@@ -9,6 +9,7 @@ img {
   border: none;
   /*font-family: inherit;*/
   /*font-size: inherit;*/
+  background-color: inherit;
   padding: 0;
   width: auto;
 }

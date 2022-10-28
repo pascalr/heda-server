@@ -26,7 +26,7 @@ import SQLiteStoreModule from 'connect-sqlite3'
 const SQLiteStore = SQLiteStoreModule(session);
 
 import router from './router.js';
-import { getUrlParams, localeHref } from './utils.js';
+import { getUrlParams, localeHref, getPathFromUrl } from './utils.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -53,10 +53,6 @@ app.set('views', path.join(path.join(__dirname, '..'), 'views'));
 app.set('view engine', 'ejs');
 
 // TODO: Put these functions inside helpers
-const getPathFromUrl = (url) => {
-  if (!url) {return ''}
-  return url.split(/[?#]/, 1)[0];
-}
 app.locals.localeHref = (req, url) => {
   return localeHref(url, req.originalUrl)
 }
