@@ -423,6 +423,8 @@ router.get('/error', function(req, res, next) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+  // Whether or not to show an HTML cached version while the JS is loading.
+  res.locals.disablePreview = req.query.disablePreview
   if (!req.user) {
     //// Use this to generate gon, but then use JSON.stringify(gon) and copy paste directly inside home.jsx
     //res.locals.gon = {

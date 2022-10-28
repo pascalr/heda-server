@@ -11,7 +11,7 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 (async () => {
   const browser = await puppeteer.launch({dumpio: true});
   const page = await browser.newPage();
-  const url = 'http://localhost:3000/'
+  const url = 'http://localhost:3000/?disablePreview=true'
 
   await page.goto(url, {waitUntil: 'networkidle0'});
   const html = await page.$eval('#root-home', (element) => {
