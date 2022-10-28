@@ -17,7 +17,7 @@ const UserEditor = () => {
   window.locale = user.locale
 
   const destroyUser = () => {
-    if (confirm('Voulez-vous supprimer définitivement ce profil?')) {
+    if (confirm(t('Confirm_destroy_profile'))) {
       let url = '/destroy_profile/'+user.id
       ajax({url, type: 'DELETE', success: (status) => {
         window.location.href = "/choose_user"
@@ -39,7 +39,7 @@ const UserEditor = () => {
     <b>{t('Visibility')}</b><br/>
     <ToggleField model={user} field="is_public" labelOn={t('public')} labelOff={t('private')} className="btn btn-primary" /><br/><br/>
     <b>{t('Image')}</b><br/>
-    <ImageSelector record={user} field="image_slug" maxSizeBytes={2*1000*1000} suggestions={suggestions} height="180px" defaultImage="/icons/person-fill.svg" />
+    <ImageSelector record={user} field="image_slug" variant="original" maxSizeBytes={2*1000*1000} suggestions={suggestions} height="180px" defaultImage="/icons/person-fill.svg" />
     <hr/>
     <button type="button" className="float-end btn btn-danger" onClick={destroyUser}>{t('Delete')}</button>
     <a href="/" className="btn btn-primary">{t('Ok')}</a>

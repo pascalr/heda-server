@@ -87,9 +87,10 @@ export const updateRecord = (oldRecord, newRecord, nested={}) => {
   return obj
 }
 
-export const ImageSelector = ({record, field, maxSizeBytes, suggestions, width, height, defaultImage, ...props}) => {
-  
-  const imagePath = record[field] ? image_slug_variant_path(record[field], 'fixme') : defaultImage
+export const ImageSelector = ({record, field, variant, maxSizeBytes, suggestions, width, height, defaultImage, ...props}) => {
+ 
+  if (!variant) {throw "ImageSelector needs a variant"}
+  const imagePath = record[field] ? image_slug_variant_path(record[field], variant) : defaultImage
   
   return <>
     <div className='d-flex align-items-center'>
@@ -103,7 +104,7 @@ export const ImageSelector = ({record, field, maxSizeBytes, suggestions, width, 
       <div className="d-flex align-items-center flex-wrap">
         {suggestions.map(slug => (
           <div key={slug} style={{width: "fit-content"}}>
-            <img className="clickable" style={{height: "100px"}} src={image_slug_variant_path(slug, "small")} height="80" onClick={() => window.hcu.updateField(record, field, slug)} />
+            <img className="clickable" style={{height: "100px"}} src={image_slug_variant_path(slug, variant)} height="80" onClick={() => window.hcu.updateField(record, field, slug)} />
           </div>
         ))}
       </div>

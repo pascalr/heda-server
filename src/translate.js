@@ -32,8 +32,11 @@ export function tr(id, locale) {
     n9: "Show ingredient 3",
     n10: "Show ingredients 3, 4 and 5",
     n11: "Show ingredients 3 and 5",
+    Confirm_destroy_profile: "Are you sure you want to destroy this profil permanently?\n\nAll you data could be lost forever.",
   }
   let fr = {
+    Confirm_destroy_profile: "Voulez-vous supprimer définitivement ce profil?\n\nToutes vos données pourraient être perdues à tout jamais.",
+    Back: "Retour",
     No_name: "Sans nom",
     Many_meals: "Plusieurs repas",
     Current_tags: "Tags actuels",

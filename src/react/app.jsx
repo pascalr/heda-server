@@ -851,6 +851,7 @@ const NewRecipe = ({page, recipeKinds}) => {
       <input name="name" value={name} onChange={(e) => {setName(e.target.value)}} />
       <br/><br/>
       <button type="submit" className="btn btn-primary">{t('Create')}</button>
+      <LinkToPage {...{page: {page: PAGE_6}, className: "btn btn-secondary ms-3"}}>{t('Back')}</LinkToPage>
     </form>
   </>
 }

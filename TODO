@@ -10,6 +10,8 @@ RECHERCHE: https://ca.indeed.com/jobs?q=ruby+on+rails&l=Remote&from=searchOnHP&v
 
 Regarder ce que mon ancien site reference à l'air
 
+TODO: Soft delete users. Serializer le user avec json dans data. Créer une table corpses table_name:string id:integer data:string
+Ajouter une page contact.
 Preload image does not seem to work well...
 A pretty search
 Fix le data des images (générer medium et thumb) et utiliser ces fichiers.
@@ -23,6 +25,7 @@ Ne pas faire de variantes pour les images, mais le faire pour les thumbnails au 
 Image thumbnails, si le thumbnail n'existe pas, le créer. Faire ça pour toutes les variantes.
 FIXME: Make fetchTable secure. Remove ALLOWED_TABLES_GET, use read_attrs?
 Faire un recipe slider pour les À cuisinner prochainement?, à essayer? et favoris? (Ouin, peut-être simplement les enlever des mes recettes, et les mettres dans mes suggestions...)
+TESTS
 
 Sur mon site internet de CV, rajouter une ligne sur la page d'acceuil, Portfolio, avec des liens vers les meilleurs projets que j'ai fait.
 

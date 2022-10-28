@@ -25,7 +25,7 @@ export const EditRecipeImageModal = ({recipe, recipeKinds, images, show, handleC
         <Modal.Body>
           <button style={{float: "right"}} type="button" className="btn-close" onClick={handleClose}></button>
           <h2 className="h003">{t('Choose_an_image')}</h2>
-          <ImageSelector record={recipe} field="image_slug" maxSizeBytes={6*1000*1000} height="171px" defaultImage="/img/default_recipe_01.png" />
+          <ImageSelector record={recipe} field="image_slug" variant="small" maxSizeBytes={6*1000*1000} height="171px" defaultImage="/img/default_recipe_01.png" />
           {!image ? '' : <>
             <div style={{height: "0.5em"}}/>
             <RadioField model={image} field="is_user_author" value={true} label={t('I_am_author')} />
