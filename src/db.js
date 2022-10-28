@@ -14,7 +14,7 @@ if (fs.existsSync(dbPath)) {
 export const db = new betterSqlite3(dbPath, { verbose: console.log })
 console.log('Opening database successful!')
 
-import { findRecipeKindForRecipeName } from "./lib.js"
+//import { findRecipeKindForRecipeName } from "./lib.js"
 import {RECIPE_ATTRS} from './gon.js';
 import utils from './utils.js';
 
@@ -68,9 +68,9 @@ const mySchema = {
     dependant_destroy: {recipe_id: ['favorite_recipes', 'meals', 'mixes', 'recipe_comments', 'recipe_notes', 'recipe_ratings', 'recipe_tools', 'references', 'suggestions']},
 
     before_create(recipe) {
-      const recipeKinds = db.fetchTable('recipe_kinds', {}, ['name'])
-      const recipeKind = findRecipeKindForRecipeName(recipe.name, recipeKinds)
-      if (recipeKind) {recipe.recipe_kind_id = recipeKind.id}
+      //const recipeKinds = db.fetchTable('recipe_kinds', {}, ['name'])
+      //const recipeKind = findRecipeKindForRecipeName(recipe.name, recipeKinds)
+      //if (recipeKind) {recipe.recipe_kind_id = recipeKind.id}
       return recipe
     }
   },
