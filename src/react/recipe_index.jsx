@@ -8,7 +8,7 @@ import { RecipeThumbnailImage } from "./image"
 import { t } from "../translate"
   
 const updateFavoriteRecipe = (fav, list_id, recipe, user) => {
-  if (fav && recipe.user_id == user.id) {
+  if (fav && recipe.user_id == user.id && list_id == 0) {
     window.hcu.destroyRecord(fav)
   } else if (fav) {
     window.hcu.updateField(fav, 'list_id', list_id)
