@@ -85,22 +85,15 @@ export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, re
   
   const [recipeToEdit, setRecipeToEdit] = useState(null)
   const [showModal, setShowModal] = useState(true)
- 
+
   let userRecipes = []
-  let toCookList = []
-  let toTryList = []
-  let otherList = []
+  let favList = []
 
   recipes.forEach((recipe) => {
     f = favoriteRecipes.find(r => r.recipe_id == recipe.id)
     if (recipe.user_id == user.id || !f) { userRecipes.push({recipe: recipe, fav: f}) }
-    else if (f.list_id == 1) { toCookList.push({recipe: recipe, fav: f}) }
-    else if (f.list_id == 2) { toTryList.push({recipe: recipe, fav: f}) }
-    else { otherList.push({recipe: recipe, fav: f}) }
+    else if (f) { favList.push({recipe: recipe, fav: f}) }
   })
-
-  console.log('userRecipes', userRecipes)
-  console.log('otherList', otherList)
 
   let editUserRecipe = (recipe) => {
     setRecipeToEdit(recipe)
@@ -112,19 +105,11 @@ export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, re
   return (<>
     <EditTagsModal {...{recipe: recipeToEdit, tags, suggestions, showModal, setShowModal}} />
     <br/>
-    {toCookList.length == 0 ? null : <>
-      <h3 className="h001">{t('To_cook_soon')}</h3>
-      <RecipeList list={toCookList} {...listArgs} />
-    </>}
-    {toTryList.length == 0 ? null : <>
-      <h3 className="h001">{t('To_try')}</h3>
-      <RecipeList list={toTryList} {...listArgs} />
-    </>}
     <h3 className="h001">{t('Personal_recipes')}</h3>
     {userRecipes.length == 0 ? <p>Aucune recette pour l'instant.</p> : <RecipeList list={userRecipes} {...listArgs} />}
-    {otherList.length == 0 ? null : <>
+    {favList.length == 0 ? null : <>
       <h3 className="h001">{t('Favorite_recipes')}</h3>
-      <RecipeList list={otherList} {...listArgs} />
+      <RecipeList list={favList} {...listArgs} />
     </>}
   </>)
 }
