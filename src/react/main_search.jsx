@@ -88,8 +88,8 @@ export const MainSearch2 = ({locale, renderingHome}) => {
 
   const searchMode = <>
     <div style={{position: 'relative', margin: '0.5em 1em 0 1em'}}>
-      <div className="d-flex">
-        <input ref={inputField} type="search" placeholder={`${t('Search')}...`} onChange={(e) => {setTerm(e.target.value); setSearch(e.target.value)}} autoComplete="off" className="plain-input white" style={{borderBottom: '2px solid white', width: "100%"}} onKeyDown={onKeyDown} value={search}/>
+      <div className="d-flex justify-content-end">
+        <input ref={inputField} type="search" placeholder={`${t('Search')}...`} onChange={(e) => {setTerm(e.target.value); setSearch(e.target.value)}} autoComplete="off" className="plain-input white" style={{borderBottom: '2px solid white', width: "30px"}} onKeyDown={onKeyDown} value={search}/>
         <img className="clickable ps-2" src={XLgWhiteIcon} width="36" onClick={() => setIsSearching(false)}/>
       </div>
       {searchResults.users.length + searchResults.recipes.length <= 0 ? '' :
