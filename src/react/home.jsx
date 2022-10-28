@@ -9,7 +9,7 @@ import { t } from "../translate"
 import { Carrousel } from "./carrousel"
 import { initHcu, useHcuState } from '../hcu'
 import { localeHref, getUrlParams } from "../utils"
-import { MainSearch2 } from './main_search'
+import { MainSearch } from './main_search'
 
 const Home = () => {
 
@@ -24,7 +24,7 @@ const Home = () => {
 
   const preloadItem = (i) => {if (i.image_slug) {preloadImage('/imgs/small/'+i.image_slug)}}
   return <>
-    <MainSearch2 {...{locale, renderingHome: true}} />
+    <MainSearch {...{locale, renderingHome: true}} />
     <div style={{padding: '3em 0.3em 5em 0.3em', maxWidth: '70em', margin: 'auto'}}>
       <div className="d-block d-md-flex">
         <div className='flex-grow-1'></div>

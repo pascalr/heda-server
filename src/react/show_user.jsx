@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
-import { MainSearch, useMainSearch } from './main_search'
+import { MainSearch } from './main_search'
 import { RecipeThumbnailImage } from "./image"
 import { isBlank, normalizeSearchText, join, capitalize } from "./utils"
 import { image_slug_variant_path } from "./routes"
@@ -25,20 +25,19 @@ const RecipeItem = ({recipe, images, recipeKinds}) => {
 
 const ShowUser = () => {
 
+  const [locale, ] = useState(gon.locale)
   const [recipes, ] = useState(gon.recipes)
   const [images, ] = useState(gon.images)
   const [recipeKinds, ] = useState(gon.recipe_kinds)
   const [user, ] = useState(gon.user)
   //const [favoriteRecipes, ] = useState(gon.favorite_recipes)
 
-  const isSearching = useMainSearch()
-
   const userRecipes = recipes.filter(r => r.user_id == user.id)
   const favRecipes = recipes.filter(r => r.user_id != user.id)
 
   return <>
+    <MainSearch {...{locale}} />
     <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0'}}>
-      {isSearching  ? <MainSearch /> : ''}
       <h3 className="h001">{t('Recipes_by')} {user.name}</h3>
       <ul className="recipe-list">
         {userRecipes.map(r => <RecipeItem key={r.id} {...{recipe: r, images, recipeKinds}} />)}

@@ -382,6 +382,8 @@ router.get('/r/:id', function(req, res, next) {
   ids = slugs.map(s => s.split('.')[0])
   attrs = ['author', 'source', 'filename', 'is_user_author', 'slug']
   o.images = db.fetchTable('images', {id: ids}, attrs)
+  
+  o.locale = res.locals.locale
 
   res.locals.gon = o
   res.render('show_recipe');
@@ -413,11 +415,16 @@ router.get('/u/:id', function(req, res, next) {
   attrs = ['author', 'source', 'filename', 'is_user_author', 'slug']
   o.images = db.fetchTable('images', {id: ids}, attrs)
 
+  o.locale = res.locals.locale
+
   res.locals.gon = o
   res.render('show_user');
 });
 
 router.get('/error', function(req, res, next) {
+  res.locals.gon = {
+    locale: res.locals.locale,
+  }
   return res.render('error');
 })
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
-import { MainSearch, useMainSearch } from './main_search'
+import { MainSearch } from './main_search'
 import { parseIngredientsAndHeaders } from "./lib"
 import { RecipeThumbnailImage } from "./image"
 import { isBlank, normalizeSearchText, join, capitalize } from "./utils"
@@ -109,15 +109,14 @@ export const RecipeViewer = ({recipe, images, user}) => {
 
 const ShowRecipe = () => {
 
+  const [locale, ] = useState(gon.locale)
   const [recipe, ] = useState(gon.recipe)
   const [images, ] = useState(gon.images)
   const [user, ] = useState(gon.user)
 
-  const isSearching = useMainSearch()
-
   return <>
+    <MainSearch {...{locale}} />
     <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0'}}>
-      {isSearching ? <MainSearch /> : ''}
       <RecipeViewer {...{recipe, images, user}} />
     </div>
   </>

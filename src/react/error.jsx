@@ -2,17 +2,15 @@ import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
-import { useMainSearch, MainSearch } from './main_search'
+import { MainSearch } from './main_search'
 import { getUrlParams } from "../utils"
 
 const ShowError = () => {
 
-  const isSearching = useMainSearch()
+  const [locale, ] = useState(gon.locale)
 
   return <>
-    <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0'}}>
-      {isSearching ? <MainSearch /> : ''}
-    </div>
+    <MainSearch {...{locale}} />
   </>
 }
 
