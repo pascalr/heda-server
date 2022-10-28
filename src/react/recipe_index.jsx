@@ -52,7 +52,7 @@ const RecipeListItemMenu = ({fav, recipe, editUserRecipe, user, page}) => {
   </>
 }
 
-export const RecipeList = ({page, list, selected, suggestions, tags, editUserRecipe, mixes, recipes, recipeKinds, user, images}) => {
+export const RecipeList = ({page, list, selected, suggestions, tags, editUserRecipe, mixes, recipes, user, images}) => {
 
   return (<>
     <ul id="recipes" className="recipe-list">
@@ -65,7 +65,7 @@ export const RecipeList = ({page, list, selected, suggestions, tags, editUserRec
           <li key={recipe.id} className='d-flex align-items-center'>
             <LinkToPage page={{...page, page: 15, recipeId: recipe.id}} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={current == selected ? "selected" : undefined}>
               <div className="d-flex align-items-center">
-                <RecipeThumbnailImage {...{recipe, recipeKinds, images}} />
+                <RecipeThumbnailImage {...{recipe, images}} />
                 <div style={{marginRight: '0.5em'}}></div>
                 {recipe.name}
               </div>
@@ -81,7 +81,7 @@ export const RecipeList = ({page, list, selected, suggestions, tags, editUserRec
   </>)
 }
 
-export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, recipes, recipeKinds, user, images}) => {
+export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, recipes, user, images}) => {
   
   const [recipeToEdit, setRecipeToEdit] = useState(null)
   const [showModal, setShowModal] = useState(true)
@@ -107,7 +107,7 @@ export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, re
     setShowModal(true)
   }
 
-  let listArgs = {page, suggestions, tags, editUserRecipe, mixes, recipes, recipeKinds, user, images}
+  let listArgs = {page, suggestions, tags, editUserRecipe, mixes, recipes, user, images}
 
   return (<>
     <EditTagsModal {...{recipe: recipeToEdit, tags, suggestions, showModal, setShowModal}} />

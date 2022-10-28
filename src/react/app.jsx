@@ -23,7 +23,7 @@ import { Carrousel } from './carrousel'
 import {EditMix} from './recipe_editor'
 
 // The advantage of using this instead of the number is if I need to search and to refactor, I can easy
-const PAGE_1 = 1 // TagIndex
+const PAGE_1 = 1 // HomePage, TagIndex no more
 const PAGE_2 = 2 // TagCategorySuggestions
 const PAGE_3 = 3 // EditTag
 const PAGE_4 = 4 // EditTags
@@ -389,7 +389,30 @@ const HomeTabs = ({page}) => {
   </>
 }
 
-const HomePage = ({page, tags, recipes, suggestions}) => {
+const RecipeCarrousel = ({items}) => {
+  const preloadItem = (i) => {if (i.image_slug) {preloadImage('/imgs/small/'+i.image_slug)}}
+  return <>
+    <Carrousel {...{items, preloadItem}}>{item => <>
+      <LinkToPage {...{className: 'plain-link', page: {page: PAGE_15, recipeId: item.id}}}>
+        <RecipeSmallImage {...{recipe: item}} />
+        <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
+      </LinkToPage>
+    </>}</Carrousel>
+  </>
+}
+
+const HomePage = ({page, tags, recipes, suggestions, favoriteRecipes}) => {
+
+  let favList = {title: t("Favorites"), records: []}
+  let toCookList = {title: t('To_cook_soon'), records: []}
+  let toTryList = {title: t('To_try'), records: []}
+  favoriteRecipes.forEach(fav => {
+    let recipe = recipes.find(r => r.id == fav.recipe_id)
+    if (fav.list_id == 1) { toCookList.records.push({recipe, fav}) }
+    else if (fav.list_id == 2) { toTryList.records.push({recipe, fav}) }
+    else { favList.records.push({recipe, fav}) }
+  })
+  const lists = [toCookList, favList, toTryList]
 
   let suggestionsByTagId = _.groupBy(suggestions, ({tag_id}) => tag_id)
   //let recipeIdsByTags = suggestions.reduce((acc, suggestion) => {
@@ -401,21 +424,22 @@ const HomePage = ({page, tags, recipes, suggestions}) => {
 
   return <>
     <HomeTabs {...{page}} />
+    {lists.map(list => {
+      if (list.records.length <= 0) {return ''}
+      return <div key={list.title}>
+        <h2 className="fs-14 bold">{list.title}</h2>
+        <RecipeCarrousel {...{items: list.records.map(r => r.recipe)}}/>
+      </div>
+    })}
     {sTags.map(tag => {
       if (!suggestionsByTagId[tag.id]) {return ''}
       const unsortedItems = suggestionsByTagId[tag.id].map(sugg => recipes.find(r => r.id == sugg.recipe_id))
       const itemsWithImages = unsortedItems.filter(r => r.image_slug)
       const itemsWithoutImages = unsortedItems.filter(r => !r.image_slug)
       const items = [...shuffle(itemsWithImages), ...shuffle(itemsWithoutImages)]
-      const preloadItem = (i) => {if (i.image_slug) {preloadImage('/imgs/small/'+i.image_slug)}}
       return <div key={tag.id}>
         <h2 className="fs-14 bold">{tag.name}</h2>
-        <Carrousel {...{items, preloadItem}}>{item => <>
-          <LinkToPage {...{className: 'plain-link', page: {page: PAGE_15, recipeId: item.id}}}>
-            <RecipeSmallImage {...{recipe: item}} />
-            <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
-          </LinkToPage>
-        </>}</Carrousel>
+        <RecipeCarrousel {...{items}}/>
       </div>
     })}
   </> 
@@ -905,7 +929,7 @@ const App = () => {
 
   // [PAGE_1]: <TagIndex {...{page, machines, tags, images}} />,
   const pages = {
-    [PAGE_1]: <HomePage {...{page, recipes, tags, suggestions}} />,
+    [PAGE_1]: <HomePage {...{page, recipes, tags, suggestions, favoriteRecipes}} />,
     [PAGE_2]: <TagCategorySuggestions {...{page, suggestions, recipes}} />,
     [PAGE_3]: <EditTag {...{page, tags}} />,
     [PAGE_4]: <EditTags {...{tags, page}} />,
