@@ -21,6 +21,7 @@ import { t } from "../translate"
 import { FOOD_EMOJIS, ANIMAL_EMOJIS, OTHER_EMOJIS, TO_REMOVE_EMOJIS, SMILEYS } from "./emojis"
 import { Carrousel } from './carrousel'
 import {EditMix} from './recipe_editor'
+import { MainSearch } from './main_search'
 
 // The advantage of using this instead of the number is if I need to search and to refactor, I can easy
 const PAGE_1 = 1 // HomePage, TagIndex no more
@@ -955,12 +956,7 @@ const App = () => {
 
   let otherProfiles = users.filter(u => u.id != user.id)
 
-  // Pour recevoir des invités => (page suivantes, quelles restrictions => véganes)
-  // Theme light:
-  //   Background color: #e3f2fd
-  //   Title color: #4f5458
-  //   Icon color: black
-  return (<>
+  const normalMode = <>
     <nav style={{backgroundColor: '#212529', marginBottom: '0.5em', borderBottom: '1px solid #cee2f0'}}>
       <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0'}}>
         <div className="float-start" style={{margin: '0.3em 0 0 0.5em'}}>
@@ -996,8 +992,17 @@ const App = () => {
         <div style={{margin: 'auto', width: 'fit-content', fontWeight: '500', fontSize: '1.5rem', color: '#f9f9f9'}} className="clickable" onClick={() => changePage(1)}>HedaCuisine</div>
       </div>
     </nav>
+  </>
+
+  // Pour recevoir des invités => (page suivantes, quelles restrictions => véganes)
+  // Theme light:
+  //   Background color: #e3f2fd
+  //   Title color: #4f5458
+  //   Icon color: black
+  return (<>
+    <MainSearch {...{locale: user.locale, renderingHome: !page.page || page.page == 1, user}} />
     <div id="trunk">
-      {isSearching ? <SearchBox {...{page, recipes, recipeKinds, tags, friendsRecipes, users, user, images, setIsSearching}} /> : pages[page.page || 1]}
+      {pages[page.page || 1]}
     </div>
   </>)
 }
