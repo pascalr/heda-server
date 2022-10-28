@@ -426,13 +426,13 @@ router.get('/', function(req, res, next) {
   // Whether or not to show an HTML cached version while the JS is loading.
   res.locals.disablePreview = req.query.disablePreview
   if (!req.user) {
+    res.locals.gon = {
+      locale: res.locals.locale,
     //// Use this to generate gon, but then use JSON.stringify(gon) and copy paste directly inside home.jsx
-    //res.locals.gon = {
-    //  locale: res.locals.locale,
     //  recipes1: db.fetchTable('recipes', {id: [113, 129, 669, 88, 323, 670, 672, 689]}, ['name', 'image_slug']),
     //  recipes2: db.fetchTable('recipes', {id: [755, 757, 66, 558]}, ['name', 'image_slug']),
     //  recipe: db.fetchTable('recipes', {id: 82}, RECIPE_ATTRS)[0] // FIXME: Should be fetchRecord
-    //}
+    }
     return res.render('home');
   }
   if (!req.user.user_id) { return res.redirect('/choose_user'); }

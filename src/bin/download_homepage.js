@@ -11,13 +11,17 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 (async () => {
   const browser = await puppeteer.launch({dumpio: true});
   const page = await browser.newPage();
-  const url = 'http://localhost:3000/?disablePreview=true'
 
-  await page.goto(url, {waitUntil: 'networkidle0'});
-  const html = await page.$eval('#root-home', (element) => {
-    return element.innerHTML
-  })
+  const locales = ['fr', 'en']
+  for (let i = 0; i < locales.length; i++) {
+    let locale = locales[i]
+    const url = 'http://localhost:3000/?disablePreview=true&locale='+locale
+    await page.goto(url, {waitUntil: 'networkidle0'});
+    const html = await page.$eval('#root-home', (element) => {
+      return element.innerHTML
+    })
+    fs.writeFile(path.join(__dirname, "../../public/homepage_"+locale+".html"), html, () => {})
+  }
+
   await browser.close();
-
-  fs.writeFile(path.join(__dirname, "../../public/homepage.html"), html, () => {})
 })();

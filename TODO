@@ -10,6 +10,7 @@ RECHERCHE: https://ca.indeed.com/jobs?q=ruby+on+rails&l=Remote&from=searchOnHP&v
 
 Regarder ce que mon ancien site reference à l'air
 
+Use MainSearch2 everywhere (show_recipe, show_user)
 TODO: Soft delete users. Serializer le user avec json dans data. Créer une table corpses table_name:string id:integer data:string
 TODO: Homepage in french and in english
 Ajouter une page contact.

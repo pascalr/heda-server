@@ -63,7 +63,7 @@ export const MainSearch2 = ({locale, renderingHome}) => {
     }
   }
   
-  let otherLocale = (locale == 'EN') ? 'FR' : 'EN'
+  let otherLocale = (locale.toLowerCase() == 'en') ? 'FR' : 'EN'
 
   const normalMode = <>
     <div className="float-start fs-15 px-3">
