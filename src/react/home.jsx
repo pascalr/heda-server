@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom'
 
 import { RecipeEditor } from "./recipe_editor"
 import { UserThumbnailImage, RecipeSmallImage, RecipeThumbnailImage, RecipeImage } from "./image"
-import { ajax } from "./utils"
+import { ajax, preloadImage } from "./utils"
 import { t } from "../translate"
 import { Carrousel } from "./carrousel"
 import { initHcu, useHcuState } from '../hcu'
@@ -22,6 +22,7 @@ const Home = () => {
   
   if (!window.hcu) {initHcu(); window.hcu.makeDummy() }
 
+  const preloadItem = (i) => {if (i.image_slug) {preloadImage('/imgs/small/'+i.image_slug)}}
   return <>
     <MainSearch2 {...{locale, renderingHome: true}} />
     <div style={{padding: '3em 0.3em 5em 0.3em', maxWidth: '70em', margin: 'auto'}}>
@@ -35,7 +36,7 @@ const Home = () => {
         </div>
         <div className='flex-grow-1' style={{height: '3em'}}></div>
         <div style={{width: '25em', maxWidth: '100%', margin: 'auto'}}>
-          <RecipeImage {...{recipe: {image_slug: '131.jpeg'}}} width="380" height="300" />
+          <RecipeImage {...{recipe: {image_slug: '131.jpeg'}, variant: 'original'}} width="380" height="300" />
         </div>
         <div className='flex-grow-1'></div>
       </div>
@@ -47,14 +48,14 @@ const Home = () => {
       </div>
       <div className="trunk">
         <h3>{t('Home_8')}</h3>
-        <Carrousel {...{items: recipes1}}>{item => <>
+        <Carrousel {...{items: recipes1, preloadItem}}>{item => <>
           <a href={"/r/"+item.id} className="plain-link">
             <RecipeSmallImage {...{recipe: item}} />
             <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
           </a>
         </>}</Carrousel>
         <h3>{t('Many_meals')}</h3>
-        <Carrousel {...{items: recipes2}}>{item => <>
+        <Carrousel {...{items: recipes2, preloadItem}}>{item => <>
           <a href={"/r/"+item.id} className="plain-link">
             <RecipeSmallImage {...{recipe: item}} />
             <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>

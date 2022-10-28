@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Swiper, SwiperSlide, useSwiper, useSwiperSlide } from 'swiper/react';
 
 import { useWindowWidth } from "./lib"
-import { preloadImage } from "./utils"
 
 const SlidePreviousButton = ({idx, nbItems, nbView, swiper}) => {
   if (nbItems <= nbView) {return ''}
@@ -29,7 +28,7 @@ const SlideNextButton = ({idx, nbItems, nbView, swiper}) => {
   );
 }
 
-export const Carrousel = ({items, children}) => {
+export const Carrousel = ({items, children, preloadItem}) => {
 
   const [idx, setIdx] = useState(0)
   const [swiper, setSwiper] = useState(null)
@@ -41,11 +40,13 @@ export const Carrousel = ({items, children}) => {
   const [maxPreloaded, setMaxPreloaded] = useState(Math.ceil(nbView))
 
   useEffect(() => {
-    // The index of the next slide out of view
-    const next = idx + Math.ceil(nbView)
-    if (next < nbItems && next >= maxPreloaded) {
-      preloadImage('/imgs/unkown/'+items[next].image_slug) // FIXME: This is dependant on my data...
-      setMaxPreloaded(next+1)
+    if (preloadItem) {
+      // The index of the next slide out of view
+      const next = idx + Math.ceil(nbView)
+      if (next < nbItems && next >= maxPreloaded) {
+        preloadItem(items[next])
+        setMaxPreloaded(next+1)
+      }
     }
   }, [items, idx])
   

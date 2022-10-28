@@ -407,9 +407,10 @@ const HomePage = ({page, tags, recipes, suggestions}) => {
       const itemsWithImages = unsortedItems.filter(r => r.image_slug)
       const itemsWithoutImages = unsortedItems.filter(r => !r.image_slug)
       const items = [...shuffle(itemsWithImages), ...shuffle(itemsWithoutImages)]
+      const preloadItem = (i) => {if (i.image_slug) {preloadImage('/imgs/small/'+i.image_slug)}}
       return <div key={tag.id}>
         <h2 className="fs-14 bold">{tag.name}</h2>
-        <Carrousel {...{items}}>{item => <>
+        <Carrousel {...{items, preloadItem}}>{item => <>
           <LinkToPage {...{className: 'plain-link', page: {page: PAGE_15, recipeId: item.id}}}>
             <RecipeSmallImage {...{recipe: item}} />
             <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>

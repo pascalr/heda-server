@@ -13,20 +13,10 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
   const page = await browser.newPage();
   const url = 'http://localhost:3000/'
 
-  //await page.goto(url);
   await page.goto(url, {waitUntil: 'networkidle0'});
-  //await page.waitFor('#rendered-home');
-  // await page.waitForFunction('window.status === "ready"'); THIS DOES NOT WORK. DEPRECATED FEATURE
-  //await page.waitFor('.trunk');
   const html = await page.$eval('#root-home', (element) => {
     return element.innerHTML
   })
-
-  //const html = await page.evaluate((sel) => {
-  //  console.log('sel', sel)
-  //  return sel.innerHTML;
-  //}, '#root-home');
-  //let html = await page.content();
   await browser.close();
 
   fs.writeFile(path.join(__dirname, "../../public/homepage.html"), html, () => {})

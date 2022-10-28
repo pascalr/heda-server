@@ -23,10 +23,11 @@ export const icon_path = (arg) => {
 export const image_slug_variant_path = (imageSlug, variant) => {
   return `/imgs/${variant}/${imageSlug}`
 }
-export const image_path = (imageOrSlug, variant=null) => {
+export const image_path = (imageOrSlug, variant) => {
+  if (!variant) {throw "ImagePath requires a variant..."}
   if (typeof imageOrSlug == "string") {
-    return `/imgs/${variant||'unkown'}/${imageOrSlug}`
+    return `/imgs/${variant}/${imageOrSlug}`
   } else {
-    return `/imgs/${variant||'unkown'}/${imageOrSlug.slug}`
+    return `/imgs/${variant}/${imageOrSlug.slug}`
   }
 }
