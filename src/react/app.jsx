@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 import { useDrag } from '@use-gesture/react'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import _ from 'lodash';
 //import { createRoot } from 'react-dom/client';
 
 import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, LinkToPage } from "./lib"
@@ -415,12 +414,11 @@ const HomePage = ({page, tags, recipes, suggestions, favoriteRecipes}) => {
   })
   const lists = [toCookList, favList, toTryList]
 
-  let suggestionsByTagId = _.groupBy(suggestions, ({tag_id}) => tag_id)
-  //let recipeIdsByTags = suggestions.reduce((acc, suggestion) => {
-  //  let prev = acc[suggestion.tag_id]
-  //  acc[suggestion.tag_id] = !prev ? [suggestion.recipe_id] : [...prev, suggestion.recipe_id]
-  //  return acc
-  //}, {})
+  let suggestionsByTagId = suggestions.reduce((acc, suggestion) => {
+    let prev = acc[suggestion.tag_id]
+    acc[suggestion.tag_id] = !prev ? [suggestion] : [...prev, suggestion]
+    return acc
+  }, {})
   const sTags = sortBy(tags, "position")
 
   return <>
