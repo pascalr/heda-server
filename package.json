@@ -42,7 +42,6 @@
     "express-fileupload": "^1.4.0",
     "express-session": "^1.17.2",
     "http-errors": "~1.6.3",
-    "jquery": "^3.6.1",
     "js-autocomplete": "^1.0.4",
     "lodash": "^4.17.21",
     "mkdirp": "^1.0.4",

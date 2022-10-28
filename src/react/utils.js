@@ -1,5 +1,3 @@
-//import $ from 'jquery'
-
 export function isTrue(val) {
   return val && val != 'false'
 }
@@ -155,33 +153,6 @@ export function ajax(params) {
       }
     })
   })
-    //}).then(response => {
-    //  if (response.ok) {
-    //    return response.json()
-    //  } else {
-    //    console.log('Fetch error')
-    //    if (params.error) { params.error(response) }
-    //  }
-    //}).then(json => {
-    //  if (params.success) { params.success(json) }
-    //})
-
-  //} else {
-  //  let data = {...params.data}
-  //  //let _csrf = $('[name="csrf-token"]').content
-  //  if (params.type !== 'GET') {
-  //    data._csrf = document.querySelector('[name="csrf-token"]').content
-  //  }
-  //  $.ajax({
-  //    type: params.type,
-  //    url: params.url, //addExtensionToPath("json", params.url),
-  //    data,
-  //    //contentType: "application/json",
-  //    //data: JSON.stringify(data),
-  //    success: params.success,
-  //    error: params.error,
-  //  });
-  //}
 }
 
 // https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
