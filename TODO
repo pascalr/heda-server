@@ -11,8 +11,6 @@ RECHERCHE: https://ca.indeed.com/jobs?q=ruby+on+rails&l=Remote&from=searchOnHP&v
 Regarder ce que mon ancien site reference à l'air
 
 /r/:id should work inside the app too
-Suggestions: 4 images de large???
-Un beau search dans l'application aussi.
 TODO: Soft delete users. Serializer le user avec json dans data. Créer une table corpses table_name:string id:integer data:string
 Ajouter une page contact.
 If the user was logged from another page, handle this properly and show a helpful error message if the user tries to modify anything...
