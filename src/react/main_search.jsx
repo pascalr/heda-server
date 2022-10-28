@@ -4,52 +4,71 @@ import { UserThumbnailImage, RecipeThumbnailImage } from "./image"
 import { ajax } from "./utils"
 import { t } from "../translate"
 import { localeHref, getPathFromUrl } from "../utils"
-import { useTransition } from "./lib"
+import { useTransition, LinkToPage } from "./lib"
 import { SearchWhiteIcon, PersonFillWhiteIcon, XLgWhiteIcon } from '../server/image.js'
+import { normalizeSearchText } from "./utils"
+
+const RecipeListItem = ({recipe, current, page, selected, users, user, selectedRef}) => {
+  let userName = null
+  let isSelected = current == selected
+  if (user.id != recipe.user_id) {
+    const recipeUser = users.find(u => u.id == recipe.user_id)
+    userName = recipeUser ? recipeUser.name : `user${recipe.user_id}`
+  }
+  return (
+    <li key={recipe.id} ref={isSelected ? selectedRef : null}>
+      <LinkToPage page={{...page, page: 15, recipeId: recipe.id}} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
+        <div className="d-flex align-items-center">
+          <RecipeThumbnailImage {...{recipe}} />
+          <div style={{marginRight: '0.5em'}}></div>
+          {userName ? <div><div>{recipe.name}</div><div className="h002">{t('by_2')} {userName}</div></div> : recipe.name}
+        </div>
+      </LinkToPage>
+    </li>
+  )
+}
 
 const SearchResults = ({searchResults, selected, selectedRef}) => {
   if (searchResults.users.length + searchResults.recipes.length <= 0) {return ''}
   return <>
-    <div style={{position: 'absolute', zIndex: '200', backgroundColor: 'white', border: '1px solid black', width: '100%', padding: '0.5em'}}>
-      {searchResults.users.length <= 0 ? '' : <>
-        <h2 className="h001">{t('Public_members')}</h2>
-        <ul>
-          {searchResults.users.map((user, current) => {
-            let isSelected = current == selected
-            return (
-              <li key={user.id} className="list-group-item" ref={isSelected ? selectedRef : null}>
-                <a href={localeHref(`/u/${user.id}`)} className={isSelected ? "selected" : undefined}>
-                  <div className="d-flex align-items-center">
-                    <UserThumbnailImage {...{user}} />
-                    <div style={{marginRight: '0.5em'}}></div>
-                    {user.name}
-                  </div>
-                </a>
-              </li>
-              )
-            })}
-        </ul>
-      </>}
-      {searchResults.recipes.length <= 0 ? '' : <>
-        <h2 className="h001">{t('Recipes')}</h2>
-        <ul className="recipe-list">
-          {searchResults.recipes.map((recipe, current) => {
-            let isSelected = (current+searchResults.users.length) == selected
-            return (
-              <li key={recipe.id} ref={isSelected ? selectedRef : null}>
-                <a href={localeHref('/r/'+recipe.id)} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
-                  <div className="d-flex align-items-center">
-                    <RecipeThumbnailImage {...{recipe}} />
-                    <div style={{marginRight: '0.5em'}}></div>
-                    <div><div>{recipe.name}</div><div className="h002">{t('by_2')} {recipe.user_name}</div></div>
-                  </div>
-                </a>
-              </li>
+    {searchResults.users.length <= 0 ? '' : <>
+      <h2 className="h001">{t('Public_members')}</h2>
+      <ul>
+        {searchResults.users.map((user, current) => {
+          let isSelected = current == selected
+          return (
+            <li key={user.id} className="list-group-item" ref={isSelected ? selectedRef : null}>
+              <a href={localeHref(`/u/${user.id}`)} className={isSelected ? "selected" : undefined}>
+                <div className="d-flex align-items-center">
+                  <UserThumbnailImage {...{user}} />
+                  <div style={{marginRight: '0.5em'}}></div>
+                  {user.name}
+                </div>
+              </a>
+            </li>
             )
           })}
-        </ul>
-      </>}
-    </div>
+      </ul>
+    </>}
+    {searchResults.recipes.length <= 0 ? '' : <>
+      <h2 className="h001">{t('Recipes')}</h2>
+      <ul className="recipe-list">
+        {searchResults.recipes.map((recipe, current) => {
+          let isSelected = (current+searchResults.users.length) == selected
+          return (
+            <li key={recipe.id} ref={isSelected ? selectedRef : null}>
+              <a href={localeHref('/r/'+recipe.id)} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
+                <div className="d-flex align-items-center">
+                  <RecipeThumbnailImage {...{recipe}} />
+                  <div style={{marginRight: '0.5em'}}></div>
+                  <div><div>{recipe.name}</div><div className="h002">{t('by_2')} {recipe.user_name}</div></div>
+                </div>
+              </a>
+            </li>
+          )
+        })}
+      </ul>
+    </>}
   </>
 }
 
@@ -115,16 +134,51 @@ export const PublicNavbar = ({locale, renderingHome, setIsSearching}) => {
   </>
 }
 
-export const AppSearch = ({user, page, otherProfiles, _csrf}) => {
+export const AppSearch = ({user, page, otherProfiles, _csrf, recipes, friendsRecipes, users}) => {
 
-  let allMatching = []
   let locale = user.locale
   let renderingHome = !page.page || page.page == 1
+  const minChars = 3
+
+  // Ugly as fuck...
+  const [matchingUserRecipes, setMatchingUserRecipes] = useState([])
+  const [matchingFriendsRecipes, setMatchingFriendsRecipes] = useState([])
+  const allMatching = [...matchingUserRecipes, ...matchingFriendsRecipes]
+
+  const filterItems = (items, term) => {
+    if (!term || term.length < minChars) {return []}
+    const normalized = normalizeSearchText(term)
+    return items.filter(r => (
+      r.name && ~normalizeSearchText(r.name).indexOf(normalized)
+    ))
+  }
+
   const config = {
-    printResults(selected, selectedRef) {return ''},
+    allMatching,
+    printResults(selected, selectedRef) {
+      return <>
+        {matchingUserRecipes.length >= 1 ? <h2 className="h001">{t('My_recipes')}</h2> : ''}
+        <ul className="recipe-list">
+          {matchingUserRecipes.map((recipe, current) => (
+            <RecipeListItem key={recipe.id} {...{recipe, current, page, selected, users, user, selectedRef}}/>
+          ))}
+        </ul>
+        {matchingFriendsRecipes.length >= 1 ? <h2 className="h001">{t('Suggestions')}</h2> : ''}
+        <ul className="recipe-list">
+          {matchingFriendsRecipes.map((recipe, current) => (
+            <RecipeListItem key={recipe.id} {...{recipe, current: current+matchingUserRecipes.length, page, selected, users, user, selectedRef}}/>
+          ))}
+        </ul>
+      </>
+    },
     printNavbar({setIsSearching}) {
       return <AppNavbar {...{locale, renderingHome, setIsSearching, otherProfiles, _csrf}}/>
     },
+    onTermChanged(term) {
+      let userRecipes = recipes.filter(r => r.user_id == user.id)
+      setMatchingUserRecipes(filterItems(userRecipes, term))
+      setMatchingFriendsRecipes(filterItems(friendsRecipes, term))
+    }
   }
   return <BaseSearch {...{locale, renderingHome, ...config}} />
 }
@@ -214,7 +268,11 @@ export const BaseSearch = ({locale, renderingHome, user, allMatching, onItemChoo
         <input ref={inputField} type="search" placeholder={`${t('Search')}...`} onChange={(e) => {setTerm(e.target.value); setSearch(e.target.value)}} autoComplete="off" className="plain-input white ps-1" style={{borderBottom: '2px solid white', width: searchTransition ? "100%" : "10px", transition: 'width 1s'}} onKeyDown={onKeyDown} value={search}/>
         <img className="clickable ps-2" src={XLgWhiteIcon} width="36" onClick={() => setIsSearching(false)}/>
       </div>
-      {printResults(selected, selectedRef)}
+      {allMatching.length <= 0 ? '' : <>
+        <div style={{position: 'absolute', zIndex: '200', backgroundColor: 'white', border: '1px solid black', width: '100%', padding: '0.5em', maxHeight: 'calc(100vh - 80px)', overflowY: 'scroll'}}>
+          {printResults(selected, selectedRef)}
+        </div>
+      </>}
     </div>
   </>
 

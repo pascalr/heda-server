@@ -957,7 +957,7 @@ const App = () => {
   //   Title color: #4f5458
   //   Icon color: black
   return (<>
-    <AppSearch {...{user, page, otherProfiles, _csrf}} />
+    <AppSearch {...{user, page, otherProfiles, _csrf, recipes, friendsRecipes, users}} />
     <div id="trunk">
       {pages[page.page || 1]}
     </div>
