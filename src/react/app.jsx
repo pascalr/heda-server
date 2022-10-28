@@ -393,7 +393,7 @@ const HomeTabs = ({page}) => {
 const RecipeCarrousel = ({items}) => {
   const preloadItem = (i) => {if (i.image_slug) {preloadImage('/imgs/small/'+i.image_slug)}}
   return <>
-    <Carrousel {...{items, preloadItem}}>{item => <>
+    <Carrousel {...{items, preloadItem, maxItems: 5}}>{item => <>
       <LinkToPage {...{className: 'plain-link', page: {page: PAGE_15, recipeId: item.id}}}>
         <RecipeSmallImage {...{recipe: item}} />
         <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
@@ -860,7 +860,7 @@ const App = () => {
   //   Icon color: black
   return (<>
     <AppSearch {...{user, page, otherProfiles, _csrf, recipes, friendsRecipes, users}} />
-    <div id="trunk">
+    <div class={(!page.page || page.page === 1) ? "wide-trunk" : "trunk"}>
       {pages[page.page || 1]}
     </div>
   </>)

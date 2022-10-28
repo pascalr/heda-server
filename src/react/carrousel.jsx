@@ -28,13 +28,13 @@ const SlideNextButton = ({idx, nbItems, nbView, swiper}) => {
   );
 }
 
-export const Carrousel = ({items, children, preloadItem}) => {
+export const Carrousel = ({items, children, preloadItem, maxItems=3}) => {
 
   const [idx, setIdx] = useState(0)
   const [swiper, setSwiper] = useState(null)
 
   const winWidth = useWindowWidth()
-  const nbView = Math.min(3, winWidth / 300)
+  const nbView = Math.min(maxItems, winWidth / 300)
   const nbItems = items.length
 
   const [maxPreloaded, setMaxPreloaded] = useState(Math.ceil(nbView))
