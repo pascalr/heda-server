@@ -7,25 +7,6 @@ import { localeHref, getPathFromUrl } from "../utils"
 import { useTransition } from "./lib"
 import { SearchWhiteIcon, PersonFillWhiteIcon, XLgWhiteIcon } from '../server/image.js'
 
-const useSearchResults = (term) => {
-  
-  const [searchResults, setSearchResults] = useState({users: [], recipes: []})
-  
-  useEffect(() => {
-    if (term.length >= 3) {
-      ajax({url: "/search?q="+term, type: 'GET', success: ({results}) => {
-        setSearchResults(results)
-      }, error: (errors) => {
-        console.error('Fetch search results error...', errors.responseText)
-      }})
-    } else {
-      setSearchResults({users: [], recipes: []})
-    }
-  }, [term])
-
-  return searchResults
-}
-
 const SearchResults = ({searchResults, selected, selectedRef}) => {
   if (searchResults.users.length + searchResults.recipes.length <= 0) {return ''}
   return <>
@@ -72,7 +53,38 @@ const SearchResults = ({searchResults, selected, selectedRef}) => {
   </>
 }
 
-export const MainSearch = ({locale, renderingHome, user}) => {
+export const MainSearch = ({locale, renderingHome}) => {
+
+  const [searchResults, setSearchResults] = useState({users: [], recipes: []})
+
+  const onTermChanged = (term) => {
+    if (term.length >= 3) {
+      ajax({url: "/search?q="+term, type: 'GET', success: ({results}) => {
+        setSearchResults(results)
+      }, error: (errors) => {
+        console.error('Fetch search results error...', errors.responseText)
+      }})
+    } else {
+      setSearchResults({users: [], recipes: []})
+    }
+  }
+
+  const allMatching = [...searchResults.users, ...searchResults.recipes]
+
+  const onItemChoosen = (selected) => {
+    if (selected >= searchResults.users.length) {
+      window.location.href = localeHref("/r/"+allMatching[selected].id)
+    } else {
+      window.location.href = localeHref("/u/"+allMatching[selected].id)
+    }
+  }
+  
+  const printResults = (selected, selectedRef) => <SearchResults {...{searchResults, selected, selectedRef}}/>
+
+  return <BaseSearch {...{locale, renderingHome, allMatching, onItemChoosen, printResults, onTermChanged}} />
+}
+
+export const BaseSearch = ({locale, renderingHome, user, allMatching, onItemChoosen, printResults, onTermChanged}) => {
 
   // Search is the text shown in the input field
   // Term is the term currently used to filter the search
@@ -83,7 +95,10 @@ export const MainSearch = ({locale, renderingHome, user}) => {
   const inputField = useRef(null)
   const selectedRef = useRef(null)
   const searchTransition = useTransition(isSearching)
-  const searchResults = useSearchResults(term)
+  
+  useEffect(() => {
+    if (onTermChanged) { onTermChanged(term) }
+  }, [term])
 
   useEffect(() => {
     if (isSearching) { inputField.current.focus() }
@@ -94,8 +109,6 @@ export const MainSearch = ({locale, renderingHome, user}) => {
     if (selectedRef.current) { selectedRef.current.scrollIntoView(false) }
   }, [selected])
 
-  const allMatching = [...searchResults.users, ...searchResults.recipes]
-
   let select = (pos) => {
     setSelected(pos)
     setSearch(pos == -1 ? '' : allMatching[pos].name)
@@ -104,13 +117,8 @@ export const MainSearch = ({locale, renderingHome, user}) => {
   let onKeyDown = ({key}) => {
     if (key == "ArrowDown") {select(selected >= allMatching.length-1 ? -1 : selected+1)}
     else if (key == "ArrowUp") {select(selected < 0 ? allMatching.length-1 : selected-1)}
-    else if (key == "Enter") {
-      if (selected >= searchResults.users.length) {
-        window.location.href = localeHref("/r/"+allMatching[selected].id)
-      } else {
-        window.location.href = localeHref("/u/"+allMatching[selected].id)
-      }
-    } else if (key == "Escape") {
+    else if (key == "Enter") {onItemChoosen(selected)}
+    else if (key == "Escape") {
       if (!term || term == '') { setIsSearching(false) }
       else { setSearch(''); setTerm('') }
     }
@@ -146,7 +154,7 @@ export const MainSearch = ({locale, renderingHome, user}) => {
         <input ref={inputField} type="search" placeholder={`${t('Search')}...`} onChange={(e) => {setTerm(e.target.value); setSearch(e.target.value)}} autoComplete="off" className="plain-input white ps-1" style={{borderBottom: '2px solid white', width: searchTransition ? "100%" : "10px", transition: 'width 1s'}} onKeyDown={onKeyDown} value={search}/>
         <img className="clickable ps-2" src={XLgWhiteIcon} width="36" onClick={() => setIsSearching(false)}/>
       </div>
-      <SearchResults {...{searchResults, selected, selectedRef}}/>
+      {printResults(selected, selectedRef)}
     </div>
   </>
 
