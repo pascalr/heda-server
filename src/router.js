@@ -73,18 +73,22 @@ router.post('/upload_image', function(req, res, next) {
     const promises = [];
     let stream = sharp(file.data)
 
-    // OPTIMIZE: It would be better if the latter resized use the previous one?
-    let out1 = path.join(IMAGE_FOLDER, image.id + '.' + ext)
+    // OPTIMIZE: It would be better if the latter resizes used the previous ones?
+    let out1 = path.join(IMAGE_FOLDER, "original", slug)
     let opts = {width: 800, height: 800, fit: 'inside', withoutEnlargement: true}
     promises.push(stream.clone().resize(opts).toFile(out1));
 
-    let out2 = path.join(IMAGE_FOLDER, "medium", image.id + '.' + ext)
-    opts = {width: 452, height: 304, fit: 'cover', withoutEnlargement: true}
-    promises.push(stream.clone().resize(opts).toFile(out2));
+    //let out2 = path.join(IMAGE_FOLDER, "medium", slug)
+    //opts = {width: 452, height: 304, fit: 'cover', withoutEnlargement: true}
+    //promises.push(stream.clone().resize(opts).toFile(out2));
 
-    let out3 = path.join(IMAGE_FOLDER, "thumb", image.id + '.' + ext)
+    let out3 = path.join(IMAGE_FOLDER, "thumb", slug)
     opts = {width: 71, height: 48, fit: 'cover', withoutEnlargement: true}
     promises.push(stream.clone().resize(opts).toFile(out3));
+
+    let out4 = path.join(IMAGE_FOLDER, "small", slug)
+    opts = {width: 255, height: 171, fit: 'cover', withoutEnlargement: true}
+    promises.push(stream.clone().resize(opts).toFile(out4));
     
     Promise.all(promises)
       .then(r => { console.log("Done processing image!"); res.json(image) })
@@ -93,8 +97,9 @@ router.post('/upload_image', function(req, res, next) {
         console.error("Error processing files, let's clean it up", err);
         try {
           fs.unlinkSync(out1);
-          fs.unlinkSync(out2);
+          //fs.unlinkSync(out2);
           fs.unlinkSync(out3);
+          fs.unlinkSync(out4);
         } catch (e) {}
       });
   })()
@@ -259,9 +264,15 @@ router.get('/imgs/:variant/:slug', function(req, res, next) {
   if (!['jpg', 'jpeg', 'png'].includes(ext)) {
     return res.status(500).send("Image format not supported. Expected jpg, jpeg or png. Was " + ext);
   }
+ 
+  let variant = req.params.variant
+  if (!['small', 'thumb', 'original'].includes(variant)) {
+    return res.status(500).send("Image variant not supported. Expected medium, thumb or original. Was " + variant);
+  }
+
 
   var fileName = parseInt(req.params.slug.split('.')[0]).toString()+'.'+ext;
-  res.sendFile(fileName, {root: IMAGE_FOLDER}, function (err) {
+  res.sendFile(fileName, {root: path.join(IMAGE_FOLDER, variant)}, function (err) {
     if (err) { return next(err); }
     console.log('Sent:', fileName);
   });

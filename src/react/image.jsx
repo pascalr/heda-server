@@ -28,15 +28,15 @@ export const RecipeImage = ({recipe, images, showCredit, width, height, variant}
 }
 
 export const RecipeMediumImage = (props) => {
-  return <RecipeImage {...{...props, width: 452, height: 304}} />
+  return <RecipeImage {...{...props, width: 452, height: 304, variant: 'original'}} />
 }
 
 export const RecipeThumbnailImage = (props) => {
-  return <RecipeImage {...{...props, width: 71, height: 48}} />
+  return <RecipeImage {...{...props, width: 71, height: 48, variant: 'thumb'}} />
 }
 
 export const RecipeSmallImage = (props) => {
-  return <RecipeImage {...{...props, width: 255, height: 171}} />
+  return <RecipeImage {...{...props, width: 255, height: 171, variant: 'small'}} />
 }
 
 export const UserThumbnailImage = ({user}) => {
