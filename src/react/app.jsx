@@ -21,7 +21,7 @@ import { t } from "../translate"
 import { FOOD_EMOJIS, ANIMAL_EMOJIS, OTHER_EMOJIS, TO_REMOVE_EMOJIS, SMILEYS } from "./emojis"
 import { Carrousel } from './carrousel'
 import {EditMix} from './recipe_editor'
-import { MainSearch } from './main_search'
+import { AppSearch } from './main_search'
 
 // The advantage of using this instead of the number is if I need to search and to refactor, I can easy
 const PAGE_1 = 1 // HomePage, TagIndex no more
@@ -949,50 +949,7 @@ const App = () => {
     [PAGE_17]: <NewRecipe {...{page, recipeKinds}} />
   }
 
-  let moveBtn = ''
-  if (!isSearching) {
-    moveBtn = <img className="clickable" src={icon_path("arrow-left-square-white.svg")} width="32" style={{paddingLeft: "0.5em"}} onClick={() => window.history.back()} />
-  }
-
   let otherProfiles = users.filter(u => u.id != user.id)
-
-  const normalMode = <>
-    <nav style={{backgroundColor: '#212529', marginBottom: '0.5em', borderBottom: '1px solid #cee2f0'}}>
-      <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0'}}>
-        <div className="float-start" style={{margin: '0.3em 0 0 0.5em'}}>
-          {moveBtn}
-        </div>
-        <div className="float-end" style={{marginTop: '0.25em'}}>
-          <img className="clickable" src={isSearching ? icon_path("x-lg-white.svg") : icon_path("search.svg")} width="24" onClick={() => {setIsSearching(!isSearching)}} style={{marginRight: '1em'}} />
-          <div className="dropdown d-inline-block">
-            <button className="plain-btn dropdown-toggle" type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style={{marginRight: '1em', color: 'white'}}>
-              <img className="clickable" src={icon_path("person-fill-white.svg")} width="28"/>
-            </button>
-            <div className="dropdown-menu" aria-labelledby="dropdownUserButton">
-              <a href="/edit_profile" className="dropdown-item">{t('My_profile')}</a>
-              <form action={user.locale ? "/logout?locale="+user.locale : "/logout"} method="post">
-                <button className="dropdown-item" type="submit">{t('Logout')}</button>
-                <input type="hidden" name="_csrf" value={_csrf}/>
-              </form>
-              <a href="/new_user" className="dropdown-item">{t('New_profile')}</a>
-              { otherProfiles.length == 0 ? '' : <>
-                <hr className="dropdown-divider"/>
-                <h6 className="dropdown-header">{t('Switch_user')}</h6>
-                { otherProfiles.map(usr => { 
-                  return <form key={usr.id} action="/change_user" method="post">
-                    <button className="dropdown-item" type="submit">{ usr.name }</button>
-                    <input type="hidden" name="user_id" value={usr.id}/>
-                    <input type="hidden" name="_csrf" value={_csrf}/>
-                  </form>
-                })}
-              </>}
-            </div>
-          </div>
-        </div>
-        <div style={{margin: 'auto', width: 'fit-content', fontWeight: '500', fontSize: '1.5rem', color: '#f9f9f9'}} className="clickable" onClick={() => changePage(1)}>HedaCuisine</div>
-      </div>
-    </nav>
-  </>
 
   // Pour recevoir des invités => (page suivantes, quelles restrictions => véganes)
   // Theme light:
@@ -1000,7 +957,7 @@ const App = () => {
   //   Title color: #4f5458
   //   Icon color: black
   return (<>
-    <MainSearch {...{locale: user.locale, renderingHome: !page.page || page.page == 1, user}} />
+    <AppSearch {...{user, page, otherProfiles, _csrf}} />
     <div id="trunk">
       {pages[page.page || 1]}
     </div>

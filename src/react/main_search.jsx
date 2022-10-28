@@ -53,7 +53,44 @@ const SearchResults = ({searchResults, selected, selectedRef}) => {
   </>
 }
 
+export const AppNavbar = ({locale, renderingHome, setIsSearching, otherProfiles, _csrf}) => {
+  return <>
+    <div className="float-start" style={{margin: '0.3em 0 0 0.5em'}}>
+      <img className="clickable" src={"/icons/arrow-left-square-white.svg"} width="32" style={{paddingLeft: "0.5em"}} onClick={() => window.history.back()} />
+    </div>
+    <div className="float-end" style={{marginTop: '0.25em'}}>
+      <img className="clickable" src={"/icons/search.svg"} width="24" onClick={() => {setIsSearching(true)}} style={{marginRight: '1em'}} />
+      <div className="dropdown d-inline-block">
+        <button className="plain-btn dropdown-toggle" type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style={{marginRight: '1em', color: 'white'}}>
+          <img className="clickable" src={"/icons/person-fill-white.svg"} width="28"/>
+        </button>
+        <div className="dropdown-menu" aria-labelledby="dropdownUserButton">
+          <a href="/edit_profile" className="dropdown-item">{t('My_profile')}</a>
+          <form action={locale ? "/logout?locale="+locale : "/logout"} method="post">
+            <button className="dropdown-item" type="submit">{t('Logout')}</button>
+            <input type="hidden" name="_csrf" value={_csrf}/>
+          </form>
+          <a href="/new_user" className="dropdown-item">{t('New_profile')}</a>
+          { otherProfiles.length == 0 ? '' : <>
+            <hr className="dropdown-divider"/>
+            <h6 className="dropdown-header">{t('Switch_user')}</h6>
+            { otherProfiles.map(usr => { 
+              return <form key={usr.id} action="/change_user" method="post">
+                <button className="dropdown-item" type="submit">{ usr.name }</button>
+                <input type="hidden" name="user_id" value={usr.id}/>
+                <input type="hidden" name="_csrf" value={_csrf}/>
+              </form>
+            })}
+          </>}
+        </div>
+      </div>
+    </div>
+    <div style={{margin: 'auto', width: 'fit-content', fontWeight: '500', fontSize: '1.5rem', color: '#f9f9f9'}} className="clickable" onClick={() => changePage(1)}>HedaCuisine</div>
+  </>
+}
+
 export const PublicNavbar = ({locale, renderingHome, setIsSearching}) => {
+
   let otherLocale = (locale.toLowerCase() == 'en') ? 'FR' : 'EN'
   return <>
     <div className="float-start fs-15 px-3">
@@ -78,38 +115,60 @@ export const PublicNavbar = ({locale, renderingHome, setIsSearching}) => {
   </>
 }
 
+export const AppSearch = ({user, page, otherProfiles, _csrf}) => {
+
+  let allMatching = []
+  let locale = user.locale
+  let renderingHome = !page.page || page.page == 1
+  const config = {
+    printResults(selected, selectedRef) {return ''},
+    printNavbar({setIsSearching}) {
+      return <AppNavbar {...{locale, renderingHome, setIsSearching, otherProfiles, _csrf}}/>
+    },
+  }
+  return <BaseSearch {...{locale, renderingHome, ...config}} />
+}
+
 export const MainSearch = ({locale, renderingHome}) => {
 
   const [searchResults, setSearchResults] = useState({users: [], recipes: []})
 
-  const onTermChanged = (term) => {
-    if (term.length >= 3) {
-      ajax({url: "/search?q="+term, type: 'GET', success: ({results}) => {
-        setSearchResults(results)
-      }, error: (errors) => {
-        console.error('Fetch search results error...', errors.responseText)
-      }})
-    } else {
-      setSearchResults({users: [], recipes: []})
-    }
-  }
-
   const allMatching = [...searchResults.users, ...searchResults.recipes]
 
-  const onItemChoosen = (selected) => {
-    if (selected >= searchResults.users.length) {
-      window.location.href = localeHref("/r/"+allMatching[selected].id)
-    } else {
-      window.location.href = localeHref("/u/"+allMatching[selected].id)
-    }
-  }
-  
-  const printResults = (selected, selectedRef) => <SearchResults {...{searchResults, selected, selectedRef}}/>
+  const config = {
 
-  return <BaseSearch {...{locale, renderingHome, allMatching, onItemChoosen, printResults, onTermChanged}} />
+    allMatching,
+    printResults(selected, selectedRef) {
+      return <SearchResults {...{searchResults, selected, selectedRef}}/>
+    },
+    onItemChoosen(selected) {
+      if (selected >= searchResults.users.length) {
+        window.location.href = localeHref("/r/"+allMatching[selected].id)
+      } else {
+        window.location.href = localeHref("/u/"+allMatching[selected].id)
+      }
+    },
+    onTermChanged(term) {
+      console.log('term', term)
+      if (term.length >= 3) {
+        ajax({url: "/search?q="+term, type: 'GET', success: ({results}) => {
+          setSearchResults(results)
+        }, error: (errors) => {
+          console.error('Fetch search results error...', errors.responseText)
+        }})
+      } else {
+        setSearchResults({users: [], recipes: []})
+      }
+    },
+    printNavbar({setIsSearching}) {
+      return <PublicNavbar {...{locale, renderingHome, setIsSearching}}/>
+    },
+  }
+
+  return <BaseSearch {...{locale, renderingHome, ...config}} />
 }
 
-export const BaseSearch = ({locale, renderingHome, user, allMatching, onItemChoosen, printResults, onTermChanged}) => {
+export const BaseSearch = ({locale, renderingHome, user, allMatching, onItemChoosen, printResults, onTermChanged, printNavbar}) => {
 
   // Search is the text shown in the input field
   // Term is the term currently used to filter the search
@@ -142,7 +201,7 @@ export const BaseSearch = ({locale, renderingHome, user, allMatching, onItemChoo
   let onKeyDown = ({key}) => {
     if (key == "ArrowDown") {select(selected >= allMatching.length-1 ? -1 : selected+1)}
     else if (key == "ArrowUp") {select(selected < 0 ? allMatching.length-1 : selected-1)}
-    else if (key == "Enter") {onItemChoosen(selected)}
+    else if (key == "Enter") {if (onItemChoosen) {onItemChoosen(selected)}}
     else if (key == "Escape") {
       if (!term || term == '') { setIsSearching(false) }
       else { setSearch(''); setTerm('') }
@@ -162,7 +221,7 @@ export const BaseSearch = ({locale, renderingHome, user, allMatching, onItemChoo
   return (<>
     <nav style={{backgroundColor: 'rgb(33, 37, 41)', marginBottom: '0.5em', borderBottom: '1px solid rgb(206, 226, 240)'}}>
       <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0', height: '52px'}}>
-        {isSearching ? searchMode : <PublicNavbar {...{locale, renderingHome, setIsSearching}}/>}
+        {isSearching ? searchMode : printNavbar({setIsSearching})}
       </div>
     </nav>
   </>)
