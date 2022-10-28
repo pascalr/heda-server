@@ -10,24 +10,16 @@ RECHERCHE: https://ca.indeed.com/jobs?q=ruby+on+rails&l=Remote&from=searchOnHP&v
 
 Regarder ce que mon ancien site reference à l'air
 
-Use MainSearch2 everywhere (show_recipe, show_user)
 TODO: Soft delete users. Serializer le user avec json dans data. Créer une table corpses table_name:string id:integer data:string
-TODO: Homepage in french and in english
 Ajouter une page contact.
-Preload image does not seem to work well...
-A pretty search
-Fix le data des images (générer medium et thumb) et utiliser ces fichiers.
-Créer un dossier /images/original pour mettre les images originales
-Convertir les images à genre 200kb et moins...
 If the user was logged from another page, handle this properly and show a helpful error message if the user tries to modify anything...
 Rajouter des liens vers les notes (Pain à la main, pain à la machine à pain, pain aux bananes, salade russe)
-Test Error page is not working I believe: https://www.hedacuisine.com/error not working
 Des suggestions d'images pour les recettes.
-Ne pas faire de variantes pour les images, mais le faire pour les thumbnails au moins...
-Image thumbnails, si le thumbnail n'existe pas, le créer. Faire ça pour toutes les variantes.
 FIXME: Make fetchTable secure. Remove ALLOWED_TABLES_GET, use read_attrs?
 Faire un recipe slider pour les À cuisinner prochainement?, à essayer? et favoris? (Ouin, peut-être simplement les enlever des mes recettes, et les mettres dans mes suggestions...)
+Le glitch sur le carrousel me gosse...
 TESTS
+User images thumbnail?
 
 Sur mon site internet de CV, rajouter une ligne sur la page d'acceuil, Portfolio, avec des liens vers les meilleurs projets que j'ai fait.
 
