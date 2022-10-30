@@ -8,7 +8,18 @@ RECHERCHE: https://ca.indeed.com/jobs?q=ruby+on+rails&l=Remote&from=searchOnHP&v
 - https://bellwoodlabs.applytojob.com/apply/dgrtnN15vB/Full-Stack-Developer-Canada (https://ca.indeed.com/viewjob?jk=636ab62a1fb4b203&q=ruby+on+rails&l=Remote&tk=1gflj5h43k6pe800&from=web&advn=5452573698367965&adid=400114705&ad=-6NYlbfkN0BbcS2TMpnX8ta2d7VziHXbD-4yrELM3HcMBz1N5h3AcOTjFU5IgkCkPjGswRCaPDIM7CbJQlwUJkWtYkgcows4Lxl72o7EIEEPXMzi0Sj60SkqGsGh6RsYjZzRiO-llAJQoXLt9lDf2UfhVwpk_rj3_xSWCHHWCY2wi1rVt21rnA15zL5Spjc_InMWRFSTUQSZD0q-QNlZikhaofSk_xyrlZ7ZY1bPAclv-5LHAGeqFkGrz4VRA3Bc26HG6kvhhAIQLCW5AgEhPGqti7xvGlllSvnaTMWrewo4z8Re-oDc0U1deEEknsEWK6oUQQ1jQ2FEEhcn5QqwwY29sKWm3xqnRIcyWyQ1Eo4Vdj1UNd9fLiKSR7Zwcj70&pub=4a1b367933fd867b19b072952f68dceb&xkcb=SoBW-_M3Y1uZ852bIR0JbzkdCdPP&vjs=3)
 - https://ca.indeed.com/viewjob?cmp=iXm%C3%A9dia&t=D%C3%A9veloppeur+Front+End&jk=471b621089e3b365&q=ruby+on+rails&vjs=3
 
+Des souliers qui durent 10 ans.
+Un capteur externe pour le bruxisme quit te réveille quand tu en fait.
+
 Regarder ce que mon ancien site reference à l'air
+
+Toucher à ça seulement quand je vais avoir FINI avec HedaServer...
+Au lieu de faire un monolith avec le site référence, faire pleins de mini sites:
+- Un mini-site desktop, où que tu as juste un background avec des icônes qui sont des liens vers d'autres sites.
+- Là tu peux cliquer par exemple sur Accords, pour tomber sur un autre mini-site, mais d'accords cette fois.
+- Ça prendrait juste un système pour faire correspondre les logins.
+- Il faut aussi regarder combien est-ce que je peux faire de mini application fly?
+- Ou bien chaque "application" est juste un fichier js? Un serveur pour tout contrôler?
 
 Minify {
   - DIY modal, remove react-bootstrap...
@@ -16,6 +27,7 @@ Minify {
   - Remove toastr
 }
 
+Ideally, all the files that use javascript (error, show_user, show_recipe, home, app), should just be a single bundle. It's ridiculous that it's multiple...
 /r/:id should work inside the app too
 TODO: Soft delete users. Serializer le user avec json dans data. Créer une table corpses table_name:string id:integer data:string
 Ajouter une page contact.

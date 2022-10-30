@@ -107,7 +107,7 @@ export const RecipeViewer = ({recipe, images, user}) => {
   </>)
 }
 
-const ShowRecipe = () => {
+export const ShowRecipe = () => {
 
   const [locale, ] = useState(gon.locale)
   const [recipe, ] = useState(gon.recipe)

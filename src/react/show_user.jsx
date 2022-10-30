@@ -23,7 +23,7 @@ const RecipeItem = ({recipe, images, recipeKinds}) => {
   )
 }
 
-const ShowUser = () => {
+export const ShowUser = () => {
 
   const [locale, ] = useState(gon.locale)
   const [recipes, ] = useState(gon.recipes)

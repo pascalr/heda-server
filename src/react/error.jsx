@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom'
 import { MainSearch } from './main_search'
 import { getUrlParams } from "../utils"
 
-const ShowError = () => {
+export const ShowError = () => {
 
   const [locale, ] = useState(gon.locale)
 

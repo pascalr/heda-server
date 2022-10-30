@@ -781,7 +781,7 @@ const NewRecipe = ({page, recipeKinds}) => {
   </>
 }
 
-const App = () => {
+export const App = () => {
   
   const [isSearching, setIsSearching] = useState(false)
 
