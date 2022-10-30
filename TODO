@@ -27,7 +27,6 @@ Minify {
   - Remove toastr
 }
 
-Ideally, all the files that use javascript (error, show_user, show_recipe, home, app), should just be a single bundle. It's ridiculous that it's multiple...
 /r/:id should work inside the app too
 TODO: Soft delete users. Serializer le user avec json dans data. Créer une table corpses table_name:string id:integer data:string
 Ajouter une page contact.

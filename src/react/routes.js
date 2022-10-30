@@ -16,6 +16,10 @@ const printParams = (params) => {
   return '?' + new URLSearchParams(params).toString();
 }
 
+export const recipePath = (recipeOrParams) => {
+  return `/r/${extractParamFromModel(recipeOrParams)}`
+}
+
 export const icon_path = (arg) => {
   return `/icons/${arg}`
 }

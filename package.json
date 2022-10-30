@@ -48,6 +48,7 @@
     "morgan": "~1.9.1",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
+    "path-to-regexp": "^6.2.1",
     "pluralize": "^8.0.0",
     "prosemirror-example-setup": "^1.2.1",
     "prosemirror-markdown": "^1.10.0",

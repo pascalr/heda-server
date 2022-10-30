@@ -359,7 +359,13 @@ router.get('/demo', function(req, res, next) {
   next()
 });
 
+const renderApp = [gon.fetchAll, setProfile, function(req, res, next) {
+  res.render('index', { account: req.user });
+}]
+
 router.get('/r/:id', function(req, res, next) {
+
+  if (req.user.user_id) { return next(); }
 
   let recipeId = req.params.id
   let o = {}
@@ -387,7 +393,7 @@ router.get('/r/:id', function(req, res, next) {
 
   res.locals.gon = o
   res.render('show_recipe');
-});
+}, renderApp);
 
 router.get('/u/:id', function(req, res, next) {
   let userId = req.params.id
@@ -444,9 +450,7 @@ router.get('/', function(req, res, next) {
   }
   if (!req.user.user_id) { return res.redirect('/choose_user'); }
   next();
-}, gon.fetchAll, setProfile, function(req, res, next) {
-  res.render('index', { account: req.user });
-});
+}, renderApp)
 
 
 const ensureAdmin = (req, res, next) => {

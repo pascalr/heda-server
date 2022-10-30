@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import toastr from 'toastr'
 
-import { ajax, omit, join, bindSetter, capitalize } from "./utils"
+import { ajax, omit, join, bindSetter, capitalize, changeUrl } from "./utils"
 import { t } from '../translate'
 
 /**
@@ -66,6 +66,10 @@ export function parseIngredientsAndHeaders(text) {
     itemNb += 1
     return {key: key, qty: args[0].trim(), label: args[1].trim(), item_nb: itemNb}
   }).filter(e => e)
+}
+
+export const Link = ({className, children, active, path, ...props}) => {
+  return <a className={join(className, active ? 'active' : null)} href={path} onClick={(e) => {e.preventDefault(); changeUrl(path)}} {...props}>{children}</a>
 }
 
 export const LinkToPage = ({page, className, children, active, ...props}) => {

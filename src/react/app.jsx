@@ -4,12 +4,12 @@ import { useDrag } from '@use-gesture/react'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 //import { createRoot } from 'react-dom/client';
 
-import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, LinkToPage } from "./lib"
+import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, LinkToPage, Link } from "./lib"
 import { findRecipeKindForRecipeName } from "../lib"
 import { RecipeList, RecipeIndex } from './recipe_index'
-import { ajax, isBlank, normalizeSearchText, preloadImage, join, bindSetter, capitalize, isTrue } from "./utils"
+import { changeUrl, ajax, isBlank, normalizeSearchText, preloadImage, join, bindSetter, capitalize, isTrue } from "./utils"
 import { getUrlParams, sortBy, shuffle } from "../utils"
-import { icon_path, image_path, image_slug_variant_path } from './routes'
+import { icon_path, image_path, image_slug_variant_path, recipePath } from './routes'
 import {TextField, AutocompleteInput, TextInput, CollectionSelect, ImageField, ImageSelector} from './form'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import {RecipeEditor} from "./recipe_editor"
@@ -20,6 +20,8 @@ import { t } from "../translate"
 import { Carrousel } from './carrousel'
 import {EditMix} from './recipe_editor'
 import { AppSearch } from './main_search'
+
+import { match } from "path-to-regexp"
 
 // The advantage of using this instead of the number is if I need to search and to refactor, I can easy
 const PAGE_1 = 1 // HomePage, TagIndex no more
@@ -392,10 +394,10 @@ const RecipeCarrousel = ({items}) => {
   const preloadItem = (i) => {if (i.image_slug) {preloadImage('/imgs/small/'+i.image_slug)}}
   return <>
     <Carrousel {...{items, preloadItem, maxItems: 5}}>{item => <>
-      <LinkToPage {...{className: 'plain-link', page: {page: PAGE_15, recipeId: item.id}}}>
+      <Link {...{className: 'plain-link', path: recipePath(item)}}>
         <RecipeSmallImage {...{recipe: item}} />
         <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
-      </LinkToPage>
+      </Link>
     </>}</Carrousel>
   </>
 }
@@ -793,8 +795,28 @@ export const App = () => {
     //let updated = {...newPage, locale}
     setPage(updated)
     setIsSearching(false)
-    window.history.pushState(updated, '', '?'+new URLSearchParams(updated).toString())
+    changeUrl('/', updated)
   }
+
+  const routes = [
+    {match: "/r/:id", action: (params) => {setPage({page: 15, recipeId: params.id})}}
+  ]
+
+  useEffect(() => {
+    window.addEventListener('history-changed', (event) => {
+      console.log('history changed!', event)
+      const {path, params} = event.detail
+      console.log('history changed!', path, params)
+      routes.forEach(route => {
+        const fn = match(route.match, { decode: decodeURIComponent });
+        const r = fn(path);
+        if (r) {
+          console.log('Found a matching route!!!', r)
+          route.action(r.params)
+        }
+      })
+    })
+  }, [])
 
   useEffect(() => {
     window.locale = getUrlParams(window.location.href).locale
