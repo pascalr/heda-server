@@ -89,16 +89,21 @@ export function getPathFromUrl(url) {
   return url.split(/[?#]/, 1)[0];
 }
 
-export function getUrlParams(url=null) {
+export function queryToParams(query) {
+  let q = query[0] === "?" ? query.substr(1) : query
   var r = {};
-  if (!url) {url = window.location.href}
-  let s = url.split('?', 2)
-  if (s.length < 2) {return []}
-  let params = s[1]
-  for (let pair of new URLSearchParams(params).entries()) {
+  for (let pair of new URLSearchParams(q).entries()) {
     r[pair[0]] = stringToPrimitive(pair[1])
   }
   return r
+}
+
+export function getUrlParams(url=null) {
+  // FIXME: Use window.location.search instead of window.location.href...
+  if (!url) {url = window.location.href}
+  let s = url.split('?', 2)
+  if (s.length < 2) {return []}
+  return queryToParams(s[1])
 }
 
 const utils = {padStr, now, sortBy, removeDuplicateIds, ensureIsArray, getUrlParams};

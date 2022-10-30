@@ -2,13 +2,13 @@ export function isTrue(val) {
   return val && val != 'false'
 }
 
-export function changeUrl(path, params) {
-  let url = (!params || Object.keys(params).length == 0) ? path : path+'?'+new URLSearchParams(params).toString()
+export function changeUrl(pathname, params) {
+  let url = (!params || Object.keys(params).length == 0) ? pathname : pathname+'?'+new URLSearchParams(params).toString()
   window.history.pushState(params, '', url)
 
   // I don't think there is or at least I wasn't able to find an event for pushState, so I created one.
   const historyChanged = new CustomEvent("history-changed", {
-    detail: {path, params},
+    detail: {pathname, params},
     bubbles: false,
     cancelable: false,
     composed: false,

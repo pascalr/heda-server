@@ -9,7 +9,7 @@ const SlidePreviousButton = ({idx, nbItems, nbView, swiper}) => {
   const handleClick = () => disabled ? null : swiper.slidePrev()
   return (
     <button className="plain-btn" aria-disabled={disabled} onClick={handleClick} style={{zIndex: '100', top: '40px', left: '5px'}}>
-      <img src="icons/custom-chevron-left.svg" width="45" height="90"/>
+      <img src="/icons/custom-chevron-left.svg" width="45" height="90"/>
     </button>
   );
 }
@@ -23,7 +23,7 @@ const SlideNextButton = ({idx, nbItems, nbView, swiper}) => {
 
   return (
     <button className="plain-btn" aria-disabled={disabled} onClick={handleClick} style={{zIndex: '100', top: '40px', right: '5px'}}>
-      <img src="icons/custom-chevron-right.svg" width="45" height="90"/>
+      <img src="/icons/custom-chevron-right.svg" width="45" height="90"/>
     </button>
   );
 }

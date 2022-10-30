@@ -8,7 +8,7 @@ import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, LinkToPage, Link 
 import { findRecipeKindForRecipeName } from "../lib"
 import { RecipeList, RecipeIndex } from './recipe_index'
 import { changeUrl, ajax, isBlank, normalizeSearchText, preloadImage, join, bindSetter, capitalize, isTrue } from "./utils"
-import { getUrlParams, sortBy, shuffle } from "../utils"
+import { getUrlParams, sortBy, shuffle, queryToParams } from "../utils"
 import { icon_path, image_path, image_slug_variant_path, recipePath } from './routes'
 import {TextField, AutocompleteInput, TextInput, CollectionSelect, ImageField, ImageSelector} from './form'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
@@ -787,7 +787,7 @@ export const App = () => {
   
   const [isSearching, setIsSearching] = useState(false)
 
-  const [page, setPage] = useState(getUrlParams())
+  const [page, setPage] = useState(null)
   if (!window.hcu) {initHcu()}
   window.hcu.changePage = (updated) => {
     //let locale = newPage.locale || getUrlParams(window.location.href).locale
@@ -801,26 +801,30 @@ export const App = () => {
   const routes = [
     {match: "/r/:id", action: (params) => {setPage({page: 15, recipeId: params.id})}}
   ]
+  const defaultAction = () => {setPage({page: 1})}
 
   useEffect(() => {
+
+    const matchRoutes = (pathname, params) => {
+      // TODO: Use params, which are query parameters as an object
+      // Combine alongside the other params (named params)? User must be careful no name clashes...
+      for (let i = 0; i < routes.length; i++) {
+        const r = match(routes[i].match, { end: false, decode: decodeURIComponent })(pathname);
+        if (r) {console.log('there'); return routes[i].action({...params, ...r.params})}
+      }
+      defaultAction()
+    }
+    matchRoutes(window.location.pathname, queryToParams(window.location.search))
+    //matchRoutes(window.location.pathname, getUrlParams(window.location.search))
     window.addEventListener('history-changed', (event) => {
-      console.log('history changed!', event)
-      const {path, params} = event.detail
-      console.log('history changed!', path, params)
-      routes.forEach(route => {
-        const fn = match(route.match, { decode: decodeURIComponent });
-        const r = fn(path);
-        if (r) {
-          console.log('Found a matching route!!!', r)
-          route.action(r.params)
-        }
-      })
+      matchRoutes(event.detail.pathname, event.detail.params)
     })
   }, [])
 
   useEffect(() => {
     window.locale = getUrlParams(window.location.href).locale
     window.onpopstate = (event) => {
+      console.log('onpopstate')
       setPage(event.state || getUrlParams())
       setIsSearching(false)
     }
@@ -872,6 +876,8 @@ export const App = () => {
 
   let otherProfiles = users.filter(u => u.id != user.id)
 
+  if (page === null) {return ''}
+
   // Pour recevoir des invités => (page suivantes, quelles restrictions => véganes)
   // Theme light:
   //   Background color: #e3f2fd
@@ -879,7 +885,7 @@ export const App = () => {
   //   Icon color: black
   return (<>
     <AppSearch {...{user, page, otherProfiles, _csrf, recipes, friendsRecipes, users}} />
-    <div class={(!page.page || page.page === 1) ? "wide-trunk" : "trunk"}>
+    <div className={(!page.page || page.page === 1) ? "wide-trunk" : "trunk"}>
       {pages[page.page || 1]}
     </div>
   </>)
