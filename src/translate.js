@@ -36,6 +36,7 @@ export function tr(id, locale) {
     Contact_msg: "For any question or comments, you can contact me at the following email address:",
   }
   let fr = {
+    Add_to_list: "Ajouter à une liste",
     Contact_us: "Nous contacter",
     Contact_msg: "Pour toutes questions ou commentaires, vous pouvez me rejoindre à l'adresse courriel suivante:",
     Confirm_destroy_profile: "Voulez-vous supprimer définitivement ce profil?\n\nToutes vos données pourraient être perdues à tout jamais.",
@@ -103,8 +104,8 @@ export function tr(id, locale) {
     Switch_user: "Changer d'utilisateur",
     My_recipes: 'Mes recettes',
     New_recipe: 'Nouvelle recette',
-    To_cook_soon: 'À cuisinner prochainement',
-    To_cook: 'À cuisinner',
+    To_cook_soon: 'À cuisiner prochainement',
+    To_cook: 'À cuisiner',
     To_try: 'À essayer',
     Stop_cooking_soon: 'Ne plus cuisiner',
     Stop_trying_recipe: 'Ne plus essayer',

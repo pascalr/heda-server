@@ -30,10 +30,8 @@ const removeFavoriteRecipe = (fav, recipe) => {
 
 const RecipeListItemMenu = ({fav, recipe, editUserRecipe, user}) => {
 
-  let toCook = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 1, recipe, user)}>{t('To_cook')}</button>
-  let toTry = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 2, recipe, user)}>{t('To_try')}</button>
-  let toNotCook = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 0, recipe, user)}>{t('Stop_cooking_soon')}</button>
-  let toNotTry = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 0, recipe, user)}>{t('Stop_trying_recipe')}</button>
+  let inCookList = fav && fav.list_id == 1
+  let inTryList = fav && fav.list_id == 2
 
   return <>
     <span className="dropdown m-auto">
@@ -41,12 +39,15 @@ const RecipeListItemMenu = ({fav, recipe, editUserRecipe, user}) => {
         <img width="24" src="icons/three-dots.svg"/>
       </button>
       <span className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-        {fav && fav.list_id == 1 ? toNotCook : toCook }
-        {fav && fav.list_id == 2 ? toNotTry : toTry }
-        <button type="button" className="dropdown-item" onClick={() => editUserRecipe(recipe)}>{t('Tag')}</button>
-        {user.id != recipe.user_id ? <button type="button" className="dropdown-item" onClick={() => removeFavoriteRecipe(fav, recipe)}>{t('Remove_from_favorites')}</button> : ''}
         {user.id != recipe.user_id ? '' : <Link path={'/e/'+recipe.id} className="dropdown-item">{t('Edit')}</Link>}
+        <button type="button" className="dropdown-item" onClick={() => editUserRecipe(recipe)}>{t('Tag')}</button>
+        <hr className="dropdown-divider"/>
+        <h6 className="dropdown-header">{t('Add_to_list')}</h6>
+        <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, inCookList ? 0 : 1, recipe, user)}><img src={"/icons/"+(inCookList ? "check-" : '')+"square.svg"} /> {t('To_cook_soon')}</button>
+        <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, inTryList ? 0 : 2, recipe, user)}><img src={"/icons/"+(inTryList ? "check-" : '')+"square.svg"} /> {t('To_try')}</button>
+        <hr className="dropdown-divider"/>
         {recipe.user_id == user.id ? <button type="button" className="dropdown-item" onClick={() => {removeRecipe(recipe)}}>{t('Delete_recipe')}</button> : ''}
+        {user.id != recipe.user_id ? <button type="button" className="dropdown-item" onClick={() => removeFavoriteRecipe(fav, recipe)}>{t('Remove_from_favorites')}</button> : ''}
       </span>
     </span>
   </>
