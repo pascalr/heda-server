@@ -106,7 +106,7 @@ export const AppNavbar = ({locale, renderingHome, setIsSearching, otherProfiles,
         </div>
       </div>
     </div>
-    <div style={{margin: 'auto', width: 'fit-content', fontWeight: '500', fontSize: '1.5rem', color: '#f9f9f9'}} className="clickable" onClick={() => changePage(1)}>HedaCuisine</div>
+    <div style={{margin: 'auto', width: 'fit-content', fontWeight: '500', fontSize: '1.5rem', color: '#f9f9f9'}} className="clickable" onClick={() => changeUrl('/')}>HedaCuisine</div>
   </>
 }
 

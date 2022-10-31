@@ -13,6 +13,110 @@ import { RecipeMediumImage } from "./image"
 import { RecipeUtils } from "./recipe_utils"
 import { t } from "../translate"
 
+// I do something similar to Tiptap to serialize and deserialize
+const CmdAdd = {
+  id: 'ADD',
+  label: {
+    fr: 'AJOUTER'
+  },
+  args: [ // unused
+    {name: 'qty', type: 'STRING'},
+    {name: 'food', type: 'REFERENCE'}, // 'idNumber-name'
+  ],
+  // ADD,qty,machineFoodId,foodName
+  parse: (args, context, obj={}) => {
+    obj.qty = args[1]
+    if (args[2]) {
+      let i = args[2].indexOf('-')
+      obj.machineFoodId = (i == -1) ? null : args[2].substr(0,i)
+      obj.machineFoodName = (i == -1) ? args[2] : args[2].substr(i+1)
+      obj.machineFood = context.machineFoods.find(e => e.id == obj.machineFoodId)
+    }
+    if (!obj.machineFood) {
+      obj.errors = [`Unable to find food with name = ${args[2]}`]
+    }
+    return obj
+  },
+  print: (obj) => {
+      return <div className="instruction"><span>{obj.type.label.fr}</span><span>{obj.qty}</span><span>{obj.machineFoodName}</span></div>
+  },
+}
+const CmdMix = {
+  id: 'MIX',
+  label: {
+    fr: 'MÉLANGER'
+  },
+  parse: (args, context, obj={}) => {
+    return obj
+  },
+  print: (obj) => {
+    return <div className="instruction"><span>{obj.type.label.fr}</span></div>
+  },
+}
+const CmdContainer = {
+  id: 'CONTAINER',
+  label: {
+    fr: 'CONTENANT'
+  },
+  args: [ // unused
+    {name: 'id', type: 'STRING'},
+  ],
+  parse: (args, context, obj={}) => {
+    obj.id = args[1]
+    return obj
+  },
+  print: (obj) => {
+    return <div className="instruction"><span>{obj.type.label.fr}</span><span>{obj.id}</span></div>
+  },
+}
+
+const CMD_TYPES = [CmdAdd, CmdMix, CmdContainer]
+const labelForCmdType = (cmdType) => {
+  let t = CMD_TYPES.find(e => e.id == cmdType.id)
+  return t ? t.label.fr : cmdType.id
+}
+
+export const ShowMix = ({page, recipes, machines, mixes, machineFoods}) => {
+
+  const machine = page.machineId ? machines.find(m => m.id == page.machineId) : null
+  const currentMachineFoods = machine ? machineFoods.filter(m => m.machine_id == machine.id) : machineFoods
+  const mix = mixes.find(m => m.id == page.mixId)
+
+  console.log('mix.recipe_id', mix.recipe_id)
+
+  const instructions = (mix.instructions||'').split(';')
+  const eInstructions = instructions.map((instruction,line) => {
+
+    let args = instruction.split(',')
+    let cmdType = CMD_TYPES.find(e => e.id == args[0])
+    let obj = cmdType ? cmdType.parse(args, context) : null
+    if (obj) {obj.type = cmdType}
+
+    return (
+      <li key={`${line}-${instruction}`} className={`list-group-item${!obj || obj.errors ? ' cmd-error' : ''}`}>
+        {!obj || obj.errors ? <img className="float-end" style={{marginRight: '0.4em', marginTop: '0.4em'}} src="/icons/info-circle.svg" width="18" height="18"></img> : ''}
+        <div className='d-flex gap-10'>
+          {obj ? cmdType.print(obj) : ''}
+        </div>
+      </li>
+    )
+  })
+
+  return (<>
+    <div className="d-flex gap-20 align-items-center">
+      <h1>{mix.name || 'Sans nom'}</h1>
+      <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => changeUrl('/m/'+machine.id+'/e/'+mix.id)}>Modifier</button>
+    </div>
+    <ul className="list-group">{eInstructions}</ul>
+    <div style={{height: '0.5em'}}></div>
+    <div className="d-flex gap-10">
+      <button type="button" className="btn btn-small btn-primary">Cuisiner</button>
+      <button type="button" className="btn btn-small btn-secondary">Ajouter à mon calendrier</button>
+    </div>
+    <div style={{height: '1em'}}></div>
+  </>)
+}
+
 export const EditMix = ({page, recipes, machines, mixes, machineFoods}) => {
 
   const context = {recipes, machines, mixes, machineFoods}

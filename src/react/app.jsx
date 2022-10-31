@@ -17,7 +17,7 @@ import { initHcu, useHcuState } from '../hcu'
 import { RecipeThumbnailImage, RecipeSmallImage, RecipeMediumImage } from "./image"
 import { t } from "../translate"
 import { Carrousel } from './carrousel'
-import {EditMix} from './recipe_editor'
+import {EditMix, ShowMix} from './recipe_editor'
 import { AppSearch } from './main_search'
 
 import { match } from "path-to-regexp"
@@ -231,110 +231,6 @@ const HomePage = ({page, tags, recipes, suggestions, favoriteRecipes, machines})
   </> 
 }
 
-// I do something similar to Tiptap to serialize and deserialize
-const CmdAdd = {
-  id: 'ADD',
-  label: {
-    fr: 'AJOUTER'
-  },
-  args: [ // unused
-    {name: 'qty', type: 'STRING'},
-    {name: 'food', type: 'REFERENCE'}, // 'idNumber-name'
-  ],
-  // ADD,qty,machineFoodId,foodName
-  parse: (args, context, obj={}) => {
-    obj.qty = args[1]
-    if (args[2]) {
-      let i = args[2].indexOf('-')
-      obj.machineFoodId = (i == -1) ? null : args[2].substr(0,i)
-      obj.machineFoodName = (i == -1) ? args[2] : args[2].substr(i+1)
-      obj.machineFood = context.machineFoods.find(e => e.id == obj.machineFoodId)
-    }
-    if (!obj.machineFood) {
-      obj.errors = [`Unable to find food with name = ${args[2]}`]
-    }
-    return obj
-  },
-  print: (obj) => {
-      return <div className="instruction"><span>{obj.type.label.fr}</span><span>{obj.qty}</span><span>{obj.machineFoodName}</span></div>
-  },
-}
-const CmdMix = {
-  id: 'MIX',
-  label: {
-    fr: 'MÉLANGER'
-  },
-  parse: (args, context, obj={}) => {
-    return obj
-  },
-  print: (obj) => {
-    return <div className="instruction"><span>{obj.type.label.fr}</span></div>
-  },
-}
-const CmdContainer = {
-  id: 'CONTAINER',
-  label: {
-    fr: 'CONTENANT'
-  },
-  args: [ // unused
-    {name: 'id', type: 'STRING'},
-  ],
-  parse: (args, context, obj={}) => {
-    obj.id = args[1]
-    return obj
-  },
-  print: (obj) => {
-    return <div className="instruction"><span>{obj.type.label.fr}</span><span>{obj.id}</span></div>
-  },
-}
-
-const CMD_TYPES = [CmdAdd, CmdMix, CmdContainer]
-const labelForCmdType = (cmdType) => {
-  let t = CMD_TYPES.find(e => e.id == cmdType.id)
-  return t ? t.label.fr : cmdType.id
-}
-
-const ShowMix = ({page, recipes, machines, mixes, machineFoods}) => {
-
-  const machine = page.machineId ? machines.find(m => m.id == page.machineId) : null
-  const currentMachineFoods = machine ? machineFoods.filter(m => m.machine_id == machine.id) : machineFoods
-  const mix = mixes.find(m => m.id == page.mixId)
-
-  console.log('mix.recipe_id', mix.recipe_id)
-
-  const instructions = (mix.instructions||'').split(';')
-  const eInstructions = instructions.map((instruction,line) => {
-
-    let args = instruction.split(',')
-    let cmdType = CMD_TYPES.find(e => e.id == args[0])
-    let obj = cmdType ? cmdType.parse(args, context) : null
-    if (obj) {obj.type = cmdType}
-
-    return (
-      <li key={`${line}-${instruction}`} className={`list-group-item${!obj || obj.errors ? ' cmd-error' : ''}`}>
-        {!obj || obj.errors ? <img className="float-end" style={{marginRight: '0.4em', marginTop: '0.4em'}} src="/icons/info-circle.svg" width="18" height="18"></img> : ''}
-        <div className='d-flex gap-10'>
-          {obj ? cmdType.print(obj) : ''}
-        </div>
-      </li>
-    )
-  })
-
-  return (<>
-    <div className="d-flex gap-20 align-items-center">
-      <h1>{mix.name || 'Sans nom'}</h1>
-      <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => changePage({page: PAGE_14, machineId: machine.id, mixId: mix.id})}>Modifier</button>
-    </div>
-    <ul className="list-group">{eInstructions}</ul>
-    <div style={{height: '0.5em'}}></div>
-    <div className="d-flex gap-10">
-      <button type="button" className="btn btn-small btn-primary">Cuisiner</button>
-      <button type="button" className="btn btn-small btn-secondary">Ajouter à mon calendrier</button>
-    </div>
-    <div style={{height: '1em'}}></div>
-  </>)
-}
-
 const ShowRecipe = (props) => {
   return <>
     <HomeTabs {...{page: props.page, machines: props.machines}} />
@@ -367,7 +263,7 @@ const MixIndex = ({page, machines, mixes, machineFoods}) => {
   const createMix = () => {
     ajax({url: mixes_path(), type: 'POST', data: {}, success: (mix) => {
       mixes.update([...mixes, mix])
-      changePage({page: PAGE_14, machineId: machine.id, mixId: mix.id})
+      changeUrl('/m/'+machine.id+'/e/'+mix.id)
     }})
   }
   const destroyMix = (mix) => {
@@ -379,7 +275,7 @@ const MixIndex = ({page, machines, mixes, machineFoods}) => {
   const sorted = sortBy(mixes, "name") // Sorting client side so newly created are sorted
   const eMixes = sorted.map(mix => {
     return <li key={mix.id} className="list-group-item">
-      <span className="clickable" onClick={() => changePage({page: PAGE_13, machineId: machine.id, mixId: mix.id})}>{mix.name || 'Sans nom'}</span>
+      <span className="clickable" onClick={() => changeUrl('/m/'+machine.id+'/s/'+mix.id)}>{mix.name || 'Sans nom'}</span>
       <img className="clickable float-end" src="/icons/x-lg.svg" width="18" height="18" onClick={() => destroyMix(mix)}></img>
     </li>
   })
@@ -505,7 +401,7 @@ const NewRecipe = ({page, recipeKinds}) => {
     e.preventDefault()
     const record = {name}
     window.hcu.createRecord('recipes', record, (created) => {
-      window.hcu.changePage({...page, page: 16, recipeId: created.id})
+      changeUrl('/e/'+created.id)
     })
   }
 
@@ -567,8 +463,8 @@ export const App = () => {
     {match: "/n", action: (params) => {setPage({page: 17})}}, // NewRecipe
     {match: "/m/:id/i", action: (params) => {setPage({page: 11, machineId: params.id})}}, // Inventory
     {match: "/m/:id/l", action: (params) => {setPage({page: 12, machineId: params.id})}}, // MixIndex
-    {match: "/m/:machineId/s/:id", action: (params) => {setPage({page: 13, machineId: params.machineId})}}, // ShowMix
-    {match: "/m/:machineId/e/:id", action: (params) => {setPage({page: 14, machineId: params.machineId})}}, // EditMix
+    {match: "/m/:machineId/s/:id", action: (params) => {setPage({page: 13, machineId: params.machineId, mixId: params.id})}}, // ShowMix
+    {match: "/m/:machineId/e/:id", action: (params) => {setPage({page: 14, machineId: params.machineId, mixId: params.id})}}, // EditMix
     {match: "/m/:id", action: (params) => {setPage({page: 10, machineId: params.id})}}, // HedaIndex
     //[PAGE_10]: <HedaIndex {...{page, machines}} />,
     //[PAGE_11]: <Inventory {...{page, machines, machineFoods, containerQuantities, foods, containerFormats}} />,
