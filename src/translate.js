@@ -115,6 +115,7 @@ export function tr(id, locale) {
     Favorite_recipes: 'Recettes favorites',
     Settings: 'Paramètres',
     Tags: 'Tags',
+    Create_account: 'Créer un compte',
     Create_tag: 'Créer un tag',
     Create: 'Créer',
     Modify_tag: 'Modifier le tag',

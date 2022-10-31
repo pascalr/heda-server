@@ -802,8 +802,37 @@ export const App = () => {
     changeUrl('/', updated)
   }
 
+  const suggestions = useHcuState(gon.suggestions.filter(r => r.tag_id), {tableName: 'suggestions'}) // FIXME: Fix the data. tag_id is mandatory...
+  const favoriteRecipes = useHcuState(gon.favorite_recipes, {tableName: 'favorite_recipes'})
+  const machineFoods = useHcuState(gon.machine_foods, {tableName: 'machine_foods'})
+  const mixes = useHcuState(gon.mixes, {tableName: 'mixes'})
+  const recipes = useHcuState(gon.recipes, {tableName: 'recipes'})
+  const recipeKinds = []
+  const images = useHcuState(gon.images, {tableName: 'images'})
+  const tags = useHcuState(gon.tags, {tableName: 'tags'})
+  //const notes = gon.notes
+  const containerQuantities = useHcuState(gon.container_quantities, {tableName: 'container_quantities'})
+  const containerFormats = useHcuState(gon.container_formats, {tableName: 'container_formats'})
+  const foods = useHcuState(gon.foods, {tableName: 'foods'})
+  const machines = useHcuState(gon.machines, {tableName: 'machines'})
+  const friendsRecipes = gon.friends_recipes//.filter(r => !recipeIds.includes(r.id))
+  const users = gon.users
+  const user = gon.user
+  window.locale = user.locale
+
+  const [element, setElement] = useState(null)
   const routes = [
-    {match: "/r/:id", action: (params) => {setPage({page: 15, recipeId: params.id})}}
+    {match: "/r/:id", element: <ShowRecipe {...{page, recipes, mixes, favoriteRecipes, recipeKinds, images, user, users, suggestions, tags}} />, action: (params) => {setPage({page: 15, recipeId: params.id})}},
+    {match: "/c", action: (params) => {setPage({page: 4})}}, // EditTags
+    {match: "/t/:id", action: (params) => {setPage({page: 3, tagId: params.id})}}, // EditTag
+    {match: "/l", action: (params) => {setPage({page: 6})}}, // MyRecipes
+    {match: "/e/:id", action: (params) => {setPage({page: 15, recipeId: params.id})}}, // EditRecipe
+    {match: "/n", action: (params) => {setPage({page: 17})}}, // NewRecipe
+    //[PAGE_10]: <HedaIndex {...{page, machines}} />,
+    //[PAGE_11]: <Inventory {...{page, machines, machineFoods, containerQuantities, foods, containerFormats}} />,
+    //[PAGE_12]: <MixIndex {...{page, machines, machineFoods, mixes}} />,
+    //[PAGE_13]: <ShowMix {...{page, recipes, machines, mixes, machineFoods}} />,
+    //[PAGE_14]: <EditMix {...{page, recipes, machines, mixes, machineFoods}} />,
   ]
   const defaultAction = (params) => {setPage(params)}
 
@@ -841,24 +870,6 @@ export const App = () => {
   useEffect(() => {
     setCsrf(document.querySelector('[name="csrf-token"]').content)
   }, [])
-
-  const suggestions = useHcuState(gon.suggestions.filter(r => r.tag_id), {tableName: 'suggestions'}) // FIXME: Fix the data. tag_id is mandatory...
-  const favoriteRecipes = useHcuState(gon.favorite_recipes, {tableName: 'favorite_recipes'})
-  const machineFoods = useHcuState(gon.machine_foods, {tableName: 'machine_foods'})
-  const mixes = useHcuState(gon.mixes, {tableName: 'mixes'})
-  const recipes = useHcuState(gon.recipes, {tableName: 'recipes'})
-  const recipeKinds = []
-  const images = useHcuState(gon.images, {tableName: 'images'})
-  const tags = useHcuState(gon.tags, {tableName: 'tags'})
-  //const notes = gon.notes
-  const containerQuantities = useHcuState(gon.container_quantities, {tableName: 'container_quantities'})
-  const containerFormats = useHcuState(gon.container_formats, {tableName: 'container_formats'})
-  const foods = useHcuState(gon.foods, {tableName: 'foods'})
-  const machines = useHcuState(gon.machines, {tableName: 'machines'})
-  const friendsRecipes = gon.friends_recipes//.filter(r => !recipeIds.includes(r.id))
-  const users = gon.users
-  const user = gon.user
-  window.locale = user.locale
 
   // [PAGE_1]: <TagIndex {...{page, machines, tags, images}} />,
   const pages = {

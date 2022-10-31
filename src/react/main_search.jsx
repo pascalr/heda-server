@@ -127,6 +127,7 @@ export const PublicNavbar = ({locale, renderingHome, setIsSearching}) => {
         </button>
         <div className="dropdown-menu" aria-labelledby="dropdownUserButton">
           <a href={localeHref("/login")} className="dropdown-item">{t('Login', locale)}</a>
+          <a href={localeHref("/signup")} className="dropdown-item">{t('Create_account', locale)}</a>
           <a href={localeHref("/contact")} className="dropdown-item">{t('Contact_us', locale)}</a>
         </div>
       </div>
