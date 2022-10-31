@@ -44,12 +44,6 @@ const PAGE_18 = 18
 const PAGE_19 = 19
 const PAGE_20 = 20
 
-const changePage = (page) => {
-  window.hcu.changePage(page)
-  //getRegister('setPage')(page)
-}
-  
-
 const EditTag = ({page, tags}) => {
   const [name, setName] = useState('')
   //const filter = page && page.filterId ? recipeFilters.find(f => f.id == page.filterId) : null
@@ -424,14 +418,6 @@ export const App = () => {
 
   const [page, setPage] = useState(null)
   if (!window.hcu) {initHcu()}
-  window.hcu.changePage = (updated) => {
-    //let locale = newPage.locale || getUrlParams(window.location.href).locale
-    //window.locale = locale
-    //let updated = {...newPage, locale}
-    setPage(updated)
-    setIsSearching(false)
-    changeUrl('/', updated)
-  }
 
   const suggestions = useHcuState(gon.suggestions.filter(r => r.tag_id), {tableName: 'suggestions'}) // FIXME: Fix the data. tag_id is mandatory...
   const favoriteRecipes = useHcuState(gon.favorite_recipes, {tableName: 'favorite_recipes'})
@@ -474,17 +460,18 @@ export const App = () => {
   ]
   const defaultAction = (params) => {setPage({...{page: 1}, params})}
 
+  const matchRoutes = (pathname, params) => {
+    // TODO: Use params, which are query parameters as an object
+    // Combine alongside the other params (named params)? User must be careful no name clashes...
+    for (let i = 0; i < routes.length; i++) {
+      const r = match(routes[i].match, { end: false, decode: decodeURIComponent })(pathname);
+      if (r) {return routes[i].action({...params, ...r.params})}
+    }
+    defaultAction(params)
+  }
+
   useEffect(() => {
 
-    const matchRoutes = (pathname, params) => {
-      // TODO: Use params, which are query parameters as an object
-      // Combine alongside the other params (named params)? User must be careful no name clashes...
-      for (let i = 0; i < routes.length; i++) {
-        const r = match(routes[i].match, { end: false, decode: decodeURIComponent })(pathname);
-        if (r) {return routes[i].action({...params, ...r.params})}
-      }
-      defaultAction(params)
-    }
     matchRoutes(window.location.pathname, queryToParams(window.location.search))
     const historyChanged = (event) => {
       matchRoutes(event.detail.pathname, event.detail.params)
@@ -499,8 +486,7 @@ export const App = () => {
     window.locale = getUrlParams(window.location.href).locale
     window.onpopstate = (event) => {
       console.log('onpopstate')
-      setPage(event.state || getUrlParams())
-      setIsSearching(false)
+      matchRoutes(window.location.pathname, queryToParams(window.location.search))
     }
   }, [])
 

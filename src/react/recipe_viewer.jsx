@@ -155,7 +155,7 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
                 {user.id != recipe.user_id ? '' : <Link path={'/e/'+recipe.id} className="dropdown-item">{t('Edit')}</Link>}
                 <button type="button" className="dropdown-item" onClick={() => setShowModal(true)}>{t('Tag')}</button>
                 {recipeBelongsToSiblings ? <button type="button" className="dropdown-item" onClick={changeOwner}>{t('Attribute_to_this_profile')}</button> : ''}
-                {recipe.user_id == user.id ? <li><button type="button" className="dropdown-item" onClick={() => {removeRecipe(recipe); window.hcu.changePage({page: 6})}}>{t('Delete_recipe')}</button></li> : ''}
+                {recipe.user_id == user.id ? <li><button type="button" className="dropdown-item" onClick={() => {removeRecipe(recipe); changeUrl('/l')}}>{t('Delete_recipe')}</button></li> : ''}
               </div>
             </span>
           </div>
