@@ -83,7 +83,7 @@ export const RecipeList = ({list, selected, suggestions, tags, editUserRecipe, m
 }
 
 export const RecipeIndex = ({favoriteRecipes, suggestions, tags, mixes, recipes, user, images}) => {
-  
+
   const [recipeToEdit, setRecipeToEdit] = useState(null)
   const [showModal, setShowModal] = useState(true)
 

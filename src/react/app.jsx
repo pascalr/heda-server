@@ -438,11 +438,11 @@ export const App = () => {
   const user = gon.user
   window.locale = user.locale
 
-  const [element, setElement] = useState(null)
+  const [route, setRoute] = useState(null)
   const routes = [
-    {match: "/c", elem: <EditTags {...{tags, machines}} />},
-    {match: "/n", elem: <NewRecipe {...{recipeKinds}} />},
-    {match: "/l", elem: <MyRecipes {...{recipes, suggestions, favoriteRecipes, tags, mixes, recipeKinds, user, images, machines}} />},
+    {match: "/c", elem: () => <EditTags {...{tags, machines}} />},
+    {match: "/n", elem: () => <NewRecipe {...{recipeKinds}} />},
+    {match: "/l", elem: () => <MyRecipes {...{recipes, suggestions, favoriteRecipes, tags, mixes, recipeKinds, user, images, machines}} />},
     {match: "/r/:id", elem: ({id}) =>
       <ShowRecipe {...{recipeId: id, recipes, mixes, favoriteRecipes, recipeKinds, images, user, users, suggestions, tags, machines}} />
     },
@@ -468,7 +468,7 @@ export const App = () => {
       <HedaIndex {...{machineId: id, machines}} />,
     },
   ]
-
+  
   const defaultElement = (params) => <HomePage {...{recipes, tags, suggestions, favoriteRecipes, machines}} />
 
   const matchRoutes = (pathname, params) => {
@@ -476,14 +476,9 @@ export const App = () => {
     // Combine alongside the other params (named params)? User must be careful no name clashes...
     for (let i = 0; i < routes.length; i++) {
       const r = match(routes[i].match, { end: false, decode: decodeURIComponent })(pathname);
-      if (r) {
-        let e = routes[i].elem
-        if (!e) {throw "Route configuration error. Missing elem attribute."}
-        if (typeof e !== 'function') {return setElement(e)}
-        return setElement(routes[i].elem({...params, ...r.params}))
-      }
+      if (r) {return setRoute({idx: i, params: {...params, ...r.params}})}
     }
-    setElement(defaultElement(params))
+    setRoute({idx: -1, params})
   }
 
   useEffect(() => {
@@ -512,18 +507,18 @@ export const App = () => {
 
   let otherProfiles = users.filter(u => u.id != user.id)
 
-  if (element === null) {return ''}
+  if (route === null) {return ''}
 
-  // Pour recevoir des invités => (page suivantes, quelles restrictions => véganes)
-  // Theme light:
-  //   Background color: #e3f2fd
-  //   Title color: #4f5458
-  //   Icon color: black
+  let e = (route.idx < 0) ? defaultElement : routes[route.idx].elem
+  let el = null
+  if (typeof e !== 'function') {el = e}
+  else {el = e(route.params)}
+
     //<div className={(!page.page || page.page === 1) ? "wide-trunk" : "trunk"}>
   return (<>
     <AppSearch {...{user, otherProfiles, _csrf, recipes, friendsRecipes, users}} />
     <div className="trunk">
-      {element}
+      {el}
     </div>
   </>)
 }
