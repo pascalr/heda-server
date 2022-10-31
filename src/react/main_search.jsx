@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react'
 
 import { UserThumbnailImage, RecipeThumbnailImage } from "./image"
-import { ajax } from "./utils"
+import { ajax, changeUrl } from "./utils"
 import { t } from "../translate"
 import { localeHref, getPathFromUrl } from "../utils"
-import { useTransition, LinkToPage } from "./lib"
+import { useTransition, Link } from "./lib"
 import { SearchWhiteIcon, PersonFillWhiteIcon, XLgWhiteIcon } from '../server/image.js'
 import { normalizeSearchText } from "./utils"
 
-const RecipeListItem = ({recipe, current, page, selected, users, user, selectedRef}) => {
+const RecipeListItem = ({recipe, current, page, selected, users, user, selectedRef, setIsSearching}) => {
   let userName = null
   let isSelected = current == selected
   if (user.id != recipe.user_id) {
@@ -17,13 +17,13 @@ const RecipeListItem = ({recipe, current, page, selected, users, user, selectedR
   }
   return (
     <li key={recipe.id} ref={isSelected ? selectedRef : null}>
-      <LinkToPage page={{...page, page: 15, recipeId: recipe.id}} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
+      <Link path={"/r/"+recipe.id} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined} onClick={() => setIsSearching(false)}>
         <div className="d-flex align-items-center">
           <RecipeThumbnailImage {...{recipe}} />
           <div style={{marginRight: '0.5em'}}></div>
           {userName ? <div><div>{recipe.name}</div><div className="h002">{t('by_2')} {userName}</div></div> : recipe.name}
         </div>
-      </LinkToPage>
+      </Link>
     </li>
   )
 }
@@ -155,18 +155,18 @@ export const AppSearch = ({user, page, otherProfiles, _csrf, recipes, friendsRec
 
   const config = {
     allMatching,
-    printResults(selected, selectedRef) {
+    printResults({selected, selectedRef, setIsSearching}) {
       return <>
         {matchingUserRecipes.length >= 1 ? <h2 className="h001">{t('My_recipes')}</h2> : ''}
         <ul className="recipe-list">
           {matchingUserRecipes.map((recipe, current) => (
-            <RecipeListItem key={recipe.id} {...{recipe, current, page, selected, users, user, selectedRef}}/>
+            <RecipeListItem key={recipe.id} {...{recipe, current, page, selected, users, user, selectedRef, setIsSearching}}/>
           ))}
         </ul>
         {matchingFriendsRecipes.length >= 1 ? <h2 className="h001">{t('Suggestions')}</h2> : ''}
         <ul className="recipe-list">
           {matchingFriendsRecipes.map((recipe, current) => (
-            <RecipeListItem key={recipe.id} {...{recipe, current: current+matchingUserRecipes.length, page, selected, users, user, selectedRef}}/>
+            <RecipeListItem key={recipe.id} {...{recipe, current: current+matchingUserRecipes.length, page, selected, users, user, selectedRef, setIsSearching}}/>
           ))}
         </ul>
       </>
@@ -178,7 +178,11 @@ export const AppSearch = ({user, page, otherProfiles, _csrf, recipes, friendsRec
       let userRecipes = recipes.filter(r => r.user_id == user.id)
       setMatchingUserRecipes(filterItems(userRecipes, term))
       setMatchingFriendsRecipes(filterItems(friendsRecipes, term))
-    }
+    },
+    onItemChoosen(selected, {setIsSearching}) {
+      changeUrl("/r/"+allMatching[selected].id)
+      setIsSearching(false)
+    },
   }
   return <BaseSearch {...{locale, renderingHome, ...config}} />
 }
@@ -192,7 +196,7 @@ export const MainSearch = ({locale, renderingHome}) => {
   const config = {
 
     allMatching,
-    printResults(selected, selectedRef) {
+    printResults({selected, selectedRef}) {
       return <SearchResults {...{searchResults, selected, selectedRef}}/>
     },
     onItemChoosen(selected) {
@@ -255,7 +259,7 @@ export const BaseSearch = ({locale, renderingHome, user, allMatching, onItemChoo
   let onKeyDown = ({key}) => {
     if (key == "ArrowDown") {select(selected >= allMatching.length-1 ? -1 : selected+1)}
     else if (key == "ArrowUp") {select(selected < 0 ? allMatching.length-1 : selected-1)}
-    else if (key == "Enter") {if (onItemChoosen) {onItemChoosen(selected)}}
+    else if (key == "Enter") {if (onItemChoosen) {onItemChoosen(selected, {setIsSearching})}}
     else if (key == "Escape") {
       if (!term || term == '') { setIsSearching(false) }
       else { setSearch(''); setTerm('') }
@@ -270,7 +274,7 @@ export const BaseSearch = ({locale, renderingHome, user, allMatching, onItemChoo
       </div>
       {allMatching.length <= 0 ? '' : <>
         <div style={{position: 'absolute', zIndex: '200', backgroundColor: 'white', border: '1px solid black', width: '100%', padding: '0.5em', maxHeight: 'calc(100vh - 80px)', overflowY: 'scroll'}}>
-          {printResults(selected, selectedRef)}
+          {printResults({selected, selectedRef, setIsSearching})}
         </div>
       </>}
     </div>

@@ -68,8 +68,13 @@ export function parseIngredientsAndHeaders(text) {
   }).filter(e => e)
 }
 
-export const Link = ({className, children, active, path, ...props}) => {
-  return <a className={join(className, active ? 'active' : null)} href={path} onClick={(e) => {e.preventDefault(); changeUrl(path)}} {...props}>{children}</a>
+export const Link = ({className, children, active, path, onClick, ...props}) => {
+  const handleClick = (evt) => {
+    evt.preventDefault()
+    if (onClick) {onClick(evt)}
+    changeUrl(path)
+  }
+  return <a className={join(className, active ? 'active' : null)} href={path} onClick={handleClick} {...props}>{children}</a>
 }
 
 export const LinkToPage = ({page, className, children, active, ...props}) => {
