@@ -5,7 +5,7 @@ await build({
   bundle: true,
   // Defines env variables for bundled JavaScript; here `process.env.NODE_ENV`
   define: { "process.env.NODE_ENV": JSON.stringify('production') },
-  entryPoints: ["src/react/bundle.jsx"],
+  entryPoints: ["src/react/bundle.jsx", "src/react/user_editor.jsx"],
   minify: true,
   outdir: "public/build",
   loader: {

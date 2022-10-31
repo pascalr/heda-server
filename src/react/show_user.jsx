@@ -49,12 +49,3 @@ export const ShowUser = () => {
     </div>
   </>
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-
-  window.locale = getUrlParams(window.location.href).locale
-  const root = document.getElementById('root-u')
-  if (root) {ReactDOM.render(<ShowUser />, root)}
-  //const root = createRoot(document.getElementById("root"));
-  //root.render(<UserEditor/>);
-})

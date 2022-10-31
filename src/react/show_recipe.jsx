@@ -121,12 +121,3 @@ export const ShowRecipe = () => {
     </div>
   </>
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-
-  window.locale = getUrlParams(window.location.href).locale
-  const root = document.getElementById('root-r')
-  if (root) {ReactDOM.render(<ShowRecipe />, root)}
-  //const root = createRoot(document.getElementById("root"));
-  //root.render(<UserEditor/>);
-})

@@ -136,6 +136,7 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
   const userName = recipeUser ? recipeUser.name : `user${recipe.user_id}`
 
   const recipeBelongsToSiblings = users.map(u => u.id).filter(id => id != user.id).includes(recipe.user_id)
+  const isUser = recipe.user_id == user.id
 
   return (<>
     <EditTagsModal {...{recipe, tags, suggestions, showModal, setShowModal}} />
@@ -149,15 +150,6 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
               <span className="recipe-title">{recipe.name}</span>
             </h1>
             <div className='flex-grow-1' />
-            <span className="dropdown" style={{padding: "0 1rem"}}>
-              <img className="clickable" data-bs-toggle="dropdown" src="/icons/list.svg" width="24"/>
-              <div className="dropdown-menu">
-                {user.id != recipe.user_id ? '' : <Link path={'/e/'+recipe.id} className="dropdown-item">{t('Edit')}</Link>}
-                <button type="button" className="dropdown-item" onClick={() => setShowModal(true)}>{t('Tag')}</button>
-                {recipeBelongsToSiblings ? <button type="button" className="dropdown-item" onClick={changeOwner}>{t('Attribute_to_this_profile')}</button> : ''}
-                {recipe.user_id == user.id ? <li><button type="button" className="dropdown-item" onClick={() => {removeRecipe(recipe); changeUrl('/l')}}>{t('Delete_recipe')}</button></li> : ''}
-              </div>
-            </span>
           </div>
           <div style={{marginTop: '-0.8em', marginBottom: '1.2em'}}>
             <span style={{color: 'gray'}}>{t('by')} {userName}</span>
@@ -179,16 +171,28 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
             <span style={{color: 'gray'}}>{recipe.raw_servings}</span>
           </div>
           <div className="d-flex" style={{gap: '5px', marginTop: '10px'}}>
+            {isUser ?
+              <Link path={'/e/'+recipe.id} className="btn btn-outline-secondary">
+                <img src="/icons/pencil.svg" width="24"></img>
+              </Link>
+            : ''}
             <a className="btn btn-outline-secondary" href="FIXME">
-              <img src="/icons/printer.svg" width="16"></img>
+              <img src="/icons/journal-plus.svg" width="24"></img>
             </a>
-            <a className="btn btn-outline-secondary" href="FIXME">
-              <img src="/icons/share.svg" width="16"></img>
-            </a>
-            <a className="btn btn-outline-secondary" href="FIXME">
-              <img src="/icons/download.svg" width="16"></img>
-            </a>
+            <button type="button" className="btn btn-outline-secondary" onClick={() => setShowModal(true)}>
+              <img src="/icons/tags.svg" width="24"></img>
+            </button>
+            <span className="dropdown">
+              <a className="btn btn-outline-secondary" href="FIXME" data-bs-toggle="dropdown">
+                <img src="/icons/three-dots.svg" width="24"></img>
+              </a>
+              <div className="dropdown-menu">
+                {recipeBelongsToSiblings ? <button type="button" className="dropdown-item" onClick={changeOwner}>{t('Attribute_to_this_profile')}</button> : ''}
+                {recipe.user_id == user.id ? <li><button type="button" className="dropdown-item" onClick={() => {removeRecipe(recipe); changeUrl('/l')}}>{t('Delete_recipe')}</button></li> : ''}
+              </div>
+            </span>
             {function() {
+              if (recipe.user_id == user.id) {return ''}
               let img = favorite ? "/icons/star-fill.svg" : "/icons/star.svg"
               const handleClick = () => {
                 if (favorite) {
@@ -198,7 +202,7 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
                 }
               }
               return <button type="button" className="btn btn-outline-secondary" onClick={handleClick}>
-                <img src={img} width="16"></img>
+                <img src={img} width="32"></img>
               </button>
             }()}
           </div>

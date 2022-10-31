@@ -74,12 +74,3 @@ export const Home = () => {
     </div>
   </>
 }
-
-// I want the javascript to load after the images on the front page.
-// It works, but I have to remove this listener because it does not get this event anymore.
-//document.addEventListener('DOMContentLoaded', () => {
-
-  window.locale = getUrlParams(window.location.href).locale
-  const root = document.getElementById('root-home')
-  if (root) { ReactDOM.render(<Home />, root) }
-//})

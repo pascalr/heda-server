@@ -499,7 +499,6 @@ export const App = () => {
   }, [])
 
   useEffect(() => {
-    window.locale = getUrlParams(window.location.href).locale
     window.onpopstate = (event) => {
       console.log('onpopstate')
       matchRoutes(window.location.pathname, queryToParams(window.location.search))
