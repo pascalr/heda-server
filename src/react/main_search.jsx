@@ -101,6 +101,8 @@ export const AppNavbar = ({locale, renderingHome, setIsSearching, otherProfiles,
               </form>
             })}
           </>}
+          <hr className="dropdown-divider"/>
+          <a href={localeHref("/contact")} className="dropdown-item">{t('Contact_us', locale)}</a>
         </div>
       </div>
     </div>

@@ -30,7 +30,6 @@ Minify {
 Fix 2 fois la recette de tarte au sucre
 Convertir tous les routes avec le nouveau système
 TODO: Soft delete users. Serializer le user avec json dans data. Créer une table corpses table_name:string id:integer data:string
-Ajouter une page contact.
 If the user was logged from another page, handle this properly and show a helpful error message if the user tries to modify anything...
 Rajouter des liens vers les notes (Pain à la main, pain à la machine à pain, pain aux bananes, salade russe)
 Des suggestions d'images pour les recettes.
