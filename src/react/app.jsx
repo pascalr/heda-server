@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
-import { useDrag } from '@use-gesture/react'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 //import { createRoot } from 'react-dom/client';
 
@@ -50,222 +49,6 @@ const changePage = (page) => {
   //getRegister('setPage')(page)
 }
   
-const SuggestionsNav = ({page, tagSuggestions, categorySuggestions}) => {
-  return (<>
-    <ul className="nav nav-tabs">
-      <li className="nav-item">
-        <LinkToPage page={{...page, page: 9}} className="nav-link" active={page.page == 9}>{t('My_recipes')}{tagSuggestions ? ` (${tagSuggestions.length})` : ''}</LinkToPage>
-      </li>
-      <li className="nav-item">
-        <LinkToPage page={{...page, page: 2}} className="nav-link" active={page.page == 2}>Autres recettes{categorySuggestions ? ` (${categorySuggestions.length})` : ''}</LinkToPage>
-      </li>
-    </ul>
-    <br/>
-  </>)
-}
-
-export const SingleCarrousel = ({items, children}) => {
-  
-  const [itemNb, setItemNb] = useState(0)
-  const [position, setPosition] = useState({x: 0, y: 0})
-
-  const nextItem = () => {
-    if (itemNb < items.length-1) { setItemNb(itemNb + 1) }
-  }
-
-  const previousItem = () => {
-    setItemNb(itemNb <= 0 ? 0 : itemNb - 1)
-  }
-
-  const bind = useDrag(({swipe: [swipeX]}) => {
-    if (swipeX == 1) { previousItem() }
-    else if (swipeX == -1) nextItem()
-  })
-  
-  let onKeyDown = ({key}) => {
-    if (key == "ArrowLeft") {previousItem()}
-    if (key == "ArrowRight") {nextItem()}
-  }
-
-  useEffect(() => {
-    document.addEventListener('keydown', onKeyDown)
-    return () => {
-      document.removeEventListener('keydown', onKeyDown);
-    }
-  }, [])
-  
-  if (!items || items.length == 0) {console.log('no items to show'); return ''}
-  //if (!children || children.length != 1) {throw "Error carroussel must have one and only one children."}
-  if (!children) {throw "Error carroussel must have one and only one children."}
-  let item = items[itemNb]
-
-  return (<>
-    <div {...bind()}>
-      <div className="over-container" style={{margin: "auto"}}>
-        {children({item})}
-        <div className="left-center">
-          <img className="clickable" src={icon_path("custom-chevron-left.svg")} width="45" height="90" onClick={previousItem} aria-disabled={itemNb <= 0} />
-        </div>
-        <div className="right-center">
-          <img className="clickable" src={icon_path("custom-chevron-right.svg")} width="45" height="90" onClick={nextItem} aria-disabled={itemNb >= items.length-1} />
-        </div>
-      </div>
-    </div>
-  </>)
-}
-
-const RecipeSingleCarrousel = ({tag, suggestions, isCategory, recipes, recipeKinds}) => {
-  return <>
-    <SingleCarrousel items={suggestions}>{({item}) => {
-      let recipe = recipes.find(r => r.id == item.recipe_id)
-      return <>
-        <RecipeMediumImage {...{recipe, recipeKinds}} />
-        <LinkToPage page={{page: 15, recipeId: recipe.id}}>
-          <h2 className="bottom-center font-satisfy" style={{borderRadius: "0.5em", border: "1px solid #777", color: "#000", bottom: "1em", backgroundColor: "rgba(245, 245, 245, 0.7)", fontSize: "2em", padding: "0.2em 0.2em 0.1em 0.2em"}}>{recipe.name}</h2>
-        </LinkToPage>
-      </>
-    }}</SingleCarrousel>
-  </>
-}
-
-const SuggestionsIndex = ({tags, suggestions, page, recipes, recipeKinds}) => {
-
-  const tag = tags.find(f => f.id == page.tagId)
-  if (!tag) {console.log('No tag found'); return ''}
-  console.log('Tag found')
-
-  const tagSuggestions = suggestions.filter(suggestion => suggestion.tag_id == tag.id)
-
-  return (<>
-    <SuggestionsNav {...{page, tagSuggestions}} />
-    {tag.name ? <h2 style={{textAlign: 'center'}}>{tag.name}</h2> : ''}
-    <RecipeSingleCarrousel {...{tag, suggestions: tagSuggestions, recipes, recipeKinds}} />
-  </>)
-}
-
-const TagCategorySuggestions = ({page, recipeFilters, suggestions, recipes}) => {
-
-  throw "FIXME: What is this?"
-
-  const tag = recipeFilters.find(f => f.id == page.filterId)
-  if (!tag) {return ''}
-
-  const categorySuggestions = useCacheOrFetch(suggestions_path({recipe_filter_id: page.filterId}))
-  const tagSuggestions = suggestions.filter(suggestion => suggestion.filter_id == tag.id)
-
-  //useEffect(() => {
-  //  console.log('inside use effect')
-  //  if (suggestions) {
-  //    for (let i = 0; i < 3 && i < suggestions.length-1; i++) {
-  //      preloadSuggestion(suggestions[i])
-  //    }
-  //  }
-  //}, [suggestions])
-
-  return (<>
-    <SuggestionsNav {...{page, tagSuggestions, categorySuggestions}} />
-    {tag.name ? <h2 style={{textAlign: 'center'}}>{tag.name}</h2> : ''}
-    <RecipeSingleCarrousel tag={tag} suggestions={categorySuggestions} isCategory={true} recipes={recipes} />
-  </>)
-}
-
-const RecipeImageWithTitle = ({record, selected, selectItem}) => {
-  return <div className="over-container clickable d-inline-block" style={{border: `4px solid ${selected ? 'blue' : 'white'}`}} onClick={() => selectItem(record)}>
-    <img src={record.image_slug ? image_path(record.image_slug, "small") : "/img/default_recipe_01.png"} width="255" height="171" style={{maxWidth: "100vw"}} />
-    <h2 className="bottom-center font-satisfy" style={{borderRadius: "0.5em", border: "1px solid #777", color: "#333", bottom: "1em", backgroundColor: "#f5f5f5", fontSize: "1.2em", padding: "0.2em 0.8em 0 0.2em"}}>{record.name}</h2>
-  </div>
-}
-
-const TagEditAllCategories = ({page, recipeFilters}) => {
-  const [selected, setSelected] = useState({})
-  //const [matching, setMatching] = useState([])
-  //const [notMatching, setNotMatching] = useState([])
-  //const [unkown, setUnkown] = useState([])
-  const [items, setItems] = useState(null)
-  const fetchedItems = useCacheOrFetch(all_recipe_kinds_recipe_filters_path({recipe_filter_id: page.filterId}))
-  useEffect(() => {if (fetchedItems) {setItems(fetchedItems)}}, [fetchedItems])
-  //const all = useCacheOrFetch(all_recipe_kinds_recipe_filters_path({recipe_filter_id: page.filterId}))
-  //useEffect(() => {
-  //  if (all) {
-  //    setMatching(all.matching)
-  //    setNotMatching(all.not_matching)
-  //    setUnkown(all.unkown)
-  //  }
-  //}, [all])
-  //if (!all) {return 'Loading...'}
-  if (!items) {return 'Loading...'}
-  const unkown = items.filter(i => i.group == 0)
-  const matching = items.filter(i => i.group == 1)
-  const notMatching = items.filter(i => i.group == 2)
-
-  const filter = recipeFilters.find(f => f.id == page.filterId)
-
-  const selectItem = (item) => {
-    let s = {...selected}; s[item.id] = !selected[item.id]; setSelected(s)
-  }
-  const selectAll = (its, select=true) => {
-    let s = {...selected};
-    its.forEach(i => {s[i.id] = select})
-    setSelected(s)
-  }
-
-  const printItems = (items) => {
-    return <div style={{marginLeft: "4px"}}>
-      {((items || []).map((record) => {
-        return <RecipeImageWithTitle record={record} key={record.id} selected={selected[record.id]} selectItem={selectItem} />
-      }))}
-    </div>
-  }
-
-  const updateItems = (its, match) => {
-    let updateIds = its.filter(r => selected[r.id]).map(r => r.id)
-    ajax({url: batch_update_filtered_recipes_path(), type: 'PATCH', data: {recipe_filter_id: filter.id, ids: updateIds, match}, success: () => {
-      //let keepList = matching.filter((r,i) => !selected[i])
-      //setMatching(all.matching)
-      //setNotMatching(all.not_matching)
-      //setUnkown(all.unkown)
-      setItems(items.map(item => {
-        if (updateIds.includes(item.id)) { item.group = match ? 1 : 2 }
-        return item
-      }))
-      setSelected({})
-    }, error: (err) => {
-      console.log('Error updateItems', err)
-    }})
-  }
-  const addItems = (its, match) => {
-    let f = its.filter(r => selected[r.id])
-    let ids = f.map(r => r.id)
-    throw "FIXME NOT IMPLEMENTED: Filterable_type needs the class_name and not the table_name... ex: recipe_ingredient and not recipe_ingredients"
-    let data = f.map((d,i) => ({filterable_type: d.class_name, filterable_id: d.id, selected: match}))
-    ajax({url: batch_create_filtered_recipes_path(), type: 'POST', data: {recipe_filter_id: filter.id, data: JSON.stringify(data)}, success: () => {
-      setItems(items.map(item => {
-        if (ids.includes(item.id)) { item.group = match ? 1 : 2 }
-        return item
-      }))
-      setSelected({})
-    }, error: (err) => {
-      console.log('Error addItems', err)
-    }})
-  }
-
-  const filterName = `«${filter.name}»`
-
-  return (<>
-    <h3>Recette(s) non catégorisée(s) du filtre {filterName}?</h3>
-    {isBlank(unkown) ? <p>Auncune recette non catégorisée.</p> : printItems(unkown)}
-    <button type="button" className="btn btn-outline-primary" onClick={() => selectAll(unkown, true)}>Tout sélectionner</button>
-    <button type="button" className="btn btn-outline-primary" style={{marginLeft: "0.5em"}} onClick={() => selectAll(unkown, false)}>Tout désélectionner</button>
-    <button type="button" className="btn btn-primary" style={{marginLeft: "0.5em"}} onClick={() => addItems(unkown, true)}>Correspond</button>
-    <button type="button" className="btn btn-primary" style={{marginLeft: "0.5em"}} onClick={() => addItems(unkown, false)}>Ne correspond pas</button>
-    <h3>Recette(s) qui correspond(ent) au filtre {filterName}</h3>
-    {isBlank(matching) ? <p>Auncune recette correspond au filtre.</p> : printItems(matching)}
-    <button type="button" className="btn btn-primary" onClick={() => updateItems(matching, false)}>Retirer du filtre</button>
-    <h3>Recette(s) qui ne correspond(ent) pas au filtre {filterName}</h3>
-    {isBlank(notMatching) ? <p>Auncune recette correspond au filtre.</p> : printItems(notMatching)}
-    <button type="button" className="btn btn-primary" onClick={() => updateItems(notMatching, true)}>Ajouter au filtre</button>
-  </>)
-}
 
 const EditTag = ({page, tags}) => {
   const [name, setName] = useState('')
@@ -708,28 +491,6 @@ const HedaIndex = ({page, machines}) => {
     </div>
   </>)
 }
-const MyBooks = () => {
-
-  const books = useCacheOrFetch(user_books_books_path())
-
-  console.log('books', books)
-
-  let key = 1
-  return (<>
-    <div className="d-flex gap-20" style={{alignItems: "center"}}>
-      <h2>Mes livres</h2>
-      <a href={new_book_path()} className="btn btn-outline-primary btn-sm">Nouveau livre</a>
-    </div>
-    <hr style={{marginTop: "0"}}/>
-    <div className="position-limbo" style={{zIndex: 10}}>
-      <span id={`prev-carrousel-${key}`} style={{left: "5px", top: "80px"}} className="my-tns-control" aria-disabled='true'><img src="/icons/custom-chevron-left.svg" size="45x90"/></span>
-      <span id={`next-carrousel-${key}`} style={{left: "calc(100% - 50px)", top: "80px"}} className="my-tns-control"><img src="/icons/custom-chevron-right.svg" size="45x90"/></span>
-    </div>
-    <div style={{height: "2em"}}></div>
-    <h2>Livres favoris</h2>
-    <hr style={{marginTop: "0"}}/>
-  </>)
-}
 
 const MyRecipes = (props) => {
 
@@ -874,14 +635,14 @@ export const App = () => {
   // [PAGE_1]: <TagIndex {...{page, machines, tags, images}} />,
   const pages = {
     [PAGE_1]: <HomePage {...{page, recipes, tags, suggestions, favoriteRecipes}} />,
-    [PAGE_2]: <TagCategorySuggestions {...{page, suggestions, recipes}} />,
+    //[PAGE_2]: <TagCategorySuggestions {...{page, suggestions, recipes}} />,
     [PAGE_3]: <EditTag {...{page, tags}} />,
     [PAGE_4]: <EditTags {...{tags, page}} />,
     //5: <TrainFilter page={page} recipeFilters={recipeFilters} />,
     [PAGE_6]: <MyRecipes {...{page, recipes, suggestions, favoriteRecipes, tags, mixes, recipeKinds, user, images}} />,
-    [PAGE_7]: <MyBooks page={page} />,
-    [PAGE_8]: <TagEditAllCategories page={page} />,
-    [PAGE_9]: <SuggestionsIndex {...{page, tags, suggestions, recipes, recipeKinds}} />,
+    //[PAGE_7]: <MyBooks page={page} />,
+    //[PAGE_8]: <TagEditAllCategories page={page} />,
+    //[PAGE_9]: <SuggestionsIndex {...{page, tags, suggestions, recipes, recipeKinds}} />,
     [PAGE_10]: <HedaIndex {...{page, machines}} />,
     [PAGE_11]: <Inventory {...{page, machines, machineFoods, containerQuantities, foods, containerFormats}} />,
     [PAGE_12]: <MixIndex {...{page, machines, machineFoods, mixes}} />,
@@ -917,3 +678,245 @@ document.addEventListener('DOMContentLoaded', () => {
   //const root = createRoot(document.getElementById("root"));
   //root.render(<App/>);
 })
+
+
+
+//const SuggestionsNav = ({page, tagSuggestions, categorySuggestions}) => {
+//  return (<>
+//    <ul className="nav nav-tabs">
+//      <li className="nav-item">
+//        <LinkToPage page={{...page, page: 9}} className="nav-link" active={page.page == 9}>{t('My_recipes')}{tagSuggestions ? ` (${tagSuggestions.length})` : ''}</LinkToPage>
+//      </li>
+//      <li className="nav-item">
+//        <LinkToPage page={{...page, page: 2}} className="nav-link" active={page.page == 2}>Autres recettes{categorySuggestions ? ` (${categorySuggestions.length})` : ''}</LinkToPage>
+//      </li>
+//    </ul>
+//    <br/>
+//  </>)
+//}
+//
+//export const SingleCarrousel = ({items, children}) => {
+//  
+//  const [itemNb, setItemNb] = useState(0)
+//  const [position, setPosition] = useState({x: 0, y: 0})
+//
+//  const nextItem = () => {
+//    if (itemNb < items.length-1) { setItemNb(itemNb + 1) }
+//  }
+//
+//  const previousItem = () => {
+//    setItemNb(itemNb <= 0 ? 0 : itemNb - 1)
+//  }
+//
+//  const bind = useDrag(({swipe: [swipeX]}) => {
+//    if (swipeX == 1) { previousItem() }
+//    else if (swipeX == -1) nextItem()
+//  })
+//  
+//  let onKeyDown = ({key}) => {
+//    if (key == "ArrowLeft") {previousItem()}
+//    if (key == "ArrowRight") {nextItem()}
+//  }
+//
+//  useEffect(() => {
+//    document.addEventListener('keydown', onKeyDown)
+//    return () => {
+//      document.removeEventListener('keydown', onKeyDown);
+//    }
+//  }, [])
+//  
+//  if (!items || items.length == 0) {console.log('no items to show'); return ''}
+//  //if (!children || children.length != 1) {throw "Error carroussel must have one and only one children."}
+//  if (!children) {throw "Error carroussel must have one and only one children."}
+//  let item = items[itemNb]
+//
+//  return (<>
+//    <div {...bind()}>
+//      <div className="over-container" style={{margin: "auto"}}>
+//        {children({item})}
+//        <div className="left-center">
+//          <img className="clickable" src={icon_path("custom-chevron-left.svg")} width="45" height="90" onClick={previousItem} aria-disabled={itemNb <= 0} />
+//        </div>
+//        <div className="right-center">
+//          <img className="clickable" src={icon_path("custom-chevron-right.svg")} width="45" height="90" onClick={nextItem} aria-disabled={itemNb >= items.length-1} />
+//        </div>
+//      </div>
+//    </div>
+//  </>)
+//}
+//
+//const RecipeSingleCarrousel = ({tag, suggestions, isCategory, recipes, recipeKinds}) => {
+//  return <>
+//    <SingleCarrousel items={suggestions}>{({item}) => {
+//      let recipe = recipes.find(r => r.id == item.recipe_id)
+//      return <>
+//        <RecipeMediumImage {...{recipe, recipeKinds}} />
+//        <LinkToPage page={{page: 15, recipeId: recipe.id}}>
+//          <h2 className="bottom-center font-satisfy" style={{borderRadius: "0.5em", border: "1px solid #777", color: "#000", bottom: "1em", backgroundColor: "rgba(245, 245, 245, 0.7)", fontSize: "2em", padding: "0.2em 0.2em 0.1em 0.2em"}}>{recipe.name}</h2>
+//        </LinkToPage>
+//      </>
+//    }}</SingleCarrousel>
+//  </>
+//}
+//
+//const SuggestionsIndex = ({tags, suggestions, page, recipes, recipeKinds}) => {
+//
+//  const tag = tags.find(f => f.id == page.tagId)
+//  if (!tag) {console.log('No tag found'); return ''}
+//  console.log('Tag found')
+//
+//  const tagSuggestions = suggestions.filter(suggestion => suggestion.tag_id == tag.id)
+//
+//  return (<>
+//    <SuggestionsNav {...{page, tagSuggestions}} />
+//    {tag.name ? <h2 style={{textAlign: 'center'}}>{tag.name}</h2> : ''}
+//    <RecipeSingleCarrousel {...{tag, suggestions: tagSuggestions, recipes, recipeKinds}} />
+//  </>)
+//}
+//
+//const TagCategorySuggestions = ({page, recipeFilters, suggestions, recipes}) => {
+//
+//  throw "FIXME: What is this?"
+//
+//  const tag = recipeFilters.find(f => f.id == page.filterId)
+//  if (!tag) {return ''}
+//
+//  const categorySuggestions = useCacheOrFetch(suggestions_path({recipe_filter_id: page.filterId}))
+//  const tagSuggestions = suggestions.filter(suggestion => suggestion.filter_id == tag.id)
+//
+//  //useEffect(() => {
+//  //  console.log('inside use effect')
+//  //  if (suggestions) {
+//  //    for (let i = 0; i < 3 && i < suggestions.length-1; i++) {
+//  //      preloadSuggestion(suggestions[i])
+//  //    }
+//  //  }
+//  //}, [suggestions])
+//
+//  return (<>
+//    <SuggestionsNav {...{page, tagSuggestions, categorySuggestions}} />
+//    {tag.name ? <h2 style={{textAlign: 'center'}}>{tag.name}</h2> : ''}
+//    <RecipeSingleCarrousel tag={tag} suggestions={categorySuggestions} isCategory={true} recipes={recipes} />
+//  </>)
+//}
+//
+//const RecipeImageWithTitle = ({record, selected, selectItem}) => {
+//  return <div className="over-container clickable d-inline-block" style={{border: `4px solid ${selected ? 'blue' : 'white'}`}} onClick={() => selectItem(record)}>
+//    <img src={record.image_slug ? image_path(record.image_slug, "small") : "/img/default_recipe_01.png"} width="255" height="171" style={{maxWidth: "100vw"}} />
+//    <h2 className="bottom-center font-satisfy" style={{borderRadius: "0.5em", border: "1px solid #777", color: "#333", bottom: "1em", backgroundColor: "#f5f5f5", fontSize: "1.2em", padding: "0.2em 0.8em 0 0.2em"}}>{record.name}</h2>
+//  </div>
+//}
+//
+//const TagEditAllCategories = ({page, recipeFilters}) => {
+//  const [selected, setSelected] = useState({})
+//  //const [matching, setMatching] = useState([])
+//  //const [notMatching, setNotMatching] = useState([])
+//  //const [unkown, setUnkown] = useState([])
+//  const [items, setItems] = useState(null)
+//  const fetchedItems = useCacheOrFetch(all_recipe_kinds_recipe_filters_path({recipe_filter_id: page.filterId}))
+//  useEffect(() => {if (fetchedItems) {setItems(fetchedItems)}}, [fetchedItems])
+//  //const all = useCacheOrFetch(all_recipe_kinds_recipe_filters_path({recipe_filter_id: page.filterId}))
+//  //useEffect(() => {
+//  //  if (all) {
+//  //    setMatching(all.matching)
+//  //    setNotMatching(all.not_matching)
+//  //    setUnkown(all.unkown)
+//  //  }
+//  //}, [all])
+//  //if (!all) {return 'Loading...'}
+//  if (!items) {return 'Loading...'}
+//  const unkown = items.filter(i => i.group == 0)
+//  const matching = items.filter(i => i.group == 1)
+//  const notMatching = items.filter(i => i.group == 2)
+//
+//  const filter = recipeFilters.find(f => f.id == page.filterId)
+//
+//  const selectItem = (item) => {
+//    let s = {...selected}; s[item.id] = !selected[item.id]; setSelected(s)
+//  }
+//  const selectAll = (its, select=true) => {
+//    let s = {...selected};
+//    its.forEach(i => {s[i.id] = select})
+//    setSelected(s)
+//  }
+//
+//  const printItems = (items) => {
+//    return <div style={{marginLeft: "4px"}}>
+//      {((items || []).map((record) => {
+//        return <RecipeImageWithTitle record={record} key={record.id} selected={selected[record.id]} selectItem={selectItem} />
+//      }))}
+//    </div>
+//  }
+//
+//  const updateItems = (its, match) => {
+//    let updateIds = its.filter(r => selected[r.id]).map(r => r.id)
+//    ajax({url: batch_update_filtered_recipes_path(), type: 'PATCH', data: {recipe_filter_id: filter.id, ids: updateIds, match}, success: () => {
+//      //let keepList = matching.filter((r,i) => !selected[i])
+//      //setMatching(all.matching)
+//      //setNotMatching(all.not_matching)
+//      //setUnkown(all.unkown)
+//      setItems(items.map(item => {
+//        if (updateIds.includes(item.id)) { item.group = match ? 1 : 2 }
+//        return item
+//      }))
+//      setSelected({})
+//    }, error: (err) => {
+//      console.log('Error updateItems', err)
+//    }})
+//  }
+//  const addItems = (its, match) => {
+//    let f = its.filter(r => selected[r.id])
+//    let ids = f.map(r => r.id)
+//    throw "FIXME NOT IMPLEMENTED: Filterable_type needs the class_name and not the table_name... ex: recipe_ingredient and not recipe_ingredients"
+//    let data = f.map((d,i) => ({filterable_type: d.class_name, filterable_id: d.id, selected: match}))
+//    ajax({url: batch_create_filtered_recipes_path(), type: 'POST', data: {recipe_filter_id: filter.id, data: JSON.stringify(data)}, success: () => {
+//      setItems(items.map(item => {
+//        if (ids.includes(item.id)) { item.group = match ? 1 : 2 }
+//        return item
+//      }))
+//      setSelected({})
+//    }, error: (err) => {
+//      console.log('Error addItems', err)
+//    }})
+//  }
+//
+//  const filterName = `«${filter.name}»`
+//
+//  return (<>
+//    <h3>Recette(s) non catégorisée(s) du filtre {filterName}?</h3>
+//    {isBlank(unkown) ? <p>Auncune recette non catégorisée.</p> : printItems(unkown)}
+//    <button type="button" className="btn btn-outline-primary" onClick={() => selectAll(unkown, true)}>Tout sélectionner</button>
+//    <button type="button" className="btn btn-outline-primary" style={{marginLeft: "0.5em"}} onClick={() => selectAll(unkown, false)}>Tout désélectionner</button>
+//    <button type="button" className="btn btn-primary" style={{marginLeft: "0.5em"}} onClick={() => addItems(unkown, true)}>Correspond</button>
+//    <button type="button" className="btn btn-primary" style={{marginLeft: "0.5em"}} onClick={() => addItems(unkown, false)}>Ne correspond pas</button>
+//    <h3>Recette(s) qui correspond(ent) au filtre {filterName}</h3>
+//    {isBlank(matching) ? <p>Auncune recette correspond au filtre.</p> : printItems(matching)}
+//    <button type="button" className="btn btn-primary" onClick={() => updateItems(matching, false)}>Retirer du filtre</button>
+//    <h3>Recette(s) qui ne correspond(ent) pas au filtre {filterName}</h3>
+//    {isBlank(notMatching) ? <p>Auncune recette correspond au filtre.</p> : printItems(notMatching)}
+//    <button type="button" className="btn btn-primary" onClick={() => updateItems(notMatching, true)}>Ajouter au filtre</button>
+//  </>)
+//}
+//
+//const MyBooks = () => {
+//
+//  const books = useCacheOrFetch(user_books_books_path())
+//
+//  console.log('books', books)
+//
+//  let key = 1
+//  return (<>
+//    <div className="d-flex gap-20" style={{alignItems: "center"}}>
+//      <h2>Mes livres</h2>
+//      <a href={new_book_path()} className="btn btn-outline-primary btn-sm">Nouveau livre</a>
+//    </div>
+//    <hr style={{marginTop: "0"}}/>
+//    <div className="position-limbo" style={{zIndex: 10}}>
+//      <span id={`prev-carrousel-${key}`} style={{left: "5px", top: "80px"}} className="my-tns-control" aria-disabled='true'><img src="/icons/custom-chevron-left.svg" size="45x90"/></span>
+//      <span id={`next-carrousel-${key}`} style={{left: "calc(100% - 50px)", top: "80px"}} className="my-tns-control"><img src="/icons/custom-chevron-right.svg" size="45x90"/></span>
+//    </div>
+//    <div style={{height: "2em"}}></div>
+//    <h2>Livres favoris</h2>
+//    <hr style={{marginTop: "0"}}/>
+//  </>)
+//}
