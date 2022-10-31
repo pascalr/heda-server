@@ -393,7 +393,7 @@ const HomeTabs = ({page}) => {
 const RecipeCarrousel = ({items}) => {
   const preloadItem = (i) => {if (i.image_slug) {preloadImage('/imgs/small/'+i.image_slug)}}
   return <>
-    <Carrousel {...{items, preloadItem, maxItems: 5}}>{item => <>
+    <Carrousel {...{items, preloadItem, maxItems: 3}}>{item => <>
       <Link {...{className: 'plain-link', path: recipePath(item)}}>
         <RecipeSmallImage {...{recipe: item}} />
         <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
@@ -579,7 +579,10 @@ const ShowMix = ({page, recipes, machines, mixes, machineFoods}) => {
 }
 
 const ShowRecipe = (props) => {
-  return <RecipeViewer {...{recipeId: props.page.recipeId, ...props}} />
+  return <>
+    <HomeTabs {...{page: props.page}} />
+    <RecipeViewer {...{recipeId: props.page.recipeId, ...props}} />
+  </>
 }
 
 const EditRecipe = (props) => {
@@ -887,9 +890,10 @@ export const App = () => {
   //   Background color: #e3f2fd
   //   Title color: #4f5458
   //   Icon color: black
+    //<div className={(!page.page || page.page === 1) ? "wide-trunk" : "trunk"}>
   return (<>
     <AppSearch {...{user, page, otherProfiles, _csrf, recipes, friendsRecipes, users}} />
-    <div className={(!page.page || page.page === 1) ? "wide-trunk" : "trunk"}>
+    <div className="trunk">
       {pages[page.page || 1]}
     </div>
   </>)
