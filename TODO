@@ -1,7 +1,4 @@
-Ajouter une recette à la liste À cuisiner prochainement n'est pas réflété directement...
-Être capable de tagger une recette qui ne t'appartient pas?
 Allow login by username too. Makes more sense when sharing account
-Pouvoir enlever de ma liste à cuisiner prochainement, enlever des recettes à essayer.
 Fix 2 fois la recette de tarte au sucre
 If the user was logged from another page, handle this properly and show a helpful error message if the user tries to modify anything...
 Des suggestions d'images pour les recettes.
