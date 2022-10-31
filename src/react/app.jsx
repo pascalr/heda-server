@@ -801,7 +801,7 @@ export const App = () => {
   const routes = [
     {match: "/r/:id", action: (params) => {setPage({page: 15, recipeId: params.id})}}
   ]
-  const defaultAction = () => {setPage({page: 1})}
+  const defaultAction = (params) => {setPage(params)}
 
   useEffect(() => {
 
@@ -812,13 +812,17 @@ export const App = () => {
         const r = match(routes[i].match, { end: false, decode: decodeURIComponent })(pathname);
         if (r) {console.log('there'); return routes[i].action({...params, ...r.params})}
       }
-      defaultAction()
+      defaultAction(params)
     }
     matchRoutes(window.location.pathname, queryToParams(window.location.search))
-    //matchRoutes(window.location.pathname, getUrlParams(window.location.search))
-    window.addEventListener('history-changed', (event) => {
+    const historyChanged = (event) => {
+      console.log('history changed', event)
       matchRoutes(event.detail.pathname, event.detail.params)
-    })
+    }
+    window.addEventListener('history-changed', historyChanged)
+    return () => {
+      window.removeEventListener('history-changed', historyChanged)
+    }
   }, [])
 
   useEffect(() => {

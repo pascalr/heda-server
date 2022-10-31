@@ -74,7 +74,7 @@ export function tr(id, locale) {
     Home_10: "Créez des recettes rapidement à l'aide d'un éditeur de recette spécialisé. Explorez par vous-même ce qu'il peut faire ici-bas!",
     Help_login: 'Vous avez déjà un compte?',
     Help_signup: "Vous n'avez pas de compte?",
-    Attribute_to_this_profil: "Attribuer à ce profil",
+    Attribute_to_this_profile: "Attribuer à ce profil",
     Sorry_error: "Nous sommes vraiment désolé, mais une erreur s'est produite.",
     Login: 'Se connecter',
     Favorites: 'Favoris',

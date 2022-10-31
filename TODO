@@ -27,6 +27,8 @@ Minify {
   - Remove toastr
 }
 
+Fix 2 fois la recette de tarte au sucre
+Dans show and edit recipe, montrer la navbar pour Suggestions / Mes recettes / Paramètres
 /r/:id should work inside the app too
 TODO: Soft delete users. Serializer le user avec json dans data. Créer une table corpses table_name:string id:integer data:string
 Ajouter une page contact.
