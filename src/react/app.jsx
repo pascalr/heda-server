@@ -186,16 +186,17 @@ const RecipeCarrousel = ({items}) => {
 
 const HomePage = ({page, tags, recipes, suggestions, favoriteRecipes}) => {
 
-  let favList = {title: t("Favorites"), records: []}
+  //let favList = {title: t("Favorites"), records: []}
   let toCookList = {title: t('To_cook_soon'), records: []}
   let toTryList = {title: t('To_try'), records: []}
   favoriteRecipes.forEach(fav => {
     let recipe = recipes.find(r => r.id == fav.recipe_id)
     if (fav.list_id == 1) { toCookList.records.push({recipe, fav}) }
     else if (fav.list_id == 2) { toTryList.records.push({recipe, fav}) }
-    else { favList.records.push({recipe, fav}) }
+    //else { favList.records.push({recipe, fav}) }
   })
-  const lists = [toCookList, favList, toTryList]
+  const lists = [toCookList, toTryList]
+  //const lists = [toCookList, favList, toTryList]
 
   let suggestionsByTagId = suggestions.reduce((acc, suggestion) => {
     let prev = acc[suggestion.tag_id]
