@@ -365,7 +365,7 @@ const renderApp = [gon.fetchAll, setProfile, function(req, res, next) {
 
 router.get('/r/:id', function(req, res, next) {
 
-  if (req.user.user_id) { return next(); }
+  if (req.user && req.user.user_id) { return next(); }
 
   let recipeId = req.params.id
   let o = {}
@@ -432,6 +432,13 @@ router.get('/error', function(req, res, next) {
     locale: res.locals.locale,
   }
   return res.render('error');
+})
+
+router.get('/contact', function(req, res, next) {
+  res.locals.gon = {
+    locale: res.locals.locale,
+  }
+  return res.render('contact');
 })
 
 /* GET home page. */

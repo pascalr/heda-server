@@ -33,8 +33,11 @@ export function tr(id, locale) {
     n10: "Show ingredients 3, 4 and 5",
     n11: "Show ingredients 3 and 5",
     Confirm_destroy_profile: "Are you sure you want to destroy this profil permanently?\n\nAll you data could be lost forever.",
+    Contact_msg: "For any question or comments, you can contact me at the following email address:",
   }
   let fr = {
+    Contact_us: "Nous contacter",
+    Contact_msg: "Pour toutes questions ou commentaires, vous pouvez me rejoindre à l'adresse courriel suivante:",
     Confirm_destroy_profile: "Voulez-vous supprimer définitivement ce profil?\n\nToutes vos données pourraient être perdues à tout jamais.",
     Back: "Retour",
     No_name: "Sans nom",
