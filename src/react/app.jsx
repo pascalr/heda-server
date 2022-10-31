@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 //import { createRoot } from 'react-dom/client';
 
-import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, Link } from "./lib"
+import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, Link, currentPathIsRoot } from "./lib"
 import { findRecipeKindForRecipeName } from "../lib"
 import { RecipeList, RecipeIndex } from './recipe_index'
 import { changeUrl, ajax, isBlank, normalizeSearchText, preloadImage, join, bindSetter, capitalize, isTrue } from "./utils"
@@ -44,10 +44,10 @@ const PAGE_18 = 18
 const PAGE_19 = 19
 const PAGE_20 = 20
 
-const EditTag = ({page, tags}) => {
+const EditTag = ({tagId, tags}) => {
   const [name, setName] = useState('')
   //const filter = page && page.filterId ? recipeFilters.find(f => f.id == page.filterId) : null
-  const tag = page && page.tagId ? tags.find(f => f.id == page.tagId) : null
+  const tag = tagId ? tags.find(f => f.id == tagId) : null
   if (!tag) {console.log("Can't edit tag, did not exist."); return '';}
   
   return (<>
@@ -72,7 +72,7 @@ const EditTagButton = ({tag}) => {
     </div>
   )
 }
-const EditTags = ({tags, page, machines}) => {
+const EditTags = ({tags, machines}) => {
 
   //userTags = sortBy(userTags, "position") Not necessary, done on server side
   const [orderedTags, setOrderedTags] = useState(tags)
@@ -119,7 +119,7 @@ const EditTags = ({tags, page, machines}) => {
   }
 
   return (<>
-    <HomeTabs {...{page, machines}} />
+    <HomeTabs {...{machines}} />
     <div className="d-flex gap-15 align-items-center">
       <h2>{t('Tags')}</h2>
       <button type="button" className="btn btn-outline-primary btn-sm" onClick={createTag}>{t('Create_tag')}</button>
@@ -155,13 +155,12 @@ const HomeTab = ({isActive, title, path}) => {
     </li>
   </>
 }
-const HomeTabs = ({page, machines}) => {
-  const currentPage = page.page
+const HomeTabs = ({machines}) => {
   return <>
     <ul className="nav nav-tabs mb-3">
-      <HomeTab {...{isActive: currentPage == PAGE_1 || !page.page, title: 'Suggestions', path: '/'}} />
-      <HomeTab {...{isActive: currentPage == PAGE_6, title: 'Mes recettes', path: '/l'}} />
-      <HomeTab {...{isActive: currentPage == PAGE_4, title: 'Paramètres', path: '/c'}} />
+      <HomeTab {...{isActive: currentPathIsRoot(), title: 'Suggestions', path: '/'}} />
+      <HomeTab {...{isActive: false, title: 'Mes recettes', path: '/l'}} />
+      <HomeTab {...{isActive: false, title: 'Paramètres', path: '/c'}} />
       {machines.map((machine) => (
         <HomeTab key={'m'+machine.id} {...{isActive: false, title: machine.name, path: '/m/'+machine.id}} />
       ))}
@@ -181,7 +180,7 @@ const RecipeCarrousel = ({items}) => {
   </>
 }
 
-const HomePage = ({page, tags, recipes, suggestions, favoriteRecipes, machines}) => {
+const HomePage = ({tags, recipes, suggestions, favoriteRecipes, machines}) => {
 
   //let favList = {title: t("Favorites"), records: []}
   let toCookList = {title: t('To_cook_soon'), records: []}
@@ -203,7 +202,7 @@ const HomePage = ({page, tags, recipes, suggestions, favoriteRecipes, machines})
   const sTags = sortBy(tags, "position")
 
   return <>
-    <HomeTabs {...{page, machines}} />
+    <HomeTabs {...{machines}} />
     {lists.map(list => {
       if (list.records.length <= 0) {return ''}
       return <div key={list.title}>
@@ -227,14 +226,14 @@ const HomePage = ({page, tags, recipes, suggestions, favoriteRecipes, machines})
 
 const ShowRecipe = (props) => {
   return <>
-    <HomeTabs {...{page: props.page, machines: props.machines}} />
-    <RecipeViewer {...{recipeId: props.page.recipeId, ...props}} />
+    <HomeTabs {...{machines: props.machines}} />
+    <RecipeViewer {...props} />
   </>
 }
 
 const EditRecipe = (props) => {
 
-  const recipeId = props.page.recipeId
+  const recipeId = props.recipeId
   const recipe = props.recipes.find(e => e.id == recipeId)
   useEffect(() => {
     if (!recipe || recipe.user_id != props.user.id) {
@@ -243,16 +242,16 @@ const EditRecipe = (props) => {
   }, [props.recipes])
 
   return <>
-    <HomeTabs page={props.page} machines={props.machines} />
+    <HomeTabs machines={props.machines} />
     <RecipeEditor {...{recipe, ...props}} />
     <br/><br/><br/><br/><br/><br/><br/><br/>
   </>
 }
 
-const MixIndex = ({page, machines, mixes, machineFoods}) => {
+const MixIndex = ({machineId, machines, mixes, machineFoods}) => {
 
-  const machine = machines.find(m => m.id == page.machineId)
-  const currentMachineFoods = machineFoods.filter(m => m.machine_id == page.machineId)
+  const machine = machines.find(m => m.id == machineId)
+  const currentMachineFoods = machineFoods.filter(m => m.machine_id == machineId)
 
   const createMix = () => {
     ajax({url: mixes_path(), type: 'POST', data: {}, success: (mix) => {
@@ -282,10 +281,10 @@ const MixIndex = ({page, machines, mixes, machineFoods}) => {
   </>)
 }
 
-const Inventory = ({page, machines, containerQuantities, machineFoods, foods, containerFormats}) => {
+const Inventory = ({machineId, machines, containerQuantities, machineFoods, foods, containerFormats}) => {
 
-  const machine = machines.find(m => m.id == page.machineId)
-  const currentMachineFoods = machineFoods.filter(m => m.machine_id == page.machineId)
+  const machine = machines.find(m => m.id == machineId)
+  const currentMachineFoods = machineFoods.filter(m => m.machine_id == machineId)
 
   const items = currentMachineFoods.map(machineFood => {
     let food = foods.find(f => f.id == machineFood.food_id)
@@ -339,9 +338,9 @@ const Inventory = ({page, machines, containerQuantities, machineFoods, foods, co
   </>)
 }
 
-const HedaIndex = ({page, machines}) => {
+const HedaIndex = ({machineId, machines}) => {
 
-  const machine = machines.find(m => m.id == page.machineId)
+  const machine = machines.find(m => m.id == machineId)
   const winWidth = useWindowWidth()
 
   return (<>
@@ -359,7 +358,7 @@ const HedaIndex = ({page, machines}) => {
 const MyRecipes = (props) => {
 
   return (<>
-    <HomeTabs {...{page: props.page, machines: props.machines}} />
+    <HomeTabs {...{machines: props.machines}} />
     <div className="d-flex gap-20 align-items-center">
       <h2>{t('My_recipes')}</h2>
       <Link path='/n' className="btn btn-outline-primary btn-sm">{t('New_recipe')}</Link>
@@ -368,7 +367,7 @@ const MyRecipes = (props) => {
   </>)
 }
 
-const NewRecipe = ({page, recipeKinds}) => {
+const NewRecipe = ({recipeKinds}) => {
 
   const [name, setName] = useState('')
   const [usePersonalisedImage, setUsePersonalisedImage] = useState(false)
@@ -416,7 +415,6 @@ export const App = () => {
   
   const [isSearching, setIsSearching] = useState(false)
 
-  const [page, setPage] = useState(null)
   if (!window.hcu) {initHcu()}
 
   const suggestions = useHcuState(gon.suggestions.filter(r => r.tag_id), {tableName: 'suggestions'}) // FIXME: Fix the data. tag_id is mandatory...
@@ -437,37 +435,61 @@ export const App = () => {
   const user = gon.user
   window.locale = user.locale
 
-  console.log('page', page)
-
   const [element, setElement] = useState(null)
   const routes = [
-    {match: "/r/:id", element: <ShowRecipe {...{page, recipes, mixes, favoriteRecipes, recipeKinds, images, user, users, suggestions, tags}} />, action: (params) => {setPage({page: 15, recipeId: params.id})}},
-    {match: "/c", action: (params) => {setPage({page: 4})}}, // EditTags
-    {match: "/t/:id", action: (params) => {setPage({page: 3, tagId: params.id})}}, // EditTag
-    {match: "/l", action: (params) => {setPage({page: 6})}}, // MyRecipes
-    {match: "/e/:id", action: (params) => {setPage({page: 16, recipeId: params.id})}}, // EditRecipe
-    {match: "/n", action: (params) => {setPage({page: 17})}}, // NewRecipe
-    {match: "/m/:id/i", action: (params) => {setPage({page: 11, machineId: params.id})}}, // Inventory
-    {match: "/m/:id/l", action: (params) => {setPage({page: 12, machineId: params.id})}}, // MixIndex
-    {match: "/m/:machineId/s/:id", action: (params) => {setPage({page: 13, machineId: params.machineId, mixId: params.id})}}, // ShowMix
-    {match: "/m/:machineId/e/:id", action: (params) => {setPage({page: 14, machineId: params.machineId, mixId: params.id})}}, // EditMix
-    {match: "/m/:id", action: (params) => {setPage({page: 10, machineId: params.id})}}, // HedaIndex
-    //[PAGE_10]: <HedaIndex {...{page, machines}} />,
-    //[PAGE_11]: <Inventory {...{page, machines, machineFoods, containerQuantities, foods, containerFormats}} />,
-    //[PAGE_12]: <MixIndex {...{page, machines, machineFoods, mixes}} />,
-    //[PAGE_13]: <ShowMix {...{page, recipes, machines, mixes, machineFoods}} />,
-    //[PAGE_14]: <EditMix {...{page, recipes, machines, mixes, machineFoods}} />,
+    {match: "/r/:id", elem: ({id}) =>
+      <ShowRecipe {...{recipeId: id, recipes, mixes, favoriteRecipes, recipeKinds, images, user, users, suggestions, tags, machines}} />
+    },
+    {match: "/c", elem: () =>
+      <EditTags {...{tags, machines}} />
+    },
+    {match: "/t/:id", elem: ({id}) => 
+      <EditTag {...{tagId: id, tags}} />
+    },
+    {match: "/l", elem: () => 
+      <MyRecipes {...{recipes, suggestions, favoriteRecipes, tags, mixes, recipeKinds, user, images, machines}} />
+    },
+    {match: "/e/:id", elem: ({id}) => 
+      <EditRecipe {...{recipeId: id, recipes, mixes, user, users, recipeKinds, images, machineFoods, favoriteRecipes, machines}} />
+    },
+    {match: "/n", elem: () => 
+      <NewRecipe {...{recipeKinds}} />
+    },
+    {match: "/m/:id/i", elem: ({id}) => 
+      <Inventory {...{machineId: id, machines, machineFoods, containerQuantities, foods, containerFormats}} />
+    },
+    {match: "/m/:id/l", elem: ({id}) =>
+      <MixIndex {...{machineId: id, machines, machineFoods, mixes}} />
+    },
+    {match: "/m/:machineId/s/:id", elem: ({id, machineId}) =>
+      <ShowMix {...{machineId: machineId, mixId: id, recipes, machines, mixes, machineFoods}} />,
+    },
+    {match: "/m/:machineId/e/:id", elem: ({id, machineId}) => 
+      <EditMix {...{machineId: machineId, mixId: id, recipes, machines, mixes, machineFoods}} />
+    },
+    {match: "/m/:id", elem: ({id}) => 
+      <HedaIndex {...{machineId: id, machines}} />,
+    },
   ]
-  const defaultAction = (params) => {setPage({...{page: 1}, params})}
+
+  // [PAGE_1]: <TagIndex {...{page, machines, tags, images}} />,
+  //[PAGE_2]: <TagCategorySuggestions {...{suggestions, recipes}} />,
+  //5: <TrainFilter recipeFilters={recipeFilters} />,
+  //[PAGE_7]: <MyBooks />,
+  //[PAGE_8]: <TagEditAllCategories />,
+  //[PAGE_9]: <SuggestionsIndex {...{tags, suggestions, recipes, recipeKinds}} />,
+
+  const defaultElement = (params) => <HomePage {...{recipes, tags, suggestions, favoriteRecipes, machines}} />
 
   const matchRoutes = (pathname, params) => {
     // TODO: Use params, which are query parameters as an object
     // Combine alongside the other params (named params)? User must be careful no name clashes...
     for (let i = 0; i < routes.length; i++) {
       const r = match(routes[i].match, { end: false, decode: decodeURIComponent })(pathname);
-      if (r) {return routes[i].action({...params, ...r.params})}
+      if (r && !routes[i].elem) {throw "Route configuration error. Missing elem attribute."}
+      if (r) {return setElement(routes[i].elem({...params, ...r.params}))}
     }
-    defaultAction(params)
+    setElement(defaultElement(params))
   }
 
   useEffect(() => {
@@ -495,30 +517,9 @@ export const App = () => {
     setCsrf(document.querySelector('[name="csrf-token"]').content)
   }, [])
 
-  // [PAGE_1]: <TagIndex {...{page, machines, tags, images}} />,
-  const pages = {
-    [PAGE_1]: <HomePage {...{page, recipes, tags, suggestions, favoriteRecipes, machines}} />,
-    //[PAGE_2]: <TagCategorySuggestions {...{page, suggestions, recipes}} />,
-    [PAGE_3]: <EditTag {...{page, tags}} />,
-    [PAGE_4]: <EditTags {...{tags, page, machines}} />,
-    //5: <TrainFilter page={page} recipeFilters={recipeFilters} />,
-    [PAGE_6]: <MyRecipes {...{page, recipes, suggestions, favoriteRecipes, tags, mixes, recipeKinds, user, images, machines}} />,
-    //[PAGE_7]: <MyBooks page={page} />,
-    //[PAGE_8]: <TagEditAllCategories page={page} />,
-    //[PAGE_9]: <SuggestionsIndex {...{page, tags, suggestions, recipes, recipeKinds}} />,
-    [PAGE_10]: <HedaIndex {...{page, machines}} />,
-    [PAGE_11]: <Inventory {...{page, machines, machineFoods, containerQuantities, foods, containerFormats}} />,
-    [PAGE_12]: <MixIndex {...{page, machines, machineFoods, mixes}} />,
-    [PAGE_13]: <ShowMix {...{page, recipes, machines, mixes, machineFoods}} />,
-    [PAGE_14]: <EditMix {...{page, recipes, machines, mixes, machineFoods}} />,
-    [PAGE_15]: <ShowRecipe {...{page, recipes, mixes, favoriteRecipes, recipeKinds, images, user, users, suggestions, tags, machines}} />,
-    [PAGE_16]: <EditRecipe {...{page, recipes, mixes, user, users, recipeKinds, images, machineFoods, favoriteRecipes, machines}} />,
-    [PAGE_17]: <NewRecipe {...{page, recipeKinds}} />
-  }
-
   let otherProfiles = users.filter(u => u.id != user.id)
 
-  if (page === null) {return ''}
+  if (element === null) {return ''}
 
   // Pour recevoir des invités => (page suivantes, quelles restrictions => véganes)
   // Theme light:
@@ -527,9 +528,9 @@ export const App = () => {
   //   Icon color: black
     //<div className={(!page.page || page.page === 1) ? "wide-trunk" : "trunk"}>
   return (<>
-    <AppSearch {...{user, page, otherProfiles, _csrf, recipes, friendsRecipes, users}} />
+    <AppSearch {...{user, otherProfiles, _csrf, recipes, friendsRecipes, users}} />
     <div className="trunk">
-      {pages[page.page || 1]}
+      {element}
     </div>
   </>)
 }

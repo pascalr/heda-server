@@ -76,11 +76,13 @@ const labelForCmdType = (cmdType) => {
   return t ? t.label.fr : cmdType.id
 }
 
-export const ShowMix = ({page, recipes, machines, mixes, machineFoods}) => {
+export const ShowMix = ({machineId, mixId, recipes, machines, mixes, machineFoods}) => {
+  
+  const context = {recipes, machines, mixes, machineFoods}
 
-  const machine = page.machineId ? machines.find(m => m.id == page.machineId) : null
+  const machine = machineId ? machines.find(m => m.id == machineId) : null
   const currentMachineFoods = machine ? machineFoods.filter(m => m.machine_id == machine.id) : machineFoods
-  const mix = mixes.find(m => m.id == page.mixId)
+  const mix = mixes.find(m => m.id == mixId)
 
   console.log('mix.recipe_id', mix.recipe_id)
 
@@ -117,13 +119,13 @@ export const ShowMix = ({page, recipes, machines, mixes, machineFoods}) => {
   </>)
 }
 
-export const EditMix = ({page, recipes, machines, mixes, machineFoods}) => {
+export const EditMix = ({machineId, mixId, recipes, recipeId, machines, mixes, machineFoods}) => {
 
   const context = {recipes, machines, mixes, machineFoods}
 
-  const machine = page.machineId ? machines.find(m => m.id == page.machineId) : null
+  const machine = machineId ? machines.find(m => m.id == machineId) : null
   const currentMachineFoods = machine ? machineFoods.filter(m => m.machine_id == machine.id) : machineFoods
-  const mix = page.recipeId ? mixes.find(m => m.recipe_id == page.recipeId) : mixes.find(m => m.id == page.mixId)
+  const mix = recipeId ? mixes.find(m => m.recipe_id == recipeId) : mixes.find(m => m.id == mixId)
   console.log('edit mix', mix)
 
   if (!mix) { return '' }
@@ -343,7 +345,7 @@ const EditableIngredientSection = ({item, index, updateIngredients, removeIngred
   </h3>
 }
 
-export const RecipeEditor = ({recipe, page, machines, mixes, machineFoods, foods, recipeKinds, images, editable, user}) => {
+export const RecipeEditor = ({recipe, machines, mixes, machineFoods, foods, recipeKinds, images, editable, user}) => {
 
   const [showImageModal, setShowImageModal] = useState(false)
 
@@ -469,13 +471,13 @@ export const RecipeEditor = ({recipe, page, machines, mixes, machineFoods, foods
   //    mixes.update([...mixes, mix])
   //  }})
   //}
-  //let mixEditor = mix ? <EditMix {...{page, favoriteRecipes, machines, mixes, machineFoods, recipes}} /> : (<>
+  //let mixEditor = mix ? <EditMix {...{favoriteRecipes, machines, mixes, machineFoods, recipes}} /> : (<>
   //  <p>Vous pouvez ajouter des instructions pour automatiser cette recette.</p>
   //  <button type="button" className="btn btn-primary" onClick={createMix}>Ajouter</button>
   //</>)
   let mixEditor = mix ? <>
     <h2>{t('Commands')}</h2>
-    <EditMix {...{page, machines, mixes, machineFoods, recipes}} />
+    <EditMix {...{machines, mixes, machineFoods, recipes}} />
   </> : null
 
   let changeOwner = (e) => {
