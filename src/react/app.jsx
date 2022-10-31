@@ -813,13 +813,12 @@ export const App = () => {
       // Combine alongside the other params (named params)? User must be careful no name clashes...
       for (let i = 0; i < routes.length; i++) {
         const r = match(routes[i].match, { end: false, decode: decodeURIComponent })(pathname);
-        if (r) {console.log('there'); return routes[i].action({...params, ...r.params})}
+        if (r) {return routes[i].action({...params, ...r.params})}
       }
       defaultAction(params)
     }
     matchRoutes(window.location.pathname, queryToParams(window.location.search))
     const historyChanged = (event) => {
-      console.log('history changed', event)
       matchRoutes(event.detail.pathname, event.detail.params)
     }
     window.addEventListener('history-changed', historyChanged)

@@ -49,7 +49,6 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
   const noteIds = recipe.notes ? Object.values(recipe.notes).sort((a,b) => a.item_nb - b.item_nb).map(ing => ing.id) : []
   const ingredientsAndHeaders = parseIngredientsAndHeaders(recipe.ingredients)
   const ingredients = ingredientsAndHeaders.filter(e => e.label || e.qty)
-  console.log('ingredients', ingredients)
   const toolIds = []
   const mix = mixes.find(m => m.recipe_id == recipe.id)
   const recipeTags = suggestions.filter(s => s.recipe_id == recipe.id).map(s => tags.find(t => t.id == s.tag_id))
