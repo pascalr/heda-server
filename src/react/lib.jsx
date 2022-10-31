@@ -68,6 +68,11 @@ export function parseIngredientsAndHeaders(text) {
   }).filter(e => e)
 }
 
+export const currentPathIsRoot = () => {
+  let url = window.location.pathname
+  return url === '' || url === '/'
+}
+
 export const Link = ({className, children, active, path, onClick, ...props}) => {
   const handleClick = (evt) => {
     evt.preventDefault()

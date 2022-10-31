@@ -4,11 +4,11 @@ import { UserThumbnailImage, RecipeThumbnailImage } from "./image"
 import { ajax, changeUrl } from "./utils"
 import { t } from "../translate"
 import { localeHref, getPathFromUrl } from "../utils"
-import { useTransition, Link } from "./lib"
+import { useTransition, Link, currentPathIsRoot } from "./lib"
 import { SearchWhiteIcon, PersonFillWhiteIcon, XLgWhiteIcon } from '../server/image.js'
 import { normalizeSearchText } from "./utils"
 
-const RecipeListItem = ({recipe, current, page, selected, users, user, selectedRef, setIsSearching}) => {
+const RecipeListItem = ({recipe, current, selected, users, user, selectedRef, setIsSearching}) => {
   let userName = null
   let isSelected = current == selected
   if (user.id != recipe.user_id) {
@@ -138,10 +138,10 @@ export const PublicNavbar = ({locale, renderingHome, setIsSearching}) => {
   </>
 }
 
-export const AppSearch = ({user, page, otherProfiles, _csrf, recipes, friendsRecipes, users}) => {
+export const AppSearch = ({user, otherProfiles, _csrf, recipes, friendsRecipes, users}) => {
 
   let locale = user.locale
-  let renderingHome = !page.page || page.page == 1
+  let renderingHome = currentPathIsRoot()
   const minChars = 3
 
   // Ugly as fuck...
@@ -164,13 +164,13 @@ export const AppSearch = ({user, page, otherProfiles, _csrf, recipes, friendsRec
         {matchingUserRecipes.length >= 1 ? <h2 className="h001">{t('My_recipes')}</h2> : ''}
         <ul className="recipe-list">
           {matchingUserRecipes.map((recipe, current) => (
-            <RecipeListItem key={recipe.id} {...{recipe, current, page, selected, users, user, selectedRef, setIsSearching}}/>
+            <RecipeListItem key={recipe.id} {...{recipe, current, selected, users, user, selectedRef, setIsSearching}}/>
           ))}
         </ul>
         {matchingFriendsRecipes.length >= 1 ? <h2 className="h001">{t('Suggestions')}</h2> : ''}
         <ul className="recipe-list">
           {matchingFriendsRecipes.map((recipe, current) => (
-            <RecipeListItem key={recipe.id} {...{recipe, current: current+matchingUserRecipes.length, page, selected, users, user, selectedRef, setIsSearching}}/>
+            <RecipeListItem key={recipe.id} {...{recipe, current: current+matchingUserRecipes.length, selected, users, user, selectedRef, setIsSearching}}/>
           ))}
         </ul>
       </>

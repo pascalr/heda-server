@@ -28,7 +28,7 @@ const removeFavoriteRecipe = (fav, recipe) => {
   window.hcu.removeRecord(recipe)
 }
 
-const RecipeListItemMenu = ({fav, recipe, editUserRecipe, user, page}) => {
+const RecipeListItemMenu = ({fav, recipe, editUserRecipe, user}) => {
 
   let toCook = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 1, recipe, user)}>{t('To_cook')}</button>
   let toTry = <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, 2, recipe, user)}>{t('To_try')}</button>
@@ -52,7 +52,7 @@ const RecipeListItemMenu = ({fav, recipe, editUserRecipe, user, page}) => {
   </>
 }
 
-export const RecipeList = ({page, list, selected, suggestions, tags, editUserRecipe, mixes, recipes, user, images}) => {
+export const RecipeList = ({list, selected, suggestions, tags, editUserRecipe, mixes, recipes, user, images}) => {
 
   return (<>
     <ul id="recipes" className="recipe-list">
@@ -73,7 +73,7 @@ export const RecipeList = ({page, list, selected, suggestions, tags, editUserRec
               {mix ? <img src="/img/logo_001.svg" width="24" height="24"/> : ''}
             <span className='ms-2' style={{color: 'gray', fontSize: '0.78em', flexShrink: '3'}}>{recipeTags.map(tag => ` #${tag.name}`)} </span>
             <span className="flex-grow-1"/>
-            <RecipeListItemMenu {...{fav, recipe, editUserRecipe, user, page}} />
+            <RecipeListItemMenu {...{fav, recipe, editUserRecipe, user}} />
           </li>
         )
       })}
@@ -81,7 +81,7 @@ export const RecipeList = ({page, list, selected, suggestions, tags, editUserRec
   </>)
 }
 
-export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, recipes, user, images}) => {
+export const RecipeIndex = ({favoriteRecipes, suggestions, tags, mixes, recipes, user, images}) => {
   
   const [recipeToEdit, setRecipeToEdit] = useState(null)
   const [showModal, setShowModal] = useState(true)
@@ -100,7 +100,7 @@ export const RecipeIndex = ({page, favoriteRecipes, suggestions, tags, mixes, re
     setShowModal(true)
   }
 
-  let listArgs = {page, suggestions, tags, editUserRecipe, mixes, recipes, user, images}
+  let listArgs = {suggestions, tags, editUserRecipe, mixes, recipes, user, images}
 
   return (<>
     <EditTagsModal {...{recipe: recipeToEdit, tags, suggestions, showModal, setShowModal}} />
