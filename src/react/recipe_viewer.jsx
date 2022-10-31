@@ -176,9 +176,6 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
                 <img src="/icons/pencil.svg" width="24"></img>
               </Link>
             : ''}
-            <a className="btn btn-outline-secondary" href="FIXME">
-              <img src="/icons/journal-plus.svg" width="24"></img>
-            </a>
             <button type="button" className="btn btn-outline-secondary" onClick={() => setShowModal(true)}>
               <img src="/icons/tags.svg" width="24"></img>
             </button>
