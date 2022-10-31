@@ -437,23 +437,17 @@ export const App = () => {
 
   const [element, setElement] = useState(null)
   const routes = [
+    {match: "/c", elem: <EditTags {...{tags, machines}} />},
+    {match: "/n", elem: <NewRecipe {...{recipeKinds}} />},
+    {match: "/l", elem: <MyRecipes {...{recipes, suggestions, favoriteRecipes, tags, mixes, recipeKinds, user, images, machines}} />},
     {match: "/r/:id", elem: ({id}) =>
       <ShowRecipe {...{recipeId: id, recipes, mixes, favoriteRecipes, recipeKinds, images, user, users, suggestions, tags, machines}} />
-    },
-    {match: "/c", elem: () =>
-      <EditTags {...{tags, machines}} />
     },
     {match: "/t/:id", elem: ({id}) => 
       <EditTag {...{tagId: id, tags}} />
     },
-    {match: "/l", elem: () => 
-      <MyRecipes {...{recipes, suggestions, favoriteRecipes, tags, mixes, recipeKinds, user, images, machines}} />
-    },
     {match: "/e/:id", elem: ({id}) => 
       <EditRecipe {...{recipeId: id, recipes, mixes, user, users, recipeKinds, images, machineFoods, favoriteRecipes, machines}} />
-    },
-    {match: "/n", elem: () => 
-      <NewRecipe {...{recipeKinds}} />
     },
     {match: "/m/:id/i", elem: ({id}) => 
       <Inventory {...{machineId: id, machines, machineFoods, containerQuantities, foods, containerFormats}} />
@@ -472,13 +466,6 @@ export const App = () => {
     },
   ]
 
-  // [PAGE_1]: <TagIndex {...{page, machines, tags, images}} />,
-  //[PAGE_2]: <TagCategorySuggestions {...{suggestions, recipes}} />,
-  //5: <TrainFilter recipeFilters={recipeFilters} />,
-  //[PAGE_7]: <MyBooks />,
-  //[PAGE_8]: <TagEditAllCategories />,
-  //[PAGE_9]: <SuggestionsIndex {...{tags, suggestions, recipes, recipeKinds}} />,
-
   const defaultElement = (params) => <HomePage {...{recipes, tags, suggestions, favoriteRecipes, machines}} />
 
   const matchRoutes = (pathname, params) => {
@@ -486,8 +473,12 @@ export const App = () => {
     // Combine alongside the other params (named params)? User must be careful no name clashes...
     for (let i = 0; i < routes.length; i++) {
       const r = match(routes[i].match, { end: false, decode: decodeURIComponent })(pathname);
-      if (r && !routes[i].elem) {throw "Route configuration error. Missing elem attribute."}
-      if (r) {return setElement(routes[i].elem({...params, ...r.params}))}
+      if (r) {
+        let e = routes[i].elem
+        if (!e) {throw "Route configuration error. Missing elem attribute."}
+        if (typeof e !== 'function') {return setElement(e)}
+        return setElement(routes[i].elem({...params, ...r.params}))
+      }
     }
     setElement(defaultElement(params))
   }
@@ -814,3 +805,11 @@ document.addEventListener('DOMContentLoaded', () => {
 //    </div>
 //  </>)
 //}
+//
+
+  // [PAGE_1]: <TagIndex {...{page, machines, tags, images}} />,
+  //[PAGE_2]: <TagCategorySuggestions {...{suggestions, recipes}} />,
+  //5: <TrainFilter recipeFilters={recipeFilters} />,
+  //[PAGE_7]: <MyBooks />,
+  //[PAGE_8]: <TagEditAllCategories />,
+  //[PAGE_9]: <SuggestionsIndex {...{tags, suggestions, recipes, recipeKinds}} />,
