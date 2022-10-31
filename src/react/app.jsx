@@ -78,7 +78,7 @@ const EditTagButton = ({tag}) => {
     </div>
   )
 }
-const EditTags = ({tags, page}) => {
+const EditTags = ({tags, page, machines}) => {
 
   //userTags = sortBy(userTags, "position") Not necessary, done on server side
   const [orderedTags, setOrderedTags] = useState(tags)
@@ -120,12 +120,12 @@ const EditTags = ({tags, page}) => {
 
   const createTag = () => {
     window.hcu.createRecord('tags', {}, (tag) => {
-      changePage({page: PAGE_3, tagId: tag.id})
+      changeUrl('/t/'+tag.id)
     })
   }
 
   return (<>
-    <HomeTabs {...{page}} />
+    <HomeTabs {...{page, machines}} />
     <div className="d-flex gap-15 align-items-center">
       <h2>{t('Tags')}</h2>
       <button type="button" className="btn btn-outline-primary btn-sm" onClick={createTag}>{t('Create_tag')}</button>
@@ -161,13 +161,16 @@ const HomeTab = ({isActive, title, path}) => {
     </li>
   </>
 }
-const HomeTabs = ({page}) => {
+const HomeTabs = ({page, machines}) => {
   const currentPage = page.page
   return <>
     <ul className="nav nav-tabs mb-3">
       <HomeTab {...{isActive: currentPage == PAGE_1 || !page.page, title: 'Suggestions', path: '/'}} />
       <HomeTab {...{isActive: currentPage == PAGE_6, title: 'Mes recettes', path: '/l'}} />
       <HomeTab {...{isActive: currentPage == PAGE_4, title: 'Paramètres', path: '/c'}} />
+      {machines.map((machine) => (
+        <HomeTab key={'m'+machine.id} {...{isActive: false, title: machine.name, path: '/m/'+machine.id}} />
+      ))}
     </ul>
   </>
 }
@@ -184,7 +187,7 @@ const RecipeCarrousel = ({items}) => {
   </>
 }
 
-const HomePage = ({page, tags, recipes, suggestions, favoriteRecipes}) => {
+const HomePage = ({page, tags, recipes, suggestions, favoriteRecipes, machines}) => {
 
   //let favList = {title: t("Favorites"), records: []}
   let toCookList = {title: t('To_cook_soon'), records: []}
@@ -206,7 +209,7 @@ const HomePage = ({page, tags, recipes, suggestions, favoriteRecipes}) => {
   const sTags = sortBy(tags, "position")
 
   return <>
-    <HomeTabs {...{page}} />
+    <HomeTabs {...{page, machines}} />
     {lists.map(list => {
       if (list.records.length <= 0) {return ''}
       return <div key={list.title}>
@@ -226,35 +229,6 @@ const HomePage = ({page, tags, recipes, suggestions, favoriteRecipes}) => {
       </div>
     })}
   </> 
-}
-
-const TagIndex = ({page, machines, tags, images}) => {
-
-  const winWidth = useWindowWidth()
-  let pl = winWidth > 800 ? 0 : (winWidth % 200)/2
-
-  const buttons = sortBy(tags, 'position').map(tag => {
-    const image = images.find(i => i.slug == tag.image_slug)
-    const imagePath = image ? image_path(image, 'medium') : "/img/question-mark.jpg"
-    return <TagButton key={tag.id} image={imagePath} title={tag.name || "Sans nom"} handleClick={() => changePage({page: PAGE_9, tagId: tag.id})} />
-  })
-
-  const machineButtons = machines.map(machine => {
-    return <TagButton key={`machine-${machine.id}`} image='/img/robot.jpg' title={machine.name || "Heda"} handleClick={() => changePage({page: PAGE_10, machineId: machine.id})} />
-  })
-
-  // Pour recevoir des invités => (page suivantes, quelles restrictions => véganes)
-  //<TagButton image="/img/recipes.jpg" title="Mes livres" handleClick={() => {window.location.href = my_books_path()}} />
-  return (<>
-    <div style={{maxWidth: "100vw", width: "800px", margin: "auto", paddingLeft: `${pl}px`, marginLeft: '-0.3em'}}>
-      <div style={{width: "fit-content"}}>
-        <TagButton image="/img/cooking.jpg" title={t('My_recipes')} handleClick={() => changePage({page: PAGE_6})} />
-        {machineButtons}
-        {buttons}
-        <TagButton image="/icons/gear-gray.svg" title={t('Settings')} handleClick={() => changePage({page: PAGE_4})} />
-      </div>
-    </div>
-  </>)
 }
 
 // I do something similar to Tiptap to serialize and deserialize
@@ -363,7 +337,7 @@ const ShowMix = ({page, recipes, machines, mixes, machineFoods}) => {
 
 const ShowRecipe = (props) => {
   return <>
-    <HomeTabs {...{page: props.page}} />
+    <HomeTabs {...{page: props.page, machines: props.machines}} />
     <RecipeViewer {...{recipeId: props.page.recipeId, ...props}} />
   </>
 }
@@ -374,12 +348,12 @@ const EditRecipe = (props) => {
   const recipe = props.recipes.find(e => e.id == recipeId)
   useEffect(() => {
     if (!recipe || recipe.user_id != props.user.id) {
-      window.hcu.changePage({page: 15, recipeId: recipeId})
+      changeUrl('/r/'+recipeId)
     }
   }, [props.recipes])
 
   return <>
-    <HomeTabs page={props.page} />
+    <HomeTabs page={props.page} machines={props.machines} />
     <RecipeEditor {...{recipe, ...props}} />
     <br/><br/><br/><br/><br/><br/><br/><br/>
   </>
@@ -483,8 +457,8 @@ const HedaIndex = ({page, machines}) => {
   return (<>
     <div style={{maxWidth: "100vw", width: "400px", margin: "auto"}}>
       <TagButton image="/img/calendar.jpg" title="Calendrier" handleClick={() => window.location.href = calendar_path(machine)} />
-      <TagButton image="/img/blender.jpg" title="Mélanges" handleClick={() => changePage({page: PAGE_12, machineId: machine.id})} />
-      <TagButton image="/img/bar_code.jpg" title="Inventaire" handleClick={() => changePage({page: PAGE_11, machineId: machine.id})} />
+      <TagButton image="/img/blender.jpg" title="Mélanges" handleClick={() => changeUrl('/m/'+machine.id+'/l')} />
+      <TagButton image="/img/bar_code.jpg" title="Inventaire" handleClick={() => changeUrl('/m/'+machine.id+'/i')} />
     
       <TagButton image="/img/jar.svg" title="Pots" handleClick={() => window.location.href = containers_path(machine)} />
       <TagButton image="/img/shopping_cart.jpg" title="Liste d'épicerie" handleClick={() => window.location.href = grocery_list_path(machine)} />
@@ -495,7 +469,7 @@ const HedaIndex = ({page, machines}) => {
 const MyRecipes = (props) => {
 
   return (<>
-    <HomeTabs {...{page: props.page}} />
+    <HomeTabs {...{page: props.page, machines: props.machines}} />
     <div className="d-flex gap-20 align-items-center">
       <h2>{t('My_recipes')}</h2>
       <Link path='/n' className="btn btn-outline-primary btn-sm">{t('New_recipe')}</Link>
@@ -581,6 +555,8 @@ export const App = () => {
   const user = gon.user
   window.locale = user.locale
 
+  console.log('page', page)
+
   const [element, setElement] = useState(null)
   const routes = [
     {match: "/r/:id", element: <ShowRecipe {...{page, recipes, mixes, favoriteRecipes, recipeKinds, images, user, users, suggestions, tags}} />, action: (params) => {setPage({page: 15, recipeId: params.id})}},
@@ -589,6 +565,11 @@ export const App = () => {
     {match: "/l", action: (params) => {setPage({page: 6})}}, // MyRecipes
     {match: "/e/:id", action: (params) => {setPage({page: 16, recipeId: params.id})}}, // EditRecipe
     {match: "/n", action: (params) => {setPage({page: 17})}}, // NewRecipe
+    {match: "/m/:id/i", action: (params) => {setPage({page: 11, machineId: params.id})}}, // Inventory
+    {match: "/m/:id/l", action: (params) => {setPage({page: 12, machineId: params.id})}}, // MixIndex
+    {match: "/m/:machineId/s/:id", action: (params) => {setPage({page: 13, machineId: params.machineId})}}, // ShowMix
+    {match: "/m/:machineId/e/:id", action: (params) => {setPage({page: 14, machineId: params.machineId})}}, // EditMix
+    {match: "/m/:id", action: (params) => {setPage({page: 10, machineId: params.id})}}, // HedaIndex
     //[PAGE_10]: <HedaIndex {...{page, machines}} />,
     //[PAGE_11]: <Inventory {...{page, machines, machineFoods, containerQuantities, foods, containerFormats}} />,
     //[PAGE_12]: <MixIndex {...{page, machines, machineFoods, mixes}} />,
@@ -634,12 +615,12 @@ export const App = () => {
 
   // [PAGE_1]: <TagIndex {...{page, machines, tags, images}} />,
   const pages = {
-    [PAGE_1]: <HomePage {...{page, recipes, tags, suggestions, favoriteRecipes}} />,
+    [PAGE_1]: <HomePage {...{page, recipes, tags, suggestions, favoriteRecipes, machines}} />,
     //[PAGE_2]: <TagCategorySuggestions {...{page, suggestions, recipes}} />,
     [PAGE_3]: <EditTag {...{page, tags}} />,
-    [PAGE_4]: <EditTags {...{tags, page}} />,
+    [PAGE_4]: <EditTags {...{tags, page, machines}} />,
     //5: <TrainFilter page={page} recipeFilters={recipeFilters} />,
-    [PAGE_6]: <MyRecipes {...{page, recipes, suggestions, favoriteRecipes, tags, mixes, recipeKinds, user, images}} />,
+    [PAGE_6]: <MyRecipes {...{page, recipes, suggestions, favoriteRecipes, tags, mixes, recipeKinds, user, images, machines}} />,
     //[PAGE_7]: <MyBooks page={page} />,
     //[PAGE_8]: <TagEditAllCategories page={page} />,
     //[PAGE_9]: <SuggestionsIndex {...{page, tags, suggestions, recipes, recipeKinds}} />,
@@ -648,8 +629,8 @@ export const App = () => {
     [PAGE_12]: <MixIndex {...{page, machines, machineFoods, mixes}} />,
     [PAGE_13]: <ShowMix {...{page, recipes, machines, mixes, machineFoods}} />,
     [PAGE_14]: <EditMix {...{page, recipes, machines, mixes, machineFoods}} />,
-    [PAGE_15]: <ShowRecipe {...{page, recipes, mixes, favoriteRecipes, recipeKinds, images, user, users, suggestions, tags}} />,
-    [PAGE_16]: <EditRecipe {...{page, recipes, mixes, user, users, recipeKinds, images, machineFoods, favoriteRecipes}} />,
+    [PAGE_15]: <ShowRecipe {...{page, recipes, mixes, favoriteRecipes, recipeKinds, images, user, users, suggestions, tags, machines}} />,
+    [PAGE_16]: <EditRecipe {...{page, recipes, mixes, user, users, recipeKinds, images, machineFoods, favoriteRecipes, machines}} />,
     [PAGE_17]: <NewRecipe {...{page, recipeKinds}} />
   }
 
@@ -918,5 +899,35 @@ document.addEventListener('DOMContentLoaded', () => {
 //    <div style={{height: "2em"}}></div>
 //    <h2>Livres favoris</h2>
 //    <hr style={{marginTop: "0"}}/>
+//  </>)
+//}
+//
+//
+//const TagIndex = ({page, machines, tags, images}) => {
+//
+//  const winWidth = useWindowWidth()
+//  let pl = winWidth > 800 ? 0 : (winWidth % 200)/2
+//
+//  const buttons = sortBy(tags, 'position').map(tag => {
+//    const image = images.find(i => i.slug == tag.image_slug)
+//    const imagePath = image ? image_path(image, 'medium') : "/img/question-mark.jpg"
+//    return <TagButton key={tag.id} image={imagePath} title={tag.name || "Sans nom"} handleClick={() => changePage({page: PAGE_9, tagId: tag.id})} />
+//  })
+//
+//  const machineButtons = machines.map(machine => {
+//    return <TagButton key={`machine-${machine.id}`} image='/img/robot.jpg' title={machine.name || "Heda"} handleClick={() => changePage({page: PAGE_10, machineId: machine.id})} />
+//  })
+//
+//  // Pour recevoir des invités => (page suivantes, quelles restrictions => véganes)
+//  //<TagButton image="/img/recipes.jpg" title="Mes livres" handleClick={() => {window.location.href = my_books_path()}} />
+//  return (<>
+//    <div style={{maxWidth: "100vw", width: "800px", margin: "auto", paddingLeft: `${pl}px`, marginLeft: '-0.3em'}}>
+//      <div style={{width: "fit-content"}}>
+//        <TagButton image="/img/cooking.jpg" title={t('My_recipes')} handleClick={() => changePage({page: PAGE_6})} />
+//        {machineButtons}
+//        {buttons}
+//        <TagButton image="/icons/gear-gray.svg" title={t('Settings')} handleClick={() => changePage({page: PAGE_4})} />
+//      </div>
+//    </div>
 //  </>)
 //}

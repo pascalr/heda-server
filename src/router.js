@@ -367,6 +367,11 @@ router.get('/c', renderApp)
 router.get('/t/:id', renderApp)
 router.get('/l', renderApp)
 router.get('/n', renderApp)
+router.get('/m/:id', renderApp)
+router.get('/m/:id/i', renderApp)
+router.get('/m/:id/l', renderApp)
+router.get('/m/:machineId/s/:id', renderApp)
+router.get('/m/:machineId/e/:id', renderApp)
 
 router.get('/r/:id', function(req, res, next) {
 
