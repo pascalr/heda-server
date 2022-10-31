@@ -587,7 +587,7 @@ export const App = () => {
     {match: "/c", action: (params) => {setPage({page: 4})}}, // EditTags
     {match: "/t/:id", action: (params) => {setPage({page: 3, tagId: params.id})}}, // EditTag
     {match: "/l", action: (params) => {setPage({page: 6})}}, // MyRecipes
-    {match: "/e/:id", action: (params) => {setPage({page: 15, recipeId: params.id})}}, // EditRecipe
+    {match: "/e/:id", action: (params) => {setPage({page: 16, recipeId: params.id})}}, // EditRecipe
     {match: "/n", action: (params) => {setPage({page: 17})}}, // NewRecipe
     //[PAGE_10]: <HedaIndex {...{page, machines}} />,
     //[PAGE_11]: <Inventory {...{page, machines, machineFoods, containerQuantities, foods, containerFormats}} />,

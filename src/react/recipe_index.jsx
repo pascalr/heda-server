@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { ajax, isBlank, normalizeSearchText } from "./utils"
 import { EditTagsModal } from './modals/edit_tags'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
-import { LinkToPage } from "./lib"
+import { Link } from "./lib"
 import { RecipeThumbnailImage } from "./image"
 import { t } from "../translate"
   
@@ -45,7 +45,7 @@ const RecipeListItemMenu = ({fav, recipe, editUserRecipe, user, page}) => {
         <li>{fav && fav.list_id == 2 ? toNotTry : toTry }</li>
         <li><button type="button" className="dropdown-item" onClick={() => editUserRecipe(recipe)}>{t('Tag')}</button></li>
         {fav ? <li><button type="button" className="dropdown-item" onClick={() => removeFavoriteRecipe(fav, recipe)}>{t('Remove_from_favorites')}</button></li> : ''}
-        {user.id != recipe.user_id ? '' : <li><LinkToPage page={{page: 16, recipeId: recipe.id}} className="dropdown-item">{t('Edit')}</LinkToPage></li>}
+        {user.id != recipe.user_id ? '' : <li><Link path={'/e/'+recipe.id} className="dropdown-item">{t('Edit')}</Link></li>}
         {recipe.user_id == user.id ? <li><button type="button" className="dropdown-item" onClick={() => {removeRecipe(recipe)}}>{t('Delete_recipe')}</button></li> : ''}
       </ul>
     </span>
@@ -63,13 +63,13 @@ export const RecipeList = ({page, list, selected, suggestions, tags, editUserRec
 
         return (
           <li key={recipe.id} className='d-flex align-items-center'>
-            <LinkToPage page={{...page, page: 15, recipeId: recipe.id}} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={current == selected ? "selected" : undefined}>
+            <Link path={'/r/'+recipe.id} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={current == selected ? "selected" : undefined}>
               <div className="d-flex align-items-center">
                 <RecipeThumbnailImage {...{recipe, images}} />
                 <div style={{marginRight: '0.5em'}}></div>
                 {recipe.name}
               </div>
-            </LinkToPage>
+            </Link>
               {mix ? <img src="/img/logo_001.svg" width="24" height="24"/> : ''}
             <span className='ms-2' style={{color: 'gray', fontSize: '0.78em', flexShrink: '3'}}>{recipeTags.map(tag => ` #${tag.name}`)} </span>
             <span className="flex-grow-1"/>
