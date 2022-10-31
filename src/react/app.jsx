@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 //import { createRoot } from 'react-dom/client';
 
-import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, LinkToPage, Link } from "./lib"
+import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, Link } from "./lib"
 import { findRecipeKindForRecipeName } from "../lib"
 import { RecipeList, RecipeIndex } from './recipe_index'
 import { changeUrl, ajax, isBlank, normalizeSearchText, preloadImage, join, bindSetter, capitalize, isTrue } from "./utils"
@@ -61,7 +61,7 @@ const EditTag = ({page, tags}) => {
     <h3>{t('Name')}</h3>
     <TextField model={tag} field="name" />
     <br/><br/>
-    <LinkToPage {...{page: {page: PAGE_4}, className: "btn btn-primary"}}>Ok</LinkToPage>
+    <Link path='/c' className="btn btn-primary">Ok</Link>
   </>)
 }
 
@@ -155,10 +155,10 @@ const TagButton = ({title, image, handleClick}) => {
   )
 }
 
-const HomeTab = ({isActive, title, page}) => {
+const HomeTab = ({isActive, title, path}) => {
   return <>
     <li className="nav-item">
-      <LinkToPage {...{page, className: 'nav-link', active: isActive}}>{title}</LinkToPage>
+      <Link {...{path, className: 'nav-link', active: isActive}}>{title}</Link>
     </li>
   </>
 }
@@ -166,9 +166,9 @@ const HomeTabs = ({page}) => {
   const currentPage = page.page
   return <>
     <ul className="nav nav-tabs mb-3">
-      <HomeTab {...{isActive: currentPage == PAGE_1 || !page.page, title: 'Suggestions', page: {page: PAGE_1}}} />
-      <HomeTab {...{isActive: currentPage == PAGE_6, title: 'Mes recettes', page: {page: PAGE_6}}} />
-      <HomeTab {...{isActive: currentPage == PAGE_4, title: 'Paramètres', page: {page: PAGE_4}}} />
+      <HomeTab {...{isActive: currentPage == PAGE_1 || !page.page, title: 'Suggestions', path: '/'}} />
+      <HomeTab {...{isActive: currentPage == PAGE_6, title: 'Mes recettes', path: '/l'}} />
+      <HomeTab {...{isActive: currentPage == PAGE_4, title: 'Paramètres', path: '/c'}} />
     </ul>
   </>
 }
@@ -498,7 +498,7 @@ const MyRecipes = (props) => {
     <HomeTabs {...{page: props.page}} />
     <div className="d-flex gap-20 align-items-center">
       <h2>{t('My_recipes')}</h2>
-      <LinkToPage page={{...props.page, page: 17}} className="btn btn-outline-primary btn-sm">{t('New_recipe')}</LinkToPage>
+      <Link path='/n' className="btn btn-outline-primary btn-sm">{t('New_recipe')}</Link>
     </div>
     <RecipeIndex {...props} loading={false} />
   </>)
@@ -543,7 +543,7 @@ const NewRecipe = ({page, recipeKinds}) => {
       <input name="name" value={name} onChange={(e) => {setName(e.target.value)}} />
       <br/><br/>
       <button type="submit" className="btn btn-primary">{t('Create')}</button>
-      <LinkToPage {...{page: {page: PAGE_6}, className: "btn btn-secondary ms-3"}}>{t('Back')}</LinkToPage>
+      <Link path='/l' className="btn btn-secondary ms-3">{t('Back')}</Link>
     </form>
   </>
 }
@@ -595,7 +595,7 @@ export const App = () => {
     //[PAGE_13]: <ShowMix {...{page, recipes, machines, mixes, machineFoods}} />,
     //[PAGE_14]: <EditMix {...{page, recipes, machines, mixes, machineFoods}} />,
   ]
-  const defaultAction = (params) => {setPage(params)}
+  const defaultAction = (params) => {setPage({...{page: 1}, params})}
 
   useEffect(() => {
 

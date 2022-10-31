@@ -77,18 +77,6 @@ export const Link = ({className, children, active, path, onClick, ...props}) => 
   return <a className={join(className, active ? 'active' : null)} href={path} onClick={handleClick} {...props}>{children}</a>
 }
 
-export const LinkToPage = ({page, className, children, active, ...props}) => {
-  const switchPage = (evt, page) => {
-    evt.preventDefault()
-    //getRegister('setPage')(page)
-    window.hcu.changePage(page)
-  }
-  const href = '?'+new URLSearchParams(page).toString()
-
-  return <a className={join(className, active ? 'active' : null)} href={href} onClick={(e) => switchPage(e, page)} {...props}>{children}</a>
-}
-
-
 export const mapModels = (list, func) => {
   if (!list) {return null;}
   return list.map((item,i) => <span key={item.id}>{func(item,i)}</span>)
