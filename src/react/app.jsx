@@ -66,14 +66,13 @@ const EditTag = ({page, tags}) => {
 }
 
 const EditTagButton = ({tag}) => {
-  const handleClick = () => changePage({page: 3, tagId: tag.id})
   return (
     <div className="d-flex align-items-center" style={{padding: '5px 0'}}>
       <img src='/icons/arrows-move.svg' width="20" height="20" />
       <div className="me-3"/>
-      <div className="clickable" onClick={handleClick}>
+      <Link path={'/t/'+tag.id}>
         <b>{tag.name || t("No_name")}</b>
-      </div>
+      </Link>
       <div className="me-3"/>
       <DeleteConfirmButton id={`del-user-tag-${tag.id}`} onDeleteConfirm={() => window.hcu.destroyRecord(tag)} message="Je veux retirer cette étiquette?" />
     </div>
