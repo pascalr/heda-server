@@ -362,6 +362,11 @@ router.get('/demo', function(req, res, next) {
 const renderApp = [gon.fetchAll, setProfile, function(req, res, next) {
   res.render('index', { account: req.user });
 }]
+router.get('/e/:id', renderApp)
+router.get('/c', renderApp)
+router.get('/t/:id', renderApp)
+router.get('/l', renderApp)
+router.get('/n', renderApp)
 
 router.get('/r/:id', function(req, res, next) {
 

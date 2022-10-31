@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Modal from 'react-bootstrap/Modal'
 
-import { LinkToPage } from "../lib"
+import { Link } from "../lib"
 import { t } from "../../translate"
 
 export const EditTagsModal = ({showModal, setShowModal, recipe, tags, suggestions}) => {
@@ -37,7 +37,7 @@ export const EditTagsModal = ({showModal, setShowModal, recipe, tags, suggestion
             return <span key={tag.id} className="btn btn-secondary m-1" onClick={() => addTag(tag)}>+ {tag.name}</span>
           })}
           <br/><br/><br/>
-          <p className="fs-09"><i>{t('Note_create_tag')} <LinkToPage page={{page: 4}}>{t('parameters')}</LinkToPage>.</i></p>
+          <p className="fs-09"><i>{t('Note_create_tag')} <Link path="/c">{t('parameters')}</Link>.</i></p>
         
         </Modal.Body>
       </Modal.Dialog>

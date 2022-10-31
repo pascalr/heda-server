@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 
 import { ajax } from "./utils"
 import { RecipeTiptap, BubbleTiptap } from './tiptap'
-import { LinkToPage, parseIngredientsAndHeaders } from "./lib"
+import { Link, parseIngredientsAndHeaders } from "./lib"
 import { Utils } from "./recipe_utils"
 import { RecipeMediumImage } from "./image"
 import { EditTagsModal } from './modals/edit_tags'
@@ -152,7 +152,7 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
             <span className="dropdown" style={{padding: "0 1rem"}}>
               <img className="clickable" data-bs-toggle="dropdown" src="/icons/list.svg" width="24"/>
               <div className="dropdown-menu">
-                {user.id != recipe.user_id ? '' : <LinkToPage page={{...page, page: 16}} className="dropdown-item">{t('Edit')}</LinkToPage>}
+                {user.id != recipe.user_id ? '' : <Link path={'/e/'+recipe.id} className="dropdown-item">{t('Edit')}</Link>}
                 <button type="button" className="dropdown-item" onClick={() => setShowModal(true)}>{t('Tag')}</button>
                 {recipeBelongsToSiblings ? <button type="button" className="dropdown-item" onClick={changeOwner}>{t('Attribute_to_this_profile')}</button> : ''}
                 {recipe.user_id == user.id ? <li><button type="button" className="dropdown-item" onClick={() => {removeRecipe(recipe); window.hcu.changePage({page: 6})}}>{t('Delete_recipe')}</button></li> : ''}
