@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 //import { createRoot } from 'react-dom/client';
 
-import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, Link, currentPathIsRoot } from "./lib"
+import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, Link, currentPathIs, currentPathIsRoot } from "./lib"
 import { findRecipeKindForRecipeName } from "../lib"
 import { RecipeList, RecipeIndex } from './recipe_index'
 import { changeUrl, ajax, isBlank, normalizeSearchText, preloadImage, join, bindSetter, capitalize, isTrue } from "./utils"
@@ -159,8 +159,8 @@ const HomeTabs = ({machines}) => {
   return <>
     <ul className="nav nav-tabs mb-3">
       <HomeTab {...{isActive: currentPathIsRoot(), title: 'Suggestions', path: '/'}} />
-      <HomeTab {...{isActive: false, title: 'Mes recettes', path: '/l'}} />
-      <HomeTab {...{isActive: false, title: 'Paramètres', path: '/c'}} />
+      <HomeTab {...{isActive: currentPathIs('/l'), title: 'Mes recettes', path: '/l'}} />
+      <HomeTab {...{isActive: currentPathIs('/c'), title: 'Paramètres', path: '/c'}} />
       {machines.map((machine) => (
         <HomeTab key={'m'+machine.id} {...{isActive: false, title: machine.name, path: '/m/'+machine.id}} />
       ))}

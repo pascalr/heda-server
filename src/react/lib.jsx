@@ -73,6 +73,10 @@ export const currentPathIsRoot = () => {
   return url === '' || url === '/'
 }
 
+export const currentPathIs = (p) => {
+  return window.location.pathname === p
+}
+
 export const Link = ({className, children, active, path, onClick, ...props}) => {
   const handleClick = (evt) => {
     evt.preventDefault()
