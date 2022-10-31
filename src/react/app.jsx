@@ -596,6 +596,7 @@ const EditRecipe = (props) => {
   }, [props.recipes])
 
   return <>
+    <HomeTabs page={props.page} />
     <RecipeEditor {...{recipe, ...props}} />
     <br/><br/><br/><br/><br/><br/><br/><br/>
   </>
