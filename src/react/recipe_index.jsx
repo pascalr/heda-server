@@ -38,16 +38,16 @@ const RecipeListItemMenu = ({fav, recipe, editUserRecipe, user}) => {
   return <>
     <span className="dropdown m-auto">
       <button className="plain-btn" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-        <img src="icons/three-dots.svg"/>
+        <img width="24" src="icons/three-dots.svg"/>
       </button>
-      <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-        <li>{fav && fav.list_id == 1 ? toNotCook : toCook }</li>
-        <li>{fav && fav.list_id == 2 ? toNotTry : toTry }</li>
-        <li><button type="button" className="dropdown-item" onClick={() => editUserRecipe(recipe)}>{t('Tag')}</button></li>
-        {fav ? <li><button type="button" className="dropdown-item" onClick={() => removeFavoriteRecipe(fav, recipe)}>{t('Remove_from_favorites')}</button></li> : ''}
-        {user.id != recipe.user_id ? '' : <li><Link path={'/e/'+recipe.id} className="dropdown-item">{t('Edit')}</Link></li>}
-        {recipe.user_id == user.id ? <li><button type="button" className="dropdown-item" onClick={() => {removeRecipe(recipe)}}>{t('Delete_recipe')}</button></li> : ''}
-      </ul>
+      <span className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+        {fav && fav.list_id == 1 ? toNotCook : toCook }
+        {fav && fav.list_id == 2 ? toNotTry : toTry }
+        <button type="button" className="dropdown-item" onClick={() => editUserRecipe(recipe)}>{t('Tag')}</button>
+        {user.id != recipe.user_id ? <button type="button" className="dropdown-item" onClick={() => removeFavoriteRecipe(fav, recipe)}>{t('Remove_from_favorites')}</button> : ''}
+        {user.id != recipe.user_id ? '' : <Link path={'/e/'+recipe.id} className="dropdown-item">{t('Edit')}</Link>}
+        {recipe.user_id == user.id ? <button type="button" className="dropdown-item" onClick={() => {removeRecipe(recipe)}}>{t('Delete_recipe')}</button> : ''}
+      </span>
     </span>
   </>
 }
