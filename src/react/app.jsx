@@ -243,6 +243,9 @@ const EditRecipe = (props) => {
 
   return <>
     <HomeTabs machines={props.machines} />
+    <div style={{marginTop: '-1rem'}}>
+      <Link path={'/r/'+recipeId} className="m-2 btn btn-primary">{t('Back')}</Link>
+    </div>
     <RecipeEditor {...{recipe, ...props}} />
     <br/><br/><br/><br/><br/><br/><br/><br/>
   </>
