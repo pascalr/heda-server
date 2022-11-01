@@ -1,9 +1,22 @@
-// https://stackoverflow.com/questions/5914020/javascript-date-to-string
+
+/**
+* Convert the integer given to a string at least two characters long.
+* @param {Number} num1
+* @return {String} sum
+*/
+
+/**
+* Convert the integer given to a string at least two characters long.
+* Source: https://stackoverflow.com/questions/5914020/javascript-date-to-string
+*/
 export function padStr(i) {
   return (i < 10) ? "0" + i : "" + i;
 }
 
-// https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+/**
+* Take an array and return another array with the elements randomly redistributed.
+* Source: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+*/
 export function shuffle(array) {
   let currentIndex = array.length,  randomIndex;
 
@@ -22,8 +35,12 @@ export function shuffle(array) {
   return array;
 }
 
-
-// TODO: Use this inside views too instead of linkTo ???
+/**
+ * Adds the locale to the given url by extracting from the current url if possible.
+ * @param {String} href The url to add the locale to
+ * @param {String} currentUrl The current url to extract the locale from
+ * @return {String} The url with the locale added if possible
+ */
 export function localeHref(href, currentUrl=null) {
 
   if (!currentUrl) {currentUrl = window.location.href}
@@ -38,9 +55,10 @@ export function localeHref(href, currentUrl=null) {
   return url
 }
 
-// Get the time of now. Format looks like: 2022-09-20T17:48:11.522Z
-// The format is comptatible with Ruby on Rails.
-// FIXME: This is not tested, I am not sure this is compatible...
+/**
+ * Get the time of now. Format looks like: 2022-09-20T17:48:11.522Z
+ * The format is in theory comptatible with Ruby on Rails.
+ */
 export function now() {
   let n = new Date();
   let s = padStr(n.getFullYear()) + '-' +
@@ -54,9 +72,13 @@ export function now() {
 }
 
 /**
- * list: The list of items
- * attr: The name of an object property or a function to get a value
- * Does this sort in ascending or descending order?
+ * Sort the given list based on the given attribute.
+ * FIXME: Does this sort in ascending or descending order?
+ * FIXME: Does this add the null elements at the beginning or at the end?
+ * FIXME: Add some tests
+ * @param {Array} list The list of items to sort
+ * @param {String or Function} attr A property of an object as a string or a function to get the attribute.
+ * @return {String} The sorted list
  */
 export function sortBy(list, attr) {
   const getVal = (el) => {
@@ -74,12 +96,11 @@ export function sortBy(list, attr) {
     }
   })
 }
+/**
+ * Converts the date string attribute to an integer than sorts by it.
+ */
 export function sortByDate(list, attr) {
   return sortBy(list, (e => new Date(e[attr])))
-}
-
-export function removeDuplicateIds(records) {
-  return [...new Map(records.map((r) => [r.id, r])).values()];
 }
 
 export function ensureIsArray(obj) {
@@ -117,6 +138,6 @@ export function getUrlParams(url=null) {
   return queryToParams(s[1])
 }
 
-const utils = {padStr, now, sortBy, removeDuplicateIds, ensureIsArray, getUrlParams};
+const utils = {padStr, now, sortBy, ensureIsArray, getUrlParams};
 export default utils;
 //module.exports = utils;
