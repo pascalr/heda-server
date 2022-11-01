@@ -13,20 +13,44 @@ function coloredResult(result) {
   return result ? '\x1b[32mPASSED\x1b[0m' : '\x1b[31mFAILED\x1b[0m'
 }
 function assertEquals(expected, actual) {
-  console.log('Expected: ', expected)
-  console.log('Got: ', actual)
-  console.log('Result: ', coloredResult(expected === actual))
+  console.log('Testing equals expected:', expected, 'Input:', actual)
+  console.log(coloredResult(expected === actual))
 }
 function assertStartsWith(expected, actual) {
-  console.log('Expected starts with: ', expected)
-  console.log('Got: ', actual)
-  console.log('Result: ', coloredResult(actual.startsWith(expected)))
+  console.log('Testing starts with:', expected, 'Input:', actual)
+  console.log(coloredResult(actual.startsWith(expected)))
 }
 
 (async () => {
-  const browser = await puppeteer.launch({dumpio: true});
+  const browser = await puppeteer.launch({});
+  //const browser = await puppeteer.launch({dumpio: true});
   const page = await browser.newPage();
   await page.setDefaultTimeout(5000);
+
+  page.on('response', async function(response) {
+    const status = response.status()
+    if ((status >= 400) && (status <= 599)) {
+      let buf = await response.buffer()
+      console.log('\x1b[31mERROR '+status+'\x1b[0m: at url', response.url())
+      console.log(buf.toString())
+    }
+    // 304: Not Modified
+    if ((status >= 300) && (status <= 399) && (status !== 304)) {
+      console.log('\x1b[33mREDIRECTED FROM ', response.url(), ' TO ', response.headers()['location'], '\x1b[0m')
+    }
+  })
+
+  // Catch console log errors
+  page.on("pageerror", err => {
+    console.log(`\x1b[31mLOG ERROR\x1b[0m: ${err.toString()}`);
+  });
+
+  // Catch all console messages
+  page.on('console', msg => {
+      //console.log('Logger:', msg.type());
+      console.log('\x1b[36mLOG\x1b[0m:', msg.text());
+      //console.log('Logger:', msg.location());
+  }); 
 
   //const locales = ['fr', 'en']
   const locales = ['fr']
@@ -36,10 +60,6 @@ function assertStartsWith(expected, actual) {
     // Load page
     const url = 'http://localhost:3000/?disablePreview=true&locale='+locale
     await page.goto(url, {waitUntil: 'networkidle0'});
-    const html = await page.$eval('#root-home', (element) => {
-      return element.innerHTML
-    })
-    fs.writeFile(path.join(__dirname, "../debug.html"), html, () => {})
 
     // Search for "Pas" and go to page "Pascal"
     await page.waitForSelector('#search-btn');
