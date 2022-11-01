@@ -77,6 +77,28 @@ function assertStartsWith(expected, actual) {
     await page.click('.trunk a');
     pathname = await getPathname(page)
     assertStartsWith("/r/", pathname)
+
+    // Create an account
+    // Create a profile
+    
+    // Edit the profile image
+    // Create a recipe
+    // Change cooking time
+    // Add an ingredient
+    // Paste two more ingredients
+    // Add some instructions
+    // Add a single ingredient {1} and a range of ingredients {1-3}
+    // Look at the recipe
+    // Look at my settings
+    // Create a tag
+    // Look at my recipes
+    // Tag the recipe with the tag
+    // Look at the suggestions, see the tag with the recipe
+    // Add the recipe to the list To Cook Soon
+    // Remove the recipe from the list To Cook Soon
+    // Logout
+    // Log back in
+    
   }
 
   await browser.close();
