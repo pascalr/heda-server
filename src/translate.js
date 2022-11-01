@@ -37,6 +37,7 @@ export function tr(id, locale) {
     Confirm_destroy_recipe: 'Are you sure you want to destroy this remove permanently?',
   }
   let fr = {
+    Username_or_Email: "Nom d'utilisateur ou Email",
     Confirm_destroy_recipe: 'Voulez vous supprimez définitivement cette recette?',
     Add_to_list: "Ajouter à une liste",
     Contact_us: "Nous contacter",

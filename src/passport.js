@@ -4,18 +4,27 @@ import crypto from 'crypto';
 
 import {db} from './db.js';
 
-passport.use(new LocalStrategy(function verify(email, password, cb) {
-  const row = db.prepare('SELECT * FROM accounts WHERE email = ?').get(email)
-  if (!row) { return cb(null, false, { message: 'Incorrect username or password.' }); }
+passport.use(new LocalStrategy(function verify(usernameOrEmail, password, cb) {
+  const user = db.prepare('SELECT * FROM users WHERE name = ?').get(usernameOrEmail)
+  let account = null
+  if (user) {
+    account = db.prepare('SELECT * FROM accounts WHERE id = ?').get(user.account_id)
+  } else {
+    account = db.prepare('SELECT * FROM accounts WHERE email = ?').get(usernameOrEmail)
+  }
+  // TODO: Translate error message
+  let message = 'Incorrect username, email or password.'
+  if (!account) { return cb(null, false, {message}); }
   
-  crypto.pbkdf2(password, row.salt, 310000, 32, 'sha256', function(err, hashedPassword) {
+  crypto.pbkdf2(password, account.salt, 310000, 32, 'sha256', function(err, hashedPassword) {
     if (err) { return cb(err); }
-    if (!crypto.timingSafeEqual(row.encrypted_password, hashedPassword)) {
-      return cb(null, false, { message: 'Incorrect username or password.' });
+    if (!crypto.timingSafeEqual(account.encrypted_password, hashedPassword)) {
+      return cb(null, false, {message});
     }
-    let o = row;
+    let o = account;
     o.account_id = o.id;
     o.is_admin = o.admin;
+    if (user) {o.user_id = user.id;}
     return cb(null, o);
   });
 }));
@@ -37,7 +46,7 @@ passport.use(new LocalStrategy(function verify(email, password, cb) {
  */
 passport.serializeUser(function(account, cb) {
   process.nextTick(function() {
-    cb(null, { is_admin: account.is_admin, account_id: account.account_id, email: account.email, locale: account.locale });
+    cb(null, { is_admin: account.is_admin, account_id: account.account_id, email: account.email, locale: account.locale, user_id: account.user_id });
   });
 });
 

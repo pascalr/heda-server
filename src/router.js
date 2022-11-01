@@ -39,7 +39,11 @@ router.get('/login', function(req, res, next) {
 });
 
 router.get('/choose_user', gon.fetchAccountUsers, function(req, res, next) {
-  res.render('choose_user');
+  if (req.user && req.user.user_id) {
+    res.redirect('/');
+  } else {
+    res.render('choose_user');
+  }
 });
 
 router.get('/new_user', function(req, res, next) {
@@ -135,9 +139,6 @@ router.post('/change_user', function(req, res, next) {
 });
 
 router.post('/login/password', function(req, res, next) {
-  console.log('********************************')
-  console.log('1', req.originalUrl)
-  console.log('2', localeHref('/choose_user', req.originalUrl))
   passport.authenticate('local', {
     successReturnToOrRedirect: localeHref('/choose_user', req.originalUrl),
     failureRedirect: '/login',
