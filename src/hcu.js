@@ -41,6 +41,12 @@ function updateTable(tableName, func) {
   window.hcu.setters[tableName](updated)
 }
 
+const handleError = (label) => (errors) => {
+  console.error('ERROR AJAX responseText...', errors.responseText)
+  console.error('ERROR AJAX...', errors)
+  toastr.error(label)
+}
+
 export const initHcu = () => {
   if (window.hcu) {return;}
   window.hcu = {}
@@ -54,10 +60,7 @@ export const initHcu = () => {
       let data = {field, value}
       ajax({url: '/update_field/'+model.table_name+'/'+model.id, type: 'PATCH', data: data, success: () => {
         window.hcu.changeField(model, field, value, successCallback)
-      }, error: (errors) => {
-        console.error('ERROR AJAX UPDATING...', errors.responseText)
-        toastr.error(t('Error_updating'))
-      }})
+      }, error: handleError(t('Error_updating')) })
     } else {
       console.log('Skipping updateField, value not modified.')
     }
@@ -87,10 +90,7 @@ export const initHcu = () => {
     ajax({url: url, type: 'POST', data: {record}, success: (created) => {
       //console.log('created', created)
       window.hcu.addRecord(tableName, created, successCallback)
-    }, error: (errors) => {
-      console.error('ERROR AJAX CREATING...', errors.responseText)
-      toastr.error(t('Error_creating'))
-    }})
+    }, error: handleError(t('Error_creating')) })
   }
   // Add record in memory only
   window.hcu.addRecord = (tableName, record, callback=null) => {
@@ -105,10 +105,7 @@ export const initHcu = () => {
       if (old.find(r => r.id == fetched.id)) {throw "Error: Fetched a record already available"}
       updateTable(tableName, old => [...old, {...fetched, table_name: tableName}])
       if (successCallback) {successCallback(fetched)}
-    }, error: (errors) => {
-      console.error('ERROR AJAX FETCHING...', errors.responseText)
-      toastr.error(t('Error_fetching'))
-    }})
+    }, error: handleError(t('Error_fetching')) })
   }
   // Remove record in memory only
   window.hcu.removeRecord = (record, successCallback=null) => {
@@ -122,10 +119,7 @@ export const initHcu = () => {
     let url = '/destroy_record/'+record.table_name+'/'+record.id
     ajax({url: url, type: 'DELETE', success: (status) => {
       window.hcu.removeRecord(record, successCallback)
-    }, error: (errors) => {
-      console.error('ERROR AJAX DESTROYING...', errors.responseText)
-      toastr.error(t('Error_destroying'))
-    }})
+    }, error: handleError(t('Error_destroying')) })
   }
 
   //mods => [
@@ -142,11 +136,7 @@ export const initHcu = () => {
           window.hcu.changeOnlyField(tableName, id, field, value)
         }
       })
-      // TODO: Go through all the modifications and apply them in memory
-    }, error: (errors) => {
-      console.error('ERROR AJAX BATCH MODIFY...', errors.responseText)
-      toastr.error(t('Error_updating'))
-    }})
+    }, error: handleError(t('Error_updating')) })
   }
   window.hcu.makeDummy = () => {
     window.hcu.destroyRecord = window.hcu.removeRecord

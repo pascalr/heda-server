@@ -18,9 +18,20 @@ let p = process.env.VOLUME_PATH
 let VOLUME_FOLDER = p[0] == '.' ? path.join(__dirname, '..', p) : p
 let IMAGE_FOLDER = path.join(VOLUME_FOLDER, 'images')
 
-const ensureLogIn = connectEnsureLogin.ensureLoggedIn;
-const ensureLoggedIn = ensureLogIn();
+//const ensureLogIn = connectEnsureLogin.ensureLoggedIn;
+//const ensureLoggedIn = ensureLogIn();
 const router = express.Router();
+
+const ensureLoggedIn = function(req, res, next) {
+  if (req.user && req.user.account_id) {next()}
+  res.redirect('/')
+  //next("Error the account is not logged in...")
+}
+const ensureUser = function(req, res, next) {
+  if (req.user && req.user.user_id) {next()}
+  res.redirect('/')
+  //next("Error the account is not logged in or the user is not selected...")
+}
 
 router.get('/search', function(req, res, next) {
   let query = req.query.q
@@ -306,7 +317,7 @@ router.patch('/change_recipe_owner', function(req, res, next) {
   res.json({status: 'ok'})
 });
 
-router.patch('/update_field/:table/:id', function(req, res, next) {
+router.patch('/update_field/:table/:id', ensureUser, function(req, res, next) {
 
   let {table, id} = req.params
   let {field, value} = req.body
@@ -360,7 +371,7 @@ router.get('/demo', function(req, res, next) {
   next()
 });
 
-const renderApp = [gon.fetchAll, setProfile, function(req, res, next) {
+const renderApp = [ensureUser, gon.fetchAll, setProfile, function(req, res, next) {
   res.render('index', { account: req.user });
 }]
 router.get('/e/:id', renderApp)
