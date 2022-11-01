@@ -247,8 +247,7 @@ db.doBackup = function() {
   console.log('Database backup completed.')
 }
 
-if (db.fetchTable) {throw "Can't overide fetchTable"}
-db.fetchTable = function(tableName, conditions, attributes) {
+const fetchStatement = (tableName, conditions, attributes) => {
 
   let s = 'SELECT '+['id',...attributes].join(', ')+' FROM '+db.safe(tableName, schema.getTableList())
   let a = []
@@ -278,7 +277,19 @@ db.fetchTable = function(tableName, conditions, attributes) {
   }
   console.log('statement:', s)
   console.log('values', a)
+  return [s, a]
+}
+
+if (db.fetchTable) {throw "Can't overide fetchTable"}
+db.fetchTable = function(tableName, conditions, attributes) {
+  let [s, a] = fetchStatement(tableName, conditions, attributes)
   return db.prepare(s).all(...a)
+}
+
+if (db.fetchRecord) {throw "Can't overide fetchRecord"}
+db.fetchRecord = function(tableName, conditions, attributes) {
+  let [s, a] = fetchStatement(tableName, conditions, attributes)
+  return db.prepare(s).get(...a)
 }
 
 export default db;

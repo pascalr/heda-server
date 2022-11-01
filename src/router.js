@@ -334,10 +334,8 @@ router.get('/fetch_record/:table/:id', function(req, res, next) {
   let id = req.params.id
   let table = req.params.table
   if (Object.keys(ALLOWED_COLUMNS_GET).includes(table)) {
-    //fetchTable(table, {id: id, user_id: req.user.user_id}, ALLOWED_COLUMNS_GET[table], next, (records) => {
-    // FIXME: fetchRecord and not fetchTable...
-    const records = db.fetchTable(table, {id: id}, ALLOWED_COLUMNS_GET[table])
-    res.json({...records[0]})
+    const record = db.fetchRecord(table, {id: id}, ALLOWED_COLUMNS_GET[table])
+    res.json({...record})
   } else {
     throw new Error("FetchRecord not allowed")
   }
@@ -393,11 +391,9 @@ router.get('/r/:id', function(req, res, next) {
   let o = {}
   let ids = null
   let attrs = null
-  // FIXME: Create and use fetchRecord or findRecord, not fetchTable
-  o.recipe = db.fetchTable('recipes', {id: recipeId}, RECIPE_ATTRS)[0]
+  o.recipe = db.fetchRecord('recipes', {id: recipeId}, RECIPE_ATTRS)
   if (!o.recipe) {throw 'Unable to fetch recipe. Not existent.'}
-  // FIXME: Create and use fetchRecord or findRecord, not fetchTable
-  o.user = db.fetchTable('users', {id: o.recipe.user_id, is_public: 1}, ['name'])[0]
+  o.user = db.fetchRecord('users', {id: o.recipe.user_id, is_public: 1}, ['name'])
   if (!o.user) {throw 'Unable to fetch recipe. No permission by user.'}
 
   //if (o.recipe.recipe_kind_id) {
@@ -473,7 +469,7 @@ router.get('/', function(req, res, next) {
     //// Use this to generate gon, but then use JSON.stringify(gon) and copy paste directly inside home.jsx
     //  recipes1: db.fetchTable('recipes', {id: [113, 129, 669, 88, 323, 670, 672, 689]}, ['name', 'image_slug']),
     //  recipes2: db.fetchTable('recipes', {id: [755, 757, 66, 558]}, ['name', 'image_slug']),
-    //  recipe: db.fetchTable('recipes', {id: 82}, RECIPE_ATTRS)[0] // FIXME: Should be fetchRecord
+    //  recipe: db.fetchRecord('recipes', {id: 82}, RECIPE_ATTRS)
     }
     return res.render('home');
   }
