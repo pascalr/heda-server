@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 import sharp from 'sharp'
 import path from 'path';
 
-import { db, ALLOWED_COLUMNS_GET } from './db.js';
+import { db } from './db.js';
 import gon, {initGon, fetchTableMiddleware, RECIPE_ATTRS} from './gon.js';
 import passport from './passport.js';
 import { localeHref, now, ensureIsArray } from './utils.js';
@@ -329,6 +329,10 @@ router.patch('/update_field/:table/:id', ensureUser, function(req, res, next) {
   res.json({status: 'ok'})
 });
 
+// WARNING: All users have access to these
+const ALLOWED_COLUMNS_GET = {
+  'recipes': RECIPE_ATTRS
+}
 router.get('/fetch_record/:table/:id', function(req, res, next) {
 
   let id = req.params.id

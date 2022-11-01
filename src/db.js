@@ -116,10 +116,6 @@ schema.validAttr = (table, field, value) => {
   return value
 }
 
-// WARNING: All users have access to these
-export const ALLOWED_COLUMNS_GET = {
-  'recipes': RECIPE_ATTRS
-}
 export const ALLOWED_TABLES_DESTROY = ['favorite_recipes', 'recipes', 'suggestions', 'tags']
 
 // WARNING: Conditions keys are not safe. Never use user input for conditions keys.
@@ -261,7 +257,7 @@ const fetchStatement = (tableName, conditions, attributes) => {
       s += cond + ' IS NULL'
     } else if (Array.isArray(val) && val.length == 0) {
       console.log('FetchTable an empty array given as a condition. Impossible match.')
-      return []
+      return null
     } else if (Array.isArray(val) && val.length > 1) {
       s += cond + ' IN ('
       val.forEach((v,i) => {
@@ -282,13 +278,17 @@ const fetchStatement = (tableName, conditions, attributes) => {
 
 if (db.fetchTable) {throw "Can't overide fetchTable"}
 db.fetchTable = function(tableName, conditions, attributes) {
-  let [s, a] = fetchStatement(tableName, conditions, attributes)
+  let o = fetchStatement(tableName, conditions, attributes)
+  if (!o) return []
+  let [s, a] = o
   return db.prepare(s).all(...a)
 }
 
 if (db.fetchRecord) {throw "Can't overide fetchRecord"}
 db.fetchRecord = function(tableName, conditions, attributes) {
-  let [s, a] = fetchStatement(tableName, conditions, attributes)
+  let o = fetchStatement(tableName, conditions, attributes)
+  if (!o) return null
+  let [s, a] = o
   return db.prepare(s).get(...a)
 }
 
