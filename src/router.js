@@ -23,12 +23,12 @@ let IMAGE_FOLDER = path.join(VOLUME_FOLDER, 'images')
 const router = express.Router();
 
 const ensureLoggedIn = function(req, res, next) {
-  if (req.user && req.user.account_id) {next()}
+  if (req.user && req.user.account_id) {return next()}
   res.redirect('/')
   //next("Error the account is not logged in...")
 }
 const ensureUser = function(req, res, next) {
-  if (req.user && req.user.user_id) {next()}
+  if (req.user && req.user.user_id) {return next()}
   res.redirect('/')
   //next("Error the account is not logged in or the user is not selected...")
 }

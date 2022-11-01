@@ -263,7 +263,7 @@ const fetchStatement = (tableName, conditions, attributes, options) => {
       if (val == null) {
         s += cond + ' IS NULL'
       } else if (Array.isArray(val) && val.length == 0) {
-        console.log('FetchTable an empty array given as a condition. Impossible match.')
+        console.log('fetchStatement: info: an empty array given as a condition. Impossible match.')
         return null
       } else if (Array.isArray(val) && val.length > 1) {
         s += cond + ' IN ('
