@@ -123,7 +123,7 @@ router.post('/upload_image', function(req, res, next) {
 
 router.post('/create_user', function(req, res, next) {
   if (!req.user.account_id) {return next('Must be logged in to create profile')}
-  let info = db.prepare('INSERT INTO users (name, account_id, created_at, updated_at) VALUES (?, ?, ?, ?)').run(req.body.name, req.user.account_id, now(), now())
+  let info = db.prepare('INSERT INTO users (name, locale, account_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?)').run(req.body.name, req.body.locale, req.user.account_id, now(), now())
   req.user.user_id = info.lastInsertRowid;
   res.redirect('/');
 });
@@ -207,7 +207,7 @@ router.post('/signup', function(req, res, next) {
     };
     req.login(user, function(err) {
       if (err) { return next(err); }
-      res.redirect('/');
+      res.redirect(localeHref('/', req.originalUrl));
     });
   });
 });
@@ -477,7 +477,7 @@ router.get('/', function(req, res, next) {
     }
     return res.render('home');
   }
-  if (!req.user.user_id) { return res.redirect('/choose_user'); }
+  if (!req.user.user_id) { return res.redirect(localeHref('/choose_user', req.originalUrl)) }
   next();
 }, renderApp)
 

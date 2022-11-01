@@ -8,17 +8,17 @@
   </head>
   <body>
     <div class="form-container">
-      <h1>New profile</h1>
-
+      <h1><%- tr('New_profile', locale) %></h1>
       <form action="/create_user" method="post">
         <div>
-          <label for="name">Name</label>
+          <label for="name"><%- tr('Name', locale) %></label>
           <input id="name" name="name" class="form-control" type="text" autocomplete="name" required>
         </div>
         <br/>
+        <input type="hidden" name="locale" value="<%= locale %>">
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <br/>
-        <button class="btn btn-primary form-control" type="submit">Créer</button>
+        <button class="btn btn-primary form-control" type="submit"><%- tr('Create', locale) %></button>
       </form>
     </div>
   </body>

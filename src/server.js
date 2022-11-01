@@ -130,7 +130,7 @@ app.use(function(req, res, next) {
 app.use(function(req, res, next) {
   res.locals.csrfToken = req.csrfToken();
   res.locals.href = req.url;
-  res.locals.locale = req.query.locale || 'EN';
+  res.locals.locale = (req.query.locale || 'en').toLowerCase();
   res.locals.req = req;
   next();
 });

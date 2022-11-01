@@ -158,9 +158,9 @@ const HomeTab = ({isActive, title, path}) => {
 const HomeTabs = ({machines}) => {
   return <>
     <ul className="nav nav-tabs mb-3">
-      <HomeTab {...{isActive: currentPathIsRoot(), title: 'Suggestions', path: '/'}} />
-      <HomeTab {...{isActive: currentPathIs('/l'), title: 'Mes recettes', path: '/l'}} />
-      <HomeTab {...{isActive: currentPathIs('/c'), title: 'Paramètres', path: '/c'}} />
+      <HomeTab {...{isActive: currentPathIsRoot(), title: t('Suggestions'), path: '/'}} />
+      <HomeTab {...{isActive: currentPathIs('/l'), title: t('My_recipes'), path: '/l'}} />
+      <HomeTab {...{isActive: currentPathIs('/c'), title: t('Settings'), path: '/c'}} />
       {machines.map((machine) => (
         <HomeTab key={'m'+machine.id} {...{isActive: false, title: machine.name, path: '/m/'+machine.id}} />
       ))}
