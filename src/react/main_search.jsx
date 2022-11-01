@@ -78,7 +78,7 @@ export const AppNavbar = ({locale, renderingHome, setIsSearching, otherProfiles,
       <img className="clickable" src={"/icons/arrow-left-square-white.svg"} width="32" style={{paddingLeft: "0.5em"}} onClick={() => window.history.back()} />
     </div>
     <div className="float-end" style={{marginTop: '0.25em'}}>
-      <img className="clickable" src={"/icons/search.svg"} width="24" onClick={() => {setIsSearching(true)}} style={{marginRight: '1em'}} />
+      <img id="search-btn" className="clickable" src={"/icons/search.svg"} width="24" onClick={() => {setIsSearching(true)}} style={{marginRight: '1em'}} />
       <div className="dropdown d-inline-block">
         <button className="plain-btn dropdown-toggle" type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style={{marginRight: '1em', color: 'white'}}>
           <img className="clickable" src={"/icons/person-fill-white.svg"} width="28"/>
@@ -120,7 +120,7 @@ export const PublicNavbar = ({locale, renderingHome, setIsSearching}) => {
       </a>
     </div>
     <div className="float-end" style={{marginTop: '0.25em'}}>
-      <img className="clickable" src={SearchWhiteIcon} style={{marginRight: '1em'}} width="24" onClick={() => setIsSearching(true)}/>
+      <img id="search-btn" className="clickable" src={SearchWhiteIcon} style={{marginRight: '1em'}} width="24" onClick={() => setIsSearching(true)}/>
       <div className="dropdown d-inline-block">
         <button className="plain-btn dropdown-toggle" type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style={{marginRight: '1em', color: 'white'}}>
           <img className="clickable" src={PersonFillWhiteIcon} width="28"/>
@@ -273,11 +273,11 @@ export const BaseSearch = ({locale, renderingHome, user, allMatching, onItemChoo
   const searchMode = <>
     <div style={{position: 'relative', margin: '0.5em 1em 0 1em'}}>
       <div className="d-flex justify-content-end">
-        <input ref={inputField} type="search" placeholder={`${t('Search')}...`} onChange={(e) => {setTerm(e.target.value); setSearch(e.target.value)}} autoComplete="off" className="plain-input white ps-1" style={{borderBottom: '2px solid white', width: searchTransition ? "100%" : "10px", transition: 'width 1s'}} onKeyDown={onKeyDown} value={search}/>
+        <input id="search-input" ref={inputField} type="search" placeholder={`${t('Search')}...`} onChange={(e) => {setTerm(e.target.value); setSearch(e.target.value)}} autoComplete="off" className="plain-input white ps-1" style={{borderBottom: '2px solid white', width: searchTransition ? "100%" : "10px", transition: 'width 1s'}} onKeyDown={onKeyDown} value={search}/>
         <img className="clickable ps-2" src={XLgWhiteIcon} width="36" onClick={() => setIsSearching(false)}/>
       </div>
       {allMatching.length <= 0 ? '' : <>
-        <div style={{position: 'absolute', zIndex: '200', backgroundColor: 'white', border: '1px solid black', width: '100%', padding: '0.5em', maxHeight: 'calc(100vh - 80px)', overflowY: 'scroll'}}>
+        <div id="search-results" style={{position: 'absolute', zIndex: '200', backgroundColor: 'white', border: '1px solid black', width: '100%', padding: '0.5em', maxHeight: 'calc(100vh - 80px)', overflowY: 'scroll'}}>
           {printResults({selected, selectedRef, setIsSearching})}
         </div>
       </>}

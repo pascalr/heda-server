@@ -37,7 +37,7 @@ export const ShowUser = () => {
 
   return <>
     <MainSearch {...{locale}} />
-    <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0'}}>
+    <div className="trunk">
       <h3 className="h001">{t('Recipes_by')} {user.name}</h3>
       <ul className="recipe-list">
         {userRecipes.map(r => <RecipeItem key={r.id} {...{recipe: r, images, recipeKinds}} />)}
