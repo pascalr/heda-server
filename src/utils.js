@@ -103,11 +103,19 @@ export function sortByDate(list, attr) {
   return sortBy(list, (e => new Date(e[attr])))
 }
 
+/**
+ * Returns an empty array if the obj is null.
+ * Returns the object if it already is an array.
+ * Returns an array with a single element otherwise.
+ */
 export function ensureIsArray(obj) {
-  if (!obj) {return []}
+  if (obj === null) {return []}
   return Array.isArray(obj) ? obj : [obj]
 }
 
+/**
+ * Convert a string to a number if possible.
+ */
 export function stringToPrimitive(str) {
   let i = parseInt(str)
   if (i.toString() == str) {return i}
@@ -116,11 +124,18 @@ export function stringToPrimitive(str) {
   return str
 }
 
+/**
+ * Extract the pathname from the given url.
+ * WARNING: Does not remove the hostname.
+ */
 export function getPathFromUrl(url) {
   if (!url) {return ''}
   return url.split(/[?#]/, 1)[0];
 }
 
+/**
+ * Convert the query string to an object.
+ */
 export function queryToParams(query) {
   let q = query[0] === "?" ? query.substr(1) : query
   var r = {};
@@ -130,6 +145,9 @@ export function queryToParams(query) {
   return r
 }
 
+/**
+ * Extract and convert the query string to an object.
+ */
 export function getUrlParams(url=null) {
   // FIXME: Use window.location.search instead of window.location.href...
   if (!url) {url = window.location.href}
