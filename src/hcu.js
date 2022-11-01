@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import toastr from 'toastr'
 
+import { now } from "./utils"
 import { ajax } from "./react/utils"
 import { t } from "./translate"
 
@@ -71,7 +72,7 @@ export const initHcu = () => {
     let updatedRecord = null
     updateTable(tableName, old => (old.map(r => {
       if (r.id == id) {
-        updatedRecord = {...r, [field]: value}
+        updatedRecord = {...r, [field]: value, updated_at: now()}
         return updatedRecord
       } 
       return r
