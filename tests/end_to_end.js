@@ -28,7 +28,8 @@ function assertStartsWith(expected, actual) {
   const page = await browser.newPage();
   await page.setDefaultTimeout(5000);
 
-  const locales = ['fr', 'en']
+  //const locales = ['fr', 'en']
+  const locales = ['fr']
   for (let i = 0; i < locales.length; i++) {
     let locale = locales[i]
 
