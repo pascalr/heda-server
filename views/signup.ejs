@@ -8,6 +8,9 @@
     <div class="form-container">
       <h2><a href="<%- localeHref(req, '/') %>" style="text-decoration: none;">HedaCuisine</a></h2>
       <h1><%- tr('Sign_up', locale) %></h1>
+      <% if (typeof error !== 'undefined') { %>
+        <div class="error"><%- error %></div>
+      <% } %>
       <form action="<%- localeHref(req, '/signup') %>" method="post">
         <div>
           <label for="email"><%- tr('Email', locale) %></label>
@@ -20,7 +23,7 @@
         </div>
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <br/>
-        <button class="btn btn-primary form-control" type="submit"><%- tr('Sign_up', locale) %></button>
+        <button id="create" class="btn btn-primary form-control" type="submit"><%- tr('Sign_up', locale) %></button>
       </form>
       <hr>
       <p class="help">

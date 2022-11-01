@@ -36,7 +36,7 @@ function assertStartsWith(expected, actual) {
     }
     // 304: Not Modified
     if ((status >= 300) && (status <= 399) && (status !== 304)) {
-      console.log('\x1b[33mREDIRECTED FROM ', response.url(), ' TO ', response.headers()['location'], '\x1b[0m')
+      console.log('\x1b[33mREDIRECTED FROM', response.url(), 'TO', response.headers()['location'], '\x1b[0m')
     }
   })
 
@@ -58,7 +58,7 @@ function assertStartsWith(expected, actual) {
     let locale = locales[i]
 
     // Load page
-    const url = 'http://localhost:3000/?disablePreview=true&locale='+locale
+    let url = 'http://localhost:3000/?disablePreview=true&locale='+locale
     await page.goto(url, {waitUntil: 'networkidle0'});
 
     // Search for "Pas" and go to page "Pascal"
@@ -79,7 +79,21 @@ function assertStartsWith(expected, actual) {
     assertStartsWith("/r/", pathname)
 
     // Create an account
+    url = 'http://localhost:3000/signup?locale='+locale
+    await page.goto(url, {waitUntil: 'networkidle0'});
+    await page.waitForSelector('#email');
+    await page.type('#email', "AutomaticTest@gmail.com");
+    await page.type('#new-password', "12345678");
+    await page.click('#create');
+    pathname = await getPathname(page)
+    assertStartsWith("/choose_user", pathname)
+
     // Create a profile
+    //await page.waitForSelector('#name');
+    //await page.type('#name', "AutomaticTest");
+    //await page.click('#create');
+    //pathname = await getPathname(page)
+    //assertStartsWith("/choose_user", pathname)
     
     // Edit the profile image
     // Create a recipe

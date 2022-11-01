@@ -58,8 +58,7 @@ router.get('/choose_user', gon.fetchAccountUsers, function(req, res, next) {
 });
 
 router.get('/new_user', function(req, res, next) {
-  res.locals.errors = []
-  if (req.query.err) {res.locals.errors.push(tr(req.query.err, res.locals.locale))}
+  if (req.query.err) {res.locals.error = tr(req.query.err, res.locals.locale)}
   res.render('new_profile');
 });
 
@@ -124,7 +123,7 @@ router.post('/upload_image', function(req, res, next) {
 });
 
 router.post('/create_user', function(req, res, next) {
-  if (!req.user.account_id) {return next('Must be logged in to create profile')}
+  if (!req.user || !req.user.account_id) {return next('Must be logged in to create profile')}
   try {
     let info = db.prepare('INSERT INTO users (name, locale, account_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?)').run(req.body.name, req.body.locale, req.user.account_id, now(), now())
     req.user.user_id = info.lastInsertRowid;
@@ -176,10 +175,6 @@ router.post('/logout', function(req, res, next) {
   });
 });
 
-router.get('/signup', function(req, res, next) {
-  res.render('signup');
-});
-
 function setProfile(req, res, next) {
   if (!res.locals.gon.users) next('Error set profile must be called after fetching profiles')
   let user = res.locals.gon.users.find(u => u.id == req.user.user_id)
@@ -191,6 +186,11 @@ function setProfile(req, res, next) {
 
 router.get('/edit_profile', initGon, gon.fetchAccountUsers, gon.fetchUserImages, setProfile, function(req, res, next) {
   res.render('edit_profile');
+});
+
+router.get('/signup', function(req, res, next) {
+  if (req.query.err) {res.locals.error = tr(req.query.err, res.locals.locale)}
+  res.render('signup');
 });
 
 /* POST /signup
@@ -206,15 +206,23 @@ router.post('/signup', function(req, res, next) {
   var salt = crypto.randomBytes(16);
   crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', function(err, hashedPassword) {
     if (err) { return next(err); }
-    const info = db.prepare('INSERT INTO accounts (email, encrypted_password, salt, created_at, updated_at) VALUES (?, ?, ?, ?, ?)').run(req.body.email, hashedPassword, salt, now(), now())
-    var user = {
-      account_id: info.lastInsertRowid,
-      email: req.body.email
-    };
-    req.login(user, function(err) {
-      if (err) { return next(err); }
-      res.redirect(localeHref('/', req.originalUrl));
-    });
+    try {
+      const info = db.prepare('INSERT INTO accounts (email, encrypted_password, salt, created_at, updated_at) VALUES (?, ?, ?, ?, ?)').run(req.body.email, hashedPassword, salt, now(), now())
+      var user = {
+        account_id: info.lastInsertRowid,
+        email: req.body.email
+      };
+      req.login(user, function(err) {
+        if (err) { return next(err); }
+        res.redirect(localeHref('/', req.originalUrl));
+      });
+    } catch (err) {
+      if (err.code && err.code === "SQLITE_CONSTRAINT_UNIQUE") { // SqliteError
+        res.redirect(localeHref('/signup?err=Account_already_associated', req.originalUrl));
+      } else {
+        res.redirect(localeHref('/signup?err=Error_creating', req.originalUrl));
+      }
+    }
   });
 });
 

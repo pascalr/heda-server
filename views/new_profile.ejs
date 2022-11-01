@@ -9,7 +9,9 @@
   <body>
     <div class="form-container">
       <h1><%- tr('New_profile', locale) %></h1>
-      <div class="error"><%- errors[0] %></div>
+      <% if (typeof error !== 'undefined') { %>
+        <div class="error"><%- error %></div>
+      <% } %>
       <form action="<%- localeHref(req, '/create_user') %>" method="post">
         <div>
           <label for="name"><%- tr('Name', locale) %></label>
@@ -19,7 +21,7 @@
         <input type="hidden" name="locale" value="<%= locale %>">
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <br/>
-        <button class="btn btn-primary form-control" type="submit"><%- tr('Create', locale) %></button>
+        <button id="create" class="btn btn-primary form-control" type="submit"><%- tr('Create', locale) %></button>
       </form>
     </div>
   </body>

@@ -35,8 +35,10 @@ export function tr(id, locale) {
     Confirm_destroy_profile: "Are you sure you want to destroy this profil permanently?\n\nAll you data could be lost forever.",
     Contact_msg: "For any question or comments, you can contact me at the following email address:",
     Confirm_destroy_recipe: 'Are you sure you want to destroy this remove permanently?',
+    Account_already_associated: 'An account is already associated with this email address.',
   }
   let fr = {
+    Account_already_associated: 'Un compte est déjà associé avec cette address courielle.',
     Name_already_used: "Nom d'utilisateur déjà utilisé",
     Username_or_Email: "Nom d'utilisateur ou Email",
     Confirm_destroy_recipe: 'Voulez vous supprimez définitivement cette recette?',
