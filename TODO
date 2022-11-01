@@ -1,5 +1,3 @@
-La liste de à cuisiner prochainement doit être en ordre. Le dernier truc à être ajouté doit être affiché en premier.
-Fix 2 fois la recette de tarte au sucre
 FIXME: Make fetchTable secure. Remove ALLOWED_TABLES_GET, use read_attrs?
 Ajouter une page «Mon compte», dont entre autre un lien pour créer un autre utilisateur. Voir les utilisateurs actuels comme dans choose_user
 Rajouter des liens vers les notes (Pain à la main, pain à la machine à pain, pain aux bananes, salade russe)
