@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node ./src/server.js",
-    "test": "node tests/end_to_end.js",
+    "test": "node -r dotenv/config tests/end_to_end.js",
     "images:backup": "rsync -v --recursive root@heda-server.internal:/mnt/heda_volume/images/ volume/images/",
     "download_homepage": "node src/bin/download_homepage.js",
     "db:open": "sqlitebrowser var/db/dev.db",

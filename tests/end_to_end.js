@@ -2,9 +2,19 @@ import puppeteer from 'puppeteer';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import db from '../src/db.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+let ACCOUNT_EMAIL = "AutomaticTest@hedacuisine.com"
+let ACCOUNT_PASSWORD = "12345678"
+
+let account = db.prepare("SELECT id FROM accounts WHERE email = ?").get(ACCOUNT_EMAIL)
+if (account) {
+  console.log("Destroying previous test account");
+  db.prepare('DELETE FROM accounts WHERE id = ?').run(account.id)
+}
 
 async function getPathname(page) {return await page.evaluate(() => document.location.pathname)}
 //const url = await page.url();
@@ -82,8 +92,8 @@ function assertStartsWith(expected, actual) {
     url = 'http://localhost:3000/signup?locale='+locale
     await page.goto(url, {waitUntil: 'networkidle0'});
     await page.waitForSelector('#email');
-    await page.type('#email', "AutomaticTest@gmail.com");
-    await page.type('#new-password', "12345678");
+    await page.type('#email', ACCOUNT_EMAIL);
+    await page.type('#new-password', ACCOUNT_PASSWORD);
     await page.click('#create');
     pathname = await getPathname(page)
     assertStartsWith("/choose_user", pathname)
