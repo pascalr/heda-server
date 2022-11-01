@@ -135,3 +135,10 @@ input[type="checkbox"] {
 .nav-btn:hover {
   color: #fff;
 }
+
+.error {
+  background-color: #ff9494;
+  border: 2px solid red;
+  border-radius: 5px;
+  padding: 5px;
+}

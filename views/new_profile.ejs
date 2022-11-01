@@ -9,7 +9,8 @@
   <body>
     <div class="form-container">
       <h1><%- tr('New_profile', locale) %></h1>
-      <form action="/create_user" method="post">
+      <div class="error"><%- errors[0] %></div>
+      <form action="<%- localeHref(req, '/create_user') %>" method="post">
         <div>
           <label for="name"><%- tr('Name', locale) %></label>
           <input id="name" name="name" class="form-control" type="text" autocomplete="name" required>

@@ -58,6 +58,8 @@ router.get('/choose_user', gon.fetchAccountUsers, function(req, res, next) {
 });
 
 router.get('/new_user', function(req, res, next) {
+  res.locals.errors = []
+  if (req.query.err) {res.locals.errors.push(tr(req.query.err, res.locals.locale))}
   res.render('new_profile');
 });
 
@@ -71,7 +73,7 @@ router.post('/upload_image', function(req, res, next) {
   let ext = file.name.substr(file.name.lastIndexOf('.') + 1).toLowerCase();
   if (!['jpg', 'jpeg', 'png'].includes(ext)) {
     // FIXME: Send the user locale from the client side in order to translate properly.
-    return res.status(500).json({publicError: tr('Image_format_not_supported') + ext});
+    return res.status(500).json({publicError: tr('Image_format_not_supported', res.locals.locale) + ext});
   }
 
   let {record_table, record_id, record_field} = req.body
@@ -123,9 +125,13 @@ router.post('/upload_image', function(req, res, next) {
 
 router.post('/create_user', function(req, res, next) {
   if (!req.user.account_id) {return next('Must be logged in to create profile')}
-  let info = db.prepare('INSERT INTO users (name, locale, account_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?)').run(req.body.name, req.body.locale, req.user.account_id, now(), now())
-  req.user.user_id = info.lastInsertRowid;
-  res.redirect('/');
+  try {
+    let info = db.prepare('INSERT INTO users (name, locale, account_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?)').run(req.body.name, req.body.locale, req.user.account_id, now(), now())
+    req.user.user_id = info.lastInsertRowid;
+    res.redirect('/');
+  } catch (err) {
+    res.redirect(localeHref('/new_user?err=Name_already_used', req.originalUrl));
+  }
 });
 
 router.delete('/destroy_profile/:id', function(req, res, next) {
