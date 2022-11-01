@@ -72,6 +72,8 @@ const fetchAll3 = (user) => {
   o.foods = db.fetchTable('foods', {}, ['name'])
   attrs = ['name', 'value', 'is_weight', 'is_volume', 'show_fraction']
   o.units = db.fetchTable('units', {}, attrs)
+  //o.recipe_suggestions = db.fetchTable('recipes', ['image_slug IS NOT NULL AND image_slug <> "" AND user_id <> ?', user.user_id], ['name', 'image_slug'], {limit: 10})
+  o.recipe_suggestions = db.prepare("SELECT recipes.id, recipes.name, recipes.image_slug, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.is_public = 1 AND users.id <> ? AND recipes.image_slug IS NOT NULL AND recipes.image_slug <> '' ORDER BY random() LIMIT 10;").all(user.user_id)
 
   let slugs1 = o.recipes.map(r=>r.image_slug).filter(x=>x)
   //let slugs2 = o.recipe_kinds.map(r=>r.image_slug).filter(x=>x)

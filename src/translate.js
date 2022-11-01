@@ -38,6 +38,7 @@ export function tr(id, locale) {
     Account_already_associated: 'An account is already associated with this email address.',
   }
   let fr = {
+    Suggestions_for_you: 'Suggestions pour vous',
     Account_already_associated: 'Un compte est déjà associé avec cette address courielle.',
     Name_already_used: "Nom d'utilisateur déjà utilisé",
     Username_or_Email: "Nom d'utilisateur ou Email",

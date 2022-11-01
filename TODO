@@ -1,11 +1,12 @@
-Ajouter des suggestions pour vous.
+Ajouter des suggestions pour vous. Ça ferait moins vide quand tu te crée
+un compte. Mettre les suggestions pour vous en bas du HomePage.
 
 TESTS
 
-Sur mon site internet de CV, rajouter une ligne sur la page d'acceuil, Portfolio, avec des liens vers les meilleurs projets que j'ai fait.
+Regarder les CV des autres programmeurs sur HackerNews pour m'inspirer:
+https://news.ycombinator.com/item?id=33422127
 
-    Faire une vidéo ou bien ou simulation live de l'éditeur de recette (Créer une recette n'aura jamais été aussi facile)
-    Tu ne sais pas quoi manger? HedaCuisine te suggère des recettes selon des thèmes.
+Sur mon site internet de CV, rajouter une ligne sur la page d'acceuil, Portfolio, avec des liens vers les meilleurs projets que j'ai fait.
 
 Longer sessions (1 month!), refresh le 1 mois lorsque l'utilisateur se connecte?, ne pas avoir à se logger souvent.
 Quand tu déplaces des ingrédients, modifier le json pour changer les numéros d'ingrédients.
@@ -19,7 +20,6 @@ Minify {
   - Remove toastr
 }
 Soft delete users. Serializer le user avec json dans data. Créer une table corpses table_name:string id:integer data:string
-Use minified js for prod. (by using Docker)
 Periodic task to remove images which are not referenced anywhere. To remove images without a file.
 Conversions d'unités
 How to handle orphans? Destroy FavoriteRecipe when Recipe is destroyed? Or once in a while, clean up all orphans?

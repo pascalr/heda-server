@@ -1,7 +1,9 @@
 import fs from 'fs';
 import path from 'path';
+import betterSqlite3 from 'better-sqlite3';
 
-import betterSqlite3 from 'better-sqlite3'
+import { ensureIsArray } from './utils.js';
+
 // FIXME: DB_URL should be DB_PATH, it's not an URL (doesn't start with sqlite3://...)
 let dbPath = process.env.DB_URL
 console.log('Database path:', dbPath)
@@ -243,50 +245,57 @@ db.doBackup = function() {
   console.log('Database backup completed.')
 }
 
-const fetchStatement = (tableName, conditions, attributes) => {
+const fetchStatement = (tableName, conditions, attributes, options) => {
 
   let s = 'SELECT '+['id',...attributes].join(', ')+' FROM '+db.safe(tableName, schema.getTableList())
   let a = []
-  let l = Object.keys(conditions).length
-  if (l != 0) {s += ' WHERE '}
-  let keys = Object.keys(conditions)
-  for (let i = 0; i < keys.length; i++) {
-    let cond = keys[i]
-    let val = conditions[cond]
-    if (val == null) {
-      s += cond + ' IS NULL'
-    } else if (Array.isArray(val) && val.length == 0) {
-      console.log('FetchTable an empty array given as a condition. Impossible match.')
-      return null
-    } else if (Array.isArray(val) && val.length > 1) {
-      s += cond + ' IN ('
-      val.forEach((v,i) => {
-        s += '?' + ((i < val.length - 1) ? ', ' : '')
-        a.push(v)
-      })
-      s += ')'
-    } else {
-      s += cond + ' = ?'
-      a.push(val)
+  if (Array.isArray(conditions)) {
+    // The first element is the query, the second is the arguments
+    s += ' WHERE '+conditions[0]
+    a = ensureIsArray(conditions[1])
+  } else {
+    let l = Object.keys(conditions).length
+    if (l != 0) {s += ' WHERE '}
+    let keys = Object.keys(conditions)
+    for (let i = 0; i < keys.length; i++) {
+      let cond = keys[i]
+      let val = conditions[cond]
+      if (val == null) {
+        s += cond + ' IS NULL'
+      } else if (Array.isArray(val) && val.length == 0) {
+        console.log('FetchTable an empty array given as a condition. Impossible match.')
+        return null
+      } else if (Array.isArray(val) && val.length > 1) {
+        s += cond + ' IN ('
+        val.forEach((v,i) => {
+          s += '?' + ((i < val.length - 1) ? ', ' : '')
+          a.push(v)
+        })
+        s += ')'
+      } else {
+        s += cond + ' = ?'
+        a.push(val)
+      }
+      if (i < l-1) {s += ' AND '}
     }
-    if (i < l-1) {s += ' AND '}
   }
+  if (options.limit) {s += ' LIMIT '+parseInt(options.limit, 10)}
   console.log('statement:', s)
   console.log('values', a)
   return [s, a]
 }
 
 if (db.fetchTable) {throw "Can't overide fetchTable"}
-db.fetchTable = function(tableName, conditions, attributes) {
-  let o = fetchStatement(tableName, conditions, attributes)
+db.fetchTable = function(tableName, conditions, attributes, options={}) {
+  let o = fetchStatement(tableName, conditions, attributes, options)
   if (!o) return []
   let [s, a] = o
   return db.prepare(s).all(...a)
 }
 
 if (db.fetchRecord) {throw "Can't overide fetchRecord"}
-db.fetchRecord = function(tableName, conditions, attributes) {
-  let o = fetchStatement(tableName, conditions, attributes)
+db.fetchRecord = function(tableName, conditions, attributes, options={}) {
+  let o = fetchStatement(tableName, conditions, attributes, options)
   if (!o) return null
   let [s, a] = o
   return db.prepare(s).get(...a)

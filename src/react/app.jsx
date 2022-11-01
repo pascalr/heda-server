@@ -180,7 +180,7 @@ const RecipeCarrousel = ({items}) => {
   </>
 }
 
-const HomePage = ({tags, recipes, suggestions, favoriteRecipes, machines}) => {
+const HomePage = ({tags, recipes, suggestions, favoriteRecipes, machines, recipeSuggestions}) => {
 
   //let favList = {title: t("Favorites"), records: []}
   let toCookList = {title: t('To_cook_soon'), records: []}
@@ -223,6 +223,8 @@ const HomePage = ({tags, recipes, suggestions, favoriteRecipes, machines}) => {
         <RecipeCarrousel {...{items}}/>
       </div>
     })}
+    <h2 className="fs-14 bold">{t('Suggestions_for_you')}</h2>
+    <RecipeCarrousel {...{items: recipeSuggestions}}/>
   </> 
 }
 
@@ -436,6 +438,7 @@ export const App = () => {
   const foods = useHcuState(gon.foods, {tableName: 'foods'})
   const machines = useHcuState(gon.machines, {tableName: 'machines'})
   const friendsRecipes = gon.friends_recipes//.filter(r => !recipeIds.includes(r.id))
+  const recipeSuggestions = gon.recipe_suggestions
   const users = gon.users
   const user = gon.user
   window.locale = user.locale
@@ -471,7 +474,7 @@ export const App = () => {
     },
   ]
   
-  const defaultElement = (params) => <HomePage {...{recipes, tags, suggestions, favoriteRecipes, machines}} />
+  const defaultElement = (params) => <HomePage {...{recipes, tags, suggestions, favoriteRecipes, machines, recipeSuggestions}} />
 
   const matchRoutes = (pathname, params) => {
     // TODO: Use params, which are query parameters as an object
