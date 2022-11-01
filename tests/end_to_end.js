@@ -9,11 +9,18 @@ const __dirname = path.dirname(__filename);
 
 let ACCOUNT_EMAIL = "AutomaticTest@hedacuisine.com"
 let ACCOUNT_PASSWORD = "12345678"
+let USER_NAME = "AutomaticTest"
 
 let account = db.prepare("SELECT id FROM accounts WHERE email = ?").get(ACCOUNT_EMAIL)
 if (account) {
   console.log("Destroying previous test account");
   db.prepare('DELETE FROM accounts WHERE id = ?').run(account.id)
+}
+
+let user = db.prepare("SELECT id FROM users WHERE name = ?").get(USER_NAME)
+if (user) {
+  console.log("Destroying previous test user");
+  db.prepare('DELETE FROM users WHERE id = ?').run(user.id)
 }
 
 async function getPathname(page) {return await page.evaluate(() => document.location.pathname)}
@@ -99,13 +106,21 @@ function assertStartsWith(expected, actual) {
     assertStartsWith("/choose_user", pathname)
 
     // Create a profile
-    //await page.waitForSelector('#name');
-    //await page.type('#name', "AutomaticTest");
-    //await page.click('#create');
-    //pathname = await getPathname(page)
-    //assertStartsWith("/choose_user", pathname)
+    // The first link should be a button to create a profile
+    await page.waitForSelector('body a');
+    await page.click('body a');
+    pathname = await getPathname(page)
+    assertStartsWith("/new_user", pathname)
+    await page.waitForSelector('#name');
+    await page.type('#name', USER_NAME);
+    await page.click('#create');
+    pathname = await getPathname(page)
+    assertEquals("/", pathname)
     
     // Edit the profile image
+    url = 'http://localhost:3000/edit_profile'
+    await page.goto(url, {waitUntil: 'networkidle0'});
+
     // Create a recipe
     // Change cooking time
     // Add an ingredient
