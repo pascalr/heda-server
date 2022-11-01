@@ -7,7 +7,7 @@ import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, Link, currentPath
 import { findRecipeKindForRecipeName } from "../lib"
 import { RecipeList, RecipeIndex } from './recipe_index'
 import { changeUrl, ajax, isBlank, normalizeSearchText, preloadImage, join, bindSetter, capitalize, isTrue } from "./utils"
-import { getUrlParams, sortBy, shuffle, queryToParams } from "../utils"
+import { getUrlParams, sortBy, sortByDate, shuffle, queryToParams } from "../utils"
 import { icon_path, image_path, image_slug_variant_path, recipePath } from './routes'
 import {TextField, AutocompleteInput, TextInput, CollectionSelect, ImageField, ImageSelector} from './form'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
@@ -191,6 +191,8 @@ const HomePage = ({tags, recipes, suggestions, favoriteRecipes, machines}) => {
     else if (fav.list_id == 2) { toTryList.records.push({recipe, fav}) }
     //else { favList.records.push({recipe, fav}) }
   })
+  toCookList.records = sortBy(toCookList.records, (r => new Date(r.fav.updated_at).getTime())).reverse()
+  toTryList.records = sortBy(toTryList.records, (r => new Date(r.fav.updated_at).getTime())).reverse()
   const lists = [toCookList, toTryList]
   //const lists = [toCookList, favList, toTryList]
 

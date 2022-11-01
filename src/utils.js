@@ -53,18 +53,29 @@ export function now() {
   return s
 }
 
+/**
+ * list: The list of items
+ * attr: The name of an object property or a function to get a value
+ * Does this sort in ascending or descending order?
+ */
 export function sortBy(list, attr) {
+  const getVal = (el) => {
+    return (typeof attr === 'function') ? attr(el) : el[attr]
+  }
   return list.sort((a,b) => {
-    if (a[attr] == null) {
-      return b[attr] == null ? 0 : -1
-    } else if (b[attr] == null) {
+    if (getVal(a) == null) {
+      return getVal(b) == null ? 0 : -1
+    } else if (getVal(b) == null) {
       return 1
-    } else if (typeof a[attr] === 'string') {
-      return a[attr].localeCompare(b[attr])
+    } else if (typeof getVal(a) === 'string') {
+      return getVal(a).localeCompare(getVal(b))
     } else {
-      return a[attr] - b[attr]
+      return getVal(a) - getVal(b)
     }
   })
+}
+export function sortByDate(list, attr) {
+  return sortBy(list, (e => new Date(e[attr])))
 }
 
 export function removeDuplicateIds(records) {

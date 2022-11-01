@@ -179,17 +179,6 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
             <button type="button" className="btn btn-outline-secondary" onClick={() => setShowModal(true)}>
               <img src="/icons/tags.svg" width="24"></img>
             </button>
-            <span className="dropdown">
-              <a className="btn btn-outline-secondary" href="FIXME" data-bs-toggle="dropdown">
-                <img src="/icons/three-dots.svg" width="24"></img>
-              </a>
-              <div className="dropdown-menu">
-                <AddToListMenu {...{fav: favorite, recipe, user}} />
-                <hr className="dropdown-divider"/>
-                {recipeBelongsToSiblings ? <button type="button" className="dropdown-item" onClick={changeOwner}>{t('Attribute_to_this_profile')}</button> : ''}
-                {recipe.user_id == user.id ? <li><button type="button" className="dropdown-item" onClick={() => {removeRecipe(recipe) && changeUrl('/l')}}>{t('Delete_recipe')}</button></li> : ''}
-              </div>
-            </span>
             {function() {
               if (recipe.user_id == user.id) {return ''}
               let img = favorite ? "/icons/star-fill.svg" : "/icons/star.svg"
@@ -201,9 +190,20 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
                 }
               }
               return <button type="button" className="btn btn-outline-secondary" onClick={handleClick}>
-                <img src={img} width="32"></img>
+                <img src={img} width="24"></img>
               </button>
             }()}
+            <span className="dropdown">
+              <a className="btn btn-outline-secondary" href="FIXME" data-bs-toggle="dropdown">
+                <img src="/icons/three-dots.svg" width="24"></img>
+              </a>
+              <div className="dropdown-menu">
+                <AddToListMenu {...{fav: favorite, recipe, user}} />
+                <hr className="dropdown-divider"/>
+                {recipeBelongsToSiblings ? <button type="button" className="dropdown-item" onClick={changeOwner}>{t('Attribute_to_this_profile')}</button> : ''}
+                {recipe.user_id == user.id ? <li><button type="button" className="dropdown-item" onClick={() => {removeRecipe(recipe) && changeUrl('/l')}}>{t('Delete_recipe')}</button></li> : ''}
+              </div>
+            </span>
           </div>
         </div>
       </div>
