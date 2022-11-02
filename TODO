@@ -1,3 +1,5 @@
+Cliquer sur login quand tu es déjà connecté devrait te redirigé vers ton home.
+
 Maybe add a table that links recipes with translations, in order to fix translation and check everywhere, but wait until absolutely needed.
 
 Don't use google Translations to convert quantities, use units like before.

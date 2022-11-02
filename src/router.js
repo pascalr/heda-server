@@ -511,6 +511,9 @@ const ensureAdmin = (req, res, next) => {
 
 // ADMIN ROUTES
 router.get('/admin', ensureAdmin, function(req, res, next) {
+  res.locals.gon = {
+    locale: res.locals.locale,
+  }
   res.render('admin')
 })
 
