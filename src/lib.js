@@ -1,5 +1,5 @@
 import { normalizeSearchText } from "./react/utils.js"
-import Quantity from './react/models/quantity'
+import Quantity from './react/models/quantity.js'
 
 export function needsPreposition(qty) {
   let q = new Quantity({raw: qty})
