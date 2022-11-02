@@ -65,9 +65,7 @@ const mySchema = {
   'recipe_kinds': {
     write_attrs: ['image_slug'],
   },
-  'translated_recipes': {
-    write_attrs: ['name', 'servings_name', 'json'],
-  },
+  'translated_recipes': {},
   'recipes': {
     write_attrs: ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'ingredients', 'recipe_kind_id', 'image_slug'],
     security_key: 'user_id',

@@ -6,7 +6,7 @@ import { ajax } from "./utils"
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import { RecipeTiptap, BubbleTiptap } from './tiptap'
 import {AutocompleteInput, updateRecord, TextField, CollectionSelect, TextAreaField} from './form'
-import { parseIngredientsAndHeaders, parseIngredientsOldFormat, serializeIngredientsAndHeaders } from './lib'
+import { parseIngredientsAndHeaders, serializeIngredientsAndHeaders } from '../lib'
 import {EditRecipeImageModal} from './modals/recipe_image'
 import {PasteIngredientsButton} from './modals/paste_ingredients'
 import { RecipeMediumImage } from "./image"

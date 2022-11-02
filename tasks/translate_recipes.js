@@ -1,8 +1,9 @@
 // node -r dotenv/config tasks/translate_recipes.js
 
-import db from '../src/db.js';
-
 import {TranslationServiceClient} from '@google-cloud/translate';
+
+import db from '../src/db.js';
+import { parseIngredientsAndHeaders, serializeIngredientsAndHeaders } from '../src/lib.js';
 
 // Instantiates a client
 const translationClient = new TranslationServiceClient();
@@ -122,17 +123,18 @@ async function translateContent(node) {
   return node
 }
 
-let attrs = ['name', 'json', 'servings_name']
-const recipes = db.fetchTable('recipes', {}, attrs, {limit: 1})
+let attrs = ['name', 'json', 'servings_name', 'ingredients']
+const recipes = db.fetchTable('recipes', {}, attrs)
+//const recipes = db.fetchTable('recipes', {}, attrs, {limit: 10})
 const translatedRecipes = db.fetchTable('translated_recipes', {}, ['original_id'])
 
 // TODO: translate recipes by languages. If the recipe is english, translate from english to french...
 recipes.forEach(async recipe => {
 
-  //if (translatedRecipes.find(r => r.original_id == recipe.id)) {
-  //  console.log('*** SKIPING RECIPE '+recipe.id+' ALREADY TRANSLATED ***')
-  //  return
-  //}
+  if (translatedRecipes.find(r => r.original_id == recipe.id)) {
+    console.log('*** SKIPING RECIPE '+recipe.id+' ALREADY TRANSLATED ***')
+    return
+  }
 
   console.log('*** RECIPE '+recipe.id+' ***')
   let translated = {original_id: recipe.id}
@@ -142,6 +144,19 @@ recipes.forEach(async recipe => {
   if (recipe.json) {
     translated.json = JSON.stringify(await translateContent(JSON.parse(recipe.json)))
   }
+
+  let ingredientsAndHeaders = parseIngredientsAndHeaders(recipe.ingredients)
+  let translatedIngAndHeaders = await Promise.all(ingredientsAndHeaders.map(async ingOrHeader => {
+    let r = {...ingOrHeader}
+    if (r.header) { // Header
+      r.header = await translate(r.header)
+    } else { // Ingredient
+      // TODO: Translate quantity label. Ex: c. à table => tbsp, douzaine => dozen
+      r.label = await translate(r.label)
+    }
+    return r
+  }))
+  translated.ingredients = serializeIngredientsAndHeaders(translatedIngAndHeaders)
 
   // TODO: Translate ingredients
 
@@ -156,7 +171,7 @@ recipes.forEach(async recipe => {
   console.log('////////////////////////////')
   console.log('////////////////////////////')
   console.log('////////////////////////////')
-  db.createRecord('translated_recipes', translated, {allow_write: ['original_id']})
+  db.createRecord('translated_recipes', translated, {allow_write: ['original_id', 'name', 'servings_name', 'ingredients', 'json']})
   
 })
 

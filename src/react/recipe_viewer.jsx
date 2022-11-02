@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom'
 
 import { ajax, changeUrl } from "./utils"
 import { RecipeTiptap, BubbleTiptap } from './tiptap'
-import { Link, parseIngredientsAndHeaders } from "./lib"
+import { Link } from "./lib"
+import { parseIngredientsAndHeaders } from "../lib"
 import { Utils } from "./recipe_utils"
 import { RecipeMediumImage } from "./image"
 import { EditTagsModal } from './modals/edit_tags'
