@@ -5,6 +5,11 @@
     font-size: 0.9rem;
   }
 }
+@media screen and (max-width: 380px) {
+  .nav-tabs .nav-link {
+    padding: 0.5em;
+  }
+}
 
 .wide-trunk {
   min-width: 230px;
