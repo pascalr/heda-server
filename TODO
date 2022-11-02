@@ -1,3 +1,40 @@
+translated_recipes original_id:integer translated_id:integer
+recipes translated_id:integer language_id:integer
+
+En gros, le problème que j'essaie de résoudre c'est que je veux populer la page des suggestions pour les nouveaux utilisateurs.
+KISS. Hard code des catégories? Entrée, Repas principal et Déssert.
+Ça marche.
+Idéalement voir des suggestions de catégories larges?
+- Entrée
+- Repas principal
+- Desserts
+Il faut simplement que je tag d'une manière quelquonque des recettes.
+Je peux utiliser les tags des utilisateurs publiques?
+Un jour idéalement du machine learning pour choisir quels tags montrer, quelles recettes montrer.
+Laisser tout comme c'est présentement, le fait de pouvoir créer des tags, mais en rajouter aussi pour les recipe kinds comme ça pour les suggestions.
+Ne pas faire tout de suite, réfléchir en premier, mais enlever le fait que ce soit le user qui tag les recettes.
+Sur un dashboard admin, voir les nouvelles recettes publiques que les gens ont créé et les tagger moi-même?
+Tagger avec des recipe kinds que je gère?
+Quand je crée un utilisateur, demander si l'utilisateur veut rendre sont compte privé ou publique.
+Publique: Tout le monde vont pouvoir voir vos recettes
+Privé: Vous seul aurez accès à vos recettes
+Pouvoir réagir aux recettes suggérés?
+
+Traduire automatiquement les recettes.
+Suggestions de recettes selon la langue.
+Build a translation library using Google Translate API first? Yes! And when I have a lot, I can translate by myself using Moses? http://www2.statmt.org/moses/
+Une phrase à la fois, comme ça les phrases peuvent être réutilisées.
+Utiliser un dictionnaire pour corriger les phrases?
+
+When account admin add button to translate recipe?
+Always put the first letter to be a 
+Ajouter un bouton pour usage personel seulement pour traduire des recettes.
+
+Prendre des recettes de là?
+https://recipes.fandom.com/wiki/Baked_Buffalo_Wings
+
+Simplement traduire mes recettes c'est assez pour l'instant.
+
 Chichi et Pina colada
 FIXME quand tu cliques sur une suggestion de recette by user5
 Ajouter des suggestions pour vous. Ça ferait moins vide quand tu te crée
