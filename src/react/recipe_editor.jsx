@@ -326,9 +326,9 @@ const EditableIngredient = ({recipe, ingredient, itemNb, foods, mixes, updateIng
         <DeleteConfirmButton id={`ing-${ingredient.key}`} onDeleteConfirm={() => removeIngredientOrHeader(itemNb-1)} message="Je veux enlever cet ingrédient?" />
       </div>
       <span style={{padding: "0 10px 0 0"}}><b>{itemNb}.</b></span>
-      <input type="text" size="8" className="editable-input" value={qty||''} name="qty" onChange={(e) => setQty(e.target.value)} onBlur={(e) => {ingredient.qty = qty; updateIngredients()}} />
+      <input type="text" className="editable-input" value={qty||''} name="qty" onChange={(e) => setQty(e.target.value)} onBlur={(e) => {ingredient.qty = qty; updateIngredients()}} style={{width: "8em", maxWidth: "15vw"}} />
       <div className="d-inline-block mx-2" style={{width: '1em'}}>{preposition}</div>
-      <input className="food-name" type="text" value={label||''} name="label" onChange={(e) => setLabel(e.target.value)} onBlur={(e) => {ingredient.label = label; updateIngredients()}} style={{border: '1px solid #ccc', maxWidth: '45vw'}} />
+      <input className="food-name" type="text" value={label||''} name="label" onChange={(e) => setLabel(e.target.value)} onBlur={(e) => {ingredient.label = label; updateIngredients()}} style={{border: '1px solid #ccc', maxWidth: '40vw'}} />
     </div>
   )
 }
