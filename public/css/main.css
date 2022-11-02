@@ -1,5 +1,11 @@
 /* Any global style which makes sense only for this application. */
 
+@media screen and (max-width: 500px) {
+  body {
+    font-size: 0.9rem;
+  }
+}
+
 .wide-trunk {
   min-width: 230px;
   max-width: 1400px;

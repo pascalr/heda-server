@@ -106,7 +106,7 @@ export const AppNavbar = ({locale, renderingHome, setIsSearching, otherProfiles,
         </div>
       </div>
     </div>
-    <div style={{margin: 'auto', width: 'fit-content', fontWeight: '500', fontSize: '1.5rem', color: '#f9f9f9'}} className="clickable" onClick={() => changeUrl('/')}>HedaCuisine</div>
+    <div style={{margin: 'auto', width: 'fit-content', fontWeight: '500', fontSize: '1.5em', color: '#f9f9f9'}} className="clickable" onClick={() => changeUrl('/')}>HedaCuisine</div>
   </>
 }
 
@@ -120,10 +120,10 @@ export const PublicNavbar = ({locale, renderingHome, setIsSearching}) => {
       </a>
     </div>
     <div className="float-end" style={{marginTop: '0.25em'}}>
-      <img id="search-btn" className="clickable" src={SearchWhiteIcon} style={{marginRight: '1em'}} width="24" onClick={() => setIsSearching(true)}/>
+      <img id="search-btn" className="clickable" src={SearchWhiteIcon} style={{marginRight: '1em', width: '1.4em'}} onClick={() => setIsSearching(true)}/>
       <div className="dropdown d-inline-block">
         <button className="plain-btn dropdown-toggle" type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style={{marginRight: '1em', color: 'white'}}>
-          <img className="clickable" src={PersonFillWhiteIcon} width="28"/>
+          <img className="clickable" src={PersonFillWhiteIcon} style={{width: '1.74em'}}/>
         </button>
         <div className="dropdown-menu" aria-labelledby="dropdownUserButton">
           <a href={localeHref("/login")} className="dropdown-item">{t('Login', locale)}</a>
@@ -132,7 +132,7 @@ export const PublicNavbar = ({locale, renderingHome, setIsSearching}) => {
         </div>
       </div>
     </div>
-    <div style={{margin: 'auto', width: 'fit-content', fontWeight: '500', fontSize: '1.5rem', color: 'rgb(249, 249, 249)'}}>
+    <div style={{margin: 'auto', width: 'fit-content', fontWeight: '500', fontSize: '1.5em', color: 'rgb(249, 249, 249)'}}>
       { renderingHome ? 'HedaCuisine' : <a href={localeHref("/")} className="plain-link white">HedaCuisine</a>}
     </div>
   </>
