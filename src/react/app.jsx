@@ -7,7 +7,7 @@ import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, Link, currentPath
 import { findRecipeKindForRecipeName } from "../lib"
 import { RecipeList, RecipeIndex } from './recipe_index'
 import { changeUrl, ajax, isBlank, normalizeSearchText, preloadImage, join, bindSetter, capitalize, isTrue } from "./utils"
-import { getUrlParams, sortBy, sortByDate, shuffle, queryToParams } from "../utils"
+import { getUrlParams, sortBy, sortByDate, shuffle } from "../utils"
 import { icon_path, image_path, image_slug_variant_path, recipePath } from './routes'
 import {TextField, AutocompleteInput, TextInput, CollectionSelect, ImageField, ImageSelector} from './form'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
@@ -19,8 +19,7 @@ import { t } from "../translate"
 import { Carrousel } from './carrousel'
 import {EditMix, ShowMix} from './recipe_editor'
 import { AppSearch } from './main_search'
-
-import { match } from "path-to-regexp"
+import { useRouter } from "./router"
 
 // The advantage of using this instead of the number is if I need to search and to refactor, I can easy
 const PAGE_1 = 1 // HomePage, TagIndex no more
@@ -444,7 +443,6 @@ export const App = () => {
   const user = gon.user
   window.locale = user.locale
 
-  const [route, setRoute] = useState(null)
   const routes = [
     {match: "/c", elem: () => <EditTags {...{tags, machines}} />},
     {match: "/n", elem: () => <NewRecipe {...{recipeKinds}} />},
@@ -477,34 +475,7 @@ export const App = () => {
   
   const defaultElement = (params) => <HomePage {...{recipes, tags, suggestions, favoriteRecipes, machines, recipeSuggestions}} />
 
-  const matchRoutes = (pathname, params) => {
-    // TODO: Use params, which are query parameters as an object
-    // Combine alongside the other params (named params)? User must be careful no name clashes...
-    for (let i = 0; i < routes.length; i++) {
-      const r = match(routes[i].match, { end: false, decode: decodeURIComponent })(pathname);
-      if (r) {return setRoute({idx: i, params: {...params, ...r.params}})}
-    }
-    setRoute({idx: -1, params})
-  }
-
-  useEffect(() => {
-
-    matchRoutes(window.location.pathname, queryToParams(window.location.search))
-    const historyChanged = (event) => {
-      matchRoutes(event.detail.pathname, event.detail.params)
-    }
-    window.addEventListener('history-changed', historyChanged)
-    return () => {
-      window.removeEventListener('history-changed', historyChanged)
-    }
-  }, [])
-
-  useEffect(() => {
-    window.onpopstate = (event) => {
-      console.log('onpopstate')
-      matchRoutes(window.location.pathname, queryToParams(window.location.search))
-    }
-  }, [])
+  const elem = useRouter(routes, defaultElement)
 
   const [_csrf, setCsrf] = useState('')
   useEffect(() => {
@@ -513,18 +484,11 @@ export const App = () => {
 
   let otherProfiles = users.filter(u => u.id != user.id)
 
-  if (route === null) {return ''}
-
-  let e = (route.idx < 0) ? defaultElement : routes[route.idx].elem
-  let el = null
-  if (typeof e !== 'function') {el = e}
-  else {el = e(route.params)}
-
     //<div className={(!page.page || page.page === 1) ? "wide-trunk" : "trunk"}>
   return (<>
     <AppSearch {...{user, otherProfiles, _csrf, recipes, friendsRecipes, users}} />
     <div className="trunk">
-      {el}
+      {elem}
     </div>
   </>)
 }
