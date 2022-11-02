@@ -8,6 +8,9 @@ import { handleError } from './lib'
 import { image_slug_variant_path } from "./routes"
 import { t } from '../translate'
 
+/**
+ * A simple text input field. Pass a onBlur fonction get feedback when the value changes.
+ */
 export const TextInput = ({defaultValue, onBlur}) => {
   const [value, setValue] = useState(defaultValue)
 
@@ -16,6 +19,13 @@ export const TextInput = ({defaultValue, onBlur}) => {
   )
 }
 
+/**
+ * An input field linked to a record. Modifications will be sent to the server.
+ * @param args {
+ *   model: The record to be modified
+ *   field: The field to be modified
+ * }
+ */
 export const TextInputField = ({model, field}) => {
   const [value, setValue] = useState(model.currentValue(field))
 

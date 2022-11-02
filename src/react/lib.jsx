@@ -146,3 +146,23 @@ export const useFetch = (url, args={}) => {
 
   return data;
 };
+
+/**
+ * This is the latest implementation. It uses hcu.
+ */
+export const useOrFetchRecord = (table, group, id) => {
+
+  const [record, setRecord] = useState(group.find(e => e.id == id))
+
+  useEffect(() => {
+    if (id) {
+      let r = group.find(e => e.id == id)
+      if (!r) {window.hcu.fetchRecord(table, id)}
+      setRecord(r)
+    } else {
+      setRecord(null)
+    }
+  }, [table, group, id])
+  
+  return record
+}

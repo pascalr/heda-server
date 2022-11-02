@@ -42,7 +42,7 @@ function updateTable(tableName, func) {
   window.hcu.setters[tableName](updated)
 }
 
-const handleError = (label) => (errors) => {
+export const handleError = (label) => (errors) => {
   console.error('ERROR AJAX responseText...', errors.responseText)
   console.error('ERROR AJAX...', errors)
   toastr.error(label)
@@ -102,10 +102,7 @@ export const initHcu = () => {
   window.hcu.fetchRecord = (tableName, id, successCallback=null) => {
     let url = '/fetch_record/'+tableName+'/'+id
     ajax({url: url, type: 'GET', success: (fetched) => {
-      let old = getCurrentTable(tableName)
-      if (old.find(r => r.id == fetched.id)) {throw "Error: Fetched a record already available"}
-      updateTable(tableName, old => [...old, {...fetched, table_name: tableName}])
-      if (successCallback) {successCallback(fetched)}
+      window.hcu.addRecord(tableName, fetched, successCallback)
     }, error: handleError(t('Error_fetching')) })
   }
   // Remove record in memory only

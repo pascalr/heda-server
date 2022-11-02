@@ -361,6 +361,13 @@ router.get('/fetch_record/:table/:id', function(req, res, next) {
     throw new Error("FetchRecord not allowed")
   }
 });
+// TODO: Specify from language and to language
+router.get('/fetch_recipe_translation/:recipeId', function(req, res, next) {
+
+  let attrs = ['name', 'servings_name', 'json', 'ingredients']
+  const record = db.fetchRecord('translated_recipes', {original_id: req.params.recipeId}, attrs)
+  res.json({...record})
+});
 
 // TODO: Do all the modifications inside a single transaction, and rollback if there is an error.
 router.patch('/batch_modify', function(req, res, next) {
@@ -513,6 +520,7 @@ const ensureAdmin = (req, res, next) => {
 router.get('/admin', ensureAdmin, function(req, res, next) {
   res.locals.gon = {
     locale: res.locals.locale,
+    translations: db.fetchTable('translations', {}, ['from', 'to', 'original', 'translated'])
   }
   res.render('admin')
 })
