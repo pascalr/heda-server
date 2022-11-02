@@ -1,5 +1,7 @@
 import {TranslationServiceClient} from '@google-cloud/translate';
 
+import { parseIngredientsAndHeaders, serializeIngredientsAndHeaders } from '../src/lib.js';
+
 // Instantiates a client
 const translationClient = new TranslationServiceClient();
 
@@ -37,8 +39,10 @@ class Translator {
     this.translateStrategy = translateStrategy
     this.translate = this.translate.bind(this)
     this.translatePart = this.translatePart.bind(this)
+    this.translateRecipe = this.translateRecipe.bind(this)
     this.translateTiptapContent = this.translateTiptapContent.bind(this)
     this.translateKeepPunctuation = this.translateKeepPunctuation.bind(this)
+    this.translateIngredientsAndHeaders = this.translateIngredientsAndHeaders.bind(this)
   }
 
   async translatePart(part) {
@@ -106,6 +110,32 @@ class Translator {
       node.content = await Promise.all(node.content.map(async n => await this.translateTiptapContent(n)))
     }
     return node
+  }
+
+  async translateIngredientsAndHeaders(ingredients) {
+    let ingredientsAndHeaders = parseIngredientsAndHeaders(ingredients)
+    let translatedIngAndHeaders = await Promise.all(ingredientsAndHeaders.map(async ingOrHeader => {
+      let r = {...ingOrHeader}
+      if (r.header) { // Header
+        r.header = await this.translate(r.header)
+      } else { // Ingredient
+        // TODO: Translate quantity label. Ex: c. à table => tbsp, douzaine => dozen
+        r.label = await this.translate(r.label)
+      }
+      return r
+    }))
+    return serializeIngredientsAndHeaders(translatedIngAndHeaders)
+  }
+
+  async translateRecipe(recipe) {
+
+    let translated = {original_id: recipe.id}
+    translated.name = await this.translate(recipe.name)
+    translated.servings_name = await this.translate(recipe.servings_name)
+    if (recipe.json) {
+      translated.json = JSON.stringify(await this.translateTiptapContent(JSON.parse(recipe.json)))
+    }
+    translated.ingredients = await this.translateIngredientsAndHeaders(recipe.ingredients)
   }
 }
 export default Translator

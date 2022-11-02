@@ -1,7 +1,6 @@
 // node -r dotenv/config tasks/translate_recipes.js
 
 import db from '../src/db.js';
-import { parseIngredientsAndHeaders, serializeIngredientsAndHeaders } from '../src/lib.js';
 import Translator from '../src/translator.js';
 
 // TODO: Don't hardcode this. Check what language the source is.
@@ -35,28 +34,7 @@ recipes.forEach(async recipe => {
   })
 
   console.log('*** RECIPE '+recipe.id+' ***')
-  let translated = {original_id: recipe.id}
-  translated.name = await translator.translate(recipe.name)
-  translated.servings_name = await translator.translate(recipe.servings_name)
- 
-  if (recipe.json) {
-    translated.json = JSON.stringify(await translator.translateTiptapContent(JSON.parse(recipe.json)))
-  }
-
-  let ingredientsAndHeaders = parseIngredientsAndHeaders(recipe.ingredients)
-  let translatedIngAndHeaders = await Promise.all(ingredientsAndHeaders.map(async ingOrHeader => {
-    let r = {...ingOrHeader}
-    if (r.header) { // Header
-      r.header = await translator.translate(r.header)
-    } else { // Ingredient
-      // TODO: Translate quantity label. Ex: c. à table => tbsp, douzaine => dozen
-      r.label = await translator.translate(r.label)
-    }
-    return r
-  }))
-  translated.ingredients = serializeIngredientsAndHeaders(translatedIngAndHeaders)
-
-  // TODO: Translate ingredients
+  let translated = await translator.translateRecipe(recipe)
 
   if (translatedRecipes.find(r => r.original_id == recipe.id)) {
     console.log('*** SKIPING INSERT RECORD '+recipe.id+' ALREADY TRANSLATED ***')

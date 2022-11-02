@@ -11,6 +11,7 @@ import { useRouter } from "./router"
 import { initHcu, useHcuState, handleError } from '../hcu'
 import { RecipeViewer } from "./show_recipe"
 import { ajax } from "./utils"
+import { Translator } from "./translator"
 
 const AdminTabs = ({machines}) => {
   return <>
