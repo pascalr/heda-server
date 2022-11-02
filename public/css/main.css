@@ -35,10 +35,6 @@
   font-size: 0.9em;
 }
 
-.recipe {
-  font-size: 14px;
-}
-
 .recipe-body h2, #recipe-editor h2 {
   border-bottom: 1px solid black;
   padding-left: 0.25rem;
