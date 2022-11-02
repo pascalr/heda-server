@@ -75,13 +75,13 @@ const SearchResults = ({searchResults, selected, selectedRef}) => {
 export const AppNavbar = ({locale, renderingHome, setIsSearching, otherProfiles, _csrf}) => {
   return <>
     <div className="float-start" style={{margin: '0.3em 0 0 0.5em'}}>
-      <img className="clickable" src={"/icons/arrow-left-square-white.svg"} width="32" style={{paddingLeft: "0.5em"}} onClick={() => window.history.back()} />
+      <img className="clickable" src={"/icons/arrow-left-square-white.svg"} style={{paddingLeft: "0.5em", width: '2em'}} onClick={() => window.history.back()} />
     </div>
     <div className="float-end" style={{marginTop: '0.25em'}}>
-      <img id="search-btn" className="clickable" src={"/icons/search.svg"} width="24" onClick={() => {setIsSearching(true)}} style={{marginRight: '1em'}} />
+      <img id="search-btn" className="clickable" src={"/icons/search.svg"} onClick={() => {setIsSearching(true)}} style={{marginRight: '1em', width: '1.5em'}} />
       <div className="dropdown d-inline-block">
         <button className="plain-btn dropdown-toggle" type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style={{marginRight: '1em', color: 'white'}}>
-          <img className="clickable" src={"/icons/person-fill-white.svg"} width="28"/>
+          <img className="clickable" src={"/icons/person-fill-white.svg"} style={{width: '1.8em'}}/>
         </button>
         <div className="dropdown-menu" aria-labelledby="dropdownUserButton">
           <a href="/edit_profile" className="dropdown-item">{t('My_profile')}</a>
