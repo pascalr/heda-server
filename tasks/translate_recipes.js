@@ -57,18 +57,6 @@ recipes.forEach(async recipe => {
 
   // TODO: Translate ingredients
 
-  console.log('////////////////////////////')
-  console.log('////////////////////////////')
-  console.log('////////////////////////////')
-  console.log('recipe', recipe)
-  console.log('////////////////////////////')
-  console.log('////////////////////////////')
-  console.log('////////////////////////////')
-  console.log('translated', translated)
-  console.log('////////////////////////////')
-  console.log('////////////////////////////')
-  console.log('////////////////////////////')
-
   if (translatedRecipes.find(r => r.original_id == recipe.id)) {
     console.log('*** SKIPING INSERT RECORD '+recipe.id+' ALREADY TRANSLATED ***')
     return

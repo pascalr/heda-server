@@ -96,8 +96,6 @@ class Translator {
       }
     }))).join('')
   
-    console.log('Raw:',raw)
-    console.log('Translated:', translated)
     return translated
   }
   
