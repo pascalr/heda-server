@@ -1,5 +1,11 @@
+Fix le zoom automatique du cellulaire à Céline.
+
 translated_recipes original_id:integer translated_id:integer
 recipes translated_id:integer language_id:integer
+translated_recipes original_id:integer name:string servings_name:string
+
+Créer une tâche pour traduire automatiquement les recettes.
+NE RIEN CHANGER DANS L'APP, seulement dans le truc publique.
 
 En gros, le problème que j'essaie de résoudre c'est que je veux populer la page des suggestions pour les nouveaux utilisateurs.
 KISS. Hard code des catégories? Entrée, Repas principal et Déssert.
