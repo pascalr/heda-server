@@ -110,6 +110,7 @@ async function translate(raw) {
 
   console.log('Raw:',raw)
   console.log('Translated:', translated)
+  return translated
 }
 
 async function translateContent(node) {
@@ -123,22 +124,39 @@ async function translateContent(node) {
 
 let attrs = ['name', 'json', 'servings_name']
 const recipes = db.fetchTable('recipes', {}, attrs, {limit: 1})
+const translatedRecipes = db.fetchTable('translated_recipes', {}, ['original_id'])
 
 // TODO: translate recipes by languages. If the recipe is english, translate from english to french...
 recipes.forEach(async recipe => {
 
+  //if (translatedRecipes.find(r => r.original_id == recipe.id)) {
+  //  console.log('*** SKIPING RECIPE '+recipe.id+' ALREADY TRANSLATED ***')
+  //  return
+  //}
+
   console.log('*** RECIPE '+recipe.id+' ***')
   let translated = {original_id: recipe.id}
   translated.name = await translate(recipe.name)
-  translated.servings_name = translate(recipe.servings_name)
+  translated.servings_name = await translate(recipe.servings_name)
  
   if (recipe.json) {
-    translated.json = JSON.stringify(translateContent(JSON.parse(recipe.json)))
+    translated.json = JSON.stringify(await translateContent(JSON.parse(recipe.json)))
   }
 
   // TODO: Translate ingredients
 
-  //db.createRecord('translated_recipes', translated, {allow_write: ['original_id']})
+  console.log('////////////////////////////')
+  console.log('////////////////////////////')
+  console.log('////////////////////////////')
+  console.log('recipe', recipe)
+  console.log('////////////////////////////')
+  console.log('////////////////////////////')
+  console.log('////////////////////////////')
+  console.log('translated', translated)
+  console.log('////////////////////////////')
+  console.log('////////////////////////////')
+  console.log('////////////////////////////')
+  db.createRecord('translated_recipes', translated, {allow_write: ['original_id']})
   
 })
 
