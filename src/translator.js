@@ -5,8 +5,30 @@ function replaceFirstChar(string, char) {
   return char+string.substr(1)
 }
 
-class Translator {
-  constructor(translations, from, to, translateStrategy) {
+// TODO: GoogleTranslateStrategy
+//if (translated) {
+//  console.log('Found translation from:',normalized,'To:',translated)
+//} else {
+//  console.log('Missing translation:',normalized)
+//  translated = await this.translateStrategy(normalized)
+//  console.log('Google translate:',translated)
+//  let translation = {from: from, to: to, original: normalized, translated}
+//  db.createRecord('translations', translation, {allow_write: ['from', 'to', 'original', 'translated']})
+//}
+
+export class LogStrategy {
+  constructor(msg) {
+    this.msg = msg
+  }
+  async translate(normalized) {
+    console.log(this.msg, normalized)
+    return null
+  }
+}
+
+export class TranslationsCacheStrategy {
+  // TODO: Caching should actually be another strategy
+  constructor(translations, from, to, ...strategies) {
     this.cache = {}
 
     translations.forEach(translation => {
@@ -16,8 +38,20 @@ class Translator {
         this.cache[translation.translated] = translation.original
       }
     })
+  }
+  async translate(normalized) {
+    let translated = this.cache[normalized]
+    if (translated) {
+      console.log('Cache found translation from:',normalized,'To:',translated)
+    }
+    return translated
+  }
+}
 
-    this.translateStrategy = translateStrategy
+class Translator {
+  // TODO: Caching should actually be another strategy
+  constructor(...strategies) {
+    this.strategies = strategies
     this.translate = this.translate.bind(this)
     this.translatePart = this.translatePart.bind(this)
     this.translateRecipe = this.translateRecipe.bind(this)
@@ -34,20 +68,28 @@ class Translator {
     let text = part.trim()
     let normalized = replaceFirstChar(text, text[0].toLocaleLowerCase())
     let startsWithUpperLetter = text !== normalized
-    let translated = this.cache[normalized]
-    if (translated) {
-      console.log('Found translation from:',normalized,'To:',translated)
+    //let translated = null
+    // FIXME: Will this call other strategies even when not needed???
+    let translated = await this.strategies.reduce(async (result, strategy) => {
+      if (result) {return result}
+      return await strategy.translate(normalized)
+    }, null)
+    //for (let i = 0; i < this.strategies.length; i++) {
+    //for (let i = 0; i < this.strategies.length; i++) {
+    //  let strategy = this.strategies[i]
+    //  let translated = await strategy.translate(normalized)
+    //  console.log('translated', translated)
+    //  if (translated) {break}
+    //}
+    if (!translated) {
+      console.log('Missing translation:',normalized,'Was:',translated)
+      return ''
     } else {
-      console.log('Missing translation:',normalized)
-      translated = await this.translateStrategy(normalized)
-      console.log('Google translate:',translated)
-      let translation = {from: from, to: to, original: normalized, translated}
-      db.createRecord('translations', translation, {allow_write: ['from', 'to', 'original', 'translated']})
+      if (startsWithUpperLetter) {
+        translated = replaceFirstChar(translated, translated[0].toLocaleUpperCase())
+      }
+      return (startsWithSpace ? ' ' : '') + translated + (endsWithSpace ? ' ' : '')
     }
-    if (startsWithUpperLetter) {
-      translated = replaceFirstChar(translated, translated[0].toLocaleUpperCase())
-    }
-    return (startsWithSpace ? ' ' : '') + translated + (endsWithSpace ? ' ' : '')
   }
   
   async translateKeepPunctuation(text) {
