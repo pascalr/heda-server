@@ -1,32 +1,4 @@
-import {TranslationServiceClient} from '@google-cloud/translate';
-
 import { parseIngredientsAndHeaders, serializeIngredientsAndHeaders } from '../src/lib.js';
-
-// Instantiates a client
-const translationClient = new TranslationServiceClient();
-
-const projectId = 'hedacuisine';
-const location = 'global';
-
-export async function googleTranslate(text) {
-  throw "Safety disabled google translate"
-  
-  const request = {
-    parent: `projects/${projectId}/locations/${location}`,
-    contents: [text],
-    mimeType: 'text/plain', // mime types: text/plain, text/html
-    sourceLanguageCode: fromLocale,
-    targetLanguageCode: toLocale,
-  };
-
-  const [response] = await translationClient.translateText(request);
-
-  for (const translation of response.translations) {
-    console.log(`Translation: ${translation.translatedText}`);
-  }
-
-  return response.translations[0].translatedText
-}
 
 function replaceFirstChar(string, char) {
   let c = string[0]
@@ -34,8 +6,17 @@ function replaceFirstChar(string, char) {
 }
 
 class Translator {
-  constructor(cache, translateStrategy) {
-    this.cache = cache
+  constructor(translations, from, to, translateStrategy) {
+    this.cache = {}
+
+    translations.forEach(translation => {
+      if (translation.from == from && translation.to == to) {
+        this.cache[translation.original] = translation.translated
+      } else if (translation.to == from && translation.from == to) {
+        this.cache[translation.translated] = translation.original
+      }
+    })
+
     this.translateStrategy = translateStrategy
     this.translate = this.translate.bind(this)
     this.translatePart = this.translatePart.bind(this)
@@ -136,6 +117,7 @@ class Translator {
       translated.json = JSON.stringify(await this.translateTiptapContent(JSON.parse(recipe.json)))
     }
     translated.ingredients = await this.translateIngredientsAndHeaders(recipe.ingredients)
+    return translated
   }
 }
 export default Translator

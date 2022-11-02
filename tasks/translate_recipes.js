@@ -10,15 +10,6 @@ let fromLocale = 'fr' // French
 let toLocale = 'en' // French
 
 const translations = db.fetchTable('translations', {}, ['from', 'to', 'original', 'translated'])
-const frenchToEnglish = {}
-
-translations.forEach(translation => {
-  if (translation.from == from && translation.to == to) {
-    frenchToEnglish[translation.original] = translation.translated
-  } else if (translation.to == from && translation.from == to) {
-    frenchToEnglish[translation.translated] = translation.original
-  }
-})
 
 let attrs = ['name', 'json', 'servings_name', 'ingredients']
 const recipes = db.fetchTable('recipes', {}, attrs)
@@ -28,7 +19,7 @@ const translatedRecipes = db.fetchTable('translated_recipes', {}, ['original_id'
 // TODO: translate recipes by languages. If the recipe is english, translate from english to french...
 recipes.forEach(async recipe => {
 
-  let translator = new Translator(frenchToEnglish, normalized => {
+  let translator = new Translator(translations, from, to, normalized => {
     console.log('TRANSLATOR CALLED FOR:', normalized)
     //googleTranslate(normalized)
   })

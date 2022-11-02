@@ -11,7 +11,7 @@ import { useRouter } from "./router"
 import { initHcu, useHcuState, handleError } from '../hcu'
 import { RecipeViewer } from "./show_recipe"
 import { ajax } from "./utils"
-import { Translator } from "./translator"
+import Translator from "../translator"
 
 const AdminTabs = ({machines}) => {
   return <>
@@ -27,21 +27,43 @@ const AdminPage = () => <h1>Admin page</h1>
 const TranslationsPage = () => <h1>Translations page</h1>
 
 
-const TranslateRecipePage = ({recipes, locale}) => {
+const TranslateRecipePage = ({translations, recipes, locale}) => {
   const [recipeId, setRecipeId] = useState(null)
   const [translated, setTranslated] = useState(null)
 
   const recipe = useOrFetchRecord('recipes', recipes, recipeId)
 
+  //useEffect(() => {
+  //  if (recipeId && (!translated || translated.original_id != recipeId)) {
+  //    ajax({url: '/fetch_recipe_translation/'+recipeId, type: 'GET', success: (fetched) => {
+  //      setTranslated(fetched)
+  //    }, error: handleError(t('Error_fetching')) })
+  //  }
+  //}, [recipeId])
+
   useEffect(() => {
-    if (recipeId && (!translated || translated.original_id != recipeId)) {
-      ajax({url: '/fetch_recipe_translation/'+recipeId, type: 'GET', success: (fetched) => {
-        setTranslated(fetched)
-      }, error: handleError(t('Error_fetching')) })
+    if (recipe) {
+      let from = 1 // French FIXME
+      let to = 4 // English FIXME
+      let translator = new Translator(translations, from, to, normalized => {
+        console.log('TRANSLATOR CALLED FOR:', normalized)
+        //googleTranslate(normalized)
+      })
+      translator.translateRecipe(recipe).then(translated => {
+        console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
+        console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
+        console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
+        console.log('translated', translated)
+        console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
+        console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
+        console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
+        setTranslated(translated)
+      })
     }
-  }, [recipeId])
+  }, [translations, recipe])
 
   const shown = translated ? {...recipe, ...translated} : null
+
 
   return <>
     <h1>Translate recipe</h1>
@@ -65,12 +87,13 @@ export const Admin = () => {
   if (!window.hcu) {initHcu()}
 
   const [locale, ] = useState(gon.locale)
+  const [translations, ] = useState(gon.translations)
   const recipes = useHcuState([], {tableName: 'recipes'})
 
   const routes = [
     {match: "/admin", elem: () => <AdminPage />},
     {match: "/translations", elem: () => <TranslationsPage />},
-    {match: "/translate_recipe", elem: () => <TranslateRecipePage {...{recipes, locale}} />},
+    {match: "/translate_recipe", elem: () => <TranslateRecipePage {...{recipes, locale, translations}} />},
   ]
   const defaultElement = (params) => <TranslationsPage />
   
