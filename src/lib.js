@@ -1,4 +1,21 @@
 import { normalizeSearchText } from "./react/utils.js"
+import Quantity from './react/models/quantity'
+
+export function needsPreposition(qty) {
+  let q = new Quantity({raw: qty})
+  return !!q.label
+}
+
+export function prettyPreposition(qty, label, locale) {
+  if (locale.toLowerCase() != 'fr') {return ''}
+  if (!needsPreposition(qty)) {return ''}
+  if (!label) {return ''}
+  if (label[0] == 'h' || label[0] == 'H') {
+    return gon.contractionList ? (gon.contractionList.includes(label) ? "d'" : "de ") : "de "
+  } else {
+    return ['a','e','i','o','u','y','é'].includes(label[0]) ? "d'" : "de "// if exp.contract_preposition.nil?
+  }
+}
 
 export function findRecipeKindForRecipeName(recipeName, recipeKinds) {
   let name = normalizeSearchText(recipeName)

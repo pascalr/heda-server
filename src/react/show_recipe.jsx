@@ -3,17 +3,16 @@ import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
 import { MainSearch } from './main_search'
-import { parseIngredientsAndHeaders } from "../lib"
+import { parseIngredientsAndHeaders, prettyPreposition } from "../lib"
 import { RecipeThumbnailImage } from "./image"
 import { isBlank, normalizeSearchText, join, capitalize } from "./utils"
 import { image_slug_variant_path } from "./routes"
 import { t } from "../translate"
-import { Utils } from "./recipe_utils"
 import { RecipeTiptap } from './tiptap'
 import { RecipeMediumImage } from "./image"
 import { getUrlParams, localeHref } from "../utils"
 
-export const RecipeViewer = ({recipe, images, user}) => {
+export const RecipeViewer = ({recipe, images, user, locale}) => {
 
   const ingredientsAndHeaders = parseIngredientsAndHeaders(recipe.ingredients)
   const ingredients = ingredientsAndHeaders.filter(e => e.label || e.qty)
@@ -29,7 +28,7 @@ export const RecipeViewer = ({recipe, images, user}) => {
           } else {
             const ing = ingOrHeader
             //let prettyQty = Utils.prettyQuantityFor(ing.qty, ing.label)
-            let preposition = Utils.needsPreposition(ing.qty) ? Utils.prettyPreposition(ing.label) : ''
+            let preposition = prettyPreposition(ing.qty, ing.label, locale)
             return <li key={ing.key} className="list-group-item">
               <span>{ing.qty} {preposition}<span className="food-name">{ing.label}</span></span>
               <div className="dropdown d-inline-block float-end">
@@ -111,13 +110,16 @@ export const ShowRecipe = () => {
 
   const [locale, ] = useState(gon.locale)
   const [recipe, ] = useState(gon.recipe)
+  const [translatedRecipe, ] = useState(gon.translated_recipe)
   const [images, ] = useState(gon.images)
   const [user, ] = useState(gon.user)
+
+  let shown = translatedRecipe ? {...recipe, ...translatedRecipe} : recipe
 
   return <>
     <MainSearch {...{locale}} />
     <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0'}}>
-      <RecipeViewer {...{recipe, images, user}} />
+      <RecipeViewer {...{recipe: shown, images, user, locale}} />
     </div>
   </>
 }

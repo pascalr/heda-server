@@ -414,8 +414,13 @@ router.get('/r/:id', function(req, res, next) {
   let attrs = null
   o.recipe = db.fetchRecord('recipes', {id: recipeId}, RECIPE_ATTRS)
   if (!o.recipe) {throw 'Unable to fetch recipe. Not existent.'}
-  o.user = db.fetchRecord('users', {id: o.recipe.user_id, is_public: 1}, ['name'])
+  o.user = db.fetchRecord('users', {id: o.recipe.user_id, is_public: 1}, ['name', 'locale'])
   if (!o.user) {throw 'Unable to fetch recipe. No permission by user.'}
+  if (res.locals.locale != o.user.locale) {
+    // TODO: Fetch in the proper locale
+    attrs = ['name', 'servings_name', 'original_id', 'ingredients', 'json']
+    o.translated_recipe = db.fetchRecord('translated_recipes', {original_id: recipeId}, attrs)
+  }
 
   //if (o.recipe.recipe_kind_id) {
   //  let attrs = ['name', 'description_json', 'image_slug']

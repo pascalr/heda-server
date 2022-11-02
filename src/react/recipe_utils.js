@@ -90,6 +90,7 @@ export const Utils = {
     return `${Utils.prettyFraction(ml/0.31)} ${Utils.translated("pincée")}`
   },
 
+  // DEPRECATED, use src/lib.js
   prettyPreposition(foodName) {
     if (!foodName) {return ''}
     if (foodName[0] == 'h' || foodName[0] == 'H') {
@@ -105,6 +106,7 @@ export const Utils = {
     return qty.pretty() + ' ' + Utils.prettyPreposition(food.name)
   },
 
+  // DEPRECATED, use src/lib.js
   needsPreposition(qty) {
     let q = new Quantity({raw: qty})
     return !!q.label

@@ -18,6 +18,7 @@ let fromLocale = 'fr' // French
 let toLocale = 'en' // French
 
 async function translateText(text) {
+  throw "Safety disabled google translate"
   
   const request = {
     parent: `projects/${projectId}/locations/${location}`,
