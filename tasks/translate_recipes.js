@@ -2,9 +2,40 @@
 
 import db from '../src/db.js';
 
-const translations = db.fetchTable('translations', {}, ['from', 'to', 'original', 'translated'])
+import {TranslationServiceClient} from '@google-cloud/translate';
+
+// Instantiates a client
+const translationClient = new TranslationServiceClient();
+
+const projectId = 'hedacuisine';
+const location = 'global';
+
+// TODO: Don't hardcode this. Check what language the source is.
 let from = 1 // French
 let to = 4 // English
+let fromLocale = 'fr' // French
+let toLocale = 'en' // French
+
+async function translateText(text) {
+  
+  const request = {
+    parent: `projects/${projectId}/locations/${location}`,
+    contents: [text],
+    mimeType: 'text/plain', // mime types: text/plain, text/html
+    sourceLanguageCode: fromLocale,
+    targetLanguageCode: toLocale,
+  };
+
+  const [response] = await translationClient.translateText(request);
+
+  for (const translation of response.translations) {
+    console.log(`Translation: ${translation.translatedText}`);
+  }
+
+  return response.translations[0].translatedText
+}
+
+const translations = db.fetchTable('translations', {}, ['from', 'to', 'original', 'translated'])
 const frenchToEnglish = {}
 translations.forEach(translation => {
   if (translation.from == from && translation.to == to) {
@@ -21,7 +52,7 @@ function replaceFirstChar(string, char) {
   return char+string.substr(1)
 }
 
-function translatePart(part) {
+async function translatePart(part) {
   if (part === '') {return ''}
   if (part === ' ') {return ' '}
   let startsWithSpace = part.charAt(0) === ' '
@@ -33,9 +64,12 @@ function translatePart(part) {
   if (translated) {
     console.log('Found translation from:',down,'To:',translated)
   } else {
-    translated = down
-    //console.log('Missing translation:',down)
+    console.log('Missing translation:',down)
     missing.push(down)
+    translated = await translateText(down)
+    console.log('Google translate:',translated)
+    let translation = {from: from, to: to, original: down, translated}
+    db.createRecord('translations', translation, {allow_write: ['from', 'to', 'original', 'translated']})
   }
   if (startsWithUpperLetter) {
     translated = replaceFirstChar(translated, translated[0].toLocaleUpperCase())
@@ -43,22 +77,22 @@ function translatePart(part) {
   return (startsWithSpace ? ' ' : '') + translated + (endsWithSpace ? ' ' : '')
 }
 
-function translateKeepPunctuation(text) {
+async function translateKeepPunctuation(text) {
   // Split on punctuation
   let parts = text.split(/([,\.\(\):;])/g)
-  return parts.map((p,i) => {
+  return (await Promise.all(parts.map(async (p,i) => {
     if (i % 2 === 0) { // Text
-      return translatePart(p)
+      return await translatePart(p)
     } else { // Punctuation, keep as is
       return p
     }
-  }).join('')
+  }))).join('')
 }
 
 /**
  * Don't translate URLs. Transation text by spliting at punctuation.
  */
-function translate(raw) {
+async function translate(raw) {
   if (!raw) {return raw}
 
   // Don't translate links.
@@ -66,36 +100,36 @@ function translate(raw) {
   // Changed it so all the groups are non-capturing groups by adding ?: at the beginning
   let regex = /((?:http|ftp|https):\/\/(?:[\w_-]+(?:(?:\.[\w_-]+)+))(?:[\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-]))/g
   //let mod = raw.split(regex)
-  let translated = raw.split(regex).map((p,i) => {
+  let translated = (await Promise.all(raw.split(regex).map(async (p,i) => {
     if (i % 2 === 1) { // Url, keep as is
       return p
     } else {
-      return translateKeepPunctuation(p)
+      return await translateKeepPunctuation(p)
     }
-  }).join('')
+  }))).join('')
 
-  //console.log('Raw:',raw)
-  //console.log('Translated:', translated)
+  console.log('Raw:',raw)
+  console.log('Translated:', translated)
 }
 
-function translateContent(node) {
+async function translateContent(node) {
   if (node.type === "text") {
-    node.text = translate(node.text)
+    node.text = await translate(node.text)
   } else if (node.content) {
-    node.content = node.content.map(n => translateContent(n))
+    node.content = await Promise.all(node.content.map(async n => await translateContent(n)))
   }
   return node
 }
 
 let attrs = ['name', 'json', 'servings_name']
-const recipes = db.fetchTable('recipes', {}, attrs)
+const recipes = db.fetchTable('recipes', {}, attrs, {limit: 1})
 
 // TODO: translate recipes by languages. If the recipe is english, translate from english to french...
-recipes.forEach(recipe => {
+recipes.forEach(async recipe => {
 
   console.log('*** RECIPE '+recipe.id+' ***')
   let translated = {original_id: recipe.id}
-  translated.name = translate(recipe.name)
+  translated.name = await translate(recipe.name)
   translated.servings_name = translate(recipe.servings_name)
  
   if (recipe.json) {
