@@ -1,14 +1,20 @@
 // node -r dotenv/config tasks/translate_recipes.js
 
 import db from '../src/db.js';
-//import utils from '../src/utils.js';
-//import { normalizeSearchText } from "../src/react/utils.js"
-//import { findRecipeKindForRecipe } from "../src/lib.js"
-//
 
-//db.run('ALTER TABLE recipes ADD COLUMN ingredients TEXT', [], function(err) {
-//  if (err) {console.log('ERR', err)}
-//})
+const translations = db.fetchTable('translations', {}, ['from', 'to', 'original', 'translated'])
+let from = 1 // French
+let to = 4 // English
+const frenchToEnglish = {}
+translations.forEach(translation => {
+  if (translation.from == from && translation.to == to) {
+    frenchToEnglish[translation.original] = translation.translated
+  } else if (translation.to == from && translation.from == to) {
+    frenchToEnglish[translation.translated] = translation.original
+  }
+})
+
+let missing = []
 
 function replaceFirstChar(string, char) {
   let c = string[0]
@@ -23,8 +29,14 @@ function translatePart(part) {
   let text = part.trim()
   let down = replaceFirstChar(text, text[0].toLocaleLowerCase())
   let startsWithUpperLetter = text !== down
-  console.log('Missing translation:',down)
-  let translated = down
+  let translated = frenchToEnglish[down]
+  if (translated) {
+    console.log('Found translation from:',down,'To:',translated)
+  } else {
+    translated = down
+    //console.log('Missing translation:',down)
+    missing.push(down)
+  }
   if (startsWithUpperLetter) {
     translated = replaceFirstChar(translated, translated[0].toLocaleUpperCase())
   }
@@ -47,8 +59,7 @@ function translateKeepPunctuation(text) {
  * Don't translate URLs. Transation text by spliting at punctuation.
  */
 function translate(raw) {
-  if (raw === null) {return null}
-  if (raw === '') {return ''}
+  if (!raw) {return raw}
 
   // Don't translate links.
   // Regex from: https://stackoverflow.com/questions/6038061/regular-expression-to-find-urls-within-a-string
@@ -79,6 +90,7 @@ function translateContent(node) {
 let attrs = ['name', 'json', 'servings_name']
 const recipes = db.fetchTable('recipes', {}, attrs)
 
+// TODO: translate recipes by languages. If the recipe is english, translate from english to french...
 recipes.forEach(recipe => {
 
   console.log('*** RECIPE '+recipe.id+' ***')
@@ -90,6 +102,16 @@ recipes.forEach(recipe => {
     translated.json = JSON.stringify(translateContent(JSON.parse(recipe.json)))
   }
 
+  // TODO: Translate ingredients
+
   //db.createRecord('translated_recipes', translated, {allow_write: ['original_id']})
   
 })
+
+console.log('Missing count:', missing.length)
+let uniq = [...new Set(missing)]
+console.log('Unique missing count:', uniq.length)
+console.log('Char count:', uniq.reduce(function (sum, str) {
+  return sum + str.length
+}, 0))
+

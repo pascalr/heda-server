@@ -43,6 +43,7 @@ db.safe = function(str, allowed) {
 const mySchema = {
   'meals': {},
   'mixes': {},
+  'translations': {},
   'images': {
     write_attrs: ['filename', 'author', 'is_user_author', 'source'],
     attrs_types: {is_user_author: 'bool'},
@@ -249,7 +250,7 @@ db.doBackup = function() {
 
 const fetchStatement = (tableName, conditions, attributes, options) => {
 
-  let s = 'SELECT '+['id',...attributes].join(', ')+' FROM '+db.safe(tableName, schema.getTableList())
+  let s = 'SELECT '+['id',...attributes.map(a => '"'+a+'"')].join(', ')+' FROM '+db.safe(tableName, schema.getTableList())
   let a = []
   if (Array.isArray(conditions)) {
     // The first element is the query, the second is the arguments
@@ -260,6 +261,8 @@ const fetchStatement = (tableName, conditions, attributes, options) => {
     if (l != 0) {s += ' WHERE '}
     let keys = Object.keys(conditions)
     for (let i = 0; i < keys.length; i++) {
+      //FIXME: Escape keys; let cond = "'"+keys[i]+"'"
+      //Maybe it's «'», maybe it's «"» that's required, I don't know and it makes a difference. Select 'name' was not working...
       let cond = keys[i]
       let val = conditions[cond]
       if (val == null) {
