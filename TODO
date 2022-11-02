@@ -1,3 +1,5 @@
+Fix servings raw_servings into servings_quantity and servings_name?
+
 Fix le zoom automatique du cellulaire à Céline.
 
 translated_recipes original_id:integer translated_id:integer

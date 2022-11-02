@@ -64,6 +64,9 @@ const mySchema = {
   'recipe_kinds': {
     write_attrs: ['image_slug'],
   },
+  'translated_recipes': {
+    write_attrs: ['name', 'servings_name', 'json'],
+  },
   'recipes': {
     write_attrs: ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'ingredients', 'recipe_kind_id', 'image_slug'],
     security_key: 'user_id',
@@ -210,16 +213,15 @@ db.safeDestroyRecord = function(table, id, user) {
 }
 
 if (db.createRecord) {throw "Can't overide createRecord"}
-db.createRecord = function(table, obj, userId, options={}) {
+db.createRecord = function(table, obj, options={}) {
     
   let safeTable = db.safe(table, schema.getTableList())
-  obj.user_id = userId 
   obj = schema.beforeCreate(table, obj)
 
   let fields = Object.keys(obj)
   let columns = schema.getWriteAttributes(table) || []
   if (options.allow_write) {columns = [...columns, ...options.allow_write]}
-  let query = 'INSERT INTO '+safeTable+' (created_at,updated_at,'+fields.map(f => db.safe(f, [...columns, 'user_id'])).join(',')+') '
+  let query = 'INSERT INTO '+safeTable+' (created_at,updated_at,'+fields.map(f => db.safe(f, columns)).join(',')+') '
   query += 'VALUES (?,?,'+fields.map(f=>'?').join(',')+')'
   let args = [utils.now(), utils.now(), ...fields.map(f => schema.validAttr(table, f, obj[f]))]
   

@@ -19,6 +19,6 @@ recipes.forEach(recipe => {
   translated.name = translate(recipe.name)
   translated.servings_name = translate(recipe.servings_name)
 
-  db.createRecord('translated_recipes')
+  db.createRecord('translated_recipes', translated)
   
 })
