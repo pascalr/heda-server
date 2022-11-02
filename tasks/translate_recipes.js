@@ -21,8 +21,6 @@ translations.forEach(translation => {
   }
 })
 
-let missing = []
-
 let attrs = ['name', 'json', 'servings_name', 'ingredients']
 const recipes = db.fetchTable('recipes', {}, attrs)
 //const recipes = db.fetchTable('recipes', {}, attrs, {limit: 10})
@@ -31,7 +29,10 @@ const translatedRecipes = db.fetchTable('translated_recipes', {}, ['original_id'
 // TODO: translate recipes by languages. If the recipe is english, translate from english to french...
 recipes.forEach(async recipe => {
 
-  let translator = new Translator(frenchToEnglish)
+  let translator = new Translator(frenchToEnglish, normalized => {
+    console.log('TRANSLATOR CALLED FOR:', normalized)
+    //googleTranslate(normalized)
+  })
 
   console.log('*** RECIPE '+recipe.id+' ***')
   let translated = {original_id: recipe.id}
@@ -39,7 +40,7 @@ recipes.forEach(async recipe => {
   translated.servings_name = await translator.translate(recipe.servings_name)
  
   if (recipe.json) {
-    translated.json = JSON.stringify(await translator.translateContent(JSON.parse(recipe.json)))
+    translated.json = JSON.stringify(await translator.translateTiptapContent(JSON.parse(recipe.json)))
   }
 
   let ingredientsAndHeaders = parseIngredientsAndHeaders(recipe.ingredients)
@@ -66,10 +67,10 @@ recipes.forEach(async recipe => {
   
 })
 
-console.log('Missing count:', missing.length)
-let uniq = [...new Set(missing)]
-console.log('Unique missing count:', uniq.length)
-console.log('Char count:', uniq.reduce(function (sum, str) {
-  return sum + str.length
-}, 0))
+//console.log('Missing count:', missing.length)
+//let uniq = [...new Set(missing)]
+//console.log('Unique missing count:', uniq.length)
+//console.log('Char count:', uniq.reduce(function (sum, str) {
+//  return sum + str.length
+//}, 0))
 

@@ -32,11 +32,12 @@ function replaceFirstChar(string, char) {
 }
 
 class Translator {
-  constructor(cache) {
+  constructor(cache, translateStrategy) {
     this.cache = cache
+    this.translateStrategy = translateStrategy
     this.translate = this.translate.bind(this)
     this.translatePart = this.translatePart.bind(this)
-    this.translateContent = this.translateContent.bind(this)
+    this.translateTiptapContent = this.translateTiptapContent.bind(this)
     this.translateKeepPunctuation = this.translateKeepPunctuation.bind(this)
   }
 
@@ -46,17 +47,16 @@ class Translator {
     let startsWithSpace = part.charAt(0) === ' '
     let endsWithSpace = part.slice(-1) === ' '
     let text = part.trim()
-    let down = replaceFirstChar(text, text[0].toLocaleLowerCase())
-    let startsWithUpperLetter = text !== down
-    let translated = this.cache[down]
+    let normalized = replaceFirstChar(text, text[0].toLocaleLowerCase())
+    let startsWithUpperLetter = text !== normalized
+    let translated = this.cache[normalized]
     if (translated) {
-      console.log('Found translation from:',down,'To:',translated)
+      console.log('Found translation from:',normalized,'To:',translated)
     } else {
-      console.log('Missing translation:',down)
-      missing.push(down)
-      translated = await googleTranslate(down)
+      console.log('Missing translation:',normalized)
+      translated = await this.translateStrategy(normalized)
       console.log('Google translate:',translated)
-      let translation = {from: from, to: to, original: down, translated}
+      let translation = {from: from, to: to, original: normalized, translated}
       db.createRecord('translations', translation, {allow_write: ['from', 'to', 'original', 'translated']})
     }
     if (startsWithUpperLetter) {
@@ -99,11 +99,11 @@ class Translator {
     return translated
   }
   
-  async translateContent(node) {
+  async translateTiptapContent(node) {
     if (node.type === "text") {
       node.text = await this.translate(node.text)
     } else if (node.content) {
-      node.content = await Promise.all(node.content.map(async n => await this.translateContent(n)))
+      node.content = await Promise.all(node.content.map(async n => await this.translateTiptapContent(n)))
     }
     return node
   }
