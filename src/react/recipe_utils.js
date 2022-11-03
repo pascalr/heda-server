@@ -1,4 +1,4 @@
-import Quantity from './models/quantity.js'
+import Quantity from '../quantity.js'
 
 export const Utils = {
 

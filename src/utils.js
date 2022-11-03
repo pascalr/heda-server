@@ -163,6 +163,57 @@ export function isBlank(array) {
   return !array || array.length == 0
 }
 
+/**
+ * Extract the number part at the beginning of a string.
+ * Number can be integer, float or faction. Ex: 2, 3.4 or 2 1/2
+ */
+export function extractNumberAtBeginning(str) {
+  if (!str) {return str}
+  //let fraction = /\d+\/\d+/g
+  //let decimal = /\d+[,.]\d+/g
+  //let whole = /\d+/g
+  let number = /\d+([,.]\d+)?/g
+  let fraction_number = /(\d+ )?(\d+\/\d+)/g
+  return (str.match(fraction_number) || str.match(number) || [])[0]
+}
+
+//  stringSnippet(str, maxLength=20) {
+//    if (str == null || str == '') {return ''}
+//    if (str.length <= maxLength) {return str}
+//    return str.slice(0,17)+'...'
+//  },
+//
+//  stripHtml(html) {
+//    let tmp = document.createElement("div");
+//    tmp.innerHTML = html;
+//    return tmp.textContent || tmp.innerText || "";
+//  },
+//
+//  translated(str) {
+//    return str
+//  },
+//
+//  minBy(array, fn) { 
+//    return Utils.extremumBy(array, fn, Math.min); 
+//  },
+//
+//  maxBy(array, fn) { 
+//    return Utils.extremumBy(array, fn, Math.max);
+//  },
+//
+//  extremumBy(array, pluck, extremum) {
+//    return array.reduce(function(best, next) {
+//      var pair = [ pluck(next), next ];
+//      if (!best) {
+//         return pair;
+//      } else if (extremum.apply(null, [ best[0], pair[0] ]) == best[0]) {
+//         return best;
+//      } else {
+//         return pair;
+//      }
+//    },null)[1];
+//  },
+
 const utils = {padStr, now, sortBy, ensureIsArray, getUrlParams};
 export default utils;
 //module.exports = utils;

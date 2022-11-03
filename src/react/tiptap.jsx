@@ -57,7 +57,7 @@ function elementFromJSX(value) {
 }
 
 // MINE
-import Quantity from './models/quantity'
+import Quantity from '../quantity'
 import { ajax } from "./utils"
 
 const PageComponent = () => {

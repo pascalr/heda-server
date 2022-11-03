@@ -1,4 +1,5 @@
 import {prettyNumber, extractNumberAtBeginning} from "./utils"
+import {extractNumberAtBeginning} from "../utils"
 
 // The purpose of this class is to handle ranges. 8 - 10 portions. 20 à 24 biscuits
 export default class Servings {

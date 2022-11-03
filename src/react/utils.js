@@ -54,16 +54,6 @@ export function prettyNumber(nb) {
   return Number.parseFloat(Number.parseFloat(nb).toPrecision(3));
 }
 
-export function extractNumberAtBeginning(str) {
-  if (!str) {return str}
-  //let fraction = /\d+\/\d+/g
-  //let decimal = /\d+[,.]\d+/g
-  //let whole = /\d+/g
-  let number = /\d+([,.]\d+)?/g
-  let fraction_number = /(\d+ )?(\d+\/\d+)/g
-  return (str.match(fraction_number) || str.match(number) || [])[0]
-}
-
 export function colorToHexString(color) {
   return '#' + Number(color).toString(16)
 }

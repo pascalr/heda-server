@@ -1,6 +1,7 @@
 import {isBlank} from '../src/utils.js'
-import Quantity from '../src/react/models/quantity.js'
+import Quantity from '../src/quantity.js'
 import { Utils } from "../src/react/recipe_utils.js"
+import { prettyPreposition } from "../src/lib.js"
 //import Ingredient from "./ingredient.js"
 
 global.gon = {} // FIXME: Remove this horrible shit
@@ -77,10 +78,10 @@ function testQuantity() {
 }
   
 header('Testing prettyPreposition')
-assertEquals('', Utils.prettyPreposition(null))
-assertEquals('', Utils.prettyPreposition(''))
-assertEquals("d'", Utils.prettyPreposition('huile'))
-assertEquals("de", Utils.prettyPreposition('sucre'))
+assertEquals('', prettyPreposition(null, null, 'fr'))
+assertEquals('', prettyPreposition('', '', 'fr'))
+assertEquals("d'", prettyPreposition('100 mL', 'huile', 'fr'))
+assertEquals("de ", prettyPreposition('100 g', 'sucre', 'fr'))
 
 function testPrintRecipeIngredient() {
   header('Testing testPrintRecipeIngredient')

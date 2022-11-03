@@ -1,4 +1,4 @@
-import {extractNumberAtBeginning} from "../utils.js"
+import {extractNumberAtBeginning} from "./utils.js"
 
 // A quantity is a number with an optional label.
 // Used for ingredients and for servings.
