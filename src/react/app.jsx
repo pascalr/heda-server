@@ -454,7 +454,7 @@ export const App = () => {
       <EditTag {...{tagId: id, tags}} />
     },
     {match: "/e/:id", elem: ({id}) => 
-      <EditRecipe {...{recipeId: id, recipes, mixes, user, users, recipeKinds, images, machineFoods, favoriteRecipes, machines}} />
+      <EditRecipe {...{recipeId: id, recipes, mixes, user, users, recipeKinds, images, machineFoods, favoriteRecipes, machines, locale}} />
     },
     {match: "/m/:id/i", elem: ({id}) => 
       <Inventory {...{machineId: id, machines, machineFoods, containerQuantities, foods, containerFormats}} />

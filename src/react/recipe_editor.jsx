@@ -6,7 +6,7 @@ import { ajax } from "./utils"
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import { RecipeTiptap, BubbleTiptap } from './tiptap'
 import {AutocompleteInput, updateRecord, TextField, CollectionSelect, TextAreaField} from './form'
-import { parseIngredientsAndHeaders, serializeIngredientsAndHeaders } from '../lib'
+import { parseIngredientsAndHeaders, serializeIngredientsAndHeaders, prettyPreposition } from '../lib'
 import {EditRecipeImageModal} from './modals/recipe_image'
 import {PasteIngredientsButton} from './modals/paste_ingredients'
 import { RecipeMediumImage } from "./image"
@@ -296,14 +296,14 @@ const NewIngredient = ({foods, updateIngredients, addIngredient}) => {
   return (
     <form onSubmit={handleSubmit}>
       <input type="text" className="editable-input" value={qty||''} name="qty" onChange={(e) => setQty(e.target.value)} ref={qtyInputField} style={{width: "8em", maxWidth: "15vw"}} />
-      <div className="d-inline-block mx-2" style={{width: '1em'}}>de</div>
+      <div className="d-inline-block mx-2" style={{width: '1em'}}></div>
       <input type="text" value={label||''} name="label" style={{maxWidth: '32vw'}} onChange={(e) => setLabel(e.target.value)} />
       <button type="submit" className="btn btn-sm btn-primary ms-2">Ajouter</button>
     </form>
   )
 }
 
-const EditableIngredient = ({recipe, ingredient, itemNb, foods, mixes, updateIngredients, removeIngredientOrHeader}) => {
+const EditableIngredient = ({recipe, ingredient, itemNb, foods, mixes, updateIngredients, removeIngredientOrHeader, locale}) => {
   
   const [qty, setQty] = useState(ingredient.qty)
   const [label, setLabel] = useState(ingredient.label)
@@ -318,7 +318,7 @@ const EditableIngredient = ({recipe, ingredient, itemNb, foods, mixes, updateIng
     //}})
   }
 
-  let preposition = RecipeUtils.needsPreposition(qty) ? RecipeUtils.prettyPreposition(label) : ''
+  let preposition = prettyPreposition(ingredient.qty, ingredient.label, locale)
   return (
     <div>
       <div className="float-end">
@@ -345,7 +345,7 @@ const EditableIngredientSection = ({item, index, updateIngredients, removeIngred
   </h3>
 }
 
-export const RecipeEditor = ({recipe, machines, mixes, machineFoods, foods, recipeKinds, images, editable, user}) => {
+export const RecipeEditor = ({recipe, machines, mixes, machineFoods, foods, recipeKinds, images, editable, user, locale}) => {
 
   const [showImageModal, setShowImageModal] = useState(false)
 
@@ -408,10 +408,10 @@ export const RecipeEditor = ({recipe, machines, mixes, machineFoods, foods, reci
               const ing = ingOrHeader
               itemNb += 1
               return <li className="list-group-item">
-                {<EditableIngredient ingredient={ingOrHeader} {...{recipe, itemNb, mixes, foods, updateIngredients, removeIngredientOrHeader}} />}
+                {<EditableIngredient ingredient={ingOrHeader} {...{recipe, itemNb, mixes, foods, updateIngredients, removeIngredientOrHeader, locale}} />}
               </li>
             } else {
-              return <EditableIngredientSection item={ingOrHeader} index={i} {...{updateIngredients, removeIngredientOrHeader}} />
+              return <EditableIngredientSection item={ingOrHeader} index={i} {...{updateIngredients, removeIngredientOrHeader, locale}} />
             }
           }()}
         </div>
