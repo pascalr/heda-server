@@ -56,8 +56,9 @@ const TranslateRecipePage = ({translations, recipes, locale}) => {
     }
   }, [translations, recipe])
 
-  const shown = translated ? {...recipe, ...translated} : null
+  console.log('translated', translated)
 
+  const shown = translated ? {...recipe, ...translated} : null
 
   let cache = {}
   translations.forEach(translation => {
@@ -99,7 +100,7 @@ const TranslateRecipePage = ({translations, recipes, locale}) => {
                 let attr = (cached.from == from && cached.to == to) ? 'translated' : 'original'
                 return <TextField model={cached} field={attr} style={{width: '100%'}} />
               } else {
-                return <div class="error">Translation missing</div>
+                return <TextInput onBlur={(value) => {window.hcu.createRecord('translations', {from: from, to: to, original: part, translated: value})}} style={{width: '100%', backgroundColor: '#ff9494'}} />
               }
             })()}
           </div>

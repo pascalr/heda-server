@@ -44,7 +44,7 @@ const mySchema = {
   'meals': {},
   'mixes': {},
   'translations': {
-    write_attrs: ['translated'],
+    write_attrs: ['from', 'original', 'to', 'translated'],
     security_key: 'ADMIN_ONLY',
   },
   'images': {

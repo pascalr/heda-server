@@ -1,3 +1,11 @@
+Refactor all of db.js.
+In the schema, in should be allowUpdate(user, columns) {
+  columns...
+  user...
+}
+
+Pouvoir me connecter à la database de prod, par exemple pour ajouter des traductions.
+
 Est-ce que je peux utiliser TypeScript ne serait-ce que pour s'assurer que les variables ne sont pas nulls?
 
 Duplicate recipe

@@ -11,11 +11,11 @@ import { t } from '../translate'
 /**
  * A simple text input field. Pass a onBlur fonction get feedback when the value changes.
  */
-export const TextInput = ({defaultValue, onBlur}) => {
+export const TextInput = ({defaultValue, onBlur, ...props}) => {
   const [value, setValue] = useState(defaultValue)
 
   return (
-    <input type="text" value={value||''} onChange={(e) => setValue(e.target.value)} onBlur={() => onBlur(value)} />
+    <input type="text" value={value||''} onChange={(e) => setValue(e.target.value)} onBlur={() => onBlur(value)} {...props} />
   )
 }
 
