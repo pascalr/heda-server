@@ -114,7 +114,7 @@ class Translator {
   
   async translateKeepPunctuation(text) {
     // Split on punctuation
-    let parts = text.split(/([,\.\(\):;])/g)
+    let parts = text.split(/([,\?\!\.\(\):;])/g)
     return (await Promise.all(parts.map(async (p,i) => {
       if (i % 2 === 0) { // Text
         return await this.translatePart(p)
