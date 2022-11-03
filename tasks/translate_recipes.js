@@ -12,8 +12,8 @@ let toLocale = 'en' // French
 const translations = db.fetchTable('translations', {}, ['from', 'to', 'original', 'translated'])
 
 let attrs = ['name', 'json', 'servings_name', 'ingredients']
-//const recipes = db.fetchTable('recipes', {}, attrs)
-const recipes = db.fetchTable('recipes', {}, attrs, {limit: 3})
+const recipes = db.fetchTable('recipes', {}, attrs)
+//const recipes = db.fetchTable('recipes', {}, attrs, {limit: 3})
 const translatedRecipes = db.fetchTable('translated_recipes', {}, ['original_id'])
 
 // TODO: translate recipes by languages. If the recipe is english, translate from english to french...
@@ -29,13 +29,13 @@ recipes.forEach(async recipe => {
   if (translatedRecipe) {
     console.log('*** UPDATING RECORD FOR',recipe.id,'***')
     // TODO: UpdateRecord instead of UpdateField
-    db.safeUpdateField('translated_recipes', translatedRecipe.id, 'name', translatedRecipe.name, {user_id: recipe.user_id})
-    db.safeUpdateField('translated_recipes', translatedRecipe.id, 'servings_name', translatedRecipe.servings_name, {user_id: recipe.user_id})
-    db.safeUpdateField('translated_recipes', translatedRecipe.id, 'ingredients', translatedRecipe.ingredients, {user_id: recipe.user_id})
-    db.safeUpdateField('translated_recipes', translatedRecipe.id, 'json', translatedRecipe.json, {user_id: recipe.user_id})
+    db.safeUpdateField('translated_recipes', translatedRecipe.id, 'name', translated.name, {original_id: recipe.id})
+    db.safeUpdateField('translated_recipes', translatedRecipe.id, 'servings_name', translated.servings_name, {original_id: recipe.id})
+    db.safeUpdateField('translated_recipes', translatedRecipe.id, 'ingredients', translated.ingredients, {original_id: recipe.id})
+    db.safeUpdateField('translated_recipes', translatedRecipe.id, 'json', translated.json, {original_id: recipe.id})
   } else {
     console.log('*** INSERTING RECORD FOR',recipe.id,'***')
-    db.safeCreateRecord('translated_recipes', translated, {is_admin: true}, {allow_write: ['original_id', 'name', 'servings_name', 'ingredients', 'json']})
+    db.safeCreateRecord('translated_recipes', translated, {original_id: recipe.id}, {allow_write: ['original_id', 'name', 'servings_name', 'ingredients', 'json']})
   }
   
 })

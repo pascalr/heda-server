@@ -81,7 +81,14 @@ const mySchema = {
   'recipe_kinds': {
     write_attrs: ['image_slug'],
   },
-  'translated_recipes': {},
+  'translated_recipes': {
+    write_attrs: ['name', 'servings_name', 'ingredients', 'json'],
+    security_key: 'original_id',
+    allow_create(user, obj) {
+      obj.original_id = user.original_id
+      return obj
+    },
+  },
   'recipes': {
     write_attrs: ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'ingredients', 'recipe_kind_id', 'image_slug'],
     security_key: 'user_id',
@@ -181,6 +188,27 @@ function addSafetyCondition(query0, args0, user, securityKey) {
     let args = [...args0, user[securityKey]]
     return [query, args]
   }
+}
+
+// TODO: Inside route update_field
+// Fetch the old record by table and id
+// Call something in the schema to know if the current user can edit it
+// allow_update(user, obj, changes)
+// allow_update(user, obj, {field: value})
+if (db.safeUpdateRecord) {throw "Can't overide safeUpdateRecord"}
+db.safeUpdateRecord = function(table, old, updated, user, options={}) {
+
+  if (!table) {throw "Missing table for safeUpdateRecord"}
+
+  let fields = []
+  Object.keys(updated).forEach(f => {
+    if (f === 'updated_at' || f === 'created_at' || f === 'id') {return}
+    if (old[f] != updated[f]) {fields.push(f)}
+  })
+  
+  let query = 'UPDATE '+db.safe(table, schema.getTableList())+' SET '+fields.map(field => db.safe(field, writeAttrs)+' = ?').join(', ')+', updated_at = ? WHERE id = ?'
+
+  throw "TODO" // TODO
 }
 
 if (db.safeUpdateField) {throw "Can't overide safeUpdateField"}
