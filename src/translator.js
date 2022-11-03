@@ -1,4 +1,5 @@
-import { parseIngredientsAndHeaders, serializeIngredientsAndHeaders } from '../src/lib.js';
+import { parseIngredientsAndHeaders, serializeIngredientsAndHeaders } from './lib.js';
+import Quantity from './quantity.js';
 
 function replaceFirstChar(string, char) {
   let c = string[0]
@@ -165,6 +166,11 @@ class Translator {
         r.header = await this.translate(r.header)
       } else { // Ingredient
         // TODO: Translate quantity label. Ex: c. à table => tbsp, douzaine => dozen
+        let qty = new Quantity(r.qty)
+        let unit = qty.label
+        if (unit) {
+          r.qty = qty.nb_s.toString() + ' ' + await this.translatePart(qty.label)
+        }
         r.label = await this.translate(r.label)
       }
       return r

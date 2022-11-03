@@ -1,16 +1,26 @@
 import {extractNumberAtBeginning} from "./utils.js"
 
-// A quantity is a number with an optional label.
-// Used for ingredients and for servings.
-// Examples:
-// 12 muffins
-// 1/2 t
-// 250 mL
-// 4
+/**
+ * A quantity is a number with an optional label.
+ * Used for ingredients and for servings.
+ * Examples:
+ * - 12 muffins
+ * - 1/2 t
+ * - 250 mL
+ * - 4
+ */
 export default class Quantity {
 
+  // I don't know why using raw in an object instead of just passing a string?
+  // Anyway support both for now
   constructor(args = {}) {
-    this.raw = args.raw
+    if (typeof args === 'string') {
+      this.raw = args
+    } else if (typeof args === 'object') {
+      this.raw = args.raw
+    } else {
+      throw 'Unsupported argument given to Quantity constructor'
+    }
     this.nb = null
     this.label = null
 
@@ -23,10 +33,10 @@ export default class Quantity {
     if (this.raw != null) {
       let s = extractNumberAtBeginning(this.raw)
       if (s != null) {
-        let qty_s = s
-        this.label = this.raw.substr(qty_s.length).trim()
-        this.nb = Quantity.parseFloatOrFraction(qty_s)
-        this.unit = gon.units ? gon.units.find(unit => unit.name == this.label) : null
+        this.nb_s = s
+        this.label = this.raw.substr(s.length).trim()
+        this.nb = Quantity.parseFloatOrFraction(s)
+        //this.unit = gon.units ? gon.units.find(unit => unit.name == this.label) : null
       }
     }
   }

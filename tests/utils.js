@@ -64,7 +64,7 @@ function testQuantity() {
   header('Testing testQuantity')
 
   let test = (str, expected) => {
-    let qty = new Quantity({raw: str})
+    let qty = new Quantity(str)
     assertEquals(expected[0], qty.nb)
     assertEquals(expected[1], qty.label)
   }

@@ -1,12 +1,11 @@
+FIXME: SPLITING ON POINTS DOES NOT WORK FOR ABREVIATIONS...
+Maybe add a rule that a dot is only a punctuation if there is a capital letter just after.
+
 Build homepage after fixing units...
 
 Mettre la première lettre des traductions en minuscules.
 
 Ajouter un noeud pour les températures.
-
-Sur la page d'erreur, un lien vers la page contact.
-
-Just translate units...
 
 Valider l'anglais de toutes les recettes sur la page d'acceuil.
 

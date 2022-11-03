@@ -1,5 +1,27 @@
 # Heda Server
 
+Message to fly:
+How to use scp with fly properly?
+I am able to make it work, but it's a pain every time. Any way to make it easier? Here how it goes for me:
+scp ... ... ... ...
+ssh: Could not resolve hostname heda-server.internal: Name or service not known
+Alright I check wireguard status:
+sudo wg
+Not running...
+wg-quick up path-to-file.conf
+scp ... ... ... ...
+Does not work...
+fly doctor
+Does not work... I try to go on Hacker News when waiting, hacker news does not work anymore...
+restart internet
+Internet works. Fly doctor works.
+
+If there could be a fly scp command that would be sooooooooo awesome.
+
+:q
+
+
+
 ## Live reload
 nodemon is used to live reload front-end pages (views)
 livereload is used to live reload compiled back-end pages (public/build)
