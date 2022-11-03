@@ -8,10 +8,11 @@ import { App } from "./app"
 import { ShowRecipe } from "./show_recipe"
 import { ShowUser } from "./show_user"
 import { getUrlParams } from "../utils"
+import { getLocale } from "./lib"
 
 export const SearchRoot = () => {
 
-  const [locale, ] = useState(gon.locale)
+  const locale = getLocale()
 
   return <>
     <MainSearch {...{locale}} />

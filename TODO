@@ -2,6 +2,9 @@ Afficher les traductions sur la home page.
 
 Est-ce que je peux utiliser TypeScript ne serait-ce que pour s'assurer que les variables ne sont pas nulls?
 
+Add locale to recipes.
+Fix recipeOrTranslation(originalRecipe, translatedRecipes, locale)
+
 Duplicate recipe
 Cliquer sur login quand tu es déjà connecté devrait te redirigé vers ton home.
 Merge RecipeViewers

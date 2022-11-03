@@ -11,6 +11,7 @@ import { t } from "../translate"
 import { RecipeTiptap } from './tiptap'
 import { RecipeMediumImage } from "./image"
 import { getUrlParams, localeHref } from "../utils"
+import { getLocale } from "./lib"
 
 export const RecipeViewer = ({recipe, images, user, locale}) => {
 
@@ -108,7 +109,7 @@ export const RecipeViewer = ({recipe, images, user, locale}) => {
 
 export const ShowRecipe = () => {
 
-  const [locale, ] = useState(gon.locale)
+  const locale = getLocale()
   const [recipe, ] = useState(gon.recipe)
   const [translatedRecipe, ] = useState(gon.translated_recipe)
   const [images, ] = useState(gon.images)

@@ -8,6 +8,7 @@ import { isBlank, normalizeSearchText, join, capitalize } from "./utils"
 import { image_slug_variant_path } from "./routes"
 import { t } from "../translate"
 import { localeHref, getUrlParams } from "../utils"
+import { getLocale } from "./lib"
 
 const RecipeItem = ({recipe, images, recipeKinds}) => {
   return (
@@ -25,7 +26,7 @@ const RecipeItem = ({recipe, images, recipeKinds}) => {
 
 export const ShowUser = () => {
 
-  const [locale, ] = useState(gon.locale)
+  const locale = getLocale()
   const [recipes, ] = useState(gon.recipes)
   const [images, ] = useState(gon.images)
   const [recipeKinds, ] = useState(gon.recipe_kinds)

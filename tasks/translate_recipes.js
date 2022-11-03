@@ -25,12 +25,18 @@ recipes.forEach(async recipe => {
   console.log('*** RECIPE '+recipe.id+' ***')
   let translated = await translator.translateRecipe(recipe)
 
-  if (translatedRecipes.find(r => r.original_id == recipe.id)) {
-    console.log('*** SKIPING INSERT RECORD '+recipe.id+' ALREADY TRANSLATED ***')
-    return
+  let translatedRecipe = translatedRecipes.find(r => r.original_id == recipe.id)
+  if (translatedRecipe) {
+    console.log('*** UPDATING RECORD FOR',recipe.id,'***')
+    // TODO: UpdateRecord instead of UpdateField
+    db.safeUpdateField('translated_recipes', translatedRecipe.id, 'name', translatedRecipe.name, {user_id: recipe.user_id})
+    db.safeUpdateField('translated_recipes', translatedRecipe.id, 'servings_name', translatedRecipe.servings_name, {user_id: recipe.user_id})
+    db.safeUpdateField('translated_recipes', translatedRecipe.id, 'ingredients', translatedRecipe.ingredients, {user_id: recipe.user_id})
+    db.safeUpdateField('translated_recipes', translatedRecipe.id, 'json', translatedRecipe.json, {user_id: recipe.user_id})
+  } else {
+    console.log('*** INSERTING RECORD FOR',recipe.id,'***')
+    db.safeCreateRecord('translated_recipes', translated, {is_admin: true}, {allow_write: ['original_id', 'name', 'servings_name', 'ingredients', 'json']})
   }
-
-  db.createRecord('translated_recipes', translated, {allow_write: ['original_id', 'name', 'servings_name', 'ingredients', 'json']})
   
 })
 

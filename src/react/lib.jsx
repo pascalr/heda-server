@@ -5,6 +5,24 @@ import { ajax, omit, join, bindSetter, capitalize, changeUrl } from "./utils"
 import { t } from '../translate'
 
 /**
+ * Extract the locale from the meta tag. Ex:
+ * <meta name="locale" content="fr" /> => "fr"
+ * FIXME: Maybe extract from <html lang="fr"> instead...
+ */
+export function getLocale(val) {
+  return (document.querySelector('[name="locale"]')||{}).content
+}
+
+export function recipeOrTranslation(originalRecipe, translatedRecipes, locale) {
+
+  if (locale != 'fr') { // FIXME: use locale from recipe when added.
+    const translatedRecipe = translatedRecipes.find(r => r.original_id == originalRecipe.id)
+    return {...originalRecipe, ...translatedRecipe}
+  }
+  return originalRecipe
+}
+
+/**
  * Delay for a single render frame. This way the initial element is rendered, then
  * the transition can take place.
  *

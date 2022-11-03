@@ -438,8 +438,6 @@ router.get('/r/:id', function(req, res, next) {
   attrs = ['author', 'source', 'filename', 'is_user_author', 'slug']
   o.images = db.fetchTable('images', {id: ids}, attrs)
   
-  o.locale = res.locals.locale
-
   res.locals.gon = o
   res.render('show_recipe');
 }, renderApp);
@@ -470,23 +468,15 @@ router.get('/u/:id', function(req, res, next) {
   attrs = ['author', 'source', 'filename', 'is_user_author', 'slug']
   o.images = db.fetchTable('images', {id: ids}, attrs)
 
-  o.locale = res.locals.locale
-
   res.locals.gon = o
   res.render('show_user');
 });
 
 router.get('/error', function(req, res, next) {
-  res.locals.gon = {
-    locale: res.locals.locale,
-  }
   return res.render('error');
 })
 
 router.get('/contact', function(req, res, next) {
-  res.locals.gon = {
-    locale: res.locals.locale,
-  }
   return res.render('contact');
 })
 
@@ -495,12 +485,17 @@ router.get('/', function(req, res, next) {
   // Whether or not to show an HTML cached version while the JS is loading.
   res.locals.disablePreview = req.query.disablePreview
   if (!req.user) {
+    // Use this to generate gon, but then use JSON.stringify(gon) and copy paste directly inside home.jsx
+    let ids1 = [113, 129, 669, 88, 323, 670, 672, 689]
+    let ids2 = [755, 757, 66, 558]
     res.locals.gon = {
-      locale: res.locals.locale,
-    //// Use this to generate gon, but then use JSON.stringify(gon) and copy paste directly inside home.jsx
-    //  recipes1: db.fetchTable('recipes', {id: [113, 129, 669, 88, 323, 670, 672, 689]}, ['name', 'image_slug']),
-    //  recipes2: db.fetchTable('recipes', {id: [755, 757, 66, 558]}, ['name', 'image_slug']),
-    //  recipe: db.fetchRecord('recipes', {id: 82}, RECIPE_ATTRS)
+      recipes1: db.fetchTable('recipes', {id: ids1}, ['name', 'image_slug']),
+      recipes2: db.fetchTable('recipes', {id: ids2}, ['name', 'image_slug']),
+      recipe: db.fetchRecord('recipes', {id: 82}, RECIPE_ATTRS),
+    }
+    if (res.locals.locale != 'fr') {
+      let attrs = ['name', 'servings_name', 'original_id', 'ingredients', 'json']
+      res.locals.gon.translated_recipes = db.fetchTable('translated_recipes', {original_id: [...ids1, ...ids2, 82]}, attrs)
     }
     return res.render('home');
   }
@@ -517,7 +512,6 @@ const ensureAdmin = (req, res, next) => {
 // ADMIN ROUTES
 router.get('/admin', ensureAdmin, function(req, res, next) {
   res.locals.gon = {
-    locale: res.locals.locale,
     translations: db.fetchTable('translations', {}, ['from', 'to', 'original', 'translated'])
   }
   res.render('admin')
