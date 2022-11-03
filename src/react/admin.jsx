@@ -115,7 +115,7 @@ export const Admin = () => {
   if (!window.hcu) {initHcu()}
 
   const [locale, ] = useState(gon.locale)
-  const [translations, ] = useState(gon.translations)
+  const translations = useHcuState(gon.translations, {tableName: 'translations'})
   const recipes = useHcuState([], {tableName: 'recipes'})
 
   const routes = [

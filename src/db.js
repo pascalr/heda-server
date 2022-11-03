@@ -137,7 +137,7 @@ function appendConditions(query0, args0, conditions) {
 }
 
 function addSafetyCondition(query0, args0, user, securityKey) {
-  if (security_key === 'ADMIN_ONLY') {
+  if (securityKey === 'ADMIN_ONLY') {
     if (!user.is_admin) {throw "Error not permitted user must be admin"}
     return [query0, args0]
   } else {
