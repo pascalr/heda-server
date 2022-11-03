@@ -16,6 +16,26 @@ function replaceFirstChar(string, char) {
 //  db.createRecord('translations', translation, {allow_write: ['from', 'to', 'original', 'translated']})
 //}
 
+export class StoreStrategy {
+  constructor(msg) {
+    this.msg = msg
+    this._all = []
+  }
+  translate(normalized) {
+    this._all.push(normalized)
+    return null
+  }
+  all() {
+    return this._all
+  }
+  unique() {
+    return [...new Set(this._all)]
+  }
+  clear() {
+    this._all = []
+  }
+}
+
 export class LogStrategy {
   constructor(msg) {
     this.msg = msg

@@ -19,23 +19,6 @@ export const TextInput = ({defaultValue, onBlur}) => {
   )
 }
 
-/**
- * An input field linked to a record. Modifications will be sent to the server.
- * @param args {
- *   model: The record to be modified
- *   field: The field to be modified
- * }
- */
-export const TextInputField = ({model, field}) => {
-  const [value, setValue] = useState(model.currentValue(field))
-
-  return (
-    <input type="text" value={value||''} name={model.fieldName(field)}
-      id={field} onChange={(e) => setValue(e.target.value)}
-      onBlur={() => model.updateValue(field, value)} />
-  )
-}
-
 export const AutocompleteInput = ({minChars, name, defaultValue, choices, placeholder, onSelect, inputRef, onBlur}) => {
 
   let selected = false
@@ -219,6 +202,13 @@ export const updateRecordField = (model, field, value, url, getter, setter) => {
   }})
 }
 // size, maxlength
+/**
+ * An input field linked to a record. Modifications will be sent to the server.
+ * @param args {
+ *   model: The record to be modified
+ *   field: The field to be modified
+ * }
+ */
 export const TextField = ({model, field, inputRef, onUpdate, url, getter, setter, ...props}) => {
   const [value, setValue] = useState(model[field])
   

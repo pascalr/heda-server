@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
-import { TextInput } from "./form"
+import { TextInput, TextField } from "./form"
 import { Link, useOrFetchRecord } from "./lib"
 import { MainSearch } from './main_search'
 import { HomeTab } from './app'
@@ -11,7 +11,7 @@ import { useRouter } from "./router"
 import { initHcu, useHcuState, handleError } from '../hcu'
 import { RecipeViewer } from "./show_recipe"
 import { ajax } from "./utils"
-import Translator, { TranslationsCacheStrategy, LogStrategy } from '../translator'
+import Translator, { TranslationsCacheStrategy, LogStrategy, StoreStrategy } from '../translator'
 
 const AdminTabs = ({machines}) => {
   return <>
@@ -26,10 +26,10 @@ const AdminTabs = ({machines}) => {
 const AdminPage = () => <h1>Admin page</h1>
 const TranslationsPage = () => <h1>Translations page</h1>
 
-
 const TranslateRecipePage = ({translations, recipes, locale}) => {
   const [recipeId, setRecipeId] = useState(null)
   const [translated, setTranslated] = useState(null)
+  const [translationParts, setTranslationParts] = useState(null)
 
   const recipe = useOrFetchRecord('recipes', recipes, recipeId)
 
@@ -40,28 +40,35 @@ const TranslateRecipePage = ({translations, recipes, locale}) => {
   //    }, error: handleError(t('Error_fetching')) })
   //  }
   //}, [recipeId])
+      
+  let from = 1 // French FIXME
+  let to = 4 // English FIXME
 
   useEffect(() => {
     if (recipe) {
-      let from = 1 // French FIXME
-      let to = 4 // English FIXME
       let cache = new TranslationsCacheStrategy(translations, from, to)
-      let translator = new Translator(new LogStrategy("About to translate:"), cache, new LogStrategy("MISSING TRANSLATION:"))
+      let store = new StoreStrategy()
+      let translator = new Translator(store, cache)
       translator.translateRecipe(recipe).then(translated => {
-        console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
-        console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
-        console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
-        console.log('translated', translated)
-        console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
-        console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
-        console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
         setTranslated(translated)
+        setTranslationParts(store.unique())
       })
     }
   }, [translations, recipe])
 
   const shown = translated ? {...recipe, ...translated} : null
 
+
+  let cache = {}
+  translations.forEach(translation => {
+    if (translation.from == from && translation.to == to) {
+      cache[translation.original] = translation
+    } else if (translation.to == from && translation.from == to) {
+      cache[translation.translated] = translation
+    }
+  })
+
+  console.log('translationParts', translationParts)
 
   return <>
     <h1>Translate recipe</h1>
@@ -77,6 +84,29 @@ const TranslateRecipePage = ({translations, recipes, locale}) => {
         {shown ? <RecipeViewer {...{recipe: shown, locale, user: {}}} /> : ''}
       </div>
     </div>
+    <h2>Translations</h2>
+    <hr/>
+    {(translationParts||[]).map(part => {
+      return <div key={part}>
+        <div className='d-flex justify-content-between'>
+          <div style={{width: '49%'}}>
+            {part}
+          </div>
+          <div style={{width: '49%'}}>
+            {(() => {
+              let cached = cache[part]
+              if (cached) {
+                let attr = (cached.from == from && cached.to == to) ? 'translated' : 'original'
+                return <TextField model={cached} field={attr} style={{width: '100%'}} />
+              } else {
+                return <div class="error">Translation missing</div>
+              }
+            })()}
+          </div>
+        </div>
+        <hr/>
+      </div>
+    })}
   </>
 }
 
