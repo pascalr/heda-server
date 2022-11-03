@@ -40,6 +40,11 @@ db.safe = function(str, allowed) {
   return "'"+s+"'"
 }
 
+/**
+ * Each key is a table name.
+ * The value is an object with the properties:
+ *   - allow_create(user, obj) { return modifiedObjOrNullIfNotAllowed }
+ */
 const mySchema = {
   'meals': {},
   'mixes': {},
@@ -136,6 +141,7 @@ const schema = {}
 schema.getTableList = () => {return Object.keys(mySchema)}
 schema.getWriteAttributes = (table) => {return mySchema[table].write_attrs}
 schema.getSecurityKey = (table) => {return mySchema[table].security_key}
+schema.getAllowCreate = (table) => {return mySchema[table].allow_create}
 schema.beforeCreate = (table, obj) => {
   if (!obj || !mySchema[table].before_create) {return obj}
   return mySchema[table].before_create(obj)
@@ -260,10 +266,13 @@ db.safeDestroyRecord = function(table, id, user) {
 }
 
 if (db.safeCreateRecord) {throw "Can't overide safeCreateRecord"}
-db.safeCreateRecord = function(table, obj, user, options={}) {
+db.safeCreateRecord = function(table, unsafeObj, user, options={}) {
   
   if (!table) {throw "Missing table for createRecord"}
-    
+
+  let obj = schema.getAllowCreate(table)(user, unsafeObj)
+  if (!obj) {throw "createRecord not allowed for current user"}
+
   let safeTable = db.safe(table, schema.getTableList())
   obj = schema.beforeCreate(table, obj)
 
