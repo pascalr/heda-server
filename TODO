@@ -1,18 +1,17 @@
+Ne pas séparer le titre des recettes. On veut pas séparé avec les «,» des ingrédients
+Aussi, on ne veut pas séparer les parenthèses.
+
 FIXME: SPLITING ON POINTS DOES NOT WORK FOR ABREVIATIONS...
 Maybe add a rule that a dot is only a punctuation if there is a capital letter just after.
 
+Le search du home page devrait afficher seulement les recettes dans la langue choisie. Afficher les recettes traduites.
+
 Build homepage after fixing units...
-
-Mettre la première lettre des traductions en minuscules.
-
 Ajouter un noeud pour les températures.
-
 Valider l'anglais de toutes les recettes sur la page d'acceuil.
 
 Faire des tests pour la database, ça m'aiderait à me décider ce que je veux que le schéma ait l'air...
 Faire des tests pour /update_field, /create_record, ...
-
-Afficher les traductions sur la home page.
 
 Est-ce que je peux utiliser TypeScript ne serait-ce que pour s'assurer que les variables ne sont pas nulls?
 
@@ -22,13 +21,6 @@ Fix recipeOrTranslation(originalRecipe, translatedRecipes, locale)
 Duplicate recipe
 Cliquer sur login quand tu es déjà connecté devrait te redirigé vers ton home.
 Merge RecipeViewers
-Don't use google Translations to convert quantities, use units like before.
-
-L'heure des backups n'est pas la bonne...
-
-Comment gérer les erreurs de traduction???
-Manuellement éditer la recette.
-Ajouter un field validated? aux traductions?
 
 Une application qui tag les images seraient génial. L'utiliser pour tagger mes images automatiquement.
 Ensuite, quand l'utilisateur crée une recette, suggérer des images selon le nom de la recette qui match avec les

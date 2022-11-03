@@ -95,8 +95,7 @@ class Translator {
   }
 
   async translatePart(part) {
-    if (part === '') {return ''}
-    if (part === ' ') {return ' '}
+    if (!part || part === ' ') {return part}
     let startsWithSpace = part.charAt(0) === ' '
     let endsWithSpace = part.slice(-1) === ' '
     let text = part.trim()
@@ -181,8 +180,8 @@ class Translator {
   async translateRecipe(recipe) {
 
     let translated = {original_id: recipe.id}
-    translated.name = await this.translate(recipe.name)
-    translated.servings_name = await this.translate(recipe.servings_name)
+    translated.name = await this.translatePart(recipe.name)
+    translated.servings_name = await this.translatePart(recipe.servings_name)
     if (recipe.json) {
       translated.json = JSON.stringify(await this.translateTiptapContent(JSON.parse(recipe.json)))
     }
