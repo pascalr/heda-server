@@ -54,13 +54,14 @@ export const initHcu = () => {
   //window.hcu.getters = {}
   window.hcu.__state = {}
   window.hcu.setters = {}
-  window.hcu.updateField = (model, field, value, successCallback=null) => {
-    //console.log(`updateField record=${model.table_name} field=${field} from ${model[field]} to ${value}.`)
-    if (value != model[field]) { // update only if value changed
+  window.hcu.updateField = (record, field, value, successCallback=null) => {
+    if (!record.table_name) { throw "Error: hcu.updateField record must have a valid tableName" }
+    //console.log(`updateField record=${record.table_name} field=${field} from ${record[field]} to ${value}.`)
+    if (value != record[field]) { // update only if value changed
 
       let data = {field, value}
-      ajax({url: '/update_field/'+model.table_name+'/'+model.id, type: 'PATCH', data: data, success: () => {
-        window.hcu.changeField(model, field, value, successCallback)
+      ajax({url: '/update_field/'+record.table_name+'/'+record.id, type: 'PATCH', data: data, success: () => {
+        window.hcu.changeField(record, field, value, successCallback)
       }, error: handleError(t('Error_updating')) })
     } else {
       console.log('Skipping updateField, value not modified.')
@@ -68,6 +69,7 @@ export const initHcu = () => {
   }
   // Change record in memory only
   window.hcu.changeOnlyField = (tableName, id, field, value, successCallback=null) => {
+    if (!tableName) { throw "Error: hcu.changeOnlyField must have valid tableName" }
     //console.log(`changeOnlyField record=${tableName} id=${id} field=${field} to ${value}.`)
     let updatedRecord = null
     updateTable(tableName, old => (old.map(r => {
@@ -82,10 +84,12 @@ export const initHcu = () => {
   }
   // Change record in memory only
   window.hcu.changeField = (record, field, value, successCallback=null) => {
+    if (!record.table_name) { throw "Error: hcu.changeField record must have a valid tableName" }
     //console.log(`changeField record=${record.table_name} field=${field} from ${record[field]} to ${value}.`)
     window.hcu.changeOnlyField(record.table_name, record.id, field, value, successCallback)
   }
   window.hcu.createRecord = (tableName, record, successCallback=null) => {
+    if (!tableName) { throw "Error: hcu.createRecord must have valid tableName" }
     //console.log('createRecord('+tableName+')', record)
     let url = '/create_record/'+tableName
     ajax({url: url, type: 'POST', data: {record}, success: (created) => {
@@ -95,11 +99,13 @@ export const initHcu = () => {
   }
   // Add record in memory only
   window.hcu.addRecord = (tableName, record, callback=null) => {
+    if (!tableName) { throw "Error: hcu.addRecord must have valid tableName" }
     //console.log('addRecord('+tableName+')', record)
     updateTable(tableName, old => [...old, {...record, table_name: tableName}])
     if (callback) {callback(record)}
   }
   window.hcu.fetchRecord = (tableName, id, successCallback=null) => {
+    if (!tableName) { throw "Error: hcu.fetchRecord must have valid tableName" }
     let url = '/fetch_record/'+tableName+'/'+id
     ajax({url: url, type: 'GET', success: (fetched) => {
       window.hcu.addRecord(tableName, fetched, successCallback)

@@ -43,7 +43,10 @@ db.safe = function(str, allowed) {
 const mySchema = {
   'meals': {},
   'mixes': {},
-  'translations': {},
+  'translations': {
+    write_attrs: ['translated'],
+    security_key: 'ADMIN_ONLY',
+  },
   'images': {
     write_attrs: ['filename', 'author', 'is_user_author', 'source'],
     attrs_types: {is_user_author: 'bool'},
@@ -134,15 +137,22 @@ function appendConditions(query0, args0, conditions) {
 }
 
 function addSafetyCondition(query0, args0, user, securityKey) {
-  if (!securityKey) {throw "Error in addSafetyCondition: security must exist"}
-  if (!user[securityKey]) {throw "Error in addSafetyCondition: user must have security key"}
-  let query = query0+' AND '+securityKey+' = ?'
-  let args = [...args0, user[securityKey]]
-  return [query, args]
+  if (security_key === 'ADMIN_ONLY') {
+    if (!user.is_admin) {throw "Error not permitted user must be admin"}
+    return [query0, args0]
+  } else {
+    if (!securityKey) {throw "Error in addSafetyCondition: security must exist"}
+    if (!user[securityKey]) {throw "Error in addSafetyCondition: user must have security key"}
+    let query = query0+' AND '+securityKey+' = ?'
+    let args = [...args0, user[securityKey]]
+    return [query, args]
+  }
 }
 
 if (db.safeUpdateField) {throw "Can't overide safeUpdateField"}
 db.safeUpdateField = function(table, id, field, value, user, options={}) {
+
+  if (!table) {throw "Missing table for safeUpdateField"}
 
   let writeAttrs = schema.getWriteAttributes(table)
   if (options.allow_write) {writeAttrs = [...writeAttrs, ...options.allow_write]}
@@ -155,6 +165,8 @@ db.safeUpdateField = function(table, id, field, value, user, options={}) {
 // WARNING: Conditions keys are not safe. Never use user input for conditions keys.
 if (db.destroyRecord) {throw "Can't overide destroyRecord"}
 db.destroyRecord = function(table, id, conditions) {
+  
+  if (!table) {throw "Missing table for destroyRecord"}
 
   const query0 = 'DELETE FROM '+db.safe(table, ALLOWED_TABLES_DESTROY)+' WHERE id = ?'
   const args0 = [id]
@@ -165,6 +177,8 @@ db.destroyRecord = function(table, id, conditions) {
 
 if (db.destroyRecordWithDependants) {throw "Can't overide destroyRecordWithDependants"}
 db.destroyRecordWithDependants = function(table, id, user) {
+  
+  if (!table) {throw "Missing table for destroyRecordWithDependants"}
 
   // First, make sure that the record is allowed to be destroyed by the user
   let q = 'SELECT id FROM ' +db.safe(table, schema.getTableList())+' WHERE id = ?'
@@ -191,6 +205,8 @@ db.destroyRecordWithDependants = function(table, id, user) {
 
 if (db.safeDestroyTableKey) {throw "Can't overide safeDestroyTableKey"}
 db.safeDestroyTableKey = function(table, key, val, user) {
+  
+  if (!table) {throw "Missing table for safeDestroyTableKey"}
 
   const q = 'DELETE FROM '+db.safe(table, schema.getTableList())+' WHERE '+key+' = ?'
   const [query, args] = addSafetyCondition(q, [val], user, schema.getSecurityKey(table))
@@ -199,6 +215,8 @@ db.safeDestroyTableKey = function(table, key, val, user) {
 
 if (db.unsafeDestroyTableKey) {throw "Can't overide unsafeDestroyTableKey"}
 db.unsafeDestroyTableKey = function(table, key, val) {
+  
+  if (!table) {throw "Missing table for unsafeDestroyRecord"}
 
   const q = 'DELETE FROM '+db.safe(table, schema.getTableList())+" WHERE "+key+" = ?"
   return db.prepare(q).run(val)
@@ -206,6 +224,8 @@ db.unsafeDestroyTableKey = function(table, key, val) {
 
 if (db.safeDestroyRecord) {throw "Can't overide safeDestroyRecord"}
 db.safeDestroyRecord = function(table, id, user) {
+  
+  if (!table) {throw "Missing table for safeDestroyRecord"}
 
   let info = db.safeDestroyTableKey(table, 'id', id, user)
   if (info.changes != 1) {throw "Error destroying record from table "+table+" with "+key+" "+id}
@@ -213,6 +233,8 @@ db.safeDestroyRecord = function(table, id, user) {
 
 if (db.createRecord) {throw "Can't overide createRecord"}
 db.createRecord = function(table, obj, options={}) {
+  
+  if (!table) {throw "Missing table for createRecord"}
     
   let safeTable = db.safe(table, schema.getTableList())
   obj = schema.beforeCreate(table, obj)
@@ -247,6 +269,8 @@ db.doBackup = function() {
 }
 
 const fetchStatement = (tableName, conditions, attributes, options) => {
+  
+  if (!tableName) {throw "Missing table for fetch"}
 
   let s = 'SELECT '+['id',...attributes.map(a => '"'+a+'"')].join(', ')+' FROM '+db.safe(tableName, schema.getTableList())
   let a = []
