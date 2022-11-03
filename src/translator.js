@@ -107,6 +107,8 @@ class Translator {
     } else {
       if (startsWithUpperLetter) {
         translated = replaceFirstChar(translated, translated[0].toLocaleUpperCase())
+      } else {
+        translated = replaceFirstChar(translated, translated[0].toLocaleLowerCase())
       }
       return (startsWithSpace ? ' ' : '') + translated + (endsWithSpace ? ' ' : '')
     }

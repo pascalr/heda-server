@@ -17,7 +17,7 @@ export function recipeOrTranslation(originalRecipe, translatedRecipes, locale) {
 
   if (locale != 'fr') { // FIXME: use locale from recipe when added.
     const translatedRecipe = translatedRecipes.find(r => r.original_id == originalRecipe.id)
-    return {...originalRecipe, ...translatedRecipe}
+    return {...originalRecipe, ...omit(translatedRecipe, 'id')}
   }
   return originalRecipe
 }
