@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
 import { TextInput, TextField } from "./form"
-import { Link, useOrFetchRecord } from "./lib"
+import { Link, useOrFetchRecord, getLocale } from "./lib"
 import { MainSearch } from './main_search'
 import { HomeTab } from './app'
 import { t } from "../translate"
@@ -56,8 +56,6 @@ const TranslateRecipePage = ({translations, recipes, locale}) => {
     }
   }, [translations, recipe])
 
-  console.log('translated', translated)
-
   const shown = translated ? {...recipe, ...translated} : null
 
   let cache = {}
@@ -68,8 +66,6 @@ const TranslateRecipePage = ({translations, recipes, locale}) => {
       cache[translation.translated] = translation
     }
   })
-
-  console.log('translationParts', translationParts)
 
   return <>
     <h1>Translate recipe</h1>
@@ -115,7 +111,7 @@ export const Admin = () => {
   
   if (!window.hcu) {initHcu()}
 
-  const [locale, ] = useState(gon.locale)
+  const locale = getLocale()
   const translations = useHcuState(gon.translations, {tableName: 'translations'})
   const recipes = useHcuState([], {tableName: 'recipes'})
 

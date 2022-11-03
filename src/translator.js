@@ -61,9 +61,9 @@ export class TranslationsCacheStrategy {
   }
   translate(normalized) {
     let translated = this.cache[normalized]
-    if (translated) {
-      console.log('Cache found translation from:',normalized,'To:',translated)
-    }
+    //if (translated) {
+    //  console.log('Cache found translation from:',normalized,'To:',translated)
+    //}
     return translated
   }
 }
