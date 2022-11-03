@@ -10,7 +10,6 @@ import { parseIngredientsAndHeaders, serializeIngredientsAndHeaders, prettyPrepo
 import {EditRecipeImageModal} from './modals/recipe_image'
 import {PasteIngredientsButton} from './modals/paste_ingredients'
 import { RecipeMediumImage } from "./image"
-import { RecipeUtils } from "./recipe_utils"
 import { t } from "../translate"
 
 // I do something similar to Tiptap to serialize and deserialize
