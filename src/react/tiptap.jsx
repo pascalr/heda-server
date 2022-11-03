@@ -29,6 +29,7 @@ import { Node, mergeAttributes, nodeInputRule, textblockTypeInputRule } from '@t
 import {ImageButton, HelpButton, StepButton, IngredientButton, AddNoteButton, MeasuringButton, CharButton, BoldButton, ItalicButton, MoreButton, StrikeButton, LinkButton, SubscriptButton, SuperscriptButton} from './buttons'
 
 import { parseIngredientsOldFormat } from "./lib"
+import { prettyPreposition } from "../lib"
 import { HelpTiptapModal } from "./modals/help_tiptap"
 
 // TODO: Check if anything in the data is null, and show a useful error if it is.
@@ -482,15 +483,15 @@ const parseIngredient = (ingredient) => {
     let recipe_ingredients = gon.recipe_ingredients//.filter(e => e.recipe_id == gon.recipe.id)
     ing = Object.values(recipe_ingredients || {}).find(ing => ing.item_nb == ingredient)
     if (ing) {
+      name = ing.name || ing.raw_food
       prettyQty = function() {
         if (!ing.raw) {return ''}
         let quantity = new Quantity({raw: ing.raw})
         if (quantity.nb == null) {return ''}
-        if (quantity.label) {return ing.raw + ' ' + Utils.prettyPreposition(ing.raw_food)}
+        if (quantity.label) {return ing.raw + ' ' + prettyPreposition(ing.raw, name, window.locale)}
         return ing.raw+' '
       }()
       comment = ing.comment
-      name = ing.name || ing.raw_food
     } else {
       console.log('ERROR MISSING INGREDIENT', ingredient)
     }

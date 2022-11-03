@@ -7,7 +7,7 @@ export function needsPreposition(qty) {
 }
 
 export function prettyPreposition(qty, label, locale) {
-  if (locale.toLowerCase() != 'fr') {return ''}
+  if (!locale || locale.toLowerCase() != 'fr') {return ''}
   if (!needsPreposition(qty)) {return ''}
   if (!label) {return ''}
   if (label[0] == 'h' || label[0] == 'H') {
