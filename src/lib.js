@@ -6,6 +6,15 @@ export function needsPreposition(qty) {
   return !!q.label
 }
 
+export function quantityWithPreposition(qty, label, locale) {
+  return qty + ' ' + prettyPreposition(qty, label, locale)
+}
+
+/**
+ * If the locale is french, add a preposition if required.
+ * TODO: Handle d', I don't know if it's working right now with contractionList???
+ * Ugly way to do it anyway using gon. Store the exceptions in a json file somewhere?
+ */
 export function prettyPreposition(qty, label, locale) {
   if (!locale || locale.toLowerCase() != 'fr') {return ''}
   if (!needsPreposition(qty)) {return ''}

@@ -29,7 +29,7 @@ import { Node, mergeAttributes, nodeInputRule, textblockTypeInputRule } from '@t
 import {ImageButton, HelpButton, StepButton, IngredientButton, AddNoteButton, MeasuringButton, CharButton, BoldButton, ItalicButton, MoreButton, StrikeButton, LinkButton, SubscriptButton, SuperscriptButton} from './buttons'
 
 import { parseIngredientsOldFormat } from "./lib"
-import { prettyPreposition } from "../lib"
+import { prettyPreposition, quantityWithPreposition } from "../lib"
 import { HelpTiptapModal } from "./modals/help_tiptap"
 
 // TODO: Check if anything in the data is null, and show a useful error if it is.
@@ -58,7 +58,6 @@ function elementFromJSX(value) {
 
 // MINE
 import Quantity from './models/quantity'
-import { Utils } from "./recipe_utils"
 import { ajax } from "./utils"
 
 const PageComponent = () => {
@@ -467,15 +466,16 @@ const parseIngredient = (ingredient) => {
   let ing = null
   // 200 mL; eau
   if (ingredient.includes(";")) {
+    console.log('here')
     const [qty, foodName] = Quantity.parseQuantityAndFoodName(ingredient)
-    prettyQty = Utils.prettyQuantityFor(qty.raw, foodName)
+    prettyQty = quantityWithPreposition(qty.raw, foodName, window.locale)
     //food = gon.foods.find(food => food.name == foodName)
     name = foodName
   // (200 mL) deprecated, use ;
   } else if (ingredient.startsWith("(")) { // old version
     const raw = ingredient.slice(1,-1)
     const [qty, foodName] = Quantity.parseQuantityAndFoodName(raw)
-    prettyQty = Utils.prettyQuantityFor(qty.raw, foodName)
+    prettyQty = quantityWithPreposition(qty.raw, foodName, window.locale)
     //food = gon.foods.find(food => food.name == foodName)
     name = foodName
     // 1 => ingredient nb 1

@@ -77,7 +77,7 @@ function testQuantity() {
 }
   
 header('Testing prettyPreposition')
-assertEquals(null, Utils.prettyPreposition(null))
+assertEquals('', Utils.prettyPreposition(null))
 assertEquals('', Utils.prettyPreposition(''))
 assertEquals("d'", Utils.prettyPreposition('huile'))
 assertEquals("de", Utils.prettyPreposition('sucre'))

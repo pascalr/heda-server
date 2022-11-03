@@ -28,7 +28,6 @@ export const RecipeViewer = ({recipe, images, user, locale}) => {
             </h3>
           } else {
             const ing = ingOrHeader
-            //let prettyQty = Utils.prettyQuantityFor(ing.qty, ing.label)
             let preposition = prettyPreposition(ing.qty, ing.label, locale)
             return <li key={ing.key} className="list-group-item">
               <span>{ing.qty} {preposition}<span className="food-name">{ing.label}</span></span>

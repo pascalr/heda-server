@@ -4,8 +4,7 @@ import ReactDOM from 'react-dom'
 import { ajax, changeUrl } from "./utils"
 import { RecipeTiptap, BubbleTiptap } from './tiptap'
 import { Link } from "./lib"
-import { parseIngredientsAndHeaders } from "../lib"
-import { Utils } from "./recipe_utils"
+import { parseIngredientsAndHeaders, quantityWithPreposition, prettyPreposition } from "../lib"
 import { RecipeMediumImage } from "./image"
 import { EditTagsModal } from './modals/edit_tags'
 import { removeRecipe, AddToListMenu } from './recipe_index'
@@ -25,7 +24,7 @@ const MixIngredients = ({mix}) => {
         let i = args[2].indexOf('-')
         let machineFoodId = i ? args[2].substr(0, i) : null
         let machineFoodName = i ? args[2].substr(i+1) : args[2]
-        let prettyQty = Utils.prettyQuantityFor(qty, machineFoodName)
+        let prettyQty = quantityWithPreposition(qty, machineFoodName, window.locale)
         return <li key={n} className="list-group-item">
           <span>{prettyQty} <span className="food-name">{machineFoodName}</span></span>
         </li>
@@ -65,8 +64,7 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
             </h3>
           } else {
             const ing = ingOrHeader
-            //let prettyQty = Utils.prettyQuantityFor(ing.qty, ing.label)
-            let preposition = Utils.needsPreposition(ing.qty) ? Utils.prettyPreposition(ing.label) : ''
+            let preposition = prettyPreposition(ing.qty, ing.label, window.locale)
             return <li key={ing.key} className="list-group-item">
               <span>{ing.qty} {preposition}<span className="food-name">{ing.label}</span></span>
               <div className="dropdown d-inline-block float-end">
