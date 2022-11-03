@@ -46,11 +46,19 @@ const mySchema = {
   'translations': {
     write_attrs: ['from', 'original', 'to', 'translated'],
     security_key: 'ADMIN_ONLY',
+    allow_create(user, obj) {
+      if (!user.is_admin) {return null}
+      return obj
+    },
   },
   'images': {
     write_attrs: ['filename', 'author', 'is_user_author', 'source'],
     attrs_types: {is_user_author: 'bool'},
     security_key: 'user_id',
+    allow_create(user, obj) {
+      obj.user_id = user.user_id
+      return obj
+    },
   },
   'recipe_comments': {},
   'recipe_notes': {},
@@ -79,24 +87,44 @@ const mySchema = {
       //const recipeKind = findRecipeKindForRecipeName(recipe.name, recipeKinds)
       //if (recipeKind) {recipe.recipe_kind_id = recipeKind.id}
       return recipe
-    }
+    },
+    allow_create(user, obj) {
+      obj.user_id = user.user_id
+      return obj
+    },
   },
   'users': {
     write_attrs: ['name', 'gender', 'image_slug', 'locale', 'is_public'],
     attrs_types: {is_public: 'bool'},
-    security_key: 'account_id'
+    security_key: 'account_id',
+    allow_create(user, obj) {
+      obj.account_id = user.account_id
+      return obj
+    },
   },
   'favorite_recipes': {
     write_attrs: ['list_id', 'recipe_id'],
-    security_key: 'user_id'
+    security_key: 'user_id',
+    allow_create(user, obj) {
+      obj.user_id = user.user_id
+      return obj
+    },
   },
   'tags': {
     write_attrs: ['name', 'image_slug', 'position'],
-    security_key: 'user_id'
+    security_key: 'user_id',
+    allow_create(user, obj) {
+      obj.user_id = user.user_id
+      return obj
+    },
   },
   'suggestions': {
     write_attrs: ['tag_id', 'recipe_id'],
-    security_key: 'user_id'
+    security_key: 'user_id',
+    allow_create(user, obj) {
+      obj.user_id = user.user_id
+      return obj
+    },
   }
 }
 // FIXME: The real schema is mySchema.
@@ -229,6 +257,26 @@ db.safeDestroyRecord = function(table, id, user) {
 
   let info = db.safeDestroyTableKey(table, 'id', id, user)
   if (info.changes != 1) {throw "Error destroying record from table "+table+" with "+key+" "+id}
+}
+
+if (db.safeCreateRecord) {throw "Can't overide safeCreateRecord"}
+db.safeCreateRecord = function(table, obj, user, options={}) {
+  
+  if (!table) {throw "Missing table for createRecord"}
+    
+  let safeTable = db.safe(table, schema.getTableList())
+  obj = schema.beforeCreate(table, obj)
+
+  let fields = Object.keys(obj)
+  let columns = schema.getWriteAttributes(table) || []
+  if (options.allow_write) {columns = [...columns, ...options.allow_write]}
+  let query = 'INSERT INTO '+safeTable+' (created_at,updated_at,'+fields.map(f => db.safe(f, columns)).join(',')+') '
+  query += 'VALUES (?,?,'+fields.map(f=>'?').join(',')+')'
+  let args = [utils.now(), utils.now(), ...fields.map(f => schema.validAttr(table, f, obj[f]))]
+  
+  let info = db.prepare(query).run(...args)
+  if (info.changes != 1) {throw "Error creating record from in "+table+"."}
+  return {...obj, id: info.lastInsertRowid}
 }
 
 if (db.createRecord) {throw "Can't overide createRecord"}

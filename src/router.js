@@ -82,8 +82,7 @@ router.post('/upload_image', function(req, res, next) {
     let lastId = db.prepare('SELECT MAX(id) from images').get()['MAX(id)']
     let slug = `${lastId+1}.${ext}`
     let image = {filename: file.name, slug}
-    image.user_id = req.user.user_id
-    image = db.createRecord('images', image, {allow_write: ['slug', 'user_id']})
+    image = db.safeCreateRecord('images', image, req.user, {allow_write: ['slug', 'user_id']})
     if (image.id != lastId +1) {throw "Database invalid state for images."}
     db.safeUpdateField(record_table, record_id, record_field, slug, req.user)
 
@@ -308,8 +307,7 @@ router.get('/imgs/:variant/:slug', function(req, res, next) {
 router.post('/create_record/:table', function(req, res, next) {
  
   let o = req.body.record
-  o.user_id = req.user.user_id
-  let record = db.createRecord(req.params.table, o, {allow_write: ['user_id']})
+  let record = db.safeCreateRecord(req.params.table, o, req.user, {allow_write: ['user_id']})
   res.json({...record})
 })
 
