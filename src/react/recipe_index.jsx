@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 
-import { ajax, isBlank, normalizeSearchText } from "./utils"
+import { ajax, normalizeSearchText } from "./utils"
 import { EditTagsModal } from './modals/edit_tags'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import { Link } from "./lib"

@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom'
 
 import { MainSearch } from './main_search'
 import { RecipeThumbnailImage } from "./image"
-import { isBlank, normalizeSearchText, join, capitalize } from "./utils"
+import { normalizeSearchText, join, capitalize } from "./utils"
 import { image_slug_variant_path } from "./routes"
 import { t } from "../translate"
 import { localeHref, getUrlParams } from "../utils"

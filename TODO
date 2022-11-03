@@ -1,4 +1,11 @@
+CHECKOUT test_all!!!
+
+Just translate units...
+
 Valider l'anglais de toutes les recettes sur la page d'acceuil.
+
+Faire des tests pour la database, ça m'aiderait à me décider ce que je veux que le schéma ait l'air...
+Faire des tests pour /update_field, /create_record, ...
 
 Afficher les traductions sur la home page.
 

@@ -156,6 +156,13 @@ export function getUrlParams(url=null) {
   return queryToParams(s[1])
 }
 
+/**
+ * Whether the given variable is falsy (false, '', null, undefined) or is empty ([]).
+ */
+export function isBlank(array) {
+  return !array || array.length == 0
+}
+
 const utils = {padStr, now, sortBy, ensureIsArray, getUrlParams};
 export default utils;
 //module.exports = utils;

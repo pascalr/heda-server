@@ -1,9 +1,9 @@
-import {foo} from './nodejs_dependencies'
+import {isBlank} from '../src/utils.js'
+import Quantity from '../src/react/models/quantity.js'
+import { Utils } from "../src/react/recipe_utils.js"
+//import Ingredient from "./ingredient.js"
 
-import {isBlank} from './utils'
-import Quantity from './models/quantity'
-import { Utils } from "./recipe_utils"
-import Ingredient from "./ingredient"
+global.gon = {} // FIXME: Remove this horrible shit
 
 //# Ansi color code variables
 //red="\e[0;91m"
@@ -40,26 +40,24 @@ assertEquals(true, isBlank(undefined))
 assertEquals(false, isBlank([1]))
 assertEquals(false, isBlank("1"))
 
-
-
-function testIngredient() {
-  header('Testing testIngredient')
-  
-  let test = (str, expected) => {
-    let ing = new Ingredient({raw: str})
-    assertEquals(expected[0], ing.rawQty)
-    assertEquals(expected[1], ing.foodName)
-  }
-
-  test("1/2 t; huile", ["1/2 t", "huile"])
-  test("1/2 t d'huile", ["1/2 t", "huile"])
-  test("250 mL de lait", ["250 mL", "lait"])
-  test("4 bananes", ["4", "bananes"])
-    
-  let ing = new Ingredient({raw: "1/2 t d'huile"})
-  assertEquals(0.5, ing.getQuantity().nb)
-  assertEquals("t", ing.getQuantity().label)
-}
+//function testIngredient() {
+//  header('Testing testIngredient')
+//  
+//  let test = (str, expected) => {
+//    let ing = new Ingredient({raw: str})
+//    assertEquals(expected[0], ing.rawQty)
+//    assertEquals(expected[1], ing.foodName)
+//  }
+//
+//  test("1/2 t; huile", ["1/2 t", "huile"])
+//  test("1/2 t d'huile", ["1/2 t", "huile"])
+//  test("250 mL de lait", ["250 mL", "lait"])
+//  test("4 bananes", ["4", "bananes"])
+//    
+//  let ing = new Ingredient({raw: "1/2 t d'huile"})
+//  assertEquals(0.5, ing.getQuantity().nb)
+//  assertEquals("t", ing.getQuantity().label)
+//}
 
 function testQuantity() {
   header('Testing testQuantity')
@@ -103,4 +101,4 @@ function testPrintRecipeIngredient() {
 
 testPrintRecipeIngredient()
 testQuantity()
-testIngredient()
+//testIngredient()
