@@ -1,5 +1,4 @@
 import React from 'react'
-import { Utils } from "./recipe_utils"
 
 export const ImageButton = ({editor, width, height}) => (
   <button style={{padding: "0 1em"}}>
@@ -51,8 +50,7 @@ export const IngredientButton = ({editor, width, height, ingredients}) => (
     </button>
     <ul className="dropdown-menu" aria-labelledby="ingDropdown">
       {Object.values(ingredients || {}).map(ing => {
-        let text = Utils.prettyQuantityFor(ing.qty, ing.label)+ing.label
-        return <li key={ing.key}><a className="dropdown-item" style={{cursor: 'pointer'}} onClick={() => editor.chain().focus().insertIngredient(ing.item_nb).run()}>{text}<span style={{color: "#0d6efd"}}>{ing.name}</span></a></li>
+        return <li key={ing.key}><a className="dropdown-item" style={{cursor: 'pointer'}} onClick={() => editor.chain().focus().insertIngredient(ing.item_nb).run()}>{ing.qty} {ing.label}<span style={{color: "#0d6efd"}}>{ing.name}</span></a></li>
       })}
     </ul>
   </span>
