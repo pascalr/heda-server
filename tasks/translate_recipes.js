@@ -12,8 +12,8 @@ let toLocale = 'en' // French
 const translations = db.fetchTable('translations', {}, ['from', 'to', 'original', 'translated'])
 
 let attrs = ['name', 'json', 'servings_name', 'ingredients']
-const recipes = db.fetchTable('recipes', {}, attrs)
-//const recipes = db.fetchTable('recipes', {}, attrs, {limit: 10})
+//const recipes = db.fetchTable('recipes', {}, attrs)
+const recipes = db.fetchTable('recipes', {}, attrs, {limit: 3})
 const translatedRecipes = db.fetchTable('translated_recipes', {}, ['original_id'])
 
 // TODO: translate recipes by languages. If the recipe is english, translate from english to french...

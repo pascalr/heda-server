@@ -20,7 +20,7 @@ export class LogStrategy {
   constructor(msg) {
     this.msg = msg
   }
-  async translate(normalized) {
+  translate(normalized) {
     console.log(this.msg, normalized)
     return null
   }
@@ -39,7 +39,7 @@ export class TranslationsCacheStrategy {
       }
     })
   }
-  async translate(normalized) {
+  translate(normalized) {
     let translated = this.cache[normalized]
     if (translated) {
       console.log('Cache found translation from:',normalized,'To:',translated)
@@ -50,6 +50,8 @@ export class TranslationsCacheStrategy {
 
 class Translator {
   // TODO: Caching should actually be another strategy
+  // I thin Strategy is the wrong pattern name, because it's not a single one.
+  // But I don't know the proper pattern name.
   constructor(...strategies) {
     this.strategies = strategies
     this.translate = this.translate.bind(this)
@@ -68,19 +70,12 @@ class Translator {
     let text = part.trim()
     let normalized = replaceFirstChar(text, text[0].toLocaleLowerCase())
     let startsWithUpperLetter = text !== normalized
-    //let translated = null
-    // FIXME: Will this call other strategies even when not needed???
-    let translated = await this.strategies.reduce(async (result, strategy) => {
-      if (result) {return result}
-      return await strategy.translate(normalized)
-    }, null)
-    //for (let i = 0; i < this.strategies.length; i++) {
-    //for (let i = 0; i < this.strategies.length; i++) {
-    //  let strategy = this.strategies[i]
-    //  let translated = await strategy.translate(normalized)
-    //  console.log('translated', translated)
-    //  if (translated) {break}
-    //}
+    let translated = null
+    for (let i = 0; i < this.strategies.length; i++) {
+      if (translated) {return}
+      let strategy = this.strategies[i]
+      translated = await strategy.translate(normalized)
+    }
     if (!translated) {
       console.log('Missing translation:',normalized,'Was:',translated)
       return ''
