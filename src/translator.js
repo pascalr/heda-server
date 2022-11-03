@@ -50,7 +50,7 @@ export class TranslationsCacheStrategy {
 
 class Translator {
   // TODO: Caching should actually be another strategy
-  // I thin Strategy is the wrong pattern name, because it's not a single one.
+  // I think Strategy is the wrong pattern name, because it's not a single one.
   // But I don't know the proper pattern name.
   constructor(...strategies) {
     this.strategies = strategies
@@ -60,6 +60,17 @@ class Translator {
     this.translateTiptapContent = this.translateTiptapContent.bind(this)
     this.translateKeepPunctuation = this.translateKeepPunctuation.bind(this)
     this.translateIngredientsAndHeaders = this.translateIngredientsAndHeaders.bind(this)
+    this.translateWithStrategies = this.translateWithStrategies.bind(this)
+  }
+  
+  async translateWithStrategies(normalized) {
+    let translated = null
+    for (let i = 0; i < this.strategies.length; i++) {
+      if (translated) {console.log('HERE???'); return translated}
+      let strategy = this.strategies[i]
+      translated = await strategy.translate(normalized)
+      if (translated) {return translated}
+    }
   }
 
   async translatePart(part) {
@@ -70,14 +81,8 @@ class Translator {
     let text = part.trim()
     let normalized = replaceFirstChar(text, text[0].toLocaleLowerCase())
     let startsWithUpperLetter = text !== normalized
-    let translated = null
-    for (let i = 0; i < this.strategies.length; i++) {
-      if (translated) {return}
-      let strategy = this.strategies[i]
-      translated = await strategy.translate(normalized)
-    }
+    let translated = await this.translateWithStrategies(normalized)
     if (!translated) {
-      console.log('Missing translation:',normalized,'Was:',translated)
       return ''
     } else {
       if (startsWithUpperLetter) {

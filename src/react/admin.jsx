@@ -11,7 +11,7 @@ import { useRouter } from "./router"
 import { initHcu, useHcuState, handleError } from '../hcu'
 import { RecipeViewer } from "./show_recipe"
 import { ajax } from "./utils"
-import Translator from "../translator"
+import Translator, { TranslationsCacheStrategy, LogStrategy } from '../translator'
 
 const AdminTabs = ({machines}) => {
   return <>
@@ -45,10 +45,8 @@ const TranslateRecipePage = ({translations, recipes, locale}) => {
     if (recipe) {
       let from = 1 // French FIXME
       let to = 4 // English FIXME
-      let translator = new Translator(translations, from, to, normalized => {
-        console.log('TRANSLATOR CALLED FOR:', normalized)
-        //googleTranslate(normalized)
-      })
+      let cache = new TranslationsCacheStrategy(translations, from, to)
+      let translator = new Translator(new LogStrategy("About to translate:"), cache, new LogStrategy("MISSING TRANSLATION:"))
       translator.translateRecipe(recipe).then(translated => {
         console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
         console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')

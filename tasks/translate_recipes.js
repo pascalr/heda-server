@@ -19,8 +19,8 @@ const translatedRecipes = db.fetchTable('translated_recipes', {}, ['original_id'
 // TODO: translate recipes by languages. If the recipe is english, translate from english to french...
 recipes.forEach(async recipe => {
 
-  let strat = new TranslationsCacheStrategy(translations, from, to)
-  let translator = new Translator(new LogStrategy("About to translate:"), strat, new LogStrategy("MISSING TRANSLATION:"))
+  let cache = new TranslationsCacheStrategy(translations, from, to)
+  let translator = new Translator(new LogStrategy("About to translate:"), cache, new LogStrategy("MISSING TRANSLATION:"))
 
   console.log('*** RECIPE '+recipe.id+' ***')
   let translated = await translator.translateRecipe(recipe)
