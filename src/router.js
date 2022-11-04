@@ -538,8 +538,9 @@ router.post('/backup_db', ensureAdmin, function(req, res, next) {
 })
 router.post('/translate_recipes', ensureAdmin, function(req, res, next) {
   db.doBackup()
-  translateRecipes()
-  res.send('Database backup successful.')
+  translateRecipes().then(missings => {
+    res.json({missings})
+  })
 })
 
 function handleError(err, req, res, next) {

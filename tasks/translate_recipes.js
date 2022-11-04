@@ -1,7 +1,7 @@
 // node -r dotenv/config tasks/translate_recipes.js
 
 import db from '../src/db.js';
-import Translator, { TranslationsCacheStrategy, LogStrategy } from '../src/translator.js';
+import Translator, { StoreStrategy, TranslationsCacheStrategy, LogStrategy } from '../src/translator.js';
 
 // TODO: Don't hardcode this. Check what language the source is.
 let from = 1 // French
@@ -9,7 +9,7 @@ let to = 4 // English
 let fromLocale = 'fr' // French
 let toLocale = 'en' // French
 
-export const translateRecipes = () => {
+export async function translateRecipes() {
 
   const translations = db.fetchTable('translations', {}, ['from', 'to', 'original', 'translated'])
   
@@ -19,10 +19,13 @@ export const translateRecipes = () => {
   const translatedRecipes = db.fetchTable('translated_recipes', {}, ['original_id', 'name', 'servings_name', 'ingredients', 'json'])
   
   // TODO: translate recipes by languages. If the recipe is english, translate from english to french...
-  recipes.forEach(async recipe => {
+  let store = new StoreStrategy()
+  let logMissing = new LogStrategy("\x1b[0;91mMISSING TRANSLATION\x1b[0m:")
+  let cache = new TranslationsCacheStrategy(translations, from, to)
+
+  await Promise.all(recipes.map(async recipe => {
   
-    let cache = new TranslationsCacheStrategy(translations, from, to)
-    let translator = new Translator(cache, new LogStrategy("\x1b[0;91mMISSING TRANSLATION\x1b[0m:"))
+    let translator = new Translator(cache, store, logMissing)
   
     console.log('*** RECIPE '+recipe.id+' ***')
     let translated = await translator.translateRecipe(recipe)
@@ -48,7 +51,7 @@ export const translateRecipes = () => {
       db.safeCreateRecord('translated_recipes', translated, {original_id: recipe.id}, {allow_write: ['original_id', 'name', 'servings_name', 'ingredients', 'json']})
     }
     
-  })
+  }))
   
   //console.log('Missing count:', missing.length)
   //let uniq = [...new Set(missing)]
@@ -57,4 +60,7 @@ export const translateRecipes = () => {
   //  return sum + str.length
   //}, 0))
   
+  console.log('**************', store.all())
+ 
+  return store.unique()
 }

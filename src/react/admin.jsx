@@ -27,23 +27,49 @@ const AdminTabs = ({machines}) => {
 
 const AdminPage = () => {
 
+  const [missings, setMissings] = useState(null)
+
   const backupDb = () => {
     ajax({url: '/backup_db', type: 'POST', success: () => {
       toastr.info("Database backup up successfully.")
     }, error: handleError("Error backing up database.") })
   }
   const translateRecipes = () => {
-    ajax({url: '/translate_recipes', type: 'POST', success: () => {
+    ajax({url: '/translate_recipes', type: 'POST', success: ({missings}) => {
       toastr.info("Translate recipes successfull.")
+      console.log('missings', missings)
+      setMissings(missings)
     }, error: handleError("Error translating recipes.") })
   }
+ 
+  // FIXME: Put translations stuff in another tab...
+  let from = 1 // French FIXME
+  let to = 4 // English FIXME
 
   return <>
     <div className="trunk">
       <h1>Dashboard</h1>
-      <h2>Manual commands</h2>
+      <br/><br/><h2>Manual commands</h2>
       <button className="btn btn-primary mx-2" type="button" onClick={backupDb}>Backup database</button>
       <button className="btn btn-primary mx-2" type="button" onClick={translateRecipes}>Translate recipes</button>
+      <br/><br/><br/><h2>Output</h2>
+      {missings ? <>
+        <h3>Missing translations</h3>
+        <hr/>
+        {missings.map(missing => {
+          return <div key={missing}>
+            <div className='d-flex justify-content-between'>
+              <div style={{width: '49%'}}>
+                {missing}
+              </div>
+              <div style={{width: '49%'}}>
+                <TextInput onBlur={(value) => {window.hcu.createRecord('translations', {from: from, to: to, original: missing, translated: value})}} style={{width: '100%'}} />
+              </div>
+            </div>
+            <hr/>
+          </div>
+        })}
+      </> : ''}
     </div>
   </>
 }
