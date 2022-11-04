@@ -103,7 +103,7 @@ class Translator {
     let startsWithUpperLetter = text !== normalized
     let translated = await this.translateWithStrategies(normalized)
     if (!translated) {
-      return ''
+      return part
     } else {
       if (startsWithUpperLetter) {
         translated = replaceFirstChar(translated, translated[0].toLocaleUpperCase())

@@ -32,12 +32,18 @@ const AdminPage = () => {
       toastr.info("Database backup up successfully.")
     }, error: handleError("Error backing up database.") })
   }
+  const translateRecipes = () => {
+    ajax({url: '/translate_recipes', type: 'POST', success: () => {
+      toastr.info("Translate recipes successfull.")
+    }, error: handleError("Error translating recipes.") })
+  }
 
   return <>
     <div className="trunk">
       <h1>Dashboard</h1>
       <h2>Manual commands</h2>
-      <button className="btn btn-primary" type="button" onClick={backupDb}>Backup database</button>
+      <button className="btn btn-primary mx-2" type="button" onClick={backupDb}>Backup database</button>
+      <button className="btn btn-primary mx-2" type="button" onClick={translateRecipes}>Translate recipes</button>
     </div>
   </>
 }

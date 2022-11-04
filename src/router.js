@@ -10,6 +10,7 @@ import gon, {initGon, fetchTableMiddleware, RECIPE_ATTRS} from './gon.js';
 import passport from './passport.js';
 import { localeHref, now, ensureIsArray } from './utils.js';
 import { tr } from './translate.js'
+import { translateRecipes } from '../tasks/translate_recipes.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -531,9 +532,13 @@ router.get('/admin/:page', ensureAdmin, function(req, res, next) {
   }
   res.render('admin')
 })
-
 router.post('/backup_db', ensureAdmin, function(req, res, next) {
   db.doBackup()
+  res.send('Database backup successful.')
+})
+router.post('/translate_recipes', ensureAdmin, function(req, res, next) {
+  db.doBackup()
+  translateRecipes()
   res.send('Database backup successful.')
 })
 
