@@ -17,6 +17,7 @@ const AdminTabs = ({machines}) => {
   return <>
     <ul className="nav nav-tabs mb-3">
       <HomeTab {...{title: t('Admin'), path: '/admin'}} />
+      <HomeTab {...{title: t('SQL'), path: '/admin/sql'}} />
       <HomeTab {...{title: t('Translations'), path: '/admin/translations'}} />
       <HomeTab {...{title: t('Translate Recipe'), path: '/admin/translate_recipe'}} />
     </ul>
@@ -25,6 +26,24 @@ const AdminTabs = ({machines}) => {
 
 const AdminPage = () => <h1>Admin page</h1>
 const TranslationsPage = () => <h1>Translations page</h1>
+
+const SQLPage = () => {
+  return <>
+    <div className='trunk'>
+      <h1>SQL page</h1>
+      <textarea style={{width: '100%', height: '20em'}} />
+      <button className="btn btn-primary">Execute</button>
+      <br/><br/><br/>
+      <h6>Exemples:</h6>
+      <ul>
+        <li>DELETE FROM table_name WHERE id = 0;</li>
+        <li>SELECT * FROM table_name WHERE id = 0;</li>
+        <li>UPDATE table_name SET name = foo, value = bar, updated_at = ? WHERE id = 0;</li>
+        <li>INSERT INTO table_name (created_at, updated_at, name, value) VALUES (?, ?, 'foo', 'bar');</li>
+      </ul>
+    </div>
+  </>
+}
 
 const TranslateRecipePage = ({translations, recipes, locale}) => {
   const [recipeId, setRecipeId] = useState(null)
@@ -117,6 +136,7 @@ export const Admin = () => {
 
   const routes = [
     {match: "/admin/translations", elem: () => <TranslationsPage />},
+    {match: "/admin/sql", elem: () => <SQLPage />},
     {match: "/admin/translate_recipe", elem: () => <TranslateRecipePage {...{recipes, locale, translations}} />},
     {match: "/admin", elem: () => <AdminPage />},
   ]
