@@ -553,10 +553,10 @@ router.post('/translate_recipe/:id', ensureAdmin, function(req, res, next) {
   let translator = new Translator(cache)
   translator.translateRecipe(recipe).then(translated => {
     let newRecipe = {...recipe, ...translated}
-    delete newRecipe.id; delete newRecipe.original_id;
-    newRecipe = db.safeCreateRecord('recipes', newRecipe, req.user, {allow_write: ['user_id']})
+    delete newRecipe.id;
+    newRecipe = db.safeCreateRecord('recipes', newRecipe, req.user, {allow_write: ['user_id', 'original_id']})
     res.json(newRecipe)
-    //newRecipe = db.safeCreateRecord('recipes', newRecipe, req.user)
+    //newRecipe = db.safeCreateRecord('recipes', newRecipe, req.user, {allow_write: ['original_id']})
   })
   //db.doBackup()
   //translateRecipes().then(missings => {
