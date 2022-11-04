@@ -13,6 +13,7 @@ export function getLocale(val) {
   return (document.querySelector('[name="locale"]')||{}).content
 }
 
+// DEPRECATED since I changed the way translation are done?
 export function recipeOrTranslation(originalRecipe, translatedRecipes, locale) {
 
   if (locale != 'fr') { // FIXME: use locale from recipe when added.

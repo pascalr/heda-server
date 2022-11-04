@@ -118,14 +118,6 @@ const TranslateRecipePage = ({translations, recipes, locale}) => {
   const [translationParts, setTranslationParts] = useState(null)
 
   const recipe = useOrFetchRecord('recipes', recipes, recipeId)
-
-  //useEffect(() => {
-  //  if (recipeId && (!translated || translated.original_id != recipeId)) {
-  //    ajax({url: '/fetch_recipe_translation/'+recipeId, type: 'GET', success: (fetched) => {
-  //      setTranslated(fetched)
-  //    }, error: handleError(t('Error_fetching')) })
-  //  }
-  //}, [recipeId])
       
   let from = 1 // French FIXME
   let to = 4 // English FIXME

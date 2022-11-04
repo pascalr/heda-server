@@ -370,13 +370,6 @@ router.get('/fetch_record/:table/:id', function(req, res, next) {
     throw new Error("FetchRecord not allowed")
   }
 });
-// TODO: Specify from language and to language
-router.get('/fetch_recipe_translation/:recipeId', function(req, res, next) {
-
-  let attrs = ['name', 'servings_name', 'json', 'ingredients']
-  const record = db.fetchRecord('translated_recipes', {original_id: req.params.recipeId}, attrs)
-  res.json({...record})
-});
 
 // TODO: Do all the modifications inside a single transaction, and rollback if there is an error.
 router.patch('/batch_modify', function(req, res, next) {
@@ -497,19 +490,20 @@ router.get('/', function(req, res, next) {
   res.locals.disablePreview = req.query.disablePreview
   if (!req.user) {
     // Use this to generate gon, but then use JSON.stringify(gon) and copy paste directly inside home.jsx
-    let idEN = 773
-    let idsEN1 = [771, 772, 774, 775, 776, 777, 778, 779]
-    let idsEN2 = [780, 781, 782, 783]
-    let ids1 = [113, 129, 669, 88, 323, 670, 672, 689]
-    let ids2 = [755, 757, 66, 558]
+    let id; let ids1; let ids2;
+    if (res.locals.locale != 'fr') {
+      id = 773
+      ids1 = [771, 772, 774, 775, 776, 777, 778, 779]
+      ids2 = [780, 781, 782, 783]
+    } else {
+      id = 83
+      ids1 = [113, 129, 669, 88, 323, 670, 672, 689]
+      ids2 = [755, 757, 66, 558]
+    }
     res.locals.gon = {
       recipes1: db.fetchTable('recipes', {id: ids1}, ['name', 'image_slug']),
       recipes2: db.fetchTable('recipes', {id: ids2}, ['name', 'image_slug']),
-      recipe: db.fetchRecord('recipes', {id: 82}, RECIPE_ATTRS),
-    }
-    if (res.locals.locale != 'fr') {
-      let attrs = ['name', 'servings_name', 'original_id', 'ingredients', 'json']
-      res.locals.gon.translated_recipes = db.fetchTable('translated_recipes', {original_id: [...ids1, ...ids2, 82]}, attrs)
+      recipe: db.fetchRecord('recipes', {id}, RECIPE_ATTRS),
     }
     return res.render('home');
   }
