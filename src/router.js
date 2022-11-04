@@ -40,11 +40,6 @@ router.get('/search', function(req, res, next) {
   let tokens = query.replace(' ', '%')
 
   // TODO: Create another field for recipes called name_search, where it is in lowercase and where there are no accents
-  console.log('**********************')
-  console.log('**********************')
-  console.log('res.locals.locale', res.locals.locale)
-  console.log('**********************')
-  console.log('**********************')
   let recipes = db.prepare("SELECT recipes.id, recipes.name, recipes.image_slug, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.locale = ? AND users.is_public = 1 AND recipes.name LIKE '%"+tokens+"%' COLLATE NOCASE LIMIT 30;").all(res.locals.locale)
 
   let users = db.prepare("SELECT id, name, image_slug FROM users WHERE is_public = 1 AND name LIKE '%"+tokens+"%' COLLATE NOCASE LIMIT 30;").all()
