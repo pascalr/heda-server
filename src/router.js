@@ -11,6 +11,7 @@ import passport from './passport.js';
 import { localeHref, now, ensureIsArray } from './utils.js';
 import { tr } from './translate.js'
 import { translateRecipes } from '../tasks/translate_recipes.js'
+import Translator, { TranslationsCacheStrategy, LogStrategy } from './translator.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -542,6 +543,26 @@ router.post('/translate_recipes', ensureAdmin, function(req, res, next) {
     res.json({missings})
   })
 })
+router.post('/translate_recipe/:id', ensureAdmin, function(req, res, next) {
+
+  let recipe = db.fetchRecord('recipes', {id: req.params.id}, RECIPE_ATTRS)
+  let from = 1 // French FIXME
+  let to = 4 // English FIXME
+  let translations = db.fetchTable('translations', {}, ['from', 'to', 'original', 'translated'])
+  let cache = new TranslationsCacheStrategy(translations, from, to)
+  let translator = new Translator(cache)
+  translator.translateRecipe(recipe).then(translated => {
+    let newRecipe = {...recipe, ...translated}
+    delete newRecipe.id; delete newRecipe.original_id;
+    newRecipe = db.safeCreateRecord('recipes', newRecipe, req.user, {allow_write: ['user_id']})
+    res.json(newRecipe)
+    //newRecipe = db.safeCreateRecord('recipes', newRecipe, req.user)
+  })
+  //db.doBackup()
+  //translateRecipes().then(missings => {
+  //  res.json({missings})
+  //})
+});
 
 function handleError(err, req, res, next) {
   if (err) { return next(err); }

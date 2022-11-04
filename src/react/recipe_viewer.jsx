@@ -126,6 +126,7 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
   const translateRecipe = () => {
     ajax({url: '/translate_recipe/'+recipe.id, type: 'POST', success: (translated) => {
       window.hcu.addRecord('recipes', translated)
+      changeUrl('/e/'+translated.id)
     }, error: handleError(t('Error_creating'))})
   }
   
