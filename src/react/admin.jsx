@@ -41,7 +41,26 @@ const AdminPage = () => {
     </div>
   </>
 }
-const TranslationsPage = () => <h1>Translations page</h1>
+const TranslationsPage = ({translations}) => {
+  return <>
+    <h1>Translations page</h1>
+    <div className='warning'>TODO: SCOPE BY LANGUAGE</div>
+    <hr/>
+    {(translations||[]).map(translation => {
+      return <div key={translation.id}>
+        <div className='d-flex justify-content-between'>
+          <div style={{width: '49%'}}>
+            <TextField model={translation} field='original' style={{width: '100%'}} />
+          </div>
+          <div style={{width: '49%'}}>
+            <TextField model={translation} field='translated' style={{width: '100%'}} />
+          </div>
+        </div>
+        <hr/>
+      </div>
+    })}
+  </>
+}
 
 const SQLPage = () => {
   return <>
@@ -151,7 +170,7 @@ export const Admin = () => {
   const recipes = useHcuState([], {tableName: 'recipes'})
 
   const routes = [
-    {match: "/admin/translations", elem: () => <TranslationsPage />},
+    {match: "/admin/translations", elem: () => <TranslationsPage {...{translations}} />},
     {match: "/admin/sql", elem: () => <SQLPage />},
     {match: "/admin/translate_recipe", elem: () => <TranslateRecipePage {...{recipes, locale, translations}} />},
     {match: "/admin", elem: () => <AdminPage />},

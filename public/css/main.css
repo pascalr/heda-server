@@ -149,3 +149,10 @@ input[type="checkbox"] {
   border-radius: 5px;
   padding: 5px;
 }
+
+.warning {
+  background-color: #fff49c;
+  border: 2px solid #eaca22;
+  border-radius: 5px;
+  padding: 5px;
+}
