@@ -1,10 +1,21 @@
-Ne pas séparer le titre des recettes. On veut pas séparé avec les «,» des ingrédients
-Aussi, on ne veut pas séparer les parenthèses.
+Crème pour nettoyer le visage, pâteux, gommeux mais pas sabloneux, nettoyer les pores, peau toute douce après...
+
+Almond cookies instead of almon biscuits
+TODO: Use optional chaining!!!
+
+Pouvoir scp...
 
 FIXME: SPLITING ON POINTS DOES NOT WORK FOR ABREVIATIONS...
 Maybe add a rule that a dot is only a punctuation if there is a capital letter just after.
+Exception qui ne fonctionne pas: like Mr. Robinson was telling me...
+Dans ces cas là, traduire la phrase au complet avant?
+Et si elle existe, l'utiliser?
 
-Le search du home page devrait afficher seulement les recettes dans la langue choisie. Afficher les recettes traduites.
+Est-ce qu'il y aurait un moyen que je n'aie pas à aller chercher la database et la push à chaque fois? Oui, travailler sur la database directement. Problèmes potentiels, ça la lock.
+Dans la page admin, je pourrais rajouter une section où que je peux directement entrer du SQL dedans. Ça ma l'air très dangereux, mais je pourrais implémenter que le code s'exécute seulement après avoir fais un backup de la database? Oui ça me semble génial.
+Je pourrais rajouter les autres tâches aussi par des boutons sur l'interface d'admin.
+Ajouter un bouton pour regénérer les traductions
+J'aime ça. Travailler sur cela demain.
 
 Build homepage after fixing units...
 Ajouter un noeud pour les températures.
