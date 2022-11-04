@@ -40,16 +40,12 @@ router.get('/search', function(req, res, next) {
   let tokens = query.replace(' ', '%')
 
   // TODO: Create another field for recipes called name_search, where it is in lowercase and where there are no accents
-  let recipes = null
-  if (res.locals.locale == 'fr') {
-    recipes = db.prepare("SELECT recipes.id, recipes.name, recipes.image_slug, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.is_public = 1 AND recipes.name LIKE '%"+tokens+"%' COLLATE NOCASE LIMIT 30;").all()
-  } else {
-    // FIXME: temporary hack in order to have english recipes to show
-    // Later, just don't show translated recipes in the search bar.
-    let translatedRecipes = db.prepare("SELECT translated_recipes.id, translated_recipes.name, recipes.image_slug, recipes.id AS recipe_id, users.name AS user_name FROM translated_recipes JOIN recipes ON recipes.id = translated_recipes.original_id JOIN users ON recipes.user_id = users.id WHERE users.is_public = 1 AND translated_recipes.name LIKE '%"+tokens+"%' COLLATE NOCASE LIMIT 30;").all()
-    recipes = translatedRecipes.map(r => ({id: r.recipe_id, name: r.name, image_slug: r.image_slug, user_name: r.user_name}))
-  }
-
+  console.log('**********************')
+  console.log('**********************')
+  console.log('res.locals.locale', res.locals.locale)
+  console.log('**********************')
+  console.log('**********************')
+  let recipes = db.prepare("SELECT recipes.id, recipes.name, recipes.image_slug, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.locale = ? AND users.is_public = 1 AND recipes.name LIKE '%"+tokens+"%' COLLATE NOCASE LIMIT 30;").all(res.locals.locale)
 
   let users = db.prepare("SELECT id, name, image_slug FROM users WHERE is_public = 1 AND name LIKE '%"+tokens+"%' COLLATE NOCASE LIMIT 30;").all()
 

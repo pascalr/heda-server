@@ -213,7 +213,7 @@ export const MainSearch = ({locale, renderingHome}) => {
     onTermChanged(term) {
       console.log('term', term)
       if (term.length >= 3) {
-        ajax({url: "/search?q="+term, type: 'GET', success: ({results}) => {
+        ajax({url: localeHref("/search?q="+term), type: 'GET', success: ({results}) => {
           setSearchResults(results)
         }, error: (errors) => {
           console.error('Fetch search results error...', errors.responseText)
