@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
+import toastr from 'toastr'
 //import { createRoot } from 'react-dom/client';
 
 import { TextInput, TextField } from "./form"
@@ -24,7 +25,22 @@ const AdminTabs = ({machines}) => {
   </>
 }
 
-const AdminPage = () => <h1>Admin page</h1>
+const AdminPage = () => {
+
+  const backupDb = () => {
+    ajax({url: '/backup_db', type: 'POST', success: () => {
+      toastr.info("Database backup up successfully.")
+    }, error: handleError("Error backing up database.") })
+  }
+
+  return <>
+    <div className="trunk">
+      <h1>Dashboard</h1>
+      <h2>Manual commands</h2>
+      <button className="btn btn-primary" type="button" onClick={backupDb}>Backup database</button>
+    </div>
+  </>
+}
 const TranslationsPage = () => <h1>Translations page</h1>
 
 const SQLPage = () => {
