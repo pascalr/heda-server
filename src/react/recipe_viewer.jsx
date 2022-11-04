@@ -9,6 +9,7 @@ import { RecipeMediumImage } from "./image"
 import { EditTagsModal } from './modals/edit_tags'
 import { removeRecipe, AddToListMenu } from './recipe_index'
 import { t } from "../translate"
+import { handleError } from "../hcu"
 
 const MixIngredients = ({mix}) => {
   if (!mix) {return ''}
@@ -121,14 +122,18 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
   //<h2>Références</h2>
 
   //console.log(model)
+
+  const translateRecipe = () => {
+    ajax({url: '/translate_recipe/'+recipe.id, type: 'POST', success: (translated) => {
+      window.hcu.addRecord('recipes', translated)
+    }, error: handleError(t('Error_creating'))})
+  }
   
   let changeOwner = (e) => {
     let data = {recipeId: recipe.id, newOwnerId: user.id}
     ajax({url: '/change_recipe_owner', type: 'PATCH', data, success: () => {
       window.hcu.changeField(recipe, 'user_id', user.id)
-    }, error: (errors) => {
-      console.log('ERROR AJAX UPDATING...', errors.responseText)
-    }})
+    }, error: handleError(t('Error_updating'))})
   }
   
   const recipeUser = users.find(u => u.id == recipe.user_id)
@@ -201,6 +206,8 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
                 <hr className="dropdown-divider"/>
                 {recipeBelongsToSiblings ? <button type="button" className="dropdown-item" onClick={changeOwner}>{t('Attribute_to_this_profile')}</button> : ''}
                 {recipe.user_id == user.id ? <li><button type="button" className="dropdown-item" onClick={() => {removeRecipe(recipe) && changeUrl('/l')}}>{t('Delete_recipe')}</button></li> : ''}
+                {user.is_admin && recipe.user_id != user.id ? <button type="button" className="dropdown-item" onClick={translateRecipe}>Translate recipe</button> : ''}
+                {user.is_admin && recipe.user_id != user.id ? <button type="button" className="dropdown-item" onClick={translateRecipe}>Duplicate recipe</button> : ''}
               </div>
             </span>
           </div>

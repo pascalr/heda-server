@@ -189,7 +189,7 @@ function setProfile(req, res, next) {
   if (!res.locals.gon.users) next('Error set profile must be called after fetching profiles')
   let user = res.locals.gon.users.find(u => u.id == req.user.user_id)
   if (!user) {req.user.user_id = null; next('Error current profile not found in database. Database changed? Logging out of profile...')}
-  res.locals.gon.user = user
+  res.locals.gon.user = {...user, is_admin: req.user.is_admin}
   res.locals.user = user
   next()
 }
