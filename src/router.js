@@ -525,6 +525,12 @@ router.get('/admin', ensureAdmin, function(req, res, next) {
   }
   res.render('admin')
 })
+router.get('/admin/:page', ensureAdmin, function(req, res, next) {
+  res.locals.gon = {
+    translations: db.fetchTable('translations', {}, ['from', 'to', 'original', 'translated'])
+  }
+  res.render('admin')
+})
 
 router.post('/backup_db', ensureAdmin, function(req, res, next) {
   db.doBackup()

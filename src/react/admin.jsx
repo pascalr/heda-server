@@ -17,8 +17,8 @@ const AdminTabs = ({machines}) => {
   return <>
     <ul className="nav nav-tabs mb-3">
       <HomeTab {...{title: t('Admin'), path: '/admin'}} />
-      <HomeTab {...{title: t('Translations'), path: '/translations'}} />
-      <HomeTab {...{title: t('Translate Recipe'), path: '/translate_recipe'}} />
+      <HomeTab {...{title: t('Translations'), path: '/admin/translations'}} />
+      <HomeTab {...{title: t('Translate Recipe'), path: '/admin/translate_recipe'}} />
     </ul>
   </>
 }
@@ -116,9 +116,9 @@ export const Admin = () => {
   const recipes = useHcuState([], {tableName: 'recipes'})
 
   const routes = [
+    {match: "/admin/translations", elem: () => <TranslationsPage />},
+    {match: "/admin/translate_recipe", elem: () => <TranslateRecipePage {...{recipes, locale, translations}} />},
     {match: "/admin", elem: () => <AdminPage />},
-    {match: "/translations", elem: () => <TranslationsPage />},
-    {match: "/translate_recipe", elem: () => <TranslateRecipePage {...{recipes, locale, translations}} />},
   ]
   const defaultElement = (params) => <TranslationsPage />
   
