@@ -497,6 +497,9 @@ router.get('/', function(req, res, next) {
   res.locals.disablePreview = req.query.disablePreview
   if (!req.user) {
     // Use this to generate gon, but then use JSON.stringify(gon) and copy paste directly inside home.jsx
+    let idEN = 773
+    let idsEN1 = [771, 772, 774, 775, 776, 777, 778, 779]
+    let idsEN2 = [780, 781, 782, 783]
     let ids1 = [113, 129, 669, 88, 323, 670, 672, 689]
     let ids2 = [755, 757, 66, 558]
     res.locals.gon = {
