@@ -101,7 +101,7 @@ export const RecipeIndex = ({favoriteRecipes, suggestions, tags, mixes, recipes,
 
   recipes.forEach((recipe) => {
     f = favoriteRecipes.find(r => r.recipe_id == recipe.id)
-    if (recipe.user_id == user.id || !f) { userRecipes.push({recipe: recipe, fav: f}) }
+    if (recipe.user_id == user.id) { userRecipes.push({recipe: recipe, fav: f}) }
     else if (f) { favList.push({recipe: recipe, fav: f}) }
   })
 
