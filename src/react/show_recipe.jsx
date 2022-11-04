@@ -110,7 +110,7 @@ export const ShowRecipe = () => {
 
   const locale = getLocale()
   const [recipe, ] = useState(gon.recipe)
-  const [translatedRecipe, ] = useState(gon.translated_recipe)
+  const [translatedRecipe, ] = useState(gon.translated_recipe||{})
   const [images, ] = useState(gon.images)
   const [user, ] = useState(gon.user)
 

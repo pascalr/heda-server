@@ -1,11 +1,13 @@
 Publier sur facebook une recette par semaine.
 
+Ajouter un bouton «Partager sur facebook»
+
 Bûche de noël, (2 oeuf) => (2 oeufs) !!!
 Bûche de noël, 1/2 t n'a pas été traduit dans les instructions de la recette.
 
 Je pense que en anglais, il n'y a pas de «of» dans la liste des ingrédients, mais il devrait y en avoir dans le texte des instructions?
 
-Maybe still keep translated_recipes for public recipes? YES
+Maybe still keep translated_recipes for public recipes? YES, MAYBE, DON'T USE FOR NOW
 
 Créer un utilisateur PascalEN, ajouter un bouton traduire la recette.
 Enlever translated_recipes...
