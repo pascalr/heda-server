@@ -223,8 +223,16 @@ const HomePage = ({tags, recipes, suggestions, favoriteRecipes, machines, recipe
         <RecipeCarrousel {...{items}}/>
       </div>
     })}
-    <h2 className="fs-14 bold">{t('Suggestions_for_you')}</h2>
-    <RecipeCarrousel {...{items: recipeSuggestions}}/>
+    {Object.keys(recipeSuggestions||{}).length > 0 ? <>
+      <h2 className="fs-12 italic gray">{t('Suggestions_for_you')}</h2>
+      {Object.keys(recipeSuggestions||{}).map(tagName => {
+        let recipes = recipeSuggestions[tagName]
+        return <div key={tagName}>
+          <h2 className="fs-14 bold">{tagName}</h2>
+          <RecipeCarrousel {...{items: recipes}}/>
+        </div>
+      })}
+    </> : ''}
   </> 
 }
 

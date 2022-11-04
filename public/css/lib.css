@@ -123,8 +123,10 @@ img {
 
 .white { color: white; }
 .black { color: black; }
+.grey, .gray { color: grey; }
 
 .bold { font-weight: bold; }
+.italic { font-style: italic; }
 
 /* Relative keeps the position of the element in the page, but it takes up space. */
 /* Absolute takes no space, but it needs to have a parent which is positioned. */
