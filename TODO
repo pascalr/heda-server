@@ -1,5 +1,7 @@
 Publier sur facebook une recette par semaine.
 
+Ajouter un système de recherche pour pouvoir recherche «Bûche de noël» sans le accent.
+
 Ajouter un bouton «Partager sur facebook»
 
 Bûche de noël, (2 oeuf) => (2 oeufs) !!!
@@ -8,9 +10,6 @@ Bûche de noël, 1/2 t n'a pas été traduit dans les instructions de la recette
 Je pense que en anglais, il n'y a pas de «of» dans la liste des ingrédients, mais il devrait y en avoir dans le texte des instructions?
 
 Maybe still keep translated_recipes for public recipes? YES, MAYBE, DON'T USE FOR NOW
-
-Créer un utilisateur PascalEN, ajouter un bouton traduire la recette.
-Enlever translated_recipes...
 
 Add analytics:
 https://www.openwebanalytics.com/
@@ -26,12 +25,9 @@ Ma recette de potage à la citrouille n'est comme pas fini on dirait...
 
 Pouvoir ajouter une nouvelle traduction manuellement
 Pouvoir supprimer une traduction
-Voir les traductions manquantes et ajouter un bouton pour les traduire automatiquement.
+Voir les traductions manquantes et ajouter un bouton pour les traduire automatiquement avec google translate.
 
-Almond cookies instead of almon biscuits
 TODO: Use optional chaining!!!
-
-Pouvoir scp...
 
 FIXME: SPLITING ON POINTS DOES NOT WORK FOR ABREVIATIONS...
 Maybe add a rule that a dot is only a punctuation if there is a capital letter just after.
