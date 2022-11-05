@@ -4,8 +4,6 @@ Dans l'application, pouvoir rechercher des recettes publiques.
 
 Ajouter un système de recherche pour pouvoir recherche «Bûche de noël» sans le accent.
 
-Ajouter un bouton «Partager sur facebook»
-
 Bûche de noël, (2 oeuf) => (2 oeufs) !!!
 
 Une page My account
@@ -25,14 +23,8 @@ Trempette aux artichauts.
 Chichi et Pina colada
 Ma recette de potage à la citrouille n'est comme pas fini on dirait...
 
-Admin section SQL
-
-Ajouter un noeud pour les températures.
-
 Faire des tests pour la database, ça m'aiderait à me décider ce que je veux que le schéma ait l'air...
 Faire des tests pour /update_field, /create_record, ...
-
-Est-ce que je peux utiliser TypeScript ne serait-ce que pour s'assurer que les variables ne sont pas nulls?
 
 Cliquer sur login quand tu es déjà connecté devrait te redirigé vers ton home.
 Merge RecipeViewers
@@ -60,15 +52,6 @@ I can translate by myself using Moses? http://www2.statmt.org/moses/
 Prendre des recettes de là?
 https://recipes.fandom.com/wiki/Baked_Buffalo_Wings
 
-FIXME quand tu cliques sur une suggestion de recette by user5
-Ajouter des suggestions pour vous. Ça ferait moins vide quand tu te crée
-un compte. Mettre les suggestions pour vous en bas du HomePage.
-TESTS
-Faire un post sur Hacker News: Show HN: I made a personalized recipe website with images from Stable Diffusion
-
-Regarder les CV des autres programmeurs sur HackerNews pour m'inspirer:
-https://news.ycombinator.com/item?id=33422127
-
 Sur mon site internet de CV, rajouter une ligne sur la page d'acceuil, Portfolio, avec des liens vers les meilleurs projets que j'ai fait.
 
 Longer sessions (1 month!), refresh le 1 mois lorsque l'utilisateur se connecte?, ne pas avoir à se logger souvent.
@@ -77,6 +60,10 @@ Use Docker instead of Herkou build pack
 https://www.docker.com/blog/getting-started-with-docker-using-node-jspart-i/
 
 Later:
+Est-ce que je peux utiliser TypeScript ne serait-ce que pour s'assurer que les variables ne sont pas nulls?
+Ajouter un noeud pour les températures.
+Admin section SQL (quand je vais en avoir de besoin)
+Ajouter un bouton «Partager sur facebook»
 Minify {
   - DIY modal, remove react-bootstrap...
   - Probably never, but remove bootstrap css...

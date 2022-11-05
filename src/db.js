@@ -44,6 +44,8 @@ db.safe = function(str, allowed) {
  * Each key is a table name.
  * The value is an object with the properties:
  *   - allow_create(user, obj) { return modifiedObjOrNullIfNotAllowed }
+ *   - write_attrs: an array of all attributes that can be mass-assigned.
+ *   - security_attrs???: an array of all attributes that must be set from the security object
  */
 const mySchema = {
   'meals': {},
@@ -55,6 +57,7 @@ const mySchema = {
       if (!user.is_admin) {return null}
       return obj
     },
+    allow_create_2: (user, obj) => user.is_admin,
   },
   'images': {
     write_attrs: ['filename', 'author', 'is_user_author', 'source'],
@@ -64,6 +67,9 @@ const mySchema = {
       obj.user_id = user.user_id
       return obj
     },
+    security_attrs: ['user_id'],
+    // When creating an object, set the security attribute based on the security object
+    // When updating, fetch the object to make sure the security attribute is the same as the one given from the security object
   },
   'recipe_comments': {},
   'recipe_notes': {},
