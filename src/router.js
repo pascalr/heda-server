@@ -543,13 +543,20 @@ router.post('/translate_recipe/:id', ensureAdmin, function(req, res, next) {
     let newRecipe = {...recipe, ...translated}
     delete newRecipe.id;
     newRecipe = db.safeCreateRecord('recipes', newRecipe, req.user, {allow_write: ['user_id', 'original_id']})
-    res.json(newRecipe)
     //newRecipe = db.safeCreateRecord('recipes', newRecipe, req.user, {allow_write: ['original_id']})
+    res.json(newRecipe)
   })
-  //db.doBackup()
-  //translateRecipes().then(missings => {
-  //  res.json({missings})
-  //})
+});
+router.post('/duplicate_recipe/:id', function(req, res, next) {
+
+  let recipe = db.fetchRecord('recipes', {id: req.params.id}, RECIPE_ATTRS)
+  let user = db.fetchRecord('users', {id: recipe.user_id}, ['is_public'])
+  if (!user || !user.is_public) {throw "Can't duplicate a recipe by a user who is not public."}
+  let newRecipe = {...recipe, original_id: recipe.id}
+  delete newRecipe.id;
+  newRecipe = db.safeCreateRecord('recipes', newRecipe, req.user, {allow_write: ['user_id', 'original_id']})
+  //newRecipe = db.safeCreateRecord('recipes', newRecipe, req.user, {allow_write: ['original_id']})
+  res.json(newRecipe)
 });
 
 function handleError(err, req, res, next) {

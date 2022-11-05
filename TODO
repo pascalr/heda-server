@@ -26,17 +26,12 @@ TODO: Use optional chaining!!!
 
 Admin section SQL
 
-Build homepage after fixing units...
 Ajouter un noeud pour les températures.
-Valider l'anglais de toutes les recettes sur la page d'acceuil.
 
 Faire des tests pour la database, ça m'aiderait à me décider ce que je veux que le schéma ait l'air...
 Faire des tests pour /update_field, /create_record, ...
 
 Est-ce que je peux utiliser TypeScript ne serait-ce que pour s'assurer que les variables ne sont pas nulls?
-
-Add locale to recipes.
-Fix recipeOrTranslation(originalRecipe, translatedRecipes, locale)
 
 Duplicate recipe
 Cliquer sur login quand tu es déjà connecté devrait te redirigé vers ton home.
