@@ -3,6 +3,7 @@ import path from 'path';
 import betterSqlite3 from 'better-sqlite3';
 
 import { ensureIsArray } from './utils.js';
+import schema from './schema.js';
 
 // FIXME: DB_URL should be DB_PATH, it's not an URL (doesn't start with sqlite3://...)
 let dbPath = process.env.DB_URL
@@ -40,127 +41,23 @@ db.safe = function(str, allowed) {
   return "'"+s+"'"
 }
 
-/**
- * Each key is a table name.
- * The value is an object with the properties:
- *   - allow_create(user, obj) { return modifiedObjOrNullIfNotAllowed }
- *   - write_attrs: an array of all attributes that can be mass-assigned.
- *   - security_attrs???: an array of all attributes that must be set from the security object
- */
-const mySchema = {
-  'meals': {},
-  'mixes': {},
-  'translations': {
-    write_attrs: ['from', 'original', 'to', 'translated'],
-    security_key: 'ADMIN_ONLY',
-    allow_create(user, obj) {
-      if (!user.is_admin) {return null}
-      return obj
-    },
-    allow_create_2: (user, obj) => user.is_admin,
-  },
-  'images': {
-    write_attrs: ['filename', 'author', 'is_user_author', 'source'],
-    attrs_types: {is_user_author: 'bool'},
-    security_key: 'user_id',
-    allow_create(user, obj) {
-      obj.user_id = user.user_id
-      return obj
-    },
-    security_attrs: ['user_id'],
-    // When creating an object, set the security attribute based on the security object
-    // When updating, fetch the object to make sure the security attribute is the same as the one given from the security object
-  },
-  'recipe_comments': {},
-  'recipe_notes': {},
-  'recipe_ratings': {},
-  'recipe_tools' : {},
-  'references' : {},
-  'machine_users' : {},
-  'machine_foods' : {},
-  'machines' : {},
-  'container_formats' : {},
-  'container_quantities' : {},
-  'containers' : {},
-  'foods' : {},
-  'units' : {},
-  'recipe_kinds': {
-    write_attrs: ['image_slug'],
-  },
-  'translated_recipes': {
-    write_attrs: ['name', 'servings_name', 'ingredients', 'json'],
-    security_key: 'original_id',
-    allow_create(user, obj) {
-      obj.original_id = user.original_id
-      return obj
-    },
-  },
-  'recipes': {
-    write_attrs: ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'ingredients', 'recipe_kind_id', 'image_slug', 'servings_name'],
-    security_key: 'user_id',
-    dependant_destroy: {recipe_id: ['favorite_recipes', 'meals', 'mixes', 'recipe_comments', 'recipe_notes', 'recipe_ratings', 'recipe_tools', 'references', 'suggestions']},
-
-    before_create(recipe) {
-      //const recipeKinds = db.fetchTable('recipe_kinds', {}, ['name'])
-      //const recipeKind = findRecipeKindForRecipeName(recipe.name, recipeKinds)
-      //if (recipeKind) {recipe.recipe_kind_id = recipeKind.id}
-      return recipe
-    },
-    allow_create(user, obj) {
-      obj.user_id = user.user_id
-      return obj
-    },
-  },
-  'users': {
-    write_attrs: ['name', 'gender', 'image_slug', 'locale', 'is_public'],
-    attrs_types: {is_public: 'bool'},
-    security_key: 'account_id',
-    allow_create(user, obj) {
-      obj.account_id = user.account_id
-      return obj
-    },
-  },
-  'favorite_recipes': {
-    write_attrs: ['list_id', 'recipe_id'],
-    security_key: 'user_id',
-    allow_create(user, obj) {
-      obj.user_id = user.user_id
-      return obj
-    },
-  },
-  'tags': {
-    write_attrs: ['name', 'image_slug', 'position'],
-    security_key: 'user_id',
-    allow_create(user, obj) {
-      obj.user_id = user.user_id
-      return obj
-    },
-  },
-  'suggestions': {
-    write_attrs: ['tag_id', 'recipe_id'],
-    security_key: 'user_id',
-    allow_create(user, obj) {
-      obj.user_id = user.user_id
-      return obj
-    },
-  }
-}
-// FIXME: The real schema is mySchema.
-// TODO: Rename mySchema to schema, and rename schema to something else
-// This is not a schema, it is a way to manipulate the db. It is more actually db...
+// FIXME: The real schemaHelper is schema.
+// TODO: Rename schema to schemaHelper, and rename schemaHelper to something else
+// This is not a schemaHelper, it is a way to manipulate the db. It is more actually db...
 // But it's more private, don't give access to this to outside?
 // But still allow someone to modify it?
-const schema = {}
-schema.getTableList = () => {return Object.keys(mySchema)}
-schema.getWriteAttributes = (table) => {return mySchema[table].write_attrs}
-schema.getSecurityKey = (table) => {return mySchema[table].security_key}
-schema.getAllowCreate = (table) => {return mySchema[table].allow_create}
-schema.beforeCreate = (table, obj) => {
-  if (!obj || !mySchema[table].before_create) {return obj}
-  return mySchema[table].before_create(obj)
+// FIXME: All this is really bad and ugly...
+const schemaHelper = {}
+schemaHelper.getTableList = () => {return Object.keys(schema)}
+schemaHelper.getWriteAttributes = (table) => {return schema[table].write_attrs}
+schemaHelper.getSecurityKey = (table) => {return schema[table].security_key}
+schemaHelper.getAllowCreate = (table) => {return schema[table].allow_create}
+schemaHelper.beforeCreate = (table, obj) => {
+  if (!obj || !schema[table].before_create) {return obj}
+  return schema[table].before_create(obj)
 }
-schema.validAttr = (table, field, value) => {
-  let types = mySchema[table].attrs_types
+schemaHelper.validAttr = (table, field, value) => {
+  let types = schema[table].attrs_types
   if (types && types[field]) {
     let type = types[field]
     if (type == 'bool') {
@@ -198,7 +95,7 @@ function addSafetyCondition(query0, args0, user, securityKey) {
 
 // TODO: Inside route update_field
 // Fetch the old record by table and id
-// Call something in the schema to know if the current user can edit it
+// Call something in the schemaHelper to know if the current user can edit it
 // allow_update(user, obj, changes)
 // allow_update(user, obj, {field: value})
 if (db.safeUpdateRecord) {throw "Can't overide safeUpdateRecord"}
@@ -212,7 +109,7 @@ db.safeUpdateRecord = function(table, old, updated, user, options={}) {
     if (old[f] != updated[f]) {fields.push(f)}
   })
   
-  let query = 'UPDATE '+db.safe(table, schema.getTableList())+' SET '+fields.map(field => db.safe(field, writeAttrs)+' = ?').join(', ')+', updated_at = ? WHERE id = ?'
+  let query = 'UPDATE '+db.safe(table, schemaHelper.getTableList())+' SET '+fields.map(field => db.safe(field, writeAttrs)+' = ?').join(', ')+', updated_at = ? WHERE id = ?'
 
   throw "TODO" // TODO
 }
@@ -222,11 +119,11 @@ db.safeUpdateField = function(table, id, field, value, user, options={}) {
 
   if (!table) {throw "Missing table for safeUpdateField"}
 
-  let writeAttrs = schema.getWriteAttributes(table)
+  let writeAttrs = schemaHelper.getWriteAttributes(table)
   if (options.allow_write) {writeAttrs = [...writeAttrs, ...options.allow_write]}
-  let query0 = 'UPDATE '+db.safe(table, schema.getTableList())+' SET '+db.safe(field, writeAttrs)+' = ?, updated_at = ? WHERE id = ?'
-  let args0 = [schema.validAttr(table, field, value), utils.now(), id]
-  const [query, args] = addSafetyCondition(query0, args0, user, schema.getSecurityKey(table))
+  let query0 = 'UPDATE '+db.safe(table, schemaHelper.getTableList())+' SET '+db.safe(field, writeAttrs)+' = ?, updated_at = ? WHERE id = ?'
+  let args0 = [schemaHelper.validAttr(table, field, value), utils.now(), id]
+  const [query, args] = addSafetyCondition(query0, args0, user, schemaHelper.getSecurityKey(table))
   return db.prepare(query).run(...args)
 }
 
@@ -249,14 +146,14 @@ db.destroyRecordWithDependants = function(table, id, user) {
   if (!table) {throw "Missing table for destroyRecordWithDependants"}
 
   // First, make sure that the record is allowed to be destroyed by the user
-  let q = 'SELECT id FROM ' +db.safe(table, schema.getTableList())+' WHERE id = ?'
-  let [query, args] = addSafetyCondition(q, [id], user, schema.getSecurityKey(table))
+  let q = 'SELECT id FROM ' +db.safe(table, schemaHelper.getTableList())+' WHERE id = ?'
+  let [query, args] = addSafetyCondition(q, [id], user, schemaHelper.getSecurityKey(table))
   let r = db.prepare(query).get(...args)
   if (!r || !r.id) {throw "Error: Record not allowed to be destroyed."}
     
   let destroyWithDependants = db.transaction(record => {
 
-    let o = mySchema[table].dependant_destroy || {}
+    let o = schema[table].dependant_destroy || {}
     let foreignKeys = Object.keys(o)
     foreignKeys.forEach(foreignKey => {
    
@@ -276,8 +173,8 @@ db.safeDestroyTableKey = function(table, key, val, user) {
   
   if (!table) {throw "Missing table for safeDestroyTableKey"}
 
-  const q = 'DELETE FROM '+db.safe(table, schema.getTableList())+' WHERE '+key+' = ?'
-  const [query, args] = addSafetyCondition(q, [val], user, schema.getSecurityKey(table))
+  const q = 'DELETE FROM '+db.safe(table, schemaHelper.getTableList())+' WHERE '+key+' = ?'
+  const [query, args] = addSafetyCondition(q, [val], user, schemaHelper.getSecurityKey(table))
   return db.prepare(query).run(...args)
 }
 
@@ -286,7 +183,7 @@ db.unsafeDestroyTableKey = function(table, key, val) {
   
   if (!table) {throw "Missing table for unsafeDestroyRecord"}
 
-  const q = 'DELETE FROM '+db.safe(table, schema.getTableList())+" WHERE "+key+" = ?"
+  const q = 'DELETE FROM '+db.safe(table, schemaHelper.getTableList())+" WHERE "+key+" = ?"
   return db.prepare(q).run(val)
 }
 
@@ -304,18 +201,18 @@ db.safeCreateRecord = function(table, unsafeObj, user, options={}) {
   
   if (!table) {throw "Missing table for createRecord"}
 
-  let obj = schema.getAllowCreate(table)(user, unsafeObj)
+  let obj = schemaHelper.getAllowCreate(table)(user, unsafeObj)
   if (!obj) {throw "createRecord not allowed for current user"}
 
-  let safeTable = db.safe(table, schema.getTableList())
-  obj = schema.beforeCreate(table, obj)
+  let safeTable = db.safe(table, schemaHelper.getTableList())
+  obj = schemaHelper.beforeCreate(table, obj)
 
   let fields = Object.keys(obj)
-  let columns = schema.getWriteAttributes(table) || []
+  let columns = schemaHelper.getWriteAttributes(table) || []
   if (options.allow_write) {columns = [...columns, ...options.allow_write]}
   let query = 'INSERT INTO '+safeTable+' (created_at,updated_at,'+fields.map(f => db.safe(f, columns)).join(',')+') '
   query += 'VALUES (?,?,'+fields.map(f=>'?').join(',')+')'
-  let args = [utils.now(), utils.now(), ...fields.map(f => schema.validAttr(table, f, obj[f]))]
+  let args = [utils.now(), utils.now(), ...fields.map(f => schemaHelper.validAttr(table, f, obj[f]))]
   
   let info = db.prepare(query).run(...args)
   if (info.changes != 1) {throw "Error creating record from in "+table+"."}
@@ -327,15 +224,15 @@ db.createRecord = function(table, obj, options={}) {
   
   if (!table) {throw "Missing table for createRecord"}
     
-  let safeTable = db.safe(table, schema.getTableList())
-  obj = schema.beforeCreate(table, obj)
+  let safeTable = db.safe(table, schemaHelper.getTableList())
+  obj = schemaHelper.beforeCreate(table, obj)
 
   let fields = Object.keys(obj)
-  let columns = schema.getWriteAttributes(table) || []
+  let columns = schemaHelper.getWriteAttributes(table) || []
   if (options.allow_write) {columns = [...columns, ...options.allow_write]}
   let query = 'INSERT INTO '+safeTable+' (created_at,updated_at,'+fields.map(f => db.safe(f, columns)).join(',')+') '
   query += 'VALUES (?,?,'+fields.map(f=>'?').join(',')+')'
-  let args = [utils.now(), utils.now(), ...fields.map(f => schema.validAttr(table, f, obj[f]))]
+  let args = [utils.now(), utils.now(), ...fields.map(f => schemaHelper.validAttr(table, f, obj[f]))]
   
   let info = db.prepare(query).run(...args)
   if (info.changes != 1) {throw "Error creating record from in "+table+"."}
@@ -363,7 +260,7 @@ const fetchStatement = (tableName, conditions, attributes, options) => {
   
   if (!tableName) {throw "Missing table for fetch"}
 
-  let s = 'SELECT '+['id',...attributes.map(a => '"'+a+'"')].join(', ')+' FROM '+db.safe(tableName, schema.getTableList())
+  let s = 'SELECT '+['id',...attributes.map(a => '"'+a+'"')].join(', ')+' FROM '+db.safe(tableName, schemaHelper.getTableList())
   let a = []
   if (Array.isArray(conditions)) {
     // The first element is the query, the second is the arguments
