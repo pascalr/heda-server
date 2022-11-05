@@ -48,6 +48,11 @@ If there could be a fly scp command that would be sooooooooo awesome.
 :q
 
 
+## INSTALL
+requirements node.js
+node --version
+Personally, I use nvm script in order to install node.js.
+npm install
 
 ## Live reload
 nodemon is used to live reload front-end pages (views)

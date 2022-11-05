@@ -1,6 +1,8 @@
 /node_modules
 *.db
-/var
+/var/*
+!/var/.keep
+!/var/db/.keep
 /public/build/*
 !/public/build/.keep
 *.swp

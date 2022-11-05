@@ -31,10 +31,6 @@ import { getUrlParams, localeHref, getPathFromUrl } from './utils.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-if (!process.env.NODE_ENV) {
-  process.env.NODE_ENV = process.env.ENVIRONMENT
-}
-
 // Backup database every day
 //setInterval(() => {
 //  db.doBackup()
@@ -43,7 +39,7 @@ if (!process.env.NODE_ENV) {
 var app = express();
 
 // LIVE RELOAD IN DEV
-if (process.env.ENVIRONMENT == "dev") {
+if (process.env.NODE_ENV == "development") {
   console.log('Setting live reload for development environment.')
   enableLiveReload(app)
 }
@@ -146,7 +142,7 @@ app.use(function(req, res, next) {
 app.use(function(err, req, res, next) {
 
   //if (req.app.get('env') === 'development') {
-  if (process.env.ENVIRONMENT == "dev") {
+  if (process.env.NODE_ENV == "development") {
 
     if (typeof err === 'string') {
       res.locals.message = err;
