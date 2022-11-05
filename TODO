@@ -1,6 +1,20 @@
 Publier sur facebook une recette par semaine.
 
+Aye!!! C'était quand même beau la vue des recettes des livres.
+Refaire la même vue pour les utilisateur.A
+Afficher l'image de la recette, le titre à côté et quelques détails importants!
+Le concept de livres de hedacuisine a en fait été remplacé par le concept de profile.
+
+Aye c'est vrai il y avait les articles aussi sur hedacuisine!!!
+
+Si je refais quelque chose avec les articles, intégré le support de GPT-3 qui t'aide à rédiger la base des articles.
+
+Utiliser GPT-3 pour rédiger les descriptions des RecipeKind.
+
 Recipe kinds. /k/
+Break down both RecipeViewer into parts so I can reuse them.
+I am going to need a new RecipeViewer, that should only a smaller version.
+Like in hedacuisine.
 
 Dans l'application, pouvoir rechercher des recettes publiques.
 
