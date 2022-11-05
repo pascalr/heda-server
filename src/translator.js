@@ -1,3 +1,19 @@
+// FIXME:
+// Bûche de noël, 1/2 t n'a pas été traduit dans les instructions de la recette.
+// Quand c'est un ingrédient hardcodé, il faut le traduire aussi.
+// Par exemple: (1/2 t; sucre) => (1/2 cup; sugar)
+//
+// FIXME: SPLITING ON POINTS DOES NOT WORK FOR ABREVIATIONS...
+// Maybe add a rule that a dot is only a punctuation if there is a capital letter just after.
+// Exception qui ne fonctionne pas: like Mr. Robinson was telling me...
+// Dans ces cas là, traduire la phrase au complet avant?
+// Et si elle existe, l'utiliser?
+//
+// TODO:
+//Pouvoir ajouter une nouvelle traduction manuellement
+//Pouvoir supprimer une traduction
+//Voir les traductions manquantes et ajouter un bouton pour les traduire automatiquement avec google translate.
+
 import { parseIngredientsAndHeaders, serializeIngredientsAndHeaders } from './lib.js';
 import Quantity from './quantity.js';
 

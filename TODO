@@ -5,7 +5,6 @@ Ajouter un système de recherche pour pouvoir recherche «Bûche de noël» sans
 Ajouter un bouton «Partager sur facebook»
 
 Bûche de noël, (2 oeuf) => (2 oeufs) !!!
-Bûche de noël, 1/2 t n'a pas été traduit dans les instructions de la recette.
 
 Je pense que en anglais, il n'y a pas de «of» dans la liste des ingrédients, mais il devrait y en avoir dans le texte des instructions?
 
@@ -23,23 +22,9 @@ Taboulé.
 Trempette aux artichauts.
 Ma recette de potage à la citrouille n'est comme pas fini on dirait...
 
-Pouvoir ajouter une nouvelle traduction manuellement
-Pouvoir supprimer une traduction
-Voir les traductions manquantes et ajouter un bouton pour les traduire automatiquement avec google translate.
-
 TODO: Use optional chaining!!!
 
-FIXME: SPLITING ON POINTS DOES NOT WORK FOR ABREVIATIONS...
-Maybe add a rule that a dot is only a punctuation if there is a capital letter just after.
-Exception qui ne fonctionne pas: like Mr. Robinson was telling me...
-Dans ces cas là, traduire la phrase au complet avant?
-Et si elle existe, l'utiliser?
-
-Est-ce qu'il y aurait un moyen que je n'aie pas à aller chercher la database et la push à chaque fois? Oui, travailler sur la database directement. Problèmes potentiels, ça la lock.
-Dans la page admin, je pourrais rajouter une section où que je peux directement entrer du SQL dedans. Ça ma l'air très dangereux, mais je pourrais implémenter que le code s'exécute seulement après avoir fais un backup de la database? Oui ça me semble génial.
-Je pourrais rajouter les autres tâches aussi par des boutons sur l'interface d'admin.
-Ajouter un bouton pour regénérer les traductions
-J'aime ça. Travailler sur cela demain.
+Admin section SQL
 
 Build homepage after fixing units...
 Ajouter un noeud pour les températures.

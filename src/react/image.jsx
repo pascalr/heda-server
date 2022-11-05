@@ -20,9 +20,15 @@ const ImageCredit = ({imageSlug, images}) => {
 // Variant can be "thumb", "small", "medium"
 export const RecipeImage = ({recipe, images, showCredit, width, height, variant}) => {
   const imagePath = recipe.image_slug ? image_path(recipe.image_slug, variant) : DefaultRecipeImage
+  let img = null
+  if (window.disableLazyLoading) {
+    img = <img src={imagePath} width={width} height={height} style={{transform: `translateY(calc(-50% + ${height/2}px))`}} />
+  } else {
+    img = <LazyLoadImage src={imagePath} width={width} height={height} style={{transform: `translateY(calc(-50% + ${height/2}px))`}} />
+  }
   return <>
     <div style={{width: `${width}px`, height: `${height}px`, maxWidth: '100%', overflow: 'hidden', flexShrink: '0'}}>
-      <LazyLoadImage src={imagePath} width={width} height={height} style={{transform: `translateY(calc(-50% + ${height/2}px))`}} />
+      {img}
     </div>
     {showCredit ? <ImageCredit {...{imageSlug: recipe.image_slug, images}} /> : ''}
   </>

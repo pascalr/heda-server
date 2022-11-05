@@ -15,7 +15,7 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
   const locales = ['fr', 'en']
   for (let i = 0; i < locales.length; i++) {
     let locale = locales[i]
-    const url = 'http://localhost:3000/?disablePreview=true&locale='+locale
+    const url = 'http://localhost:3000/?disablePreview=true&disableLazyLoading=true&locale='+locale
     await page.goto(url, {waitUntil: 'networkidle0'});
     const html = await page.$eval('#root-home', (element) => {
       return element.innerHTML
