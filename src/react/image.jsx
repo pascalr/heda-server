@@ -47,6 +47,10 @@ export const RecipeSmallImage = (props) => {
 }
 
 export const UserThumbnailImage = ({user}) => {
-  // FIXME: Don't send original sized image... Generate thumbnails for users too.
-  return <img src={'/imgs/original/'+user.image_slug} width="36" height="36" style={{width: 'auto', height: '64px'}} />
+  if (user && user.image_slug) {
+    // FIXME: Don't send original sized image... Generate thumbnails for users too.
+    return <img src={'/imgs/original/'+user.image_slug} width="64" height="64" style={{width: 'auto', height: '64px'}} />
+  } else {
+    return <img src={'/img/tux-cooking.svg'} width="64" height="64" style={{width: 'auto', height: '64px'}} />
+  }
 }

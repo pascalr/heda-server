@@ -2,6 +2,7 @@ import {isBlank} from '../src/utils.js'
 import Quantity from '../src/quantity.js'
 import { Utils } from "../src/react/recipe_utils.js"
 import { prettyPreposition } from "../src/lib.js"
+import { header, assertEquals } from "./tests_helpers.js"
 //import Ingredient from "./ingredient.js"
 
 global.gon = {} // FIXME: Remove this horrible shit
@@ -18,20 +19,6 @@ global.gon = {} // FIXME: Remove this horrible shit
 //bold="\e[1m"
 //uline="\e[4m"
 //reset="\e[0m"
-
-function header(msg) {
-  console.log('\x1b[0;94m%s\x1b[0m', msg);
-}
-
-function assertEquals(expected, current) {
-  let msg = "Expected: "+expected+". Got "+current
-  if (expected == current) {
-    // https://stackoverflow.com/questions/9781218/how-to-change-node-jss-console-font-color#41407246
-    console.log('\x1b[0;92m%s\x1b[0m - %s', 'PASS', msg);
-  } else {
-    console.log('\x1b[0;91m%s\x1b[0m - %s', 'FAIL', msg);
-  }
-}
 
 header('Testing isBlank')
 assertEquals(true, isBlank([]))

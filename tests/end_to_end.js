@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import db from '../src/db.js';
+import { assertEquals, assertStartsWith } from "./tests_helpers.js"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,17 +27,6 @@ if (user) {
 async function getPathname(page) {return await page.evaluate(() => document.location.pathname)}
 //const url = await page.url();
 
-function coloredResult(result) {
-  return result ? '\x1b[32mPASSED\x1b[0m' : '\x1b[31mFAILED\x1b[0m'
-}
-function assertEquals(expected, actual) {
-  console.log('Testing equals expected:', expected, 'Input:', actual)
-  console.log(coloredResult(expected === actual))
-}
-function assertStartsWith(expected, actual) {
-  console.log('Testing starts with:', expected, 'Input:', actual)
-  console.log(coloredResult(actual.startsWith(expected)))
-}
 
 (async () => {
   const browser = await puppeteer.launch({});
