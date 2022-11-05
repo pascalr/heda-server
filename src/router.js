@@ -361,6 +361,13 @@ router.get('/fetch_record/:table/:id', function(req, res, next) {
     throw new Error("FetchRecord not allowed")
   }
 });
+router.get('/fetch_recipe/:id', function(req, res, next) {
+
+  let recipe = db.fetchRecord('recipes', {id: req.params.id}, RECIPE_ATTRS)
+  let user = db.fetchRecord('users', {id: recipe.user_id}, ['is_public', 'name'])
+  if (!user || (!user.is_public && user.account_id !== req.user.account_id)) {throw "Can't fetch a private recipe."}
+  res.json({...recipe, user_name: user.name})
+});
 
 // TODO: Do all the modifications inside a single transaction, and rollback if there is an error.
 router.patch('/batch_modify', function(req, res, next) {

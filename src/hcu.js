@@ -104,13 +104,13 @@ export const initHcu = () => {
     updateTable(tableName, old => [...old, {...record, table_name: tableName}])
     if (callback) {callback(record)}
   }
-  window.hcu.fetchRecord = (tableName, id, successCallback=null) => {
-    if (!tableName) { throw "Error: hcu.fetchRecord must have valid tableName" }
-    let url = '/fetch_record/'+tableName+'/'+id
-    ajax({url: url, type: 'GET', success: (fetched) => {
-      window.hcu.addRecord(tableName, fetched, successCallback)
-    }, error: handleError(t('Error_fetching')) })
-  }
+  //window.hcu.fetchRecord = (tableName, id, successCallback=null) => {
+  //  if (!tableName) { throw "Error: hcu.fetchRecord must have valid tableName" }
+  //  let url = '/fetch_record/'+tableName+'/'+id
+  //  ajax({url: url, type: 'GET', success: (fetched) => {
+  //    window.hcu.addRecord(tableName, fetched, successCallback)
+  //  }, error: handleError(t('Error_fetching')) })
+  //}
   // Remove record in memory only
   window.hcu.removeRecord = (record, successCallback=null) => {
     if (!record.table_name) { throw "Error: hcu.removeRecord record must have valid table_name" }

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 
 import { ajax, changeUrl } from "./utils"
 import { RecipeTiptap, BubbleTiptap } from './tiptap'
-import { Link } from "./lib"
+import { Link, useOrFetchRecipe } from "./lib"
 import { parseIngredientsAndHeaders, quantityWithPreposition, prettyPreposition } from "../lib"
 import { RecipeMediumImage } from "./image"
 import { EditTagsModal } from './modals/edit_tags'
@@ -37,14 +37,9 @@ const MixIngredients = ({mix}) => {
 export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKinds, images, user, users, recipes, suggestions, tags}) => {
 
   const [showModal, setShowModal] = useState(false)
-  useEffect(() => {
-    let r = recipes.find(e => e.id == recipeId)
-    if (!r) {
-      window.hcu.fetchRecord('recipes', recipeId)
-    }
-  }, [recipeId])
-  
-  const recipe = recipes.find(e => e.id == recipeId)
+
+  const recipe = useOrFetchRecipe(recipes, recipeId)
+  console.log('recipe', recipe)
   if (!recipe) {return ''}
 
   const noteIds = recipe.notes ? Object.values(recipe.notes).sort((a,b) => a.item_nb - b.item_nb).map(ing => ing.id) : []
@@ -143,11 +138,14 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
     }, error: handleError(t('Error_updating'))})
   }
   
-  const recipeUser = users.find(u => u.id == recipe.user_id)
-  const userName = recipeUser ? recipeUser.name : `user${recipe.user_id}`
-
   const recipeBelongsToSiblings = users.map(u => u.id).filter(id => id != user.id).includes(recipe.user_id)
   const isUser = recipe.user_id == user.id
+
+  let userName = recipe.user_name
+  if (!userName) {
+    const recipeUser = users.find(u => u.id == recipe.user_id)
+    userName = recipeUser ? recipeUser.name : `user${recipe.user_id}`
+  }
 
   return (<>
     <EditTagsModal {...{recipe, tags, suggestions, showModal, setShowModal}} />

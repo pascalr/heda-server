@@ -166,22 +166,26 @@ export const useFetch = (url, args={}) => {
   return data;
 };
 
-/**
- * This is the latest implementation. It uses hcu.
- */
-export const useOrFetchRecord = (table, group, id) => {
+export const useOrFetchRecipe = (group, id) => {
 
   const [record, setRecord] = useState(group.find(e => e.id == id))
 
   useEffect(() => {
     if (id) {
       let r = group.find(e => e.id == id)
-      if (!r) {window.hcu.fetchRecord(table, id)}
-      setRecord(r)
+      if (!r) {
+        ajax({url: '/fetch_recipe/'+id, type: 'GET', success: (fetched) => {
+          window.hcu.addRecord('recipes', fetched)
+          setRecord(fetched)
+        }, error: handleError(t('Error_fetching')) })
+      } else if (!record || record.id != id) {
+        setRecord(r)
+      }
     } else {
       setRecord(null)
     }
-  }, [table, group, id])
+  }, [id])
   
   return record
 }
+
