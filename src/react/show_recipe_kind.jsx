@@ -34,8 +34,7 @@ export const ShowRecipeKind = () => {
   const locale = getLocale()
   const [recipeKind, ] = useState(gon.recipe_kind)
   const [recipes, ] = useState(gon.recipes)
-
-  const recipeIdx = 0;
+  const [recipeIdx, setRecipeIdx] = useState(0)
 
   // TODO: Show credit
   //<div><RecipeMediumImage {...{recipe: recipeKind, images, showCredit: true}} /></div>
@@ -62,9 +61,9 @@ export const ShowRecipeKind = () => {
       <div>
         {recipes && recipes.length > 0 ? <>
           <div className='fs-13 mb-1'>
-            Recettes d'utilisateurs (1 de {recipes.length})
-            <button className="btn btn-sm btn-outline-primary mx-2">Précédante</button>
-            <button className="btn btn-sm btn-outline-primary">Suivante</button>
+            {t('Users_recipes')} (1 {t('of')} {recipes.length})
+            <button className="btn btn-sm btn-outline-primary mx-2" disabled={recipeIdx === 0} onClick={() => setRecipeIdx(recipeIdx-1)}>{t('Previous_f')}</button>
+            <button className="btn btn-sm btn-outline-primary" disabled={recipeIdx === recipes.length-1} onClick={() => setRecipeIdx(recipeIdx+1)}>{t('Next_f')}</button>
           </div>
           <Recipe {...{recipe: recipes[recipeIdx]}} />
         </> : ''}

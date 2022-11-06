@@ -37,8 +37,11 @@ export function tr(id, locale) {
     Contact_msg: "For any question or comments, you can contact me at the following email address:",
     Confirm_destroy_recipe: 'Are you sure you want to destroy this remove permanently?',
     Account_already_associated: 'An account is already associated with this email address.',
+    Next_f: 'Next',
+    Previous_f: 'Previous',
   }
   let fr = {
+    Users_recipes: "Recettes d'utilisateurs",
     minutes: 'minutes',
     minute: 'minute',
     hours: 'heures',
@@ -148,7 +151,10 @@ export function tr(id, locale) {
     Preparation: 'Préparation',
     Cooking: 'Cuisson',
     by: 'par',
+    of: 'de',
     by_2: 'de',
+    Next_f: 'Suivante',
+    Previous_f: 'Précédante',
     Suggestions: 'Suggestions',
     Confirm_delete: 'Êtes-vous certain de vouloir supprimer cet item?',
     Error_destroying: 'Une erreur est survenue qui a empêché la suppression de cet item.',
