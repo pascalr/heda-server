@@ -200,7 +200,7 @@ export const MainSearch = ({locale, renderingHome}) => {
 
     data,
     onItemChoosen(item, args) {
-      if (item.list === t('Public_members')) {
+      if (item.list === 'u') {
         window.location.href = localeHref("/u/"+item.id)
       } else {
         window.location.href = localeHref("/k/"+item.id)
@@ -213,6 +213,7 @@ export const MainSearch = ({locale, renderingHome}) => {
           let d = {
             Recipes: fetched.recipeKinds.map(recipeKind => ({
               ...recipeKind,
+              list: 'rk',
               //url: localeHref("/k/"+recipeKind.id),
               elem: ({isSelected, item, selectedRef}) => <>
                 <li key={item.id} ref={isSelected ? selectedRef : null}>
@@ -228,6 +229,7 @@ export const MainSearch = ({locale, renderingHome}) => {
             })),
             Public_members: fetched.publicUsers.map(publicUser => ({
               ...publicUser,
+              list: 'u',
               //url: localeHref("/u/"+publicUser.id),
               elem: ({isSelected, item, selectedRef}) => <>
                 <li key={item.id} className="list-group-item" ref={isSelected ? selectedRef : null}>
@@ -335,6 +337,9 @@ export const BaseSearchV2 = ({locale, renderingHome, data, onItemChoosen, onTerm
   const filtered = {}
   Object.keys(data||{}).forEach(key => {filtered[key] = filterItems(data[key], term)})
   const allMatching = new ArrayCombination(Object.values(filtered))
+
+  console.log('filtered', filtered)
+  console.log('allMatching', allMatching)
   
   useEffect(() => {
     if (onTermChanged) { onTermChanged(term) }
@@ -395,9 +400,10 @@ export const BaseSearchV2 = ({locale, renderingHome, data, onItemChoosen, onTerm
       {allMatching.length <= 0 ? '' : <>
         <div id="search-results" style={{position: 'absolute', zIndex: '200', backgroundColor: 'white', border: '1px solid black', width: '100%', padding: '0.5em', maxHeight: 'calc(100vh - 80px)', overflowY: 'scroll'}}>
           {Object.keys(filtered).map(key => {
+            if (filtered[key].length <= 0) {return ''}
             return <div key={key}>
               <h2 className="h001">{t(key)}</h2>
-              <ul>
+              <ul className="recipe-list">
                 {filtered[key].map(e => {
                   current += 1
                   return <div key={key+e.id}>
