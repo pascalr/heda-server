@@ -14,6 +14,29 @@ export function padStr(i) {
 }
 
 /**
+ * Used for read only
+ * 
+ * let x = new ArrayCombination([[1,2], [3,4]])
+ * console.log('1', x[0]) => 1
+ * console.log('2', x[1]) => 2 
+ * console.log('3', x[2]) => 3
+ * console.log('4', x[3]) => 4
+ */
+export class ArrayCombination {
+  constructor(arrays) {
+    let n = 0
+    for (let i = 0; i < arrays.length; i++) {
+      let array = arrays[i]
+      for (let j = 0; j < array.length; j++) {
+        this[n] = array[j]
+        n += 1
+      }
+    }
+    this.length = n
+  }
+}
+
+/**
 * Take an array and return another array with the elements randomly redistributed.
 * Source: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
 */

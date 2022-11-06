@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { UserThumbnailImage, RecipeThumbnailImage } from "./image"
 import { ajax, changeUrl } from "./utils"
 import { t } from "../translate"
-import { localeHref, getPathFromUrl } from "../utils"
+import { localeHref, getPathFromUrl, ArrayCombination } from "../utils"
 import { useTransition, Link, currentPathIsRoot } from "./lib"
 import { SearchWhiteIcon, PersonFillWhiteIcon, XLgWhiteIcon } from '../server/image.js'
 import { normalizeSearchText } from "./utils"
@@ -210,11 +210,9 @@ export const MainSearch = ({locale, renderingHome}) => {
       if (term.length >= 1 && data === undefined) {
         setData(null)
         ajax({url: localeHref("/fetch_search_data"), type: 'GET', success: (fetched) => {
-          let d = []
-          fetched.recipeKinds.forEach(recipeKind => {
-            d.push({
-              id: recipeKind.id,
-              name: recipeKind.name,
+          let d = {
+            Recipes: fetched.recipeKinds.map(recipeKind => ({
+              ...recipeKind,
               //url: localeHref("/k/"+recipeKind.id),
               elem: ({isSelected, item, selectedRef}) => <>
                 <li key={item.id} ref={isSelected ? selectedRef : null}>
@@ -227,14 +225,9 @@ export const MainSearch = ({locale, renderingHome}) => {
                   </a>
                 </li>
               </>
-            })
-
-          })
-          fetched.publicUsers.forEach(publicUser => {
-            d.push({
-              id: publicUser.id,
-              list: t('Public_members'),
-              name: publicUser.name,
+            })),
+            Public_members: fetched.publicUsers.map(publicUser => ({
+              ...publicUser,
               //url: localeHref("/u/"+publicUser.id),
               elem: ({isSelected, item, selectedRef}) => <>
                 <li key={item.id} className="list-group-item" ref={isSelected ? selectedRef : null}>
@@ -247,8 +240,8 @@ export const MainSearch = ({locale, renderingHome}) => {
                   </a>
                 </li>
               </>
-            })
-          })
+            })),
+          }
           setData(d)
         }, error: (errors) => {
           console.error('Fetch search results error...', errors.responseText)
@@ -338,9 +331,10 @@ export const BaseSearchV2 = ({locale, renderingHome, data, onItemChoosen, onTerm
   const selectedRef = useRef(null)
   const searchTransition = useTransition(isSearching)
 
-  console.log('data', data)
-  const allMatching = filterItems(data, term)
-  console.log('allMatching', allMatching)
+  //const allMatching = data ? filterItems([].concat(...Object.values(data)), term) : []
+  const filtered = {}
+  Object.keys(data||{}).forEach(key => {filtered[key] = filterItems(data[key], term)})
+  const allMatching = new ArrayCombination(Object.values(filtered))
   
   useEffect(() => {
     if (onTermChanged) { onTermChanged(term) }
@@ -369,7 +363,29 @@ export const BaseSearchV2 = ({locale, renderingHome, data, onItemChoosen, onTerm
       else { setSearch(''); setTerm('') }
     }
   }
+      //<h2 className="h001">{t('Public_members')}</h2>
+      //<ul>
 
+  //const previousList = null
+  //const printResults = allMatching.map((e,current) => {
+  //  const header = ''; const footer = '';
+  //  if (e.list !== previousList) {
+  //    return <>
+  //      <div key={e.list+e.id}>
+  //        {e.elem({item: allMatching[current], selectedRef, isSelected: selected===current})}
+  //      </div>
+  //    </>
+  //  //<ul>
+  //  } else {
+  //    return <>
+  //      <div key={e.list+e.id}>
+  //        {e.elem({item: allMatching[current], selectedRef, isSelected: selected===current})}
+  //      </div>
+  //    </>
+  //  }
+  //})
+
+  let current = -1
   const searchMode = <>
     <div style={{position: 'relative', margin: '0.5em 1em 0 1em'}}>
       <div className="d-flex justify-content-end">
@@ -378,9 +394,19 @@ export const BaseSearchV2 = ({locale, renderingHome, data, onItemChoosen, onTerm
       </div>
       {allMatching.length <= 0 ? '' : <>
         <div id="search-results" style={{position: 'absolute', zIndex: '200', backgroundColor: 'white', border: '1px solid black', width: '100%', padding: '0.5em', maxHeight: 'calc(100vh - 80px)', overflowY: 'scroll'}}>
-          {allMatching.map((e,current) => <div key={e.list+e.id}>
-            {e.elem({item: allMatching[current], selectedRef, isSelected: selected===current})}
-          </div>)}
+          {Object.keys(filtered).map(key => {
+            return <div key={key}>
+              <h2 className="h001">{t(key)}</h2>
+              <ul>
+                {filtered[key].map(e => {
+                  current += 1
+                  return <div key={key+e.id}>
+                    {e.elem({item: allMatching[current], selectedRef, isSelected: selected===current})}
+                  </div>
+                })}
+              </ul>
+            </div>
+          })}
         </div>
       </>}
     </div>
