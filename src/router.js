@@ -453,6 +453,9 @@ router.get('/k/:id', function(req, res, next) {
   o.recipe_kind = db.fetchRecord('recipe_kinds', {id: req.params.id}, attrs)
   if (!o.recipe_kind) {throw 'Unable to fetch recipe kind. Not existent.'}
 
+  // FIXME: recipes.*
+  o.recipes = db.prepare("SELECT recipes.*, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.is_public = 1 AND recipes.recipe_kind_id = ?;").all(o.recipe_kind.id)
+
   res.locals.gon = o
   res.render('show_recipe_kind');
 });

@@ -13,6 +13,7 @@ export const ShowRecipeKind = () => {
 
   const locale = getLocale()
   const [recipeKind, ] = useState(gon.recipe_kind)
+  const [recipes, ] = useState(gon.recipes)
 
   // TODO: Show credit
   //<div><RecipeMediumImage {...{recipe: recipeKind, images, showCredit: true}} /></div>
@@ -34,6 +35,9 @@ export const ShowRecipeKind = () => {
             <DescriptionTiptap {...{model: recipeKind, json_field: 'description_json', editable: false}} />
           </div>
         </div>
+      </div>
+      <div>
+        1 of {recipes.length} recipes
       </div>
     </div>
   </>

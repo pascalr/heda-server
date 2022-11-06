@@ -1,5 +1,8 @@
 Publier sur facebook une recette par semaine.
 
+Comment gérer la traduction des RecipeKind?
+Description described_id:integer described_kind:string json:string locale:string
+
 Faire une genre de tables des matières comme sur l'ancien site avec les livres pour show_user???
 Possibilité de faire des catégories sur show_user???
 
