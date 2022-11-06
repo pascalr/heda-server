@@ -39,6 +39,14 @@
   border-bottom: 1px solid #ddd;
   font-size: 0.9em;
 }
+.recipe-list-2 {
+  padding-left: 1rem; 
+}
+.recipe-list-2 li {
+  list-style-type: none;
+  padding: 0.4em;
+  font-size: 0.9em;
+}
 
 .recipe-body h2, #recipe-editor h2 {
   border-bottom: 1px solid black;

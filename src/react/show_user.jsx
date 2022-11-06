@@ -3,14 +3,49 @@ import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
 import { MainSearch } from './main_search'
-import { RecipeThumbnailImage } from "./image"
+import { RecipeThumbnailImage, RecipeSmallImage } from "./image"
 import { normalizeSearchText, join, capitalize } from "./utils"
 import { image_slug_variant_path } from "./routes"
 import { t } from "../translate"
 import { localeHref, getUrlParams } from "../utils"
 import { getLocale } from "./lib"
+import { parseIngredientsAndHeaders, extractFoodNameFromIngredient, prettyMinutes } from "../lib"
 
-const RecipeItem = ({recipe, images, recipeKinds}) => {
+const RecipeAttribute = ({recipe, attr, label}) => {
+  if (!recipe[attr]) {return ''}
+  return <div key={attr}>
+    <b>{t(label)}:</b> <span className="gray">{prettyMinutes(recipe[attr])}</span>
+  </div>
+}
+
+const RecipeSmallItem = ({recipe, images, recipeKinds}) => {
+  let ingredients = parseIngredientsAndHeaders(recipe.ingredients).filter(i => !i.header)
+  // TODO: Sort the ingredients by weight.
+  let mainIngredients = ingredients.slice(0,4)
+  let labels = mainIngredients.map(i => extractFoodNameFromIngredient(i.label)).join(', ')
+  if (ingredients.length != mainIngredients.length) {labels += ', ...'}
+  return (
+    <a href={localeHref("/r/"+recipe.id)} className="plain-link">
+      <li>
+        <div className="d-flex">
+          <RecipeSmallImage {...{recipe, recipeKinds, images}} />
+          <div style={{marginRight: '1em'}}></div>
+          <div>
+            <div className="fsr-22 ff-satisfy bold">{recipe.name}</div>
+            {ingredients.length === 0 ? '' :
+              <div style={{marginTop: '-0.5em'}}><b>{t('Ingredients')}:</b> <span className="gray">{labels}</span></div>
+            }
+            <RecipeAttribute {...{recipe, attr: 'preparation_time', label: 'Preparation'}} />
+            <RecipeAttribute {...{recipe, attr: 'cooking_time', label: 'Cooking'}} />
+            <RecipeAttribute {...{recipe, attr: 'total_time', label: 'Total'}} />
+          </div>
+        </div>
+      </li>
+    </a>
+  )
+}
+
+const RecipeThumbnailItem = ({recipe, images, recipeKinds}) => {
   return (
     <a href={localeHref("/r/"+recipe.id)} className="plain-link">
       <li style={{fontSize: '1.1rem'}}>
@@ -39,13 +74,13 @@ export const ShowUser = () => {
   return <>
     <MainSearch {...{locale}} />
     <div className="trunk">
-      <h3 className="h001">{t('Recipes_by')} {user.name}</h3>
-      <ul className="recipe-list">
-        {userRecipes.map(r => <RecipeItem key={r.id} {...{recipe: r, images, recipeKinds}} />)}
+      <h3>{t('Recipes_by')} {user.name}</h3>
+      <ul className="recipe-list-2">
+        {userRecipes.map(r => <RecipeSmallItem key={r.id} {...{recipe: r, images, recipeKinds}} />)}
       </ul>
       {favRecipes.length > 0 ? <h3 className="h001">{t('Favorites')}</h3> : ''}
-      <ul className="recipe-list">
-        {favRecipes.map(r => <RecipeItem key={r.id} {...{recipe: r, images, recipeKinds}} />)}
+      <ul className="recipe-list-2">
+        {favRecipes.map(r => <RecipeSmallItem key={r.id} {...{recipe: r, images, recipeKinds}} />)}
       </ul>
     </div>
   </>

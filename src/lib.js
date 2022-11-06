@@ -1,5 +1,11 @@
 import { normalizeSearchText } from "./react/utils.js"
 import Quantity from './quantity.js'
+import { t} from './translate.js'
+
+// gros oignon espagnol, finement coupé => gros oignon espagnol
+export function extractFoodNameFromIngredient(label) {
+  return label.split(',')[0]
+}
 
 export function needsPreposition(qty) {
   let q = new Quantity({raw: qty})
@@ -8,6 +14,14 @@ export function needsPreposition(qty) {
 
 export function quantityWithPreposition(qty, label, locale) {
   return qty + ' ' + prettyPreposition(qty, label, locale)
+}
+
+export function prettyMinutes(minutes) {
+  if (minutes === 0) {return '0 ' + t("minute")}
+  let hours = Math.floor(minutes / 60)
+  let mins = minutes % 60
+  let s = hours > 0 ? hours + ' ' + (hours === 1 ? t("hour") : t("hours")) + ' ' : ''
+  return (mins === 0) ? s : s + mins + ' ' + (mins === 1 ? t("minute") : t("minutes"))
 }
 
 /**

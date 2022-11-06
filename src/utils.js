@@ -177,11 +177,11 @@ export function extractNumberAtBeginning(str) {
   return (str.match(fraction_number) || str.match(number) || [])[0]
 }
 
-//  stringSnippet(str, maxLength=20) {
-//    if (str == null || str == '') {return ''}
-//    if (str.length <= maxLength) {return str}
-//    return str.slice(0,17)+'...'
-//  },
+//export function stringSnippet(str, maxLength=20) {
+//  if (str == null || str == '') {return ''}
+//  if (str.length <= maxLength) {return str}
+//  return str.slice(0,17)+'...'
+//}
 //
 //  stripHtml(html) {
 //    let tmp = document.createElement("div");

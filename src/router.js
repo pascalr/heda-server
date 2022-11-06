@@ -456,6 +456,7 @@ router.get('/u/:id', function(req, res, next) {
 
   if (!o.user) {throw 'Unable to fetch user. Not existent or not public.'}
 
+  // OPTIMIZE: No need to extract all RECIPE_ATTRS....
   o.recipes = db.fetchTable('recipes', {user_id: userId}, RECIPE_ATTRS)
   o.favorite_recipes = db.fetchTable('favorite_recipes', {user_id: userId}, ['list_id', 'recipe_id'])
   let recipeIds = o.recipes.map(r => r.id)
