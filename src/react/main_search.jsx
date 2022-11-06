@@ -102,7 +102,7 @@ export const PublicNavbar = ({locale, renderingHome, setIsSearching}) => {
   </>
 }
 
-export const AppSearch = ({user, otherProfiles, _csrf, recipes, friendsRecipes, users}) => {
+export const AppSearch = ({user, otherProfiles, _csrf, recipes, friendsRecipes, users, recipeKinds}) => {
 
   let locale = user.locale
   let renderingHome = currentPathIsRoot()
@@ -123,6 +123,22 @@ export const AppSearch = ({user, otherProfiles, _csrf, recipes, friendsRecipes, 
         elem: ({isSelected, item, selectedRef, setIsSearching}) => (
           <RecipeListItem key={item.id} {...{recipe: item, isSelected, users, user, selectedRef, setIsSearching}}/>
         ),
+      })),
+      Suggestions: recipeKinds.map(recipeKind => ({
+        ...recipeKind,
+        list: 'rk',
+        //url: localeHref("/k/"+recipeKind.id),
+        elem: ({isSelected, item, selectedRef}) => <>
+          <li key={item.id} ref={isSelected ? selectedRef : null}>
+            <a href={localeHref('/k/'+item.id)} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
+              <div className="d-flex align-items-center">
+                <RecipeThumbnailImage {...{recipe: item}} />
+                <div style={{marginRight: '0.5em'}}></div>
+                <div>{item.name}</div>
+              </div>
+            </a>
+          </li>
+        </>
       })),
     },
     printResults({selected, selectedRef, setIsSearching}) {

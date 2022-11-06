@@ -437,7 +437,8 @@ export const App = () => {
   const machineFoods = useHcuState(gon.machine_foods, {tableName: 'machine_foods'})
   const mixes = useHcuState(gon.mixes, {tableName: 'mixes'})
   const recipes = useHcuState(gon.recipes, {tableName: 'recipes'})
-  const recipeKinds = []
+  //const recipes = useHcuState(gon.recipe_kinds, {tableName: 'recipe_kinds'})
+  const [recipeKinds,] = useState(gon.recipe_kinds)
   const images = useHcuState(gon.images, {tableName: 'images'})
   const tags = useHcuState(gon.tags, {tableName: 'tags'})
   //const notes = gon.notes
@@ -494,7 +495,7 @@ export const App = () => {
 
     //<div className={(!page.page || page.page === 1) ? "wide-trunk" : "trunk"}>
   return (<>
-    <AppSearch {...{user, otherProfiles, _csrf, recipes, friendsRecipes, users}} />
+    <AppSearch {...{user, otherProfiles, _csrf, recipes, friendsRecipes, users, recipeKinds}} />
     <div className="trunk">
       {elem}
     </div>
