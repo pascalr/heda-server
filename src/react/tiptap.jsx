@@ -922,8 +922,8 @@ export const DescriptionTiptap = ({model, json_field, url, editable}) => {
   }, [editor])
 
   return (
-    <div className="recipe-kind-editor">
-      {editor && <BubbleMenu editor={editor}>
+    <div>
+      {editor && editable && <BubbleMenu editor={editor}>
         <BoldButton editor={editor} width={width} height={height} />
         <ItalicButton editor={editor} width={width} height={height} />
         <StrikeButton editor={editor} width={width} height={height} />

@@ -11,6 +11,36 @@ import { removeRecipe, AddToListMenu } from './recipe_index'
 import { t } from "../translate"
 import { handleError } from "../hcu"
 
+export const IngredientList = ({recipe}) => {
+
+  const ingredientsAndHeaders = parseIngredientsAndHeaders(recipe.ingredients)
+  const ingredients = ingredientsAndHeaders.filter(e => e.label || e.qty)
+
+  return <div id="ing_list">
+    <ul className="list-group">
+      {ingredientsAndHeaders.map((ingOrHeader,i) => {
+        if (ingOrHeader.qty == null && ingOrHeader.label == null) {
+          return <h3 key={ingOrHeader.key} style={{margin: "0", padding: "0.5em 0 0.2em 0"}}>
+            {ingOrHeader.header}
+          </h3>
+        } else {
+          const ing = ingOrHeader
+          let preposition = prettyPreposition(ing.qty, ing.label, locale)
+          return <li key={ing.key} className="list-group-item">
+            <span>{ing.qty} {preposition}<span className="food-name">{ing.label}</span></span>
+            <div className="dropdown d-inline-block float-end">
+               <img className="clickable" data-bs-toggle="dropdown" src="/icons/pencil-square.svg"/>
+              <div className="dropdown-menu">
+                <a className="dropdown-item disabled" href="#">Retirer</a>
+              </div>
+            </div>
+          </li>
+        }
+      })}
+    </ul>
+  </div>
+}
+
 export const RecipeAttributes = ({recipe, userName}) => {
   return <>
     <div className='d-flex'>
@@ -73,38 +103,10 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
   if (!recipe) {return ''}
 
   const noteIds = recipe.notes ? Object.values(recipe.notes).sort((a,b) => a.item_nb - b.item_nb).map(ing => ing.id) : []
-  const ingredientsAndHeaders = parseIngredientsAndHeaders(recipe.ingredients)
-  const ingredients = ingredientsAndHeaders.filter(e => e.label || e.qty)
   const toolIds = []
   const mix = mixes.find(m => m.recipe_id == recipe.id)
   const recipeTags = suggestions.filter(s => s.recipe_id == recipe.id).map(s => tags.find(t => t.id == s.tag_id))
   const favorite = favoriteRecipes.find(f => f.recipe_id == recipe.id)
-
-  const IngredientList = 
-    <div id="ing_list">
-      <ul className="list-group">
-        {ingredientsAndHeaders.map((ingOrHeader,i) => {
-          if (ingOrHeader.qty == null && ingOrHeader.label == null) {
-            return <h3 key={ingOrHeader.key} style={{margin: "0", padding: "0.5em 0 0.2em 0"}}>
-              {ingOrHeader.header}
-            </h3>
-          } else {
-            const ing = ingOrHeader
-            let preposition = prettyPreposition(ing.qty, ing.label, window.locale)
-            return <li key={ing.key} className="list-group-item">
-              <span>{ing.qty} {preposition}<span className="food-name">{ing.label}</span></span>
-              <div className="dropdown d-inline-block float-end">
-                 <img className="clickable" data-bs-toggle="dropdown" src="/icons/pencil-square.svg"/>
-                <div className="dropdown-menu">
-                  <a className="dropdown-item disabled" href="#">Retirer</a>
-                </div>
-              </div>
-            </li>
-          }
-        })}
-        <MixIngredients mix={mix} />
-      </ul>
-    </div>
 
   //const NoteList = noteIds.map(id => {
   //  const note = recipe.notes[id]
@@ -227,7 +229,7 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
       <div className="recipe-body">
 
         <h2 style={{flexGrow: '1'}}>{t('Ingredients')}</h2>
-        {IngredientList}
+        <IngredientList {...{recipe}} />
       
         <h2>{t('Instructions')}</h2>
         <RecipeTiptap recipe={recipe} editable={false} />

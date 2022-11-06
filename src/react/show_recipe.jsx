@@ -11,37 +11,9 @@ import { RecipeTiptap } from './tiptap'
 import { RecipeMediumImage } from "./image"
 import { localeHref } from "../utils"
 import { getLocale } from "./lib"
-import { RecipeAttributes } from "./recipe_viewer"
+import { RecipeAttributes, IngredientList } from "./recipe_viewer"
 
 export const RecipeViewer = ({recipe, images, user, locale}) => {
-
-  const ingredientsAndHeaders = parseIngredientsAndHeaders(recipe.ingredients)
-  const ingredients = ingredientsAndHeaders.filter(e => e.label || e.qty)
-
-  const IngredientList = 
-    <div id="ing_list">
-      <ul className="list-group">
-        {ingredientsAndHeaders.map((ingOrHeader,i) => {
-          if (ingOrHeader.qty == null && ingOrHeader.label == null) {
-            return <h3 key={ingOrHeader.key} style={{margin: "0", padding: "0.5em 0 0.2em 0"}}>
-              {ingOrHeader.header}
-            </h3>
-          } else {
-            const ing = ingOrHeader
-            let preposition = prettyPreposition(ing.qty, ing.label, locale)
-            return <li key={ing.key} className="list-group-item">
-              <span>{ing.qty} {preposition}<span className="food-name">{ing.label}</span></span>
-              <div className="dropdown d-inline-block float-end">
-                 <img className="clickable" data-bs-toggle="dropdown" src="/icons/pencil-square.svg"/>
-                <div className="dropdown-menu">
-                  <a className="dropdown-item disabled" href="#">Retirer</a>
-                </div>
-              </div>
-            </li>
-          }
-        })}
-      </ul>
-    </div>
 
   //<div className="d-flex" style={{gap: '5px', marginTop: '10px'}}>
   //  <a className="btn btn-outline-secondary" href="FIXME">
@@ -73,7 +45,7 @@ export const RecipeViewer = ({recipe, images, user, locale}) => {
       <div className="recipe-body">
 
         <h2 style={{flexGrow: '1'}}>{t('Ingredients')}</h2>
-        {IngredientList}
+        <IngredientList {...{recipe}} />
       
         <h2>{t('Instructions')}</h2>
         <RecipeTiptap recipe={recipe} editable={false} />

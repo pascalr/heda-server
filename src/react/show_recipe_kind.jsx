@@ -7,13 +7,35 @@ import { RecipeMediumImage } from "./image"
 import { MainSearch } from './main_search'
 import { getLocale } from "./lib"
 import { t } from "../translate"
-import { DescriptionTiptap } from "./tiptap"
+import { IngredientList } from "./recipe_viewer"
+import { DescriptionTiptap, RecipeTiptap } from "./tiptap"
+
+const Recipe = ({recipe}) => {
+  return <div className="p-2" style={{border: '1px solid black', borderRadius: '5px'}}>
+    <div className="p-2 ps-3 white" style={{backgroundColor: '#212529'}}>
+      <div className="float-end">par Pascal</div>
+      <div className="fs-12 bold">
+        {recipe.name}
+      </div>
+    </div>
+    <div className="recipe-body">
+
+      <h2 style={{flexGrow: '1'}}>{t('Ingredients')}</h2>
+      <IngredientList {...{recipe}} />
+    
+      <h2>{t('Instructions')}</h2>
+      <RecipeTiptap recipe={recipe} editable={false} />
+    </div>
+  </div>
+}
 
 export const ShowRecipeKind = () => {
 
   const locale = getLocale()
   const [recipeKind, ] = useState(gon.recipe_kind)
   const [recipes, ] = useState(gon.recipes)
+
+  const recipeIdx = 0;
 
   // TODO: Show credit
   //<div><RecipeMediumImage {...{recipe: recipeKind, images, showCredit: true}} /></div>
@@ -36,8 +58,16 @@ export const ShowRecipeKind = () => {
           </div>
         </div>
       </div>
+      <br/>
       <div>
-        1 of {recipes.length} recipes
+        {recipes && recipes.length > 0 ? <>
+          <div className='fs-13 mb-1'>
+            Recettes d'utilisateurs (1 de {recipes.length})
+            <button className="btn btn-sm btn-outline-primary mx-2">Précédante</button>
+            <button className="btn btn-sm btn-outline-primary">Suivante</button>
+          </div>
+          <Recipe {...{recipe: recipes[recipeIdx]}} />
+        </> : ''}
       </div>
     </div>
   </>
