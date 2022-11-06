@@ -4,13 +4,12 @@ import ReactDOM from 'react-dom'
 
 import { MainSearch } from './main_search'
 import { parseIngredientsAndHeaders, prettyPreposition } from "../lib"
-import { RecipeThumbnailImage } from "./image"
 import { normalizeSearchText, join, capitalize } from "./utils"
 import { image_slug_variant_path } from "./routes"
 import { t } from "../translate"
 import { RecipeTiptap } from './tiptap'
 import { RecipeMediumImage } from "./image"
-import { getUrlParams, localeHref } from "../utils"
+import { localeHref } from "../utils"
 import { getLocale } from "./lib"
 
 export const RecipeViewer = ({recipe, images, user, locale}) => {

@@ -815,13 +815,13 @@ const ArticleToolbar = ({ editor }) => {
 export const ArticleExtensions = [
   Bold, Italic, Document, Paragraph, Strike, Text, ArticleHeading, History, // Subscript, Superscript,
 ]
-export const ArticleTiptap = ({model, json_field, html_field, url}) => {
+export const ArticleTiptap = ({model, json_field, url}) => {
   const editor = useEditor({
     extensions: ArticleExtensions,
     content: JSON.parse(model[json_field]),
   })
   useEffect(() => {
-    let interval = registerEditorWithEffect(editor, model, json_field, html_field, url)
+    let interval = registerEditorWithEffect(editor, model, json_field, url)
     return () => clearInterval(interval);
   }, [editor])
 
@@ -876,7 +876,7 @@ export const RecipeTiptap = ({recipe, editable, ingredients}) => {
 }
 
 export const BubbleExtensions = [Bold, Italic, Strike, InlineDocument, History, Text]
-export const BubbleTiptap = ({content, model, json_field, html_field, url}) => {
+export const BubbleTiptap = ({content, model, json_field, url}) => {
 
   const width = 24
   const height = 24
@@ -887,7 +887,7 @@ export const BubbleTiptap = ({content, model, json_field, html_field, url}) => {
   })
 
   useEffect(() => {
-    let interval = registerEditorWithEffect(editor, model, json_field, html_field, url)
+    let interval = registerEditorWithEffect(editor, model, json_field, url)
     return () => clearInterval(interval);
   }, [editor])
 
@@ -905,18 +905,19 @@ export const BubbleTiptap = ({content, model, json_field, html_field, url}) => {
 }
 
 export const DescriptionExtensions = [Bold, Italic, Strike, Document, Paragraph, History, Text]
-export const DescriptionTiptap = ({content, model, json_field, html_field, url}) => {
+export const DescriptionTiptap = ({model, json_field, url, editable}) => {
 
   const width = 24
   const height = 24
 
   const editor = useEditor({
     extensions: DescriptionExtensions,
-    content: content,
+    content: JSON.parse(model[json_field]||'{}'),
+    editable,
   })
 
   useEffect(() => {
-    let interval = registerEditorWithEffect(editor, model, json_field, html_field, url)
+    let interval = registerEditorWithEffect(editor, model, json_field, url)
     return () => clearInterval(interval);
   }, [editor])
 
@@ -934,7 +935,7 @@ export const DescriptionTiptap = ({content, model, json_field, html_field, url})
 }
 
 // Returns the interval
-const registerEditorWithEffect = (editor, model, json_field, html_field, url) => {
+const registerEditorWithEffect = (editor, model, json_field, url) => {
   if (!editor) {return null}
   editor.on('update', ({ editor }) => {
     editor.isDirty = true

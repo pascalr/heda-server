@@ -444,6 +444,19 @@ router.get('/r/:id', function(req, res, next) {
   res.render('show_recipe');
 }, renderApp);
 
+router.get('/k/:id', function(req, res, next) {
+
+  //if (req.user && req.user.user_id) { return next(); }
+
+  let o = {}
+  let attrs = ['name', 'image_slug', 'description_json']
+  o.recipe_kind = db.fetchRecord('recipe_kinds', {id: req.params.id}, attrs)
+  if (!o.recipe_kind) {throw 'Unable to fetch recipe kind. Not existent.'}
+
+  res.locals.gon = o
+  res.render('show_recipe_kind');
+});
+
 router.get('/u/:id', function(req, res, next) {
   let userId = req.params.id
   let o = {}

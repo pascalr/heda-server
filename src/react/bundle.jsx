@@ -6,6 +6,7 @@ import { MainSearch } from './main_search'
 import { Home } from "./home"
 import { App } from "./app"
 import { ShowRecipe } from "./show_recipe"
+import { ShowRecipeKind } from "./show_recipe_kind"
 import { ShowUser } from "./show_user"
 import { getUrlParams } from "../utils"
 import { getLocale } from "./lib"
@@ -39,3 +40,6 @@ if (root) {ReactDOM.render(<ShowRecipe />, root)}
   
 root = document.getElementById('root-u')
 if (root) {ReactDOM.render(<ShowUser />, root)}
+
+root = document.getElementById('root-k')
+if (root) {ReactDOM.render(<ShowRecipeKind />, root)}
