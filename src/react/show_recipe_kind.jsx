@@ -55,12 +55,6 @@ export const ShowRecipeKind = () => {
   return <>
     <MainSearch {...{locale}} />
     <div className="trunk">
-      <nav aria-label="breadcrumb">
-        <ol className="breadcrumb" style={{marginBottom: '0.5em'}}>
-          <li className="breadcrumb-item"><a href={localeHref('/TODO')}>TODO</a></li>
-          <li className="breadcrumb-item active" aria-current="page">{recipeKind.name}</li>
-        </ol>
-      </nav>
       <div className="d-flex">
         <RecipeMediumImage {...{recipe: recipeKind}} />
         <div style={{marginRight: '1em'}}></div>
@@ -80,7 +74,7 @@ export const ShowRecipeKind = () => {
             <button className="btn btn-sm btn-outline-primary" disabled={recipeIdx === recipes.length-1} onClick={() => setRecipeIdx(recipeIdx+1)}>{t('Next_f')}</button>
           </div>
           <Recipe {...{recipe: recipes[recipeIdx]}} />
-        </> : ''}
+        </> : <p>{t('There_are_no_recipe_in_this_category_yet')}.</p>}
       </div>
     </div>
   </>

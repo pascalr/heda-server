@@ -1,6 +1,7 @@
 Publier sur facebook une recette par semaine.
 
 Search recipe kinds and not recipes.
+Suggestions carrousel recipe kinds and not recipes.
 
 Comment gérer la traduction des RecipeKind?
 Description described_id:integer described_kind:string json:string locale:string

@@ -41,6 +41,7 @@ export function tr(id, locale) {
     Previous_f: 'Previous',
   }
   let fr = {
+    There_are_no_recipe_in_this_category_yet: "Il n'y a aucune recette dans cette catégorie pour l'instant",
     Users_recipes: "Recettes d'utilisateurs",
     minutes: 'minutes',
     minute: 'minute',
