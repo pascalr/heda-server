@@ -61,7 +61,7 @@ export const ShowRecipeKind = () => {
       <div>
         {recipes && recipes.length > 0 ? <>
           <div className='fs-13 mb-1'>
-            {t('Users_recipes')} (1 {t('of')} {recipes.length})
+            {t('Users_recipes')} ({recipeIdx+1} {t('of')} {recipes.length})
             <button className="btn btn-sm btn-outline-primary mx-2" disabled={recipeIdx === 0} onClick={() => setRecipeIdx(recipeIdx-1)}>{t('Previous_f')}</button>
             <button className="btn btn-sm btn-outline-primary" disabled={recipeIdx === recipes.length-1} onClick={() => setRecipeIdx(recipeIdx+1)}>{t('Next_f')}</button>
           </div>
