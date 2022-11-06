@@ -132,6 +132,7 @@ img {
 .grey, .gray { color: grey; }
 
 .bold { font-weight: bold; }
+.underline { text-decoration: underline; }
 .italic { font-style: italic; }
 
 /* Relative keeps the position of the element in the page, but it takes up space. */

@@ -13,7 +13,7 @@ import { DescriptionTiptap, RecipeTiptap } from "./tiptap"
 const Recipe = ({recipe}) => {
   return <div className="p-2" style={{border: '1px solid black', borderRadius: '5px'}}>
     <div className="p-2 ps-3 white" style={{backgroundColor: '#212529'}}>
-      <div className="float-end">par Pascal</div>
+      <div className="float-end">{t('by')} <a className="plain-link underline white" href={'/u/'+recipe.user_id}>{recipe.user_name}</a></div>
       <div className="fs-12 bold">
         {recipe.name}
       </div>
