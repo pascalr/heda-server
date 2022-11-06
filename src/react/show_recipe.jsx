@@ -11,6 +11,7 @@ import { RecipeTiptap } from './tiptap'
 import { RecipeMediumImage } from "./image"
 import { localeHref } from "../utils"
 import { getLocale } from "./lib"
+import { RecipeAttributes } from "./recipe_viewer"
 
 export const RecipeViewer = ({recipe, images, user, locale}) => {
 
@@ -42,6 +43,18 @@ export const RecipeViewer = ({recipe, images, user, locale}) => {
       </ul>
     </div>
 
+  //<div className="d-flex" style={{gap: '5px', marginTop: '10px'}}>
+  //  <a className="btn btn-outline-secondary" href="FIXME">
+  //    <img src="/icons/printer.svg" width="16"></img>
+  //  </a>
+  //  <a className="btn btn-outline-secondary" href="FIXME">
+  //    <img src="/icons/share.svg" width="16"></img>
+  //  </a>
+  //  <a className="btn btn-outline-secondary" href="FIXME">
+  //    <img src="/icons/download.svg" width="16"></img>
+  //  </a>
+  //</div>
+
   return (<>
     <nav aria-label="breadcrumb">
       <ol className="breadcrumb" style={{margin: '-0.5em 0 0.5em 0'}}>
@@ -54,42 +67,7 @@ export const RecipeViewer = ({recipe, images, user, locale}) => {
         <div><RecipeMediumImage {...{recipe, images, showCredit: true}} /></div>
         <div style={{height: '20px', width: '0'}}></div>
         <div style={{width: '100%'}}>
-          <div className='d-flex'>
-            <h1>
-              <span className="recipe-title">{recipe.name}</span>
-            </h1>
-            <div className='flex-grow-1' />
-          </div>
-          <div style={{marginTop: '-0.8em', marginBottom: '1.2em'}}>
-            <span style={{color: 'gray'}}>{t('by')} <a href={localeHref("/u/"+user.id)}>{user.name}</a></span>
-          </div>
-          <div>
-            <b>{t('Preparation')} ({t('min')}): </b>
-            <span style={{color: 'gray'}}>{recipe.preparation_time}</span>
-          </div>
-          <div>
-            <b>{t('Cooking')} ({t('min')}): </b>
-            <span style={{color: 'gray'}}>{recipe.cooking_time}</span>
-          </div>
-          <div>
-            <b>{t('Total')} ({t('min')}): </b>
-            <span style={{color: 'gray'}}>{recipe.total_time}</span>
-          </div>
-          <div>
-            <b>{t('Servings')}: </b>
-            <span style={{color: 'gray'}}>{recipe.raw_servings}</span>
-          </div>
-          <div className="d-flex" style={{gap: '5px', marginTop: '10px'}}>
-            <a className="btn btn-outline-secondary" href="FIXME">
-              <img src="/icons/printer.svg" width="16"></img>
-            </a>
-            <a className="btn btn-outline-secondary" href="FIXME">
-              <img src="/icons/share.svg" width="16"></img>
-            </a>
-            <a className="btn btn-outline-secondary" href="FIXME">
-              <img src="/icons/download.svg" width="16"></img>
-            </a>
-          </div>
+          <RecipeAttributes {...{recipe, userName: user.name}} />
         </div>
       </div>
       <div className="recipe-body">
