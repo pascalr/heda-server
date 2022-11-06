@@ -37,51 +37,6 @@ const RecipeListItem = ({recipe, current, selected, users, user, selectedRef, se
   )
 }
 
-const SearchResults = ({searchData, selected, selectedRef}) => {
-  const {publicUsers, recipeKinds} = searchData
-  if (publicUsers.length + recipeKinds.length <= 0) {return ''}
-  return <>
-    {publicUsers.length <= 0 ? '' : <>
-      <h2 className="h001">{t('Public_members')}</h2>
-      <ul>
-        {publicUsers.map((user, current) => {
-          let isSelected = current == selected
-          return (
-            <li key={user.id} className="list-group-item" ref={isSelected ? selectedRef : null}>
-              <a href={localeHref(`/u/${user.id}`)} className={isSelected ? "selected" : undefined}>
-                <div className="d-flex align-items-center">
-                  <UserThumbnailImage {...{user}} />
-                  <div style={{marginRight: '0.5em'}}></div>
-                  {user.name}
-                </div>
-              </a>
-            </li>
-            )
-          })}
-      </ul>
-    </>}
-    {recipeKinds.length <= 0 ? '' : <>
-      <h2 className="h001">{t('Recipes')}</h2>
-      <ul className="recipe-list">
-        {recipeKinds.map((recipeKind, current) => {
-          let isSelected = (current+publicUsers.length) == selected
-          return (
-            <li key={recipeKind.id} ref={isSelected ? selectedRef : null}>
-              <a href={localeHref('/k/'+recipeKind.id)} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
-                <div className="d-flex align-items-center">
-                  <RecipeThumbnailImage {...{recipe: recipeKind}} />
-                  <div style={{marginRight: '0.5em'}}></div>
-                  <div>{recipeKind.name}</div>
-                </div>
-              </a>
-            </li>
-          )
-        })}
-      </ul>
-    </>}
-  </>
-}
-
 export const AppNavbar = ({locale, renderingHome, setIsSearching, otherProfiles, _csrf}) => {
   return <>
     <div className="float-start" style={{margin: '0.3em 0 0 0.5em'}}>
@@ -368,27 +323,6 @@ export const BaseSearchV2 = ({locale, renderingHome, data, onItemChoosen, onTerm
       else { setSearch(''); setTerm('') }
     }
   }
-      //<h2 className="h001">{t('Public_members')}</h2>
-      //<ul>
-
-  //const previousList = null
-  //const printResults = allMatching.map((e,current) => {
-  //  const header = ''; const footer = '';
-  //  if (e.list !== previousList) {
-  //    return <>
-  //      <div key={e.list+e.id}>
-  //        {e.elem({item: allMatching[current], selectedRef, isSelected: selected===current})}
-  //      </div>
-  //    </>
-  //  //<ul>
-  //  } else {
-  //    return <>
-  //      <div key={e.list+e.id}>
-  //        {e.elem({item: allMatching[current], selectedRef, isSelected: selected===current})}
-  //      </div>
-  //    </>
-  //  }
-  //})
 
   let current = -1
   const searchMode = <>
