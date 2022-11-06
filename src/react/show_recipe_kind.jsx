@@ -9,6 +9,16 @@ import { getLocale } from "./lib"
 import { t } from "../translate"
 import { IngredientList } from "./recipe_viewer"
 import { DescriptionTiptap, RecipeTiptap } from "./tiptap"
+import { prettyMinutes } from "../lib"
+
+const RecipeAttribute = ({recipe, attr, label}) => {
+  if (!recipe[attr]) {return ''}
+  return <>
+    <div className="d-inline-block" style={{width: '50%'}}>
+      <b>{t(label)}:</b> <span className="gray">{prettyMinutes(recipe[attr])}</span>
+    </div>
+  </>
+}
 
 const Recipe = ({recipe}) => {
   return <div className="p-2" style={{border: '1px solid black', borderRadius: '5px'}}>
@@ -19,6 +29,10 @@ const Recipe = ({recipe}) => {
       </div>
     </div>
     <div className="recipe-body">
+
+      <RecipeAttribute {...{recipe, attr: 'preparation_time', label: 'Preparation'}} />
+      <RecipeAttribute {...{recipe, attr: 'cooking_time', label: 'Cooking'}} />
+      <RecipeAttribute {...{recipe, attr: 'total_time', label: 'Total'}} />
 
       <h2 style={{flexGrow: '1'}}>{t('Ingredients')}</h2>
       <IngredientList {...{recipe}} />
