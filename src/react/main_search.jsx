@@ -8,6 +8,15 @@ import { useTransition, Link, currentPathIsRoot } from "./lib"
 import { SearchWhiteIcon, PersonFillWhiteIcon, XLgWhiteIcon } from '../server/image.js'
 import { normalizeSearchText } from "./utils"
 
+const minChars = 3
+const filterItems = (items, term) => {
+  if (!term || term.length < minChars || !items) {return []}
+  const normalized = normalizeSearchText(term)
+  return items.filter(r => (
+    r.name && ~normalizeSearchText(r.name).indexOf(normalized)
+  ))
+}
+
 const RecipeListItem = ({recipe, current, selected, users, user, selectedRef, setIsSearching}) => {
   let userName = null
   let isSelected = current == selected
@@ -143,20 +152,11 @@ export const AppSearch = ({user, otherProfiles, _csrf, recipes, friendsRecipes, 
 
   let locale = user.locale
   let renderingHome = currentPathIsRoot()
-  const minChars = 3
 
   // Ugly as fuck...
   const [matchingUserRecipes, setMatchingUserRecipes] = useState([])
   const [matchingFriendsRecipes, setMatchingFriendsRecipes] = useState([])
   const allMatching = [...matchingUserRecipes, ...matchingFriendsRecipes]
-
-  const filterItems = (items, term) => {
-    if (!term || term.length < minChars) {return []}
-    const normalized = normalizeSearchText(term)
-    return items.filter(r => (
-      r.name && ~normalizeSearchText(r.name).indexOf(normalized)
-    ))
-  }
 
   const config = {
     allMatching,
@@ -194,41 +194,48 @@ export const AppSearch = ({user, otherProfiles, _csrf, recipes, friendsRecipes, 
 
 export const MainSearch = ({locale, renderingHome}) => {
 
-  const [searchData, setSearchData] = useState(undefined)
   const [data, setData] = useState(undefined) // New way of doing this
-
-  const allMatching = searchData ? [...searchData.publicUsers, ...searchData.recipeKinds] : []
 
   const config = {
 
-    allMatching,
-    printResults({selected, selectedRef}) {
-      return <SearchResults {...{searchData, selected, selectedRef}}/>
-    },
-    onItemChoosen(selected) {
-      if (selected >= searchData.publicUsers.length) {
-        window.location.href = localeHref("/k/"+allMatching[selected].id)
+    data,
+    onItemChoosen(item, args) {
+      if (item.list === t('Public_members')) {
+        window.location.href = localeHref("/u/"+item.id)
       } else {
-        window.location.href = localeHref("/u/"+allMatching[selected].id)
+        window.location.href = localeHref("/k/"+item.id)
       }
     },
     onTermChanged(term) {
-      if (term.length >= 1 && searchData === undefined) {
-        setSearchData(null)
+      if (term.length >= 1 && data === undefined) {
+        setData(null)
         ajax({url: localeHref("/fetch_search_data"), type: 'GET', success: (fetched) => {
           let d = []
           fetched.recipeKinds.forEach(recipeKind => {
             d.push({
-              label: recipeKind.name,
-              url: localeHref("/k/"+recipeKind.id),
+              id: recipeKind.id,
+              name: recipeKind.name,
+              //url: localeHref("/k/"+recipeKind.id),
+              elem: ({isSelected, item, selectedRef}) => <>
+                <li key={item.id} ref={isSelected ? selectedRef : null}>
+                  <a href={localeHref('/k/'+item.id)} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
+                    <div className="d-flex align-items-center">
+                      <RecipeThumbnailImage {...{recipe: item}} />
+                      <div style={{marginRight: '0.5em'}}></div>
+                      <div>{item.name}</div>
+                    </div>
+                  </a>
+                </li>
+              </>
             })
 
           })
           fetched.publicUsers.forEach(publicUser => {
             d.push({
+              id: publicUser.id,
               list: t('Public_members'),
-              label: publicUser.name,
-              url: localeHref("/u/"+publicUser.id),
+              name: publicUser.name,
+              //url: localeHref("/u/"+publicUser.id),
               elem: ({isSelected, item, selectedRef}) => <>
                 <li key={item.id} className="list-group-item" ref={isSelected ? selectedRef : null}>
                   <a href={localeHref(`/u/${item.id}`)} className={isSelected ? "selected" : undefined}>
@@ -242,7 +249,7 @@ export const MainSearch = ({locale, renderingHome}) => {
               </>
             })
           })
-          setSearchData(fetched)
+          setData(d)
         }, error: (errors) => {
           console.error('Fetch search results error...', errors.responseText)
         }})
@@ -253,7 +260,7 @@ export const MainSearch = ({locale, renderingHome}) => {
     },
   }
 
-  return <BaseSearch {...{locale, renderingHome, ...config}} />
+  return <BaseSearchV2 {...{locale, renderingHome, ...config}} />
 }
 
 export const BaseSearch = ({locale, renderingHome, allMatching, onItemChoosen, printResults, onTermChanged, printNavbar}) => {
@@ -305,6 +312,75 @@ export const BaseSearch = ({locale, renderingHome, allMatching, onItemChoosen, p
       {allMatching.length <= 0 ? '' : <>
         <div id="search-results" style={{position: 'absolute', zIndex: '200', backgroundColor: 'white', border: '1px solid black', width: '100%', padding: '0.5em', maxHeight: 'calc(100vh - 80px)', overflowY: 'scroll'}}>
           {printResults({selected, selectedRef, setIsSearching})}
+        </div>
+      </>}
+    </div>
+  </>
+
+  return (<>
+    <nav style={{backgroundColor: 'rgb(33, 37, 41)', marginBottom: '0.5em', borderBottom: '1px solid rgb(206, 226, 240)'}}>
+      <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0', height: '52px'}}>
+        {isSearching ? searchMode : printNavbar({setIsSearching})}
+      </div>
+    </nav>
+  </>)
+}
+
+export const BaseSearchV2 = ({locale, renderingHome, data, onItemChoosen, onTermChanged, printNavbar}) => {
+
+  // Search is the text shown in the input field
+  // Term is the term currently used to filter the search
+  const [search, setSearch] = useState('')
+  const [term, setTerm] = useState('')
+  const [selected, setSelected] = useState(-1)
+  const [isSearching, setIsSearching] = useState(false)
+  const inputField = useRef(null)
+  const selectedRef = useRef(null)
+  const searchTransition = useTransition(isSearching)
+
+  console.log('data', data)
+  const allMatching = filterItems(data, term)
+  console.log('allMatching', allMatching)
+  
+  useEffect(() => {
+    if (onTermChanged) { onTermChanged(term) }
+  }, [term])
+
+  useEffect(() => {
+    if (isSearching) { inputField.current.focus() }
+  }, [isSearching])
+  
+  useEffect(() => {
+    //displayRef.current.scrollTop = 56.2*(selected||0)
+    if (selectedRef.current) { selectedRef.current.scrollIntoView(false) }
+  }, [selected])
+
+  let select = (pos) => {
+    setSelected(pos)
+    setSearch(pos == -1 ? '' : allMatching[pos].name)
+  }
+
+  let onKeyDown = ({key}) => {
+    if (key == "ArrowDown") {select(selected >= allMatching.length-1 ? -1 : selected+1)}
+    else if (key == "ArrowUp") {select(selected < 0 ? allMatching.length-1 : selected-1)}
+    else if (key == "Enter") {if (onItemChoosen) {onItemChoosen(allMatching[selected], {setIsSearching})}}
+    else if (key == "Escape") {
+      if (!term || term == '') { setIsSearching(false) }
+      else { setSearch(''); setTerm('') }
+    }
+  }
+
+  const searchMode = <>
+    <div style={{position: 'relative', margin: '0.5em 1em 0 1em'}}>
+      <div className="d-flex justify-content-end">
+        <input id="search-input" ref={inputField} type="search" placeholder={`${t('Search')}...`} onChange={(e) => {setTerm(e.target.value); setSearch(e.target.value)}} autoComplete="off" className="plain-input white ps-1" style={{borderBottom: '2px solid white', width: searchTransition ? "100%" : "10px", transition: 'width 1s'}} onKeyDown={onKeyDown} value={search}/>
+        <img className="clickable ps-2" src={XLgWhiteIcon} width="36" onClick={() => setIsSearching(false)}/>
+      </div>
+      {allMatching.length <= 0 ? '' : <>
+        <div id="search-results" style={{position: 'absolute', zIndex: '200', backgroundColor: 'white', border: '1px solid black', width: '100%', padding: '0.5em', maxHeight: 'calc(100vh - 80px)', overflowY: 'scroll'}}>
+          {allMatching.map((e,current) => <div key={e.list+e.id}>
+            {e.elem({item: allMatching[current], selectedRef, isSelected: selected===current})}
+          </div>)}
         </div>
       </>}
     </div>
