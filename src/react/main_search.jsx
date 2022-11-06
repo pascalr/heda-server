@@ -28,13 +28,14 @@ const RecipeListItem = ({recipe, current, selected, users, user, selectedRef, se
   )
 }
 
-const SearchResults = ({searchResults, selected, selectedRef}) => {
-  if (searchResults.users.length + searchResults.recipes.length <= 0) {return ''}
+const SearchResults = ({searchData, selected, selectedRef}) => {
+  const {publicUsers, recipeKinds} = searchData
+  if (publicUsers.length + recipeKinds.length <= 0) {return ''}
   return <>
-    {searchResults.users.length <= 0 ? '' : <>
+    {publicUsers.length <= 0 ? '' : <>
       <h2 className="h001">{t('Public_members')}</h2>
       <ul>
-        {searchResults.users.map((user, current) => {
+        {publicUsers.map((user, current) => {
           let isSelected = current == selected
           return (
             <li key={user.id} className="list-group-item" ref={isSelected ? selectedRef : null}>
@@ -50,18 +51,18 @@ const SearchResults = ({searchResults, selected, selectedRef}) => {
           })}
       </ul>
     </>}
-    {searchResults.recipes.length <= 0 ? '' : <>
+    {recipeKinds.length <= 0 ? '' : <>
       <h2 className="h001">{t('Recipes')}</h2>
       <ul className="recipe-list">
-        {searchResults.recipes.map((recipe, current) => {
-          let isSelected = (current+searchResults.users.length) == selected
+        {recipeKinds.map((recipeKind, current) => {
+          let isSelected = (current+publicUsers.length) == selected
           return (
-            <li key={recipe.id} ref={isSelected ? selectedRef : null}>
-              <a href={localeHref('/r/'+recipe.id)} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
+            <li key={recipeKind.id} ref={isSelected ? selectedRef : null}>
+              <a href={localeHref('/k/'+recipeKind.id)} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
                 <div className="d-flex align-items-center">
-                  <RecipeThumbnailImage {...{recipe}} />
+                  <RecipeThumbnailImage {...{recipe: recipeKind}} />
                   <div style={{marginRight: '0.5em'}}></div>
-                  <div><div>{recipe.name}</div><div className="h002">{t('by_2')} {recipe.user_name}</div></div>
+                  <div>{recipeKind.name}</div>
                 </div>
               </a>
             </li>
@@ -193,33 +194,58 @@ export const AppSearch = ({user, otherProfiles, _csrf, recipes, friendsRecipes, 
 
 export const MainSearch = ({locale, renderingHome}) => {
 
-  const [searchResults, setSearchResults] = useState({users: [], recipes: []})
+  const [searchData, setSearchData] = useState(undefined)
+  const [data, setData] = useState(undefined) // New way of doing this
 
-  const allMatching = [...searchResults.users, ...searchResults.recipes]
+  const allMatching = searchData ? [...searchData.publicUsers, ...searchData.recipeKinds] : []
 
   const config = {
 
     allMatching,
     printResults({selected, selectedRef}) {
-      return <SearchResults {...{searchResults, selected, selectedRef}}/>
+      return <SearchResults {...{searchData, selected, selectedRef}}/>
     },
     onItemChoosen(selected) {
-      if (selected >= searchResults.users.length) {
-        window.location.href = localeHref("/r/"+allMatching[selected].id)
+      if (selected >= searchData.publicUsers.length) {
+        window.location.href = localeHref("/k/"+allMatching[selected].id)
       } else {
         window.location.href = localeHref("/u/"+allMatching[selected].id)
       }
     },
     onTermChanged(term) {
-      console.log('term', term)
-      if (term.length >= 3) {
-        ajax({url: localeHref("/search?q="+term), type: 'GET', success: ({results}) => {
-          setSearchResults(results)
+      if (term.length >= 1 && searchData === undefined) {
+        setSearchData(null)
+        ajax({url: localeHref("/fetch_search_data"), type: 'GET', success: (fetched) => {
+          let d = []
+          fetched.recipeKinds.forEach(recipeKind => {
+            d.push({
+              label: recipeKind.name,
+              url: localeHref("/k/"+recipeKind.id),
+            })
+
+          })
+          fetched.publicUsers.forEach(publicUser => {
+            d.push({
+              list: t('Public_members'),
+              label: publicUser.name,
+              url: localeHref("/u/"+publicUser.id),
+              elem: ({isSelected, item, selectedRef}) => <>
+                <li key={item.id} className="list-group-item" ref={isSelected ? selectedRef : null}>
+                  <a href={localeHref(`/u/${item.id}`)} className={isSelected ? "selected" : undefined}>
+                    <div className="d-flex align-items-center">
+                      <UserThumbnailImage {...{user: item}} />
+                      <div style={{marginRight: '0.5em'}}></div>
+                      {item.name}
+                    </div>
+                  </a>
+                </li>
+              </>
+            })
+          })
+          setSearchData(fetched)
         }, error: (errors) => {
           console.error('Fetch search results error...', errors.responseText)
         }})
-      } else {
-        setSearchResults({users: [], recipes: []})
       }
     },
     printNavbar({setIsSearching}) {
@@ -230,7 +256,7 @@ export const MainSearch = ({locale, renderingHome}) => {
   return <BaseSearch {...{locale, renderingHome, ...config}} />
 }
 
-export const BaseSearch = ({locale, renderingHome, user, allMatching, onItemChoosen, printResults, onTermChanged, printNavbar}) => {
+export const BaseSearch = ({locale, renderingHome, allMatching, onItemChoosen, printResults, onTermChanged, printNavbar}) => {
 
   // Search is the text shown in the input field
   // Term is the term currently used to filter the search

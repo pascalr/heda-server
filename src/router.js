@@ -368,6 +368,12 @@ router.get('/fetch_recipe/:id', function(req, res, next) {
   if (!user || (!user.is_public && user.account_id !== req.user.account_id)) {throw "Can't fetch a private recipe."}
   res.json({...recipe, user_name: user.name})
 });
+router.get('/fetch_search_data', function(req, res, next) {
+
+  let recipeKinds = db.fetchTable('recipe_kinds', {}, ['name', 'image_slug'])
+  let publicUsers = db.fetchTable('users', {is_public: 1}, ['name', 'image_slug'])
+  res.json({recipeKinds, publicUsers})
+});
 
 // TODO: Do all the modifications inside a single transaction, and rollback if there is an error.
 router.patch('/batch_modify', function(req, res, next) {
