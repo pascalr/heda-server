@@ -123,7 +123,7 @@ export const AppSearch = ({user, otherProfiles, _csrf, recipes, friendsRecipes, 
             <RecipeListItem key={recipe.id} {...{recipe, current, selected, users, user, selectedRef, setIsSearching}}/>
           ))}
         </ul>
-        {matchingFriendsRecipes.length >= 1 ? <h2 className="h001">{t('Suggestions')}</h2> : ''}
+        {matchingFriendsRecipes.length >= 1 ? <h2 className="h001">{t('Same_account_recipes')}</h2> : ''}
         <ul className="recipe-list">
           {matchingFriendsRecipes.map((recipe, current) => (
             <RecipeListItem key={recipe.id} {...{recipe, current: current+matchingUserRecipes.length, selected, users, user, selectedRef, setIsSearching}}/>
