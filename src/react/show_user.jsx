@@ -27,18 +27,19 @@ const RecipeSmallItem = ({recipe, images, recipeKinds}) => {
   return (
     <a href={localeHref("/r/"+recipe.id)} className="plain-link">
       <li>
-        <div className="d-flex">
+        <div className="d-block d-sm-flex">
           <RecipeSmallImage {...{recipe, recipeKinds, images}} />
           <div style={{marginRight: '1em'}}></div>
           <div>
-            <div className="fsr-22 ff-satisfy bold">{recipe.name}</div>
+            <div className="fsr-22 ff-satisfy bold mt-2" style={{lineHeight: '1'}}>{recipe.name}</div>
             {ingredients.length === 0 ? '' :
-              <div style={{marginTop: '-0.5em'}}><b>{t('Ingredients')}:</b> <span className="gray">{labels}</span></div>
+              <div><b>{t('Ingredients')}:</b> <span className="gray">{labels}</span></div>
             }
             <RecipeAttribute {...{recipe, attr: 'preparation_time', label: 'Preparation'}} />
             <RecipeAttribute {...{recipe, attr: 'cooking_time', label: 'Cooking'}} />
             <RecipeAttribute {...{recipe, attr: 'total_time', label: 'Total'}} />
           </div>
+          <div style={{marginTop: '4em'}}></div>
         </div>
       </li>
     </a>
