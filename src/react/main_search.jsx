@@ -17,9 +17,8 @@ const filterItems = (items, term) => {
   ))
 }
 
-const RecipeListItem = ({recipe, current, selected, users, user, selectedRef, setIsSearching}) => {
+const RecipeListItem = ({recipe, isSelected, users, user, selectedRef, setIsSearching}) => {
   let userName = null
-  let isSelected = current == selected
   if (user.id != recipe.user_id) {
     const recipeUser = users.find(u => u.id == recipe.user_id)
     userName = recipeUser ? recipeUser.name : `user${recipe.user_id}`
@@ -108,13 +107,24 @@ export const AppSearch = ({user, otherProfiles, _csrf, recipes, friendsRecipes, 
   let locale = user.locale
   let renderingHome = currentPathIsRoot()
 
-  // Ugly as fuck...
-  const [matchingUserRecipes, setMatchingUserRecipes] = useState([])
-  const [matchingFriendsRecipes, setMatchingFriendsRecipes] = useState([])
-  const allMatching = [...matchingUserRecipes, ...matchingFriendsRecipes]
-
   const config = {
-    allMatching,
+
+    data: {
+      My_recipes: recipes.map(recipe => ({
+        ...recipe,
+        //url: localeHref("/k/"+recipeKind.id),
+        elem: ({isSelected, item, selectedRef, setIsSearching}) => (
+          <RecipeListItem key={item.id} {...{recipe: item, isSelected, users, user, selectedRef, setIsSearching}}/>
+        ),
+      })),
+      Same_account_recipes: friendsRecipes.map(recipe => ({
+        ...recipe,
+        //url: localeHref("/k/"+recipeKind.id),
+        elem: ({isSelected, item, selectedRef, setIsSearching}) => (
+          <RecipeListItem key={item.id} {...{recipe: item, isSelected, users, user, selectedRef, setIsSearching}}/>
+        ),
+      })),
+    },
     printResults({selected, selectedRef, setIsSearching}) {
       return <>
         {matchingUserRecipes.length >= 1 ? <h2 className="h001">{t('My_recipes')}</h2> : ''}
@@ -134,13 +144,8 @@ export const AppSearch = ({user, otherProfiles, _csrf, recipes, friendsRecipes, 
     printNavbar({setIsSearching}) {
       return <AppNavbar {...{locale, renderingHome, setIsSearching, otherProfiles, _csrf}}/>
     },
-    onTermChanged(term) {
-      let userRecipes = recipes.filter(r => r.user_id == user.id)
-      setMatchingUserRecipes(filterItems(userRecipes, term))
-      setMatchingFriendsRecipes(filterItems(friendsRecipes, term))
-    },
-    onItemChoosen(selected, {setIsSearching}) {
-      changeUrl("/r/"+allMatching[selected].id)
+    onItemChoosen(item, {setIsSearching}) {
+      changeUrl("/r/"+item.id)
       setIsSearching(false)
     },
   }
@@ -210,73 +215,10 @@ export const MainSearch = ({locale, renderingHome}) => {
     },
   }
 
-  return <BaseSearchV2 {...{locale, renderingHome, ...config}} />
+  return <BaseSearch {...{locale, renderingHome, ...config}} />
 }
 
-export const BaseSearch = ({locale, renderingHome, allMatching, onItemChoosen, printResults, onTermChanged, printNavbar}) => {
-
-  // Search is the text shown in the input field
-  // Term is the term currently used to filter the search
-  const [search, setSearch] = useState('')
-  const [term, setTerm] = useState('')
-  const [selected, setSelected] = useState(-1)
-  const [isSearching, setIsSearching] = useState(false)
-  const inputField = useRef(null)
-  const selectedRef = useRef(null)
-  const searchTransition = useTransition(isSearching)
-  
-  useEffect(() => {
-    if (onTermChanged) { onTermChanged(term) }
-  }, [term])
-
-  useEffect(() => {
-    if (isSearching) { inputField.current.focus() }
-  }, [isSearching])
-  
-  useEffect(() => {
-    //displayRef.current.scrollTop = 56.2*(selected||0)
-    if (selectedRef.current) { selectedRef.current.scrollIntoView(false) }
-  }, [selected])
-
-  let select = (pos) => {
-    setSelected(pos)
-    setSearch(pos == -1 ? '' : allMatching[pos].name)
-  }
-
-  let onKeyDown = ({key}) => {
-    if (key == "ArrowDown") {select(selected >= allMatching.length-1 ? -1 : selected+1)}
-    else if (key == "ArrowUp") {select(selected < 0 ? allMatching.length-1 : selected-1)}
-    else if (key == "Enter") {if (onItemChoosen) {onItemChoosen(selected, {setIsSearching})}}
-    else if (key == "Escape") {
-      if (!term || term == '') { setIsSearching(false) }
-      else { setSearch(''); setTerm('') }
-    }
-  }
-
-  const searchMode = <>
-    <div style={{position: 'relative', margin: '0.5em 1em 0 1em'}}>
-      <div className="d-flex justify-content-end">
-        <input id="search-input" ref={inputField} type="search" placeholder={`${t('Search')}...`} onChange={(e) => {setTerm(e.target.value); setSearch(e.target.value)}} autoComplete="off" className="plain-input white ps-1" style={{borderBottom: '2px solid white', width: searchTransition ? "100%" : "10px", transition: 'width 1s'}} onKeyDown={onKeyDown} value={search}/>
-        <img className="clickable ps-2" src={XLgWhiteIcon} width="36" onClick={() => setIsSearching(false)}/>
-      </div>
-      {allMatching.length <= 0 ? '' : <>
-        <div id="search-results" style={{position: 'absolute', zIndex: '200', backgroundColor: 'white', border: '1px solid black', width: '100%', padding: '0.5em', maxHeight: 'calc(100vh - 80px)', overflowY: 'scroll'}}>
-          {printResults({selected, selectedRef, setIsSearching})}
-        </div>
-      </>}
-    </div>
-  </>
-
-  return (<>
-    <nav style={{backgroundColor: 'rgb(33, 37, 41)', marginBottom: '0.5em', borderBottom: '1px solid rgb(206, 226, 240)'}}>
-      <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0', height: '52px'}}>
-        {isSearching ? searchMode : printNavbar({setIsSearching})}
-      </div>
-    </nav>
-  </>)
-}
-
-export const BaseSearchV2 = ({locale, renderingHome, data, onItemChoosen, onTermChanged, printNavbar}) => {
+export const BaseSearch = ({locale, renderingHome, data, onItemChoosen, onTermChanged, printNavbar}) => {
 
   // Search is the text shown in the input field
   // Term is the term currently used to filter the search
@@ -341,7 +283,7 @@ export const BaseSearchV2 = ({locale, renderingHome, data, onItemChoosen, onTerm
                 {filtered[key].map(e => {
                   current += 1
                   return <div key={key+e.id}>
-                    {e.elem({item: allMatching[current], selectedRef, isSelected: selected===current})}
+                    {e.elem({item: allMatching[current], selectedRef, isSelected: selected===current, setIsSearching})}
                   </div>
                 })}
               </ul>
