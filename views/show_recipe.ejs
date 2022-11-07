@@ -5,6 +5,10 @@
     <link rel="stylesheet" href="/build/prose_mirror.css">
     <link rel="stylesheet" href="/build/imports.css">
     <link rel="stylesheet" href="/build/toastr.min.css">
+    <meta property="og:title" content="<%= gon.recipe.name %>">
+    <meta property="og:image" content="<%= origin+'/imgs/original/'+gon.recipe.image_slug %>">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<%= origin+'/r/'+gon.recipe.id %>">
   </head>
   <body>
     <div id="root-r"></div>

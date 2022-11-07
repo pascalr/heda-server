@@ -310,7 +310,7 @@ router.get('/imgs/:variant/:slug', function(req, res, next) {
  
   let variant = req.params.variant
   if (!['small', 'thumb', 'original'].includes(variant)) {
-    return res.status(500).send("Image variant not supported. Expected medium, thumb or original. Was " + variant);
+    return res.status(500).send("Image variant not supported. Expected small, thumb or original. Was " + variant);
   }
 
 
@@ -529,6 +529,8 @@ router.get('/r/:id', function(req, res, next) {
 }, renderApp);
 
 router.get('/k/:id', function(req, res, next) {
+
+  console.log('req', req)
 
   if (req.user && req.user.user_id) { return next(); }
 
