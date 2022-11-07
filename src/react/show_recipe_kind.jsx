@@ -43,17 +43,11 @@ const Recipe = ({recipe}) => {
   </div>
 }
 
-export const ShowRecipeKind = () => {
+export const RecipeKindViewer = ({recipeKind, recipes}) => {
 
-  const locale = getLocale()
-  const [recipeKind, ] = useState(gon.recipe_kind)
-  const [recipes, ] = useState(gon.recipes)
   const [recipeIdx, setRecipeIdx] = useState(0)
 
-  // TODO: Show credit
-  //<div><RecipeMediumImage {...{recipe: recipeKind, images, showCredit: true}} /></div>
   return <>
-    <MainSearch {...{locale}} />
     <div className="trunk">
       <div className="d-flex">
         <RecipeMediumImage {...{recipe: recipeKind}} />
@@ -77,5 +71,19 @@ export const ShowRecipeKind = () => {
         </> : <p>{t('There_are_no_recipe_in_this_category_yet')}.</p>}
       </div>
     </div>
+  </>
+}
+
+export const ShowRecipeKind = () => {
+
+  const locale = getLocale()
+  const [recipeKind, ] = useState(gon.recipe_kind)
+  const [recipes, ] = useState(gon.recipes)
+
+  // TODO: Show credit
+  //<div><RecipeMediumImage {...{recipe: recipeKind, images, showCredit: true}} /></div>
+  return <>
+    <MainSearch {...{locale}} />
+    <RecipeKindViewer {...{recipeKind, recipes}} />
   </>
 }

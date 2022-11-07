@@ -21,28 +21,6 @@ import {EditMix, ShowMix} from './recipe_editor'
 import { AppSearch } from './main_search'
 import { useRouter } from "./router"
 
-// The advantage of using this instead of the number is if I need to search and to refactor, I can easy
-const PAGE_1 = 1 // HomePage, TagIndex no more
-const PAGE_2 = 2 // TagCategorySuggestions
-const PAGE_3 = 3 // EditTag
-const PAGE_4 = 4 // EditTags
-//const PAGE_5 = 5 // TrainFilter
-const PAGE_6 = 6 // MyRecipes
-const PAGE_7 = 7 // MyBooks
-const PAGE_8 = 8 // TagEditAllCategories
-const PAGE_9 = 9 // SuggestionsIndex
-const PAGE_10 = 10 // HedaIndex
-const PAGE_11 = 11 // Inventory
-const PAGE_12 = 12 // MixIndex
-const PAGE_13 = 13 // ShowMix
-const PAGE_14 = 14 // EditMix
-const PAGE_15 = 15 // ShowRecipe
-const PAGE_16 = 16 // EditRecipe
-const PAGE_17 = 17 // NewRecipe
-const PAGE_18 = 18
-const PAGE_19 = 19
-const PAGE_20 = 20
-
 const EditTag = ({tagId, tags}) => {
   const [name, setName] = useState('')
   //const filter = page && page.filterId ? recipeFilters.find(f => f.id == page.filterId) : null
@@ -71,7 +49,7 @@ const EditTagButton = ({tag}) => {
     </div>
   )
 }
-const EditTags = ({tags, machines}) => {
+const EditTags = ({tags}) => {
 
   //userTags = sortBy(userTags, "position") Not necessary, done on server side
   const [orderedTags, setOrderedTags] = useState(tags)
@@ -118,7 +96,6 @@ const EditTags = ({tags, machines}) => {
   }
 
   return (<>
-    <HomeTabs {...{machines}} />
     <div className="d-flex gap-15 align-items-center">
       <h2>{t('Tags')}</h2>
       <button type="button" className="btn btn-outline-primary btn-sm" onClick={createTag}>{t('Create_tag')}</button>
@@ -160,7 +137,7 @@ const HomeTabs = ({machines}) => {
     <ul className="nav nav-tabs mb-3">
       <HomeTab {...{title: t('Suggestions'), path: '/'}} />
       <HomeTab {...{title: t('My_recipes'), path: '/l'}} />
-      <HomeTab {...{title: t('Settings'), path: '/c'}} />
+      <HomeTab {...{title: t('Tags'), path: '/c'}} />
       {machines.map((machine) => (
         <HomeTab key={'m'+machine.id} {...{title: machine.name, path: '/m/'+machine.id}} />
       ))}
@@ -180,7 +157,7 @@ const RecipeCarrousel = ({items}) => {
   </>
 }
 
-const HomePage = ({tags, recipes, suggestions, favoriteRecipes, machines, recipeSuggestions}) => {
+const HomePage = ({tags, recipes, suggestions, favoriteRecipes, recipeSuggestions}) => {
 
   //let favList = {title: t("Favorites"), records: []}
   let toCookList = {title: t('To_cook_soon'), records: []}
@@ -204,7 +181,6 @@ const HomePage = ({tags, recipes, suggestions, favoriteRecipes, machines, recipe
   const sTags = sortBy(tags, "position")
 
   return <>
-    <HomeTabs {...{machines}} />
     {lists.map(list => {
       if (list.records.length <= 0) {return ''}
       return <div key={list.title}>
@@ -238,7 +214,6 @@ const HomePage = ({tags, recipes, suggestions, favoriteRecipes, machines, recipe
 
 const ShowRecipe = (props) => {
   return <>
-    <HomeTabs {...{machines: props.machines}} />
     <RecipeViewer {...props} />
   </>
 }
@@ -254,7 +229,6 @@ const EditRecipe = (props) => {
   }, [props.recipes])
 
   return <>
-    <HomeTabs machines={props.machines} />
     <div style={{marginTop: '-1rem'}}>
       <Link path={'/r/'+recipeId} className="m-2 btn btn-primary">{t('Ok')}</Link>
     </div>
@@ -373,7 +347,6 @@ const HedaIndex = ({machineId, machines}) => {
 const MyRecipes = (props) => {
 
   return (<>
-    <HomeTabs {...{machines: props.machines}} />
     <div className="d-flex gap-20 align-items-center">
       <h2>{t('My_recipes')}</h2>
       <Link path='/n' className="btn btn-outline-primary btn-sm">{t('New_recipe')}</Link>
@@ -453,17 +426,17 @@ export const App = () => {
   window.locale = user.locale
 
   const routes = [
-    {match: "/c", elem: () => <EditTags {...{tags, machines}} />},
+    {match: "/c", elem: () => <EditTags {...{tags}} />},
     {match: "/n", elem: () => <NewRecipe {...{recipeKinds}} />},
-    {match: "/l", elem: () => <MyRecipes {...{recipes, suggestions, favoriteRecipes, tags, mixes, recipeKinds, user, images, machines}} />},
+    {match: "/l", elem: () => <MyRecipes {...{recipes, suggestions, favoriteRecipes, tags, mixes, recipeKinds, user, images}} />},
     {match: "/r/:id", elem: ({id}) =>
-      <ShowRecipe {...{recipeId: id, recipes, mixes, favoriteRecipes, recipeKinds, images, user, users, suggestions, tags, machines}} />
+      <ShowRecipe {...{recipeId: id, recipes, mixes, favoriteRecipes, recipeKinds, images, user, users, suggestions, tags}} />
     },
     {match: "/t/:id", elem: ({id}) => 
       <EditTag {...{tagId: id, tags}} />
     },
     {match: "/e/:id", elem: ({id}) => 
-      <EditRecipe {...{recipeId: id, recipes, mixes, user, users, recipeKinds, images, machineFoods, favoriteRecipes, machines, locale}} />
+      <EditRecipe {...{recipeId: id, recipes, mixes, user, users, recipeKinds, images, machineFoods, favoriteRecipes, locale}} />
     },
     {match: "/m/:id/i", elem: ({id}) => 
       <Inventory {...{machineId: id, machines, machineFoods, containerQuantities, foods, containerFormats}} />
@@ -497,6 +470,7 @@ export const App = () => {
   return (<>
     <AppSearch {...{user, otherProfiles, _csrf, recipes, friendsRecipes, users, recipeKinds}} />
     <div className="trunk">
+      <HomeTabs machines={machines} />
       {elem}
     </div>
   </>)
@@ -789,3 +763,25 @@ document.addEventListener('DOMContentLoaded', () => {
   //[PAGE_7]: <MyBooks />,
   //[PAGE_8]: <TagEditAllCategories />,
   //[PAGE_9]: <SuggestionsIndex {...{tags, suggestions, recipes, recipeKinds}} />,
+//
+//// The advantage of using this instead of the number is if I need to search and to refactor, I can easy
+//const PAGE_1 = 1 // HomePage, TagIndex no more
+//const PAGE_2 = 2 // TagCategorySuggestions
+//const PAGE_3 = 3 // EditTag
+//const PAGE_4 = 4 // EditTags
+////const PAGE_5 = 5 // TrainFilter
+//const PAGE_6 = 6 // MyRecipes
+//const PAGE_7 = 7 // MyBooks
+//const PAGE_8 = 8 // TagEditAllCategories
+//const PAGE_9 = 9 // SuggestionsIndex
+//const PAGE_10 = 10 // HedaIndex
+//const PAGE_11 = 11 // Inventory
+//const PAGE_12 = 12 // MixIndex
+//const PAGE_13 = 13 // ShowMix
+//const PAGE_14 = 14 // EditMix
+//const PAGE_15 = 15 // ShowRecipe
+//const PAGE_16 = 16 // EditRecipe
+//const PAGE_17 = 17 // NewRecipe
+//const PAGE_18 = 18
+//const PAGE_19 = 19
+//const PAGE_20 = 20
