@@ -13,15 +13,53 @@ import { initHcu, useHcuState, handleError } from '../hcu'
 import { RecipeViewer } from "./show_recipe"
 import { ajax } from "./utils"
 import Translator, { TranslationsCacheStrategy, LogStrategy, StoreStrategy } from '../translator'
+import { RecipeThumbnailImage, RecipeMediumImage } from "./image"
+import { DescriptionTiptap } from "./tiptap"
 
 const AdminTabs = ({machines}) => {
   return <>
     <ul className="nav nav-tabs mb-3">
       <HomeTab {...{title: t('Admin'), path: '/admin'}} />
+      <HomeTab {...{title: t('RecipeKinds'), path: '/admin/ki'}} />
       <HomeTab {...{title: t('SQL'), path: '/admin/sql'}} />
       <HomeTab {...{title: t('Translations'), path: '/admin/translations'}} />
       <HomeTab {...{title: t('Translate Recipe'), path: '/admin/translate_recipe'}} />
     </ul>
+  </>
+}
+
+const EditRecipeKind = ({id, recipeKinds}) => {
+  let recipeKind = recipeKinds.find(k => k.id == id)
+  return <>
+    <div className='trunk'>
+      <h3>Edit recipe kind</h3>
+      <div className="d-block d-md-flex" style={{gap: '20px'}}>
+        <div><RecipeMediumImage {...{recipe: recipeKind}} /></div>
+        <div style={{height: '20px', width: '0'}}></div>
+        <div style={{width: '100%'}}>
+          <h1 className="ff-satisfy bold fs-25">{recipeKind.name}</h1>
+          <div className="fs-09">
+            <DescriptionTiptap {...{model: recipeKind, json_field: 'description_json'}} />
+          </div>
+        </div>
+      </div>
+    </div>
+  </>
+}
+
+const RecipeKindsIndex = ({recipeKinds}) => {
+  return <>
+    <div className='trunk'>
+      <h1>Recipe kinds</h1>
+      {recipeKinds.map(recipeKind => {
+        return <Link key={recipeKind.id} path={'/admin/ek/'+recipeKind.id} className="plain-link">
+          <div className="d-flex align-items-center mb-2">
+            <div><RecipeThumbnailImage {...{recipe: recipeKind}} /></div>
+            <div className='ms-2'>{recipeKind.name}</div>
+          </div>
+        </Link>
+      })}
+    </div>
   </>
 }
 
@@ -191,11 +229,14 @@ export const Admin = () => {
 
   const locale = getLocale()
   const translations = useHcuState(gon.translations, {tableName: 'translations'})
+  const recipeKinds = useHcuState(gon.recipe_kinds, {tableName: 'recipe_kinds'})
   const recipes = useHcuState([], {tableName: 'recipes'})
 
   const routes = [
     {match: "/admin/translations", elem: () => <TranslationsPage {...{translations}} />},
     {match: "/admin/sql", elem: () => <SQLPage />},
+    {match: "/admin/ki", elem: () => <RecipeKindsIndex {...{recipeKinds}} />},
+    {match: "/admin/ek/:id", elem: ({id}) => <EditRecipeKind {...{id, recipeKinds}} />},
     {match: "/admin/translate_recipe", elem: () => <TranslateRecipePage {...{recipes, locale, translations}} />},
     {match: "/admin", elem: () => <AdminPage />},
   ]

@@ -538,19 +538,18 @@ const ensureAdmin = (req, res, next) => {
   return next('Error account must be an admin.')
 }
 
+const renderAdmin = (req, res, next) => {
+  res.locals.gon = {
+    translations: db.fetchTable('translations', {}, ['from', 'to', 'original', 'translated']),
+    recipe_kinds: db.fetchTable('recipe_kinds', {}, ['name', 'description_json', 'image_slug']),
+  }
+  res.render('admin')
+}
+
 // ADMIN ROUTES
-router.get('/admin', ensureAdmin, function(req, res, next) {
-  res.locals.gon = {
-    translations: db.fetchTable('translations', {}, ['from', 'to', 'original', 'translated'])
-  }
-  res.render('admin')
-})
-router.get('/admin/:page', ensureAdmin, function(req, res, next) {
-  res.locals.gon = {
-    translations: db.fetchTable('translations', {}, ['from', 'to', 'original', 'translated'])
-  }
-  res.render('admin')
-})
+router.get('/admin', ensureAdmin, renderAdmin)
+router.get('/admin/:page', ensureAdmin, renderAdmin)
+router.get('/admin/:page/:id', ensureAdmin, renderAdmin)
 router.post('/backup_db', ensureAdmin, function(req, res, next) {
   db.doBackup()
   res.send('Database backup successful.')

@@ -43,7 +43,8 @@ const schema = {
   'foods' : {},
   'units' : {},
   'recipe_kinds': {
-    write_attrs: ['image_slug'],
+    write_attrs: ['image_slug', 'description_json', 'name'],
+    security_key: 'ADMIN_ONLY',
   },
   'translated_recipes': {
     write_attrs: ['name', 'servings_name', 'ingredients', 'json'],
