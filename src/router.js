@@ -511,19 +511,12 @@ router.get('/', function(req, res, next) {
   res.locals.disablePreview = req.query.disablePreview
   if (!req.user) {
     // Use this to generate gon, but then use JSON.stringify(gon) and copy paste directly inside home.jsx
-    let id; let ids1; let ids2;
-    if (res.locals.locale != 'fr') {
-      id = 773
-      ids1 = [771, 772, 774, 775, 776, 777, 778, 779]
-      ids2 = [780, 781, 782, 783]
-    } else {
-      id = 82
-      ids1 = [113, 129, 669, 88, 323, 670, 672, 689]
-      ids2 = [755, 757, 66, 558]
-    }
+    let id = (res.locals.locale != 'fr') ? 773 : 82
+    let ids1 = [96, 91, 98, 51];
+    let ids2 = [49, 108, 133, 66];
     res.locals.gon = {
-      recipes1: db.fetchTable('recipes', {id: ids1}, ['name', 'image_slug']),
-      recipes2: db.fetchTable('recipes', {id: ids2}, ['name', 'image_slug']),
+      recipes1: fetchRecipeKinds(db, {id: ids1}, res.locals.locale, false),
+      recipes2: fetchRecipeKinds(db, {id: ids2}, res.locals.locale, false),
       recipe: db.fetchRecord('recipes', {id}, RECIPE_ATTRS),
     }
     return res.render('home');
@@ -582,7 +575,7 @@ router.post('/translate_recipe/:id', ensureAdmin, function(req, res, next) {
 });
 router.post('/match_recipe_kinds', ensureAdmin, function(req, res, next) {
 
-  let recipeKinds = db.fetchTable('recipe_kinds', {}, ['name'])
+  let recipeKinds = db.fetchTable('recipe_kinds', {}, ['name_fr', 'name_en'])
   let recipes = db.fetchTable('recipes', {recipe_kind_id: null}, ['name', 'recipe_kind_id', 'user_id'])
   recipes.forEach(recipe => {
     let recipeKind = findRecipeKindForRecipeName(recipe.name, recipeKinds)

@@ -52,14 +52,14 @@ export const Home = () => {
       <div className="trunk">
         <h3>{t('Home_8')}</h3>
         <Carrousel {...{items: recipes1, preloadItem}}>{item => <>
-          <a href={"/r/"+item.id} className="plain-link">
+          <a href={localeHref("/k/"+item.id)} className="plain-link">
             <RecipeSmallImage {...{recipe: item}} />
             <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
           </a>
         </>}</Carrousel>
         <h3>{t('Many_meals')}</h3>
         <Carrousel {...{items: recipes2, preloadItem}}>{item => <>
-          <a href={"/r/"+item.id} className="plain-link">
+          <a href={localeHref("/k/"+item.id)} className="plain-link">
             <RecipeSmallImage {...{recipe: item}} />
             <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
           </a>
