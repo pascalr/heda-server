@@ -13,6 +13,7 @@ import {TextField, AutocompleteInput, TextInput, CollectionSelect, ImageField, I
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import {RecipeEditor} from "./recipe_editor"
 import {RecipeViewer} from "./recipe_viewer"
+import {RecipeKindViewer} from "./show_recipe_kind"
 import { initHcu, useHcuState } from '../hcu'
 import { RecipeThumbnailImage, RecipeSmallImage, RecipeMediumImage } from "./image"
 import { t } from "../translate"
@@ -210,6 +211,13 @@ const HomePage = ({tags, recipes, suggestions, favoriteRecipes, recipeSuggestion
       })}
     </> : ''}
   </> 
+}
+
+const ShowRecipeKind = ({recipeKindId, recipes, ...props}) => {
+  let recipeKind = props.recipeKinds.find(k => k.id == recipeKindId)
+  return <>
+    <RecipeKindViewer {...{...props, recipeKind}} />
+  </>
 }
 
 const ShowRecipe = (props) => {
@@ -431,6 +439,9 @@ export const App = () => {
     {match: "/l", elem: () => <MyRecipes {...{recipes, suggestions, favoriteRecipes, tags, mixes, recipeKinds, user, images}} />},
     {match: "/r/:id", elem: ({id}) =>
       <ShowRecipe {...{recipeId: id, recipes, mixes, favoriteRecipes, recipeKinds, images, user, users, suggestions, tags}} />
+    },
+    {match: "/k/:id", elem: ({id}) =>
+      <ShowRecipeKind {...{recipeKindId: id, recipes, recipeKinds, images}} />
     },
     {match: "/t/:id", elem: ({id}) => 
       <EditTag {...{tagId: id, tags}} />

@@ -369,6 +369,13 @@ router.get('/fetch_recipe/:id', function(req, res, next) {
   if (!user || (!user.is_public && user.account_id !== req.user.account_id)) {throw "Can't fetch a private recipe."}
   res.json({...recipe, user_name: user.name})
 });
+router.get('/fetch_recipe_kind/:id', function(req, res, next) {
+
+  let recipeKind = fetchRecipeKind(db, {id: req.params.id}, res.locals.locale)
+  // FIXME: SELECT recipes.*
+  let recipes = db.prepare("SELECT recipes.*, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.locale = ? AND users.is_public = 1 AND recipes.recipe_kind_id = ?;").all(res.locals.locale, recipeKind.id)
+  res.json({recipeKind, recipes})
+});
 router.get('/fetch_search_data', function(req, res, next) {
 
   let recipeKinds = fetchRecipeKinds(db, {}, res.locals.locale, false)
@@ -453,7 +460,7 @@ router.get('/r/:id', function(req, res, next) {
 
 router.get('/k/:id', function(req, res, next) {
 
-  //if (req.user && req.user.user_id) { return next(); }
+  if (req.user && req.user.user_id) { return next(); }
 
   let o = {}
   o.recipe_kind = fetchRecipeKind(db, {id: req.params.id}, res.locals.locale)
@@ -467,7 +474,7 @@ router.get('/k/:id', function(req, res, next) {
 
   res.locals.gon = o
   res.render('show_recipe_kind');
-});
+}, renderApp);
 
 router.get('/u/:id', function(req, res, next) {
   let userId = req.params.id
