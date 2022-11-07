@@ -12,7 +12,7 @@ import { localeHref, now, ensureIsArray } from './utils.js';
 import { tr } from './translate.js'
 import { translateRecipes } from '../tasks/translate_recipes.js'
 import Translator, { TranslationsCacheStrategy, LogStrategy } from './translator.js'
-import { findRecipeKindForRecipeName } from "./lib.js"
+import { findRecipeKindForRecipeName, fetchRecipeKinds, fetchRecipeKind } from "./lib.js"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -371,7 +371,7 @@ router.get('/fetch_recipe/:id', function(req, res, next) {
 });
 router.get('/fetch_search_data', function(req, res, next) {
 
-  let recipeKinds = db.fetchTable('recipe_kinds', {}, ['name', 'image_slug'])
+  let recipeKinds = fetchRecipeKinds(db, {}, res.locals.locale, false)
   let publicUsers = db.fetchTable('users', {is_public: 1}, ['name', 'image_slug'])
   res.json({recipeKinds, publicUsers})
 });
@@ -456,8 +456,7 @@ router.get('/k/:id', function(req, res, next) {
   //if (req.user && req.user.user_id) { return next(); }
 
   let o = {}
-  let attrs = ['name', 'image_slug', 'description_json']
-  o.recipe_kind = db.fetchRecord('recipe_kinds', {id: req.params.id}, attrs)
+  o.recipe_kind = fetchRecipeKind(db, {id: req.params.id}, res.locals.locale, false)
   if (!o.recipe_kind) {throw 'Unable to fetch recipe kind. Not existent.'}
 
   // FIXME: recipes.*
@@ -486,7 +485,7 @@ router.get('/u/:id', function(req, res, next) {
   let missingRecipeIds = o.favorite_recipes.map(r=>r.recipe_id).filter(id => !recipeIds.includes(id))
   let favRecipes = db.fetchTable('recipes', {id: missingRecipeIds}, RECIPE_ATTRS).filter(r => publicUsersIds.includes(r.user_id))
   o.recipes = [...o.recipes, ...favRecipes]
-  o.recipe_kinds = db.fetchTable('recipe_kinds', {}, ['name', 'description_json', 'image_slug'])
+  o.recipe_kinds = fetchRecipeKinds(db, {}, res.locals.locale)
 
   let slugs1 = o.recipes.map(r=>r.image_slug).filter(x=>x)
   let slugs2 = o.recipe_kinds.map(r=>r.image_slug).filter(x=>x)

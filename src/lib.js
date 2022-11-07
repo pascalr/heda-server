@@ -7,6 +7,35 @@ export function extractFoodNameFromIngredient(label) {
   return label.split(',')[0]
 }
 
+export function localeAttr(attr, locale) {
+  return attr+'_'+(locale||'en')
+}
+export function fetchRecipeKinds(db, conditions, locale, fetchDescription=true) {
+  console.log('HERERERERERERE')
+  console.log('HERERERERERERE')
+  console.log('HERERERERERERE')
+  console.log('locale', locale)
+  let attrs = [localeAttr('name', locale), 'image_slug']
+  if (fetchDescription) {attrs.push(localeAttr('json', locale))}
+  let records = db.fetchTable('recipe_kinds', conditions, attrs)
+  console.log('records', records)
+  let out = records.map(r => {
+    let obj = {id: r.id, image_slug: r.image_slug, name: r[localeAttr('name', locale)]}
+    if (fetchDescription) {obj.description_json = r[localeAttr('json', locale)]}
+    return obj
+  })
+  console.log('out', out)
+  return out
+}
+export function fetchRecipeKind(db, conditions, locale, fetchDescription=true) {
+  let attrs = [localeAttr('name', locale), 'image_slug']
+  if (fetchDescription) {attrs.push(localeAttr('json', locale))}
+  let r = db.fetchRecord('recipe_kinds', conditions, attrs)
+  let obj = {id: r.id, image_slug: r.image_slug, name: r[localeAttr('name', locale)]}
+  if (fetchDescription) {obj.description_json = r[localeAttr('json', locale)]}
+  return obj
+}
+
 export function needsPreposition(qty) {
   let q = new Quantity({raw: qty})
   return !!q.label
