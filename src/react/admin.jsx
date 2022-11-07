@@ -47,7 +47,13 @@ const EditRecipeKind = ({id, recipeKinds}) => {
   </>
 }
 
-const RecipeKindsIndex = ({recipeKinds}) => {
+const RecipeKindsIndex = ({recipes, recipeKinds, publicUsers}) => {
+  const missings = recipes.filter(r => !r.recipe_kind_id)
+
+  const createRecipeKind = (recipe) => {
+    window.hcu.createRecord('recipe_kinds', {name: recipe.name, image_slug: recipe.image_slug})
+  }
+
   return <>
     <div className='trunk'>
       <h1>Recipe kinds</h1>
@@ -58,6 +64,16 @@ const RecipeKindsIndex = ({recipeKinds}) => {
             <div className='ms-2'>{recipeKind.name}</div>
           </div>
         </Link>
+      })}
+      <h2>Recipes without categories</h2>
+      {missings.map(recipe => {
+        let u = publicUsers.find(u => u.id == recipe.user_id)
+        return <div className="d-flex align-items-center mb-2">
+          <div><RecipeThumbnailImage {...{recipe}} /></div>
+          <div className='ms-2'>{recipe.name}</div>
+          {u ? '' : <div className='error mx-2'>private</div>}
+          <button type="button" className="btn btn-primary" onClick={() => createRecipeKind(recipe)}>Créer</button>
+        </div>
       })}
     </div>
   </>
@@ -230,12 +246,13 @@ export const Admin = () => {
   const locale = getLocale()
   const translations = useHcuState(gon.translations, {tableName: 'translations'})
   const recipeKinds = useHcuState(gon.recipe_kinds, {tableName: 'recipe_kinds'})
-  const recipes = useHcuState([], {tableName: 'recipes'})
+  const recipes = useHcuState(gon.recipes||[], {tableName: 'recipes'})
+  const [publicUsers,] = useState(gon.public_users||[])
 
   const routes = [
     {match: "/admin/translations", elem: () => <TranslationsPage {...{translations}} />},
     {match: "/admin/sql", elem: () => <SQLPage />},
-    {match: "/admin/ki", elem: () => <RecipeKindsIndex {...{recipeKinds}} />},
+    {match: "/admin/ki", elem: () => <RecipeKindsIndex {...{recipeKinds, recipes, publicUsers}} />},
     {match: "/admin/ek/:id", elem: ({id}) => <EditRecipeKind {...{id, recipeKinds}} />},
     {match: "/admin/translate_recipe", elem: () => <TranslateRecipePage {...{recipes, locale, translations}} />},
     {match: "/admin", elem: () => <AdminPage />},

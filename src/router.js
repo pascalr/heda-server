@@ -542,6 +542,8 @@ const renderAdmin = (req, res, next) => {
   res.locals.gon = {
     translations: db.fetchTable('translations', {}, ['from', 'to', 'original', 'translated']),
     recipe_kinds: db.fetchTable('recipe_kinds', {}, ['name', 'description_json', 'image_slug']),
+    recipes: db.fetchTable('recipes', {}, ['name', 'recipe_kind_id', 'image_slug']),
+    public_users: db.fetchTable('users', {is_public: 1}, ['name']),
   }
   res.render('admin')
 }

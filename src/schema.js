@@ -45,6 +45,10 @@ const schema = {
   'recipe_kinds': {
     write_attrs: ['image_slug', 'description_json', 'name'],
     security_key: 'ADMIN_ONLY',
+    allow_create(user, obj) {
+      if (!user.is_admin) {return null}
+      return obj
+    },
   },
   'translated_recipes': {
     write_attrs: ['name', 'servings_name', 'ingredients', 'json'],
