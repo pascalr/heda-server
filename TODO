@@ -1,5 +1,9 @@
 Publier sur facebook une recette par semaine.
 
+Remove gon.js, merge with router.js
+
+Il y a 2 fois BBQ sauce dans les RecipeKind.
+
 Fix font glitch
 
 Suggest RecipeKinds instead of recipes, maybe, wait
