@@ -5,6 +5,7 @@ import toastr from 'toastr'
 
 import { TextInput, TextField } from "./form"
 import { Link, useOrFetchRecipe, getLocale } from "./lib"
+import { localeAttr } from "../lib"
 import { MainSearch } from './main_search'
 import { HomeTab } from './app'
 import { t } from "../translate"
@@ -31,6 +32,11 @@ const AdminTabs = ({machines}) => {
 const EditRecipeKind = ({id, recipeKinds}) => {
   let recipeKind = recipeKinds.find(k => k.id == id)
   // TODO: Editable image
+ 
+  //const translateRecipeKind = () => {
+  //}
+  //<button type="button" className="btn btn-primare" onClick={translateRecipeKind}>Translate FR to EN</button>
+  
   return <>
     <div className='trunk'>
       <h3>Edit recipe kind</h3>
@@ -43,25 +49,27 @@ const EditRecipeKind = ({id, recipeKinds}) => {
       <h2>English</h2>
       <h1 className="ff-satisfy bold fs-25"><TextField model={recipeKind} field='name_en' style={{width: '100%'}} /></h1>
       <div className="fs-09"><DescriptionTiptap {...{model: recipeKind, json_field: 'json_en'}} /></div>
+      <br/><br/>
     </div>
   </>
 }
 
-const RecipeKindsIndex = ({recipes, recipeKinds, publicUsers}) => {
+const RecipeKindsIndex = ({recipes, recipeKinds, publicUsers, locale}) => {
   const missings = recipes.filter(r => !r.recipe_kind_id)
 
   const createRecipeKind = (recipe) => {
-    window.hcu.createRecord('recipe_kinds', {name: recipe.name, image_slug: recipe.image_slug})
+    window.hcu.createRecord('recipe_kinds', {name_fr: recipe.name, image_slug: recipe.image_slug})
   }
 
   return <>
     <div className='trunk'>
       <h1>Recipe kinds</h1>
       {recipeKinds.map(recipeKind => {
+        let name = recipeKind[localeAttr('name', locale)]
         return <Link key={recipeKind.id} path={'/admin/ek/'+recipeKind.id} className="plain-link">
           <div className="d-flex align-items-center mb-2">
             <div><RecipeThumbnailImage {...{recipe: recipeKind}} /></div>
-            <div className='ms-2'>{recipeKind.name}</div>
+            <div className='ms-2'>{name}</div>
           </div>
         </Link>
       })}
@@ -264,7 +272,7 @@ export const Admin = () => {
   const routes = [
     {match: "/admin/translations", elem: () => <TranslationsPage {...{translations}} />},
     {match: "/admin/sql", elem: () => <SQLPage />},
-    {match: "/admin/ki", elem: () => <RecipeKindsIndex {...{recipeKinds, recipes, publicUsers}} />},
+    {match: "/admin/ki", elem: () => <RecipeKindsIndex {...{recipeKinds, recipes, publicUsers, locale}} />},
     {match: "/admin/ek/:id", elem: ({id}) => <EditRecipeKind {...{id, recipeKinds}} />},
     {match: "/admin/translate_recipe", elem: () => <TranslateRecipePage {...{recipes, locale, translations}} />},
     {match: "/admin", elem: () => <AdminPage {...{nbUsers, nbAccounts, publicUsers}} />},
