@@ -43,7 +43,7 @@ const schema = {
   'foods' : {},
   'units' : {},
   'recipe_kinds': {
-    write_attrs: ['image_slug', 'description_json', 'name'],
+    write_attrs: ['image_slug', 'name_fr', 'json_fr', 'name_en', 'json_en'],
     security_key: 'ADMIN_ONLY',
     allow_create(user, obj) {
       if (!user.is_admin) {return null}
