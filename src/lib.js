@@ -1,10 +1,19 @@
 import { normalizeSearchText } from "./react/utils.js"
 import Quantity from './quantity.js'
-import { t} from './translate.js'
+import { t, tr } from './translate.js'
 
 // gros oignon espagnol, finement coupé => gros oignon espagnol
 export function extractFoodNameFromIngredient(label) {
   return label.split(',')[0]
+}
+
+// Used for meta tag og:description
+export function descriptionRecipeIngredients(recipe, locale) {
+  if (!recipe.ingredients) {return ''}
+  const ingredientsAndHeaders = parseIngredientsAndHeaders(recipe.ingredients)
+  const ingredients = ingredientsAndHeaders.filter(e => e.label || e.qty)
+  if (ingredients.length === 0) {return ''}
+  return tr("Ingredients", locale) + ": " + ingredients.map(ing => extractFoodNameFromIngredient(ing.label)).join(" · ")
 }
 
 export function localeAttr(attr, locale) {

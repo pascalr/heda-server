@@ -128,3 +128,11 @@ If I change how something is done, THERE MUST BE A VALID REASON. I need a what.
 
 
 THE ABSOLUTE WORST THING I COULD DO RIGHT NOW IS TO TRY TO IMPROVE THE CODE IN THE HOPE THAT SOMEONE SEES IT WHEN I POST FOR A JOB... I WOULD GET STUCK IN A CONSTANT LOOP OF IMPROVEMENT AND DEPRESSION...
+
+## Grafana
+
+sudo systemctl start grafana-server
+sudo systemctl status grafana-server
+sudo vi /etc/grafana/grafana.ini # Set port to 3333 instead of 3000
+localhost:3333
+username: admin

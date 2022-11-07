@@ -11,7 +11,7 @@ import { localeHref, now, ensureIsArray } from './utils.js';
 import { tr } from './translate.js'
 import { translateRecipes } from '../tasks/translate_recipes.js'
 import Translator, { TranslationsCacheStrategy, LogStrategy } from './translator.js'
-import { findRecipeKindForRecipeName, fetchRecipeKinds, fetchRecipeKind } from "./lib.js"
+import { findRecipeKindForRecipeName, fetchRecipeKinds, fetchRecipeKind, descriptionRecipeIngredients } from "./lib.js"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -523,7 +523,8 @@ router.get('/r/:id', function(req, res, next) {
   ids = slugs.map(s => s.split('.')[0])
   attrs = ['author', 'source', 'filename', 'is_user_author', 'slug']
   o.images = db.fetchTable('images', {id: ids}, attrs)
-  
+ 
+  res.locals.descriptionRecipeIngredients = descriptionRecipeIngredients
   res.locals.gon = o
   res.render('show_recipe');
 }, renderApp);

@@ -4,6 +4,12 @@ Une recette que j'ai fait* cette semaine.
 C'est vraiment bon et c'est super facile à faire!
 Je n'ai même pas eu le temps de finir ma bière sur le balcon que Céline avait fini de la préparer!
 
+<meta property="og:description" content="<%= description %>">
+
+def description_recipe_ingredients(recipe)
+  "Ingrédients: " + recipe.ingredients_ordered_by_weight.map(&:name).join(" · ")
+end
+
 <meta property="og:locale" content="fr_CA">
 tests/db.js
 Sur la HomePage, expliquer que les recettes sont catégoriées et affichent les recettes des utilisateurs.
@@ -114,5 +120,3 @@ Faire une genre de tables des matières comme sur l'ancien site avec les livres 
 
 Aye c'est vrai il y avait les articles aussi sur hedacuisine!!!
 Si je refais quelque chose avec les articles, intégré le support de GPT-3 qui t'aide à rédiger la base des articles.
-
-<meta property="og:description" content="<%= description %>">
