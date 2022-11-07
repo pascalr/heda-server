@@ -60,6 +60,11 @@ const RecipeKindsIndex = ({recipes, recipeKinds, publicUsers, locale}) => {
   const createRecipeKind = (recipe) => {
     window.hcu.createRecord('recipe_kinds', {name_fr: recipe.name, image_slug: recipe.image_slug})
   }
+  const destroyRecipeKind = (recipeKind) => {
+    if (confirm("Êtes-vous certain de vouloir supprimer cette catégorie définitivement?")) {
+      window.hcu.destroyRecord(recipeKind)
+    }
+  }
 
   return <>
     <div className='trunk'>
@@ -70,6 +75,7 @@ const RecipeKindsIndex = ({recipes, recipeKinds, publicUsers, locale}) => {
           <div className="d-flex align-items-center mb-2">
             <div><RecipeThumbnailImage {...{recipe: recipeKind}} /></div>
             <div className='ms-2'>{name}</div>
+            <button type='button' className='btn ms-2 btn-sm btn-outline-secondary' onClick={() => destroyRecipeKind(recipeKind)}>Destroy</button>
           </div>
         </Link>
       })}
