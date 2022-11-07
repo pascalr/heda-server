@@ -582,11 +582,12 @@ router.post('/translate_recipe/:id', ensureAdmin, function(req, res, next) {
 router.post('/match_recipe_kinds', ensureAdmin, function(req, res, next) {
 
   let recipeKinds = db.fetchTable('recipe_kinds', {}, ['name'])
-  let recipes = db.fetchTable('recipes', {recipe_kind_id: null}, ['name', 'recipe_kind_id'])
+  let recipes = db.fetchTable('recipes', {recipe_kind_id: null}, ['name', 'recipe_kind_id', 'user_id'])
   recipes.forEach(recipe => {
     let recipeKind = findRecipeKindForRecipeName(recipe.name, recipeKinds)
     if (recipeKind) {
-      db.safeUpdateField('recipes', recipe.id, 'recipe_kind_id', recipeKind.id, req.user)
+      console.log('Found recipe kind ', recipeKind.name)
+      db.safeUpdateField('recipes', recipe.id, 'recipe_kind_id', recipeKind.id, {user_id: recipe.user_id})
     }
   })
   res.send('Ok done!')
