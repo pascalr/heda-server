@@ -542,7 +542,7 @@ const ensureAdmin = (req, res, next) => {
 const renderAdmin = (req, res, next) => {
   res.locals.gon = {
     translations: db.fetchTable('translations', {}, ['from', 'to', 'original', 'translated']),
-    recipe_kinds: db.fetchTable('recipe_kinds', {}, ['name', 'description_json', 'image_slug']),
+    recipe_kinds: db.fetchTable('recipe_kinds', {}, ['name_fr', 'json_fr', 'name_en', 'json_en', 'image_slug']),
     recipes: db.fetchTable('recipes', {}, ['name', 'recipe_kind_id', 'image_slug']),
     nbUsers: db.prepare('SELECT COUNT(*) FROM users').get()['COUNT(*)'],
     nbAccounts: db.prepare('SELECT COUNT(*) FROM accounts').get()['COUNT(*)'],

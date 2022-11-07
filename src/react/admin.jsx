@@ -30,19 +30,19 @@ const AdminTabs = ({machines}) => {
 
 const EditRecipeKind = ({id, recipeKinds}) => {
   let recipeKind = recipeKinds.find(k => k.id == id)
+  // TODO: Editable image
   return <>
     <div className='trunk'>
       <h3>Edit recipe kind</h3>
-      <div className="d-block d-md-flex" style={{gap: '20px'}}>
-        <div><RecipeMediumImage {...{recipe: recipeKind}} /></div>
-        <div style={{height: '20px', width: '0'}}></div>
-        <div style={{width: '100%'}}>
-          <h1 className="ff-satisfy bold fs-25">{recipeKind.name}</h1>
-          <div className="fs-09">
-            <DescriptionTiptap {...{model: recipeKind, json_field: 'description_json'}} />
-          </div>
-        </div>
-      </div>
+      <RecipeMediumImage {...{recipe: recipeKind}} />
+      <br/><br/>
+      <h2>Français</h2>
+      <h1 className="ff-satisfy bold fs-25"><TextField model={recipeKind} field='name_fr' style={{width: '100%'}} /></h1>
+      <div className="fs-09"><DescriptionTiptap {...{model: recipeKind, json_field: 'json_fr'}} /></div>
+      <br/><br/>
+      <h2>English</h2>
+      <h1 className="ff-satisfy bold fs-25"><TextField model={recipeKind} field='name_en' style={{width: '100%'}} /></h1>
+      <div className="fs-09"><DescriptionTiptap {...{model: recipeKind, json_field: 'json_en'}} /></div>
     </div>
   </>
 }
