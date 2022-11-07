@@ -18,7 +18,6 @@ export const db = new betterSqlite3(dbPath, { verbose: console.log })
 console.log('Opening database successful!')
 
 //import { findRecipeKindForRecipeName } from "./lib.js"
-import {RECIPE_ATTRS} from './gon.js';
 import utils from './utils.js';
 
 // TODO: Use long version instead of short version:
