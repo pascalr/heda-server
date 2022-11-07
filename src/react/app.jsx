@@ -8,7 +8,7 @@ import { findRecipeKindForRecipeName } from "../lib"
 import { RecipeList, RecipeIndex } from './recipe_index'
 import { changeUrl, ajax, normalizeSearchText, preloadImage, join, bindSetter, capitalize, isTrue } from "./utils"
 import { localeHref2, getUrlParams, sortBy, sortByDate, shuffle } from "../utils"
-import { icon_path, image_path, image_slug_variant_path, recipePath } from './routes'
+import { icon_path, image_path, image_slug_variant_path } from './routes'
 import {TextField, AutocompleteInput, TextInput, CollectionSelect, ImageField, ImageSelector} from './form'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import {RecipeEditor} from "./recipe_editor"
@@ -146,11 +146,12 @@ const HomeTabs = ({machines}) => {
   </>
 }
 
-const RecipeCarrousel = ({items}) => {
+const RecipeCarrousel = ({items, isRecipeKind}) => {
   const preloadItem = (i) => {if (i.image_slug) {preloadImage('/imgs/small/'+i.image_slug)}}
+  let p = isRecipeKind ? '/k/' : '/r/'
   return <>
     <Carrousel {...{items, preloadItem, maxItems: 3}}>{item => <>
-      <Link {...{className: 'plain-link', path: recipePath(item)}}>
+      <Link {...{className: 'plain-link', path: p+item.id}}>
         <RecipeSmallImage {...{recipe: item}} />
         <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
       </Link>
@@ -158,7 +159,7 @@ const RecipeCarrousel = ({items}) => {
   </>
 }
 
-const HomePage = ({tags, recipes, suggestions, favoriteRecipes, recipeSuggestions}) => {
+const HomePage = ({tags, recipes, suggestions, favoriteRecipes, recipeKinds}) => {
 
   //let favList = {title: t("Favorites"), records: []}
   let toCookList = {title: t('To_cook_soon'), records: []}
@@ -181,6 +182,7 @@ const HomePage = ({tags, recipes, suggestions, favoriteRecipes, recipeSuggestion
   }, {})
   const sTags = sortBy(tags, "position")
 
+  //<h2 className="fs-12 italic gray">{t('Suggestions_for_you')}</h2>
   return <>
     {lists.map(list => {
       if (list.records.length <= 0) {return ''}
@@ -200,16 +202,8 @@ const HomePage = ({tags, recipes, suggestions, favoriteRecipes, recipeSuggestion
         <RecipeCarrousel {...{items}}/>
       </div>
     })}
-    {Object.keys(recipeSuggestions||{}).length > 0 ? <>
-      <h2 className="fs-12 italic gray">{t('Suggestions_for_you')}</h2>
-      {Object.keys(recipeSuggestions||{}).map(tagName => {
-        let recipes = recipeSuggestions[tagName]
-        return <div key={tagName}>
-          <h2 className="fs-14 bold">{tagName}</h2>
-          <RecipeCarrousel {...{items: recipes}}/>
-        </div>
-      })}
-    </> : ''}
+    <h2 className="fs-14 bold">{t('Suggestions_for_you')}</h2>
+    <RecipeCarrousel {...{items: shuffle(recipeKinds).slice(0,10), isRecipeKind: true}}/>
   </> 
 }
 
@@ -437,7 +431,7 @@ export const App = () => {
   const foods = useHcuState(gon.foods, {tableName: 'foods'})
   const machines = useHcuState(gon.machines, {tableName: 'machines'})
   const friendsRecipes = gon.friends_recipes//.filter(r => !recipeIds.includes(r.id))
-  const recipeSuggestions = gon.recipe_suggestions
+  //const recipeSuggestions = gon.recipe_suggestions
   const users = gon.users
   const user = gon.user
   window.locale = user.locale
@@ -475,7 +469,7 @@ export const App = () => {
     },
   ]
   
-  const defaultElement = (params) => <HomePage {...{recipes, tags, suggestions, favoriteRecipes, machines, recipeSuggestions}} />
+  const defaultElement = (params) => <HomePage {...{recipes, tags, suggestions, favoriteRecipes, machines, recipeKinds}} />
 
   const elem = useRouter(routes, defaultElement)
 

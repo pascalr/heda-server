@@ -75,13 +75,14 @@ const fetchAll3 = (user) => {
   attrs = ['name', 'value', 'is_weight', 'is_volume', 'show_fraction']
   o.units = db.fetchTable('units', {}, attrs)
 
-  let suggestionTagsIds = [16,9,17]
-  o.suggestion_tags = db.fetchTable('tags', {id: suggestionTagsIds}, ['name'])
-  o.recipe_suggestions = {}
-  o.suggestion_tags.forEach(t => {
-    let results = db.prepare("SELECT recipes.id, recipes.name, recipes.image_slug FROM suggestions JOIN recipes ON suggestions.recipe_id = recipes.id JOIN users ON recipes.user_id = users.id WHERE users.is_public = 1 AND users.id <> ? AND recipes.image_slug IS NOT NULL AND recipes.image_slug <> '' AND suggestions.tag_id = ? ORDER BY random() LIMIT 10;").all(user.user_id, t.id)
-    if (results && results.length > 0) {o.recipe_suggestions[t.name] = results}
-  })
+  //let suggestionTagsIds = [16,9,17]
+  //o.suggestion_tags = db.fetchTable('tags', {id: suggestionTagsIds}, ['name'])
+  //o.recipe_suggestions = {}
+  //o.suggestion_tags.forEach(t => {
+  //  let results = db.prepare("SELECT recipes.id, recipes.name, recipes.image_slug FROM suggestions JOIN recipes ON suggestions.recipe_id = recipes.id JOIN users ON recipes.user_id = users.id WHERE users.is_public = 1 AND users.id <> ? AND recipes.image_slug IS NOT NULL AND recipes.image_slug <> '' AND suggestions.tag_id = ? ORDER BY random() LIMIT 10;").all(user.user_id, t.id)
+  //  if (results && results.length > 0) {o.recipe_suggestions[t.name] = results}
+  //})
+
   //o.recipe_suggestions = db.prepare("SELECT recipes.id, recipes.name, recipes.image_slug, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.is_public = 1 AND users.id <> ? AND recipes.image_slug IS NOT NULL AND recipes.image_slug <> '' ORDER BY random() LIMIT 10;").all(user.user_id)
 
   let slugs1 = o.recipes.map(r=>r.image_slug).filter(x=>x)
