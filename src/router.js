@@ -12,6 +12,7 @@ import { localeHref, now, ensureIsArray } from './utils.js';
 import { tr } from './translate.js'
 import { translateRecipes } from '../tasks/translate_recipes.js'
 import Translator, { TranslationsCacheStrategy, LogStrategy } from './translator.js'
+import { findRecipeKindForRecipeName } from "./lib.js"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -578,6 +579,19 @@ router.post('/translate_recipe/:id', ensureAdmin, function(req, res, next) {
     res.json(newRecipe)
   })
 });
+router.post('/match_recipe_kinds', ensureAdmin, function(req, res, next) {
+
+  let recipeKinds = db.fetchTable('recipe_kinds', {}, ['name'])
+  let recipes = db.fetchTable('recipes', {recipe_kind_id: null}, ['name', 'recipe_kind_id'])
+  recipes.forEach(recipe => {
+    let recipeKind = findRecipeKindForRecipeName(recipe.name, recipeKinds)
+    if (recipeKind) {
+      db.safeUpdateField('recipes', recipe.id, 'recipe_kind_id', recipeKind.id, req.user)
+    }
+  })
+  res.send('Ok done!')
+})
+
 router.post('/duplicate_recipe/:id', function(req, res, next) {
 
   let recipe = db.fetchRecord('recipes', {id: req.params.id}, RECIPE_ATTRS)

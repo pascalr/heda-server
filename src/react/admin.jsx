@@ -68,7 +68,7 @@ const RecipeKindsIndex = ({recipes, recipeKinds, publicUsers}) => {
       <h2>Recipes without categories</h2>
       {missings.map(recipe => {
         let u = publicUsers.find(u => u.id == recipe.user_id)
-        return <div className="d-flex align-items-center mb-2">
+        return <div key={recipe.id} className="d-flex align-items-center mb-2">
           <div><RecipeThumbnailImage {...{recipe}} /></div>
           <div className='ms-2'>{recipe.name}</div>
           {u ? '' : <div className='error mx-2'>private</div>}
@@ -88,6 +88,11 @@ const AdminPage = () => {
       toastr.info("Database backup up successfully.")
     }, error: handleError("Error backing up database.") })
   }
+  const matchRecipeKinds = () => {
+    ajax({url: '/match_recipe_kinds', type: 'POST', success: () => {
+      toastr.info("Recipe kinds matched successfully. Reload page to see changes.")
+    }, error: handleError("Error matching recipe kinds.") })
+  }
   const translateRecipes = () => {
     ajax({url: '/translate_recipes', type: 'POST', success: ({missings}) => {
       toastr.info("Translate recipes successfull.")
@@ -106,6 +111,7 @@ const AdminPage = () => {
       <br/><br/><h2>Manual commands</h2>
       <button className="btn btn-primary mx-2" type="button" onClick={backupDb}>Backup database</button>
       <button className="btn btn-primary mx-2" type="button" onClick={translateRecipes}>Translate recipes</button>
+      <button className="btn btn-primary mx-2" type="button" onClick={matchRecipeKinds}>Match recipe kinds</button>
       <br/><br/><br/><h2>Output</h2>
       {missings ? <>
         <h3>Missing translations</h3>

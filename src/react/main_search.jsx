@@ -251,9 +251,6 @@ export const BaseSearch = ({locale, renderingHome, data, onItemChoosen, onTermCh
   Object.keys(data||{}).forEach(key => {filtered[key] = filterItems(data[key], term)})
   const allMatching = new ArrayCombination(Object.values(filtered))
 
-  console.log('filtered', filtered)
-  console.log('allMatching', allMatching)
-  
   useEffect(() => {
     if (onTermChanged) { onTermChanged(term) }
   }, [term])
