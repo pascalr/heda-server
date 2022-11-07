@@ -45,6 +45,8 @@ const Recipe = ({recipe}) => {
 
 export const RecipeKindViewer = ({recipeKind, recipes}) => {
 
+  if (!recipeKind) {return ''}
+
   const [recipeIdx, setRecipeIdx] = useState(0)
 
   return <>

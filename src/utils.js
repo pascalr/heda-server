@@ -59,11 +59,31 @@ export function shuffle(array) {
 }
 
 /**
+ * Adds the locale to the given url.
+ * @param {String} href The url to add the locale to
+ * @param {String} locale The locale
+ * @return {String} The url with the locale added if possible
+ */
+export function localeHref2(href, locale) {
+
+  let path = getPathFromUrl(href);
+  let params = locale ? {locale} : {}
+  params = {...params, ...getUrlParams(href)}
+  let url = path
+  if (params && Object.keys(params).length >= 1) {
+    url += '?' + new URLSearchParams(params).toString()
+  }
+  return url
+}
+
+/**
  * Adds the locale to the given url by extracting from the current url if possible.
  * @param {String} href The url to add the locale to
  * @param {String} currentUrl The current url to extract the locale from
  * @return {String} The url with the locale added if possible
  */
+// FIXME: This is weird and bad. Deprecate this. CurrentUrl is just ugly.
+// DEPRECATED: use localeHref2 instead
 export function localeHref(href, currentUrl=null) {
 
   if (!currentUrl) {currentUrl = window.location.href}

@@ -7,7 +7,7 @@ import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, Link, currentPath
 import { findRecipeKindForRecipeName } from "../lib"
 import { RecipeList, RecipeIndex } from './recipe_index'
 import { changeUrl, ajax, normalizeSearchText, preloadImage, join, bindSetter, capitalize, isTrue } from "./utils"
-import { getUrlParams, sortBy, sortByDate, shuffle } from "../utils"
+import { localeHref2, getUrlParams, sortBy, sortByDate, shuffle } from "../utils"
 import { icon_path, image_path, image_slug_variant_path, recipePath } from './routes'
 import {TextField, AutocompleteInput, TextInput, CollectionSelect, ImageField, ImageSelector} from './form'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
@@ -213,10 +213,19 @@ const HomePage = ({tags, recipes, suggestions, favoriteRecipes, recipeSuggestion
   </> 
 }
 
-const ShowRecipeKind = ({recipeKindId, recipes, ...props}) => {
-  let recipeKind = props.recipeKinds.find(k => k.id == recipeKindId)
+const ShowRecipeKind = ({recipeKindId, ...props}) => {
+
+  const [recipeKind, setRecipeKind] = useState(null)
+  const [recipes, setRecipes] = useState(null)
+
+  useEffect(() => {
+    ajax({url: localeHref2('/fetch_recipe_kind/'+recipeKindId, props.locale), type: 'GET', success: (result) => {
+      setRecipeKind(result.recipeKind)
+      setRecipes(result.recipes)
+    }})
+  }, [recipeKindId])
   return <>
-    <RecipeKindViewer {...{...props, recipeKind}} />
+    <RecipeKindViewer {...{...props, recipeKind, recipes}} />
   </>
 }
 
@@ -441,7 +450,7 @@ export const App = () => {
       <ShowRecipe {...{recipeId: id, recipes, mixes, favoriteRecipes, recipeKinds, images, user, users, suggestions, tags}} />
     },
     {match: "/k/:id", elem: ({id}) =>
-      <ShowRecipeKind {...{recipeKindId: id, recipes, recipeKinds, images}} />
+      <ShowRecipeKind {...{recipeKindId: id, recipes, recipeKinds, images, locale}} />
     },
     {match: "/t/:id", elem: ({id}) => 
       <EditTag {...{tagId: id, tags}} />
