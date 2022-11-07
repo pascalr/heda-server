@@ -544,6 +544,8 @@ const renderAdmin = (req, res, next) => {
     translations: db.fetchTable('translations', {}, ['from', 'to', 'original', 'translated']),
     recipe_kinds: db.fetchTable('recipe_kinds', {}, ['name', 'description_json', 'image_slug']),
     recipes: db.fetchTable('recipes', {}, ['name', 'recipe_kind_id', 'image_slug']),
+    nbUsers: db.prepare('SELECT COUNT(*) FROM users').get()['COUNT(*)'],
+    nbAccounts: db.prepare('SELECT COUNT(*) FROM accounts').get()['COUNT(*)'],
     public_users: db.fetchTable('users', {is_public: 1}, ['name']),
   }
   res.render('admin')

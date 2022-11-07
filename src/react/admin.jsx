@@ -79,7 +79,7 @@ const RecipeKindsIndex = ({recipes, recipeKinds, publicUsers}) => {
   </>
 }
 
-const AdminPage = () => {
+const AdminPage = ({nbAccounts, nbUsers, publicUsers}) => {
 
   const [missings, setMissings] = useState(null)
 
@@ -108,6 +108,10 @@ const AdminPage = () => {
   return <>
     <div className="trunk">
       <h1>Dashboard</h1>
+      <b>Nb accounts:</b> {nbAccounts}<br/>
+      <b>Nb users:</b> {nbUsers}<br/>
+      <b>Public users:</b><br/>
+      {publicUsers.map(u => <div key={u.id}>{u.name}</div>)}
       <br/><br/><h2>Manual commands</h2>
       <button className="btn btn-primary mx-2" type="button" onClick={backupDb}>Backup database</button>
       <button className="btn btn-primary mx-2" type="button" onClick={translateRecipes}>Translate recipes</button>
@@ -254,6 +258,8 @@ export const Admin = () => {
   const recipeKinds = useHcuState(gon.recipe_kinds, {tableName: 'recipe_kinds'})
   const recipes = useHcuState(gon.recipes||[], {tableName: 'recipes'})
   const [publicUsers,] = useState(gon.public_users||[])
+  const [nbUsers,] = useState(gon.nbUsers)
+  const [nbAccounts,] = useState(gon.nbAccounts)
 
   const routes = [
     {match: "/admin/translations", elem: () => <TranslationsPage {...{translations}} />},
@@ -261,7 +267,7 @@ export const Admin = () => {
     {match: "/admin/ki", elem: () => <RecipeKindsIndex {...{recipeKinds, recipes, publicUsers}} />},
     {match: "/admin/ek/:id", elem: ({id}) => <EditRecipeKind {...{id, recipeKinds}} />},
     {match: "/admin/translate_recipe", elem: () => <TranslateRecipePage {...{recipes, locale, translations}} />},
-    {match: "/admin", elem: () => <AdminPage />},
+    {match: "/admin", elem: () => <AdminPage {...{nbUsers, nbAccounts, publicUsers}} />},
   ]
   const defaultElement = (params) => <TranslationsPage />
   
