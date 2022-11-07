@@ -56,7 +56,7 @@ const fetchAll3 = (user) => {
   let recipeIds = o.recipes.map(r => r.id)
   let missingRecipeIds = o.favorite_recipes.map(r=>r.recipe_id).filter(id => !recipeIds.includes(id))
   o.recipes = [...o.recipes, ...db.fetchTable('recipes', {id: missingRecipeIds}, RECIPE_ATTRS)]
-  o.recipe_kinds = fetchRecipeKinds(db, {}, profile.locale)
+  o.recipe_kinds = fetchRecipeKinds(db, {}, profile.locale, false)
   attrs = ['name', 'instructions', 'recipe_id', 'original_recipe_id']
   o.mixes = db.fetchTable('mixes', {user_id: user.user_id}, attrs)
   o.machine_users = db.fetchTable('machine_users', {user_id: user.user_id}, ['machine_id'])

@@ -456,7 +456,7 @@ router.get('/k/:id', function(req, res, next) {
   //if (req.user && req.user.user_id) { return next(); }
 
   let o = {}
-  o.recipe_kind = fetchRecipeKind(db, {id: req.params.id}, res.locals.locale, false)
+  o.recipe_kind = fetchRecipeKind(db, {id: req.params.id}, res.locals.locale)
   if (!o.recipe_kind) {throw 'Unable to fetch recipe kind. Not existent.'}
 
   // FIXME: recipes.*
@@ -488,7 +488,7 @@ router.get('/u/:id', function(req, res, next) {
   let missingRecipeIds = o.favorite_recipes.map(r=>r.recipe_id).filter(id => !recipeIds.includes(id))
   let favRecipes = db.fetchTable('recipes', {id: missingRecipeIds}, RECIPE_ATTRS).filter(r => publicUsersIds.includes(r.user_id))
   o.recipes = [...o.recipes, ...favRecipes]
-  o.recipe_kinds = fetchRecipeKinds(db, {}, res.locals.locale)
+  o.recipe_kinds = fetchRecipeKinds(db, {}, res.locals.locale, false)
 
   let slugs1 = o.recipes.map(r=>r.image_slug).filter(x=>x)
   let slugs2 = o.recipe_kinds.map(r=>r.image_slug).filter(x=>x)
