@@ -161,7 +161,11 @@ export const AppSearch = ({user, otherProfiles, _csrf, recipes, friendsRecipes, 
       return <AppNavbar {...{locale, renderingHome, setIsSearching, otherProfiles, _csrf}}/>
     },
     onItemChoosen(item, {setIsSearching}) {
-      changeUrl("/r/"+item.id)
+      if (item.list === 'rk') {
+        changeUrl("/k/"+item.id)
+      } else {
+        changeUrl("/r/"+item.id)
+      }
       setIsSearching(false)
     },
   }
