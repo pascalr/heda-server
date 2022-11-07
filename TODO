@@ -3,32 +3,19 @@ Une recette que j'ai fait* cette semaine.
 * Ok... Céline m'a aidé. Ok... j'ai coupé les légumes et Céline a fait tout le reste...
 C'est vraiment bon et c'est super facile à faire!
 Je n'ai même pas eu le temps de finir ma bière sur le balcon que Céline avait fini de la préparer!
-og:image
-og...
 
 <meta property="og:locale" content="fr_CA">
-
+tests/db.js
 Sur la HomePage, expliquer que les recettes sont catégoriées et affichent les recettes des utilisateurs.
-
 Il y a 2 fois BBQ sauce dans les RecipeKind.
-
 Fix font glitch
-
-Suggest RecipeKinds instead of recipes, maybe, wait
-
 /u/5 show inside app too
-
-db n'est pas tant safe, j'ai pu supprimer super facilement...
-
-Tiptap view does not work... It does not update... Why not? I thought I had it working at some point... Ça bug seulement dans /admin je crois.
-
-150 descriptions des RecipeKinds
-
+130 descriptions des RecipeKinds
 Bûche de noël, (2 oeuf) => (2 oeufs) !!!
-
 Une page My account
-
 Je pense que en anglais, il n'y a pas de «of» dans la liste des ingrédients, mais il devrait y en avoir dans le texte des instructions?
+
+Être plus clair sur le home page à quoi que l'application sert.
 
 Add analytics:
 https://www.openwebanalytics.com/
