@@ -530,8 +530,6 @@ router.get('/r/:id', function(req, res, next) {
 
 router.get('/k/:id', function(req, res, next) {
 
-  console.log('req', req)
-
   if (req.user && req.user.user_id) { return next(); }
 
   let o = {}
