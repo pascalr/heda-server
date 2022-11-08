@@ -324,7 +324,7 @@ router.get('/imgs/:variant/:slug', function(req, res, next) {
 router.post('/create_record/:table', function(req, res, next) {
  
   let o = req.body.record
-  let record = db.createRecord(req.params.table, o, req.user, {allow_write: ['user_id']})
+  let record = db.createRecord(req.params.table, o, req.user})
   res.json({...record})
 })
 
@@ -648,8 +648,7 @@ router.post('/translate_recipe/:id', ensureAdmin, function(req, res, next) {
   translator.translateRecipe(recipe).then(translated => {
     let newRecipe = {...recipe, ...translated}
     delete newRecipe.id;
-    newRecipe = db.createRecord('recipes', newRecipe, req.user, {allow_write: ['user_id', 'original_id']})
-    //newRecipe = db.createRecord('recipes', newRecipe, req.user, {allow_write: ['original_id']})
+    newRecipe = db.createRecord('recipes', newRecipe, req.user, {allow_write: ['original_id']})
     res.json(newRecipe)
   })
 });
@@ -674,8 +673,7 @@ router.post('/duplicate_recipe/:id', function(req, res, next) {
   if (!user || !user.is_public) {throw "Can't duplicate a recipe by a user who is not public."}
   let newRecipe = {...recipe, original_id: recipe.id}
   delete newRecipe.id;
-  newRecipe = db.createRecord('recipes', newRecipe, req.user, {allow_write: ['user_id', 'original_id']})
-  //newRecipe = db.createRecord('recipes', newRecipe, req.user, {allow_write: ['original_id']})
+  newRecipe = db.createRecord('recipes', newRecipe, req.user, {allow_write: ['original_id']})
   res.json(newRecipe)
 });
 
