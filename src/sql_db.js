@@ -6,6 +6,7 @@ import {now} from './utils.js';
 const getTableList = (schema) => {return Object.keys(schema)}
 const getAllowCreate = (schema, table) => {return schema[table].allow_create}
 const getWriteAttributes = (schema, table) => schema[table].write_attrs
+const getSecurityAttributes = (schema, table) => {return schema[table].security_attrs}
 
 const validAttr = (schema, table, field, value) => {
   let types = schema[table].attrs_types
@@ -75,24 +76,23 @@ const fetchStatement = (schema, tableName, conditions, attributes, options) => {
 
 //if (db.fetchTable) {throw "Can't overide fetchTable"}
 const sqlDb = {
-  setSchema(schema) {
-    this.___schema = schema
-  },
-  getSchema() {
-    return this.___schema
-  },
+  setSchema(schema) {this.___schema = schema},
+  getSchema() {return this.___schema},
+
   fetchTable(tableName, conditions, attributes, options={}) {
     let o = fetchStatement(this.getSchema(), tableName, conditions, attributes, options)
     if (!o) return []
     let [s, a] = o
     return this.prepare(s).all(...a)
   },
+
   fetchRecord(tableName, conditions, attributes, options={}) {
     let o = fetchStatement(this.getSchema(), tableName, conditions, attributes, options)
     if (!o) return null
     let [s, a] = o
     return db.prepare(s).get(...a)
   },
+
   doBackup() {
   
     let outDir = process.env.DB_BACKUP_DIR
@@ -108,27 +108,51 @@ const sqlDb = {
     this.backup(name)
     console.log('Database backup completed.')
   },
-  createRecord(table, unsafeObj, user, options={}) {
+
+  createRecord(table, obj, manual, options={}) {
     
     if (!table) {throw "Missing table for createRecord"}
   
     let schema = this.getSchema()
-    let obj = getAllowCreate(schema, table)(user, unsafeObj)
+    let securityAttrs = getSecurityAttributes(schema, table)
+    if (!securityAttrs) {throw "Missing security attributes in schema for table "+table}
+
+    let columns = getWriteAttributes(schema, table) || []
+    if (options.allow_write) {columns = [...columns, ...options.allow_write]}
+    let fields = Object.keys(obj).map(f => safe(f, columns))
+
+    securityAttrs.forEach(attr => {
+      obj[attr] = manual[attr]
+      fields.push(attr)
+    })
+    //let obj = getAllowCreate(schema, table)(user, unsafeObj)
     if (!obj) {throw "createRecord not allowed for current user"}
   
     let safeTable = safe(table, getTableList(schema))
     //obj = schemaHelper.beforeCreate(table, obj)
   
-    let fields = Object.keys(obj)
-    let columns = getWriteAttributes(schema, table) || []
-    if (options.allow_write) {columns = [...columns, ...options.allow_write]}
-    let query = 'INSERT INTO '+safeTable+' (created_at,updated_at,'+fields.map(f => safe(f, columns)).join(',')+') '
+    let query = 'INSERT INTO '+safeTable+' (created_at,updated_at,'+fields.join(',')+') '
     query += 'VALUES (?,?,'+fields.map(f=>'?').join(',')+')'
     let args = [now(), now(), ...fields.map(f => validAttr(schema, table, f, obj[f]))]
     
     let info = this.prepare(query).run(...args)
     if (info.changes != 1) {throw "Error creating record from in "+table+"."}
     return {...obj, id: info.lastInsertRowid}
+  },
+
+  findAndDestroyRecord(table, id, user) {
+    
+    if (!table) {throw "Missing table for findAndDestroyRecord"}
+  
+    //let schema = this.getSchema()
+    //let record = this.fetchRecord(table, {id: parseInt(id)}, schema[table].security_attrs)
+
+    //// TODO: Validate record can be destroyed
+  
+    //const q = 'DELETE FROM '+safe(table, schemaHelper.getTableList())+' WHERE '+key+' = ?'
+    //const [query, args] = addSafetyCondition(q, [val], user, schemaHelper.getSecurityKey(table))
+    //let info = db.prepare(query).run(...args)
+    //if (info.changes != 1) {throw "Error destroying record from table "+table+" with id "+id}
   },
 }
 function injectFunctions(obj, functionsObj) {

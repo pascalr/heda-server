@@ -8,6 +8,7 @@
   },
   "scripts": {
     "start": "node ./src/server.js",
+    "test:db": "node -r dotenv/config tests/db.js",
     "test:end_to_end": "node -r dotenv/config tests/end_to_end.js",
     "test:utils": "node -r dotenv/config tests/utils.js",
     "images:pull": "rsync -v --recursive root@heda-server.internal:/mnt/heda_volume/images/ volume/images/",

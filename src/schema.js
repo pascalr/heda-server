@@ -73,6 +73,7 @@ const schema = {
       obj.user_id = user.user_id
       return obj
     },
+    security_attrs: ['user_id'],
   },
   'users': {
     write_attrs: ['name', 'gender', 'image_slug', 'locale', 'is_public'],
