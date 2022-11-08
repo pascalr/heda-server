@@ -102,12 +102,6 @@ app.use(express.static(path.join(__dirname, '../node_modules/prosemirror-menu/st
 app.use(express.static(path.join(__dirname, '../node_modules/swiper/')));
 app.use(express.static(path.join(__dirname, '../public')));
 
-if (!fs.existsSync('./var')) {
-  fs.mkdirSync('./var')
-  fs.mkdirSync('./var/db')
-} else if (!fs.existsSync('./var/db')) {
-  fs.mkdirSync('./var/db')
-}
 app.use(session({
   secret: 'keyboard cat',
   resave: false, // don't save session if unmodified
