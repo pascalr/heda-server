@@ -182,6 +182,32 @@ const sqlDb = {
     if (info.changes != 1) {throw "Error destroying record from table "+table+" with id "+id}
   },
 
+  findAndUpdateRecord(table, old, updates, manual, options={}) {
+  
+    if (!table) {throw "Missing table for findAndUpdateRecord"}
+    
+    let id = parseInt(typeof old === 'object' ? old.id : old)
+    
+    let schema = this.getSchema()
+    let securityAttrs = getSecurityAttributes(schema, table)||[]
+    if (isNotAllowed(schema, table, manual)) {throw "Update record not allowed "+table+" id "+id}
+
+    let columns = getWriteAttributes(schema, table) || []
+    if (options.allow_write) {columns = [...columns, ...options.allow_write]}
+    let fields = Object.keys(updates).map(f => safe(f, columns))
+
+    let record = this.fetchTable(table, {id: id}, securityAttrs)
+
+    securityAttrs.forEach(attr => {
+      if (record[attr] != manual[attr]) {
+        throw "Update record not allowed because of security key "+attr
+      }
+    })
+  
+    let query = 'UPDATE '+safe(table, getTableList(schema))+' SET '+fields.map(f => f+' = ?').join(', ')+', updated_at = ? WHERE id = ?'
+    let args = [...fields.map(f => updates[f]), now(), id]
+  },
+
   //dependant_destroy: {recipe_id: ['favorite_recipes', 'meals', 'mixes', 'recipe_comments', 'recipe_notes', 'recipe_ratings', 'recipe_tools', 'references', 'suggestions']},
   findAndDestroyRecordWithDependants(table, recordOrId, manual) {
 

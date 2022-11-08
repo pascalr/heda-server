@@ -53,3 +53,9 @@ assertThrowsException('Trying to destroy a recipe with dependants should only wo
 recipe = db.createRecord('recipes', {name: 'Testing recipe'}, admin)
 db.findAndDestroyRecordWithDependants('recipes', recipe, admin)
 assert(!db.fetchRecord('recipes', {id: recipe.id}, []), "Recipe should be destroyed")
+
+// Testing findAndUpdateRecord
+header('Testing findAndUpdateRecord')
+recipe = db.createRecord('recipes', {name: 'Testing recipe'}, user)
+db.findAndUpdateRecord('recipes', recipe, {name: 'mod'}, user)
+assertEquals("mod", db.fetchRecord('recipes', {id: recipe.id}, ['name']).name)
