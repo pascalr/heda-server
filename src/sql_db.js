@@ -108,7 +108,7 @@ const sqlDb = {
     this.backup(name)
     console.log('Database backup completed.')
   },
-  safeCreateRecord(table, unsafeObj, user, options={}) {
+  createRecord(table, unsafeObj, user, options={}) {
     
     if (!table) {throw "Missing table for createRecord"}
   
