@@ -595,10 +595,12 @@ router.get('/', function(req, res, next) {
     let id = (res.locals.locale != 'fr') ? 773 : 82
     let ids1 = [96, 91, 98, 51];
     let ids2 = [49, 108, 133, 66];
+    let recipeKindId = 66
     res.locals.gon = {
       recipes1: fetchRecipeKinds(db, {id: ids1}, res.locals.locale, false),
       recipes2: fetchRecipeKinds(db, {id: ids2}, res.locals.locale, false),
       recipe: db.fetchRecord('recipes', {id}, RECIPE_ATTRS),
+      recipes: db.prepare("SELECT recipes.*, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.locale = ? AND users.is_public = 1 AND recipes.recipe_kind_id = ?;").all(res.locals.locale, recipeKindId)
     }
     return res.render('home');
   }

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
 import { RecipeEditor } from "./recipe_editor"
+import { RecipeKindViewer } from "./show_recipe_kind"
 import { UserThumbnailImage, RecipeSmallImage, RecipeThumbnailImage, RecipeImage } from "./image"
 import { ajax, preloadImage } from "./utils"
 import { t } from "../translate"
@@ -21,7 +22,10 @@ export const Home = () => {
   const locale = getLocale()
   const [recipes1,] = useState(gon.recipes1)
   const [recipes2,] = useState(gon.recipes2)
+  const [recipes,] = useState(gon.recipes)
   const recipe = useHcuState([gon.recipe], {tableName: 'recipes'})[0]
+
+  let recipeKind = recipes2.find(r => r.id == 66)
 
   if (!window.hcu) {initHcu(); window.hcu.makeDummy() }
 
@@ -66,13 +70,32 @@ export const Home = () => {
         </>}</Carrousel>
       </div>
     </div>
-    <div className="trunk" style={{padding: '5em 0.3em'}}>
-      <div className="ff-montserra mb-2">
-        <h2>{t('Home_9')}</h2>
-        <p>{t('Home_10')}</p>
+    <div style={{padding: '5em 0.3em'}}>
+      <div className='d-block d-md-flex align-items-center' style={{maxWidth: '50em', margin: 'auto'}}>
+        <div className="smartphone">
+          <div className='content'>
+            <div style={{width: '100%', border: 'none', height: '100%'}}>
+              <RecipeKindViewer {...{recipeKind, recipes}} />
+            </div>
+          </div>
+        </div>
+        <div style={{width: '2em', flexShrink: '0'}}/>
+        <div>
+          <h2>{t('Home_11')}</h2>
+          <p>{t('Home_12')}</p>
+          <p>{t('Home_13')}</p>
+        </div>
       </div>
-      <div style={{border: "2px solid black", padding: '0.5em', borderRadius: '5px'}}>
-        <RecipeEditor recipe={recipe} images={[]} mixes={[]} foods={[]} locale={locale} editable={true} user={{id: recipe.user_id}} />
+    </div>
+    <div style={{padding: '5em 0.3em', backgroundColor: '#fafbfc'}}>
+      <div className="trunk">
+        <div className="ff-montserra mb-2">
+          <h2>{t('Home_9')}</h2>
+          <p>{t('Home_10')}</p>
+        </div>
+        <div style={{border: "2px solid black", padding: '0.5em', borderRadius: '5px'}}>
+          <RecipeEditor recipe={recipe} images={[]} mixes={[]} foods={[]} locale={locale} editable={true} user={{id: recipe.user_id}} />
+        </div>
       </div>
     </div>
   </>

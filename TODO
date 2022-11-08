@@ -11,7 +11,6 @@ Recette potage à la courge butternut
 remplir la page de suggestions, pas juste une ligne
 og:description for recipe kinds
 <meta property="og:locale" content="fr_CA">
-tests/db.js
 Sur la HomePage, expliquer que les recettes sont catégoriées et affichent les recettes des utilisateurs.
 Fix font glitch
 /u/5 show inside app too
