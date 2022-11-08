@@ -13,6 +13,8 @@ let user = {user_id: 999999999}
 let admin = {user_id: 888888888, is_admin: true}
 let invalid = {}
 let recipe = null
+let fetched = null
+let record = null
 
 // Testing createRecord
 header('Testing createRecord')
@@ -21,12 +23,14 @@ assertThrowsException('Trying to mass assign a security attribute should throw a
 })
 recipe = db.createRecord('recipes', {name: 'Testing recipe'}, user)
 assertEquals(user.user_id, recipe.user_id)
-assert(db.fetchRecord('recipes', {id: recipe.id}, []), "Recipe should exists")
+fetched = db.fetchRecord('recipes', {id: recipe.id}, ['user_id'])
+assert(fetched, "Recipe should exists")
+assertEquals(user.user_id, fetched.user_id)
 
 assertThrowsException('Creating a translation without being an admin should not be allowed', () => {
   db.createRecord('translations', {original: 'test', translated: 'test'}, user)
 })
-let record = db.createRecord('translations', {original: 'test', translated: 'test'}, admin)
+record = db.createRecord('translations', {original: 'test', translated: 'test'}, admin)
 assert(record.id, "Created record should have an id.")
 
 // Testing findAndDestroyRecord
@@ -58,4 +62,6 @@ assert(!db.fetchRecord('recipes', {id: recipe.id}, []), "Recipe should be destro
 header('Testing findAndUpdateRecord')
 recipe = db.createRecord('recipes', {name: 'Testing recipe'}, user)
 db.findAndUpdateRecord('recipes', recipe, {name: 'mod'}, user)
-assertEquals("mod", db.fetchRecord('recipes', {id: recipe.id}, ['name']).name)
+fetched = db.fetchRecord('recipes', {id: recipe.id}, ['name'])
+console.log('fetched', fetched)
+assertEquals("mod", fetched.name)

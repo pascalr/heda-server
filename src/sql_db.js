@@ -26,14 +26,17 @@ const validAttr = (schema, table, field, value) => {
 }
 
 const ALLOWED_CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
-const safe = (str, allowed) => {
+const safeNoQuotes = (str, allowed) => {
   let s = '';
   [...str].forEach(c => {
     if (ALLOWED_CHARS.includes(c)) {s += c}
   })
   if (str != s) {throw "Error: User tried to send unsafe value."}
   if (!allowed.includes(s)) {throw "Error: Db value not allowed ("+s+")."}
-  return "'"+s+"'"
+  return s
+}
+const safe = (str, allowed) => {
+  return "'"+safeNoQuotes(str, allowed)+"'"
 }
 
 const fetchStatement = (schema, tableName, conditions, attributes, options) => {
@@ -194,9 +197,9 @@ const sqlDb = {
 
     let columns = getWriteAttributes(schema, table) || []
     if (options.allow_write) {columns = [...columns, ...options.allow_write]}
-    let fields = Object.keys(updates).map(f => safe(f, columns))
+    let fields = Object.keys(updates).map(f => safeNoQuotes(f, columns))
 
-    let record = this.fetchTable(table, {id: id}, securityAttrs)
+    let record = this.fetchRecord(table, {id: id}, securityAttrs)
 
     securityAttrs.forEach(attr => {
       if (record[attr] != manual[attr]) {
@@ -204,8 +207,10 @@ const sqlDb = {
       }
     })
   
-    let query = 'UPDATE '+safe(table, getTableList(schema))+' SET '+fields.map(f => f+' = ?').join(', ')+', updated_at = ? WHERE id = ?'
+    let query = 'UPDATE '+safe(table, getTableList(schema))+' SET '+fields.map(f => "'"+f+"' = ?").join(', ')+', updated_at = ? WHERE id = ?'
     let args = [...fields.map(f => updates[f]), now(), id]
+    
+    return this.prepare(query).run(args)
   },
 
   //dependant_destroy: {recipe_id: ['favorite_recipes', 'meals', 'mixes', 'recipe_comments', 'recipe_notes', 'recipe_ratings', 'recipe_tools', 'references', 'suggestions']},
