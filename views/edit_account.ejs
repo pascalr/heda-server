@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="<%- locale %>">
+  <head>
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <%- include('partials/head') %>
+    <link rel="stylesheet" href="/css/form.css">
+    <link rel="stylesheet" href="/build/toastr.min.css">
+  </head>
+  <body>
+    <div class="form-container">
+      <div id="root"></div>
+    </div>
+  </body>
+</html>
+
+<script>
+  window.gon = <%- JSON.stringify(gon) %>
+</script>
+<%- loadScript("/build/account_editor") %>

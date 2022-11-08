@@ -21,7 +21,7 @@ export async function enableLiveReload(app) {
     // is propagated with a fallback.
     define: { "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "development") },
     // Bundles JavaScript from (see `outfile`).
-    entryPoints: ["src/react/bundle.jsx", "src/react/user_editor.jsx", "src/react/admin.jsx"],
+    entryPoints: ["src/react/bundle.jsx", "src/react/account_editor.jsx", "src/react/user_editor.jsx", "src/react/admin.jsx"],
     // Uses incremental compilation (see `chokidar.on`).
     incremental: true,
     // Removes whitespace, etc. depending on `NODE_ENV=...`.

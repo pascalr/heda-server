@@ -205,9 +205,12 @@ function setProfile(req, res, next) {
 }
 
 router.get('/edit_profile', initGon, fetchAccountUsers, setProfile, function(req, res, next) {
-  let attrs = ['author', 'source', 'filename', 'is_user_author']
-  res.locals.gon.images = db.fetchTable('images', {user_id: req.user.user_id}, attrs)
   res.render('edit_profile');
+});
+
+router.get('/edit_account', initGon, fetchAccountUsers, setProfile, function(req, res, next) {
+  res.locals.gon.account = db.fetchRecord('accounts', {id: req.user.account_id}, ['email'])
+  res.render('edit_account');
 });
 
 router.get('/signup', function(req, res, next) {

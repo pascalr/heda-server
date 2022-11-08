@@ -49,6 +49,7 @@ export const AppNavbar = ({locale, renderingHome, setIsSearching, otherProfiles,
         </button>
         <div className="dropdown-menu" aria-labelledby="dropdownUserButton">
           <a href="/edit_profile" className="dropdown-item">{t('My_profile')}</a>
+          <a href="/edit_account" className="dropdown-item">{t('My_account')}</a>
           <form action={locale ? "/logout?locale="+locale : "/logout"} method="post">
             <button className="dropdown-item" type="submit">{t('Logout')}</button>
             <input type="hidden" name="_csrf" value={_csrf}/>

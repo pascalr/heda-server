@@ -94,5 +94,8 @@ const schema = {
   'units' : {
     is_allowed: user => user.is_admin,
   },
+  'accounts' : {
+    is_allowed: user => false,
+  },
 }
 export default schema

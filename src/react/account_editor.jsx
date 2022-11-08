@@ -12,6 +12,7 @@ const UserEditor = () => {
 
   if (!window.hcu) {initHcu()}
   const users = useHcuState([gon.user], {tableName: 'users'})
+  const [account,] = useState(gon.account)
   const user = users[0]
   window.locale = user.locale
 
@@ -30,22 +31,10 @@ const UserEditor = () => {
   let suggestions = ["125.png", "126.png", "127.png"]
 
   return <>
-    <h1>{t('Edit_profile')}</h1>
-    <b>{t('Name')}</b><br/>
-    <TextField model={user} field="name" size="8" className="editable-input" /><br/><br/>
-    <b>{t('Language')}</b><br/>
-    <CollectionSelect model={user} field="locale" options={['en', 'fr']} showOption={e => e} includeBlank={false}/><br/><br/>
-    <b>{t('Visibility')}</b><br/>
-    <ToggleField model={user} field="is_public" labelOn={t('public')} labelOff={t('private')} className="btn btn-primary" /><br/><br/>
-    {user.is_public ? <>
-      <p>{t('n12')}</p>
-      <a href={"/u/"+user.id}>{window.location.origin}/u/{user.id}</a>
-      <br/><br/>
-    </> : ''}
-    <b>{t('Image')}</b><br/>
-    <ImageSelector record={user} field="image_slug" variant="original" maxSizeBytes={2*1000*1000} suggestions={suggestions} height="180px" defaultImage="/icons/person-fill.svg" />
-    <hr/>
-    <button type="button" className="float-end btn btn-danger" onClick={destroyUser}>{t('Delete')}</button>
+    <h1>{t('Edit_account')}</h1>
+    <b>{t('Email')}</b><br/>
+    {account.email}
+    <br/><br/>
     <a href="/" className="btn btn-primary">{t('Ok')}</a>
   </>
 }
