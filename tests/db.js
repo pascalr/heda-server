@@ -14,13 +14,18 @@ db.setSchema(schema)
 
 let user = {user_id: 999999999}
 let admin = {is_admin: true}
+let invalid = {}
 
 header('Testing createRecord')
-let recipe = db.createRecord('recipes', {name: 'Testing recipe'}, user)
-assertEquals(user.user_id, recipe.user_id)
 assertThrowsException('Trying to mass assign a security attribute should throw an exception', () => {
   db.createRecord('recipes', {user_id: 1}, user)
 })
+let recipe = db.createRecord('recipes', {name: 'Testing recipe'}, user)
+assertEquals(user.user_id, recipe.user_id)
+assertThrowsException('Trying to destroy a recipe without the good user should not work', () => {
+  db.findAndDestroyRecord('recipes', recipe, invalid)
+})
+db.findAndDestroyRecord('recipes', recipe, user)
 
 assertThrowsException('Creating a translation without being an admin should not be allowed', () => {
   db.createRecord('translations', {original: 'test', translated: 'test'}, user)

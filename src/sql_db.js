@@ -9,6 +9,11 @@ const getWriteAttributes = (schema, table) => schema[table].write_attrs
 const getSecurityAttributes = (schema, table) => {return schema[table].security_attrs}
 const getIsAllowed = (schema, table) => {return schema[table].is_allowed}
 
+const isNotAllowed = (schema, table, manual) => {
+  let allowedCb = getIsAllowed(schema, table)
+  return allowedCb && !allowedCb(manual)
+}
+
 const validAttr = (schema, table, field, value) => {
   let types = schema[table].attrs_types
   if (types && types[field]) {
@@ -75,7 +80,6 @@ const fetchStatement = (schema, tableName, conditions, attributes, options) => {
   return [s, a]
 }
 
-//if (db.fetchTable) {throw "Can't overide fetchTable"}
 const sqlDb = {
   setSchema(schema) {
     Object.keys(schema).forEach(table => {
@@ -98,7 +102,7 @@ const sqlDb = {
     let o = fetchStatement(this.getSchema(), tableName, conditions, attributes, options)
     if (!o) return null
     let [s, a] = o
-    return db.prepare(s).get(...a)
+    return this.prepare(s).get(...a)
   },
 
   doBackup() {
@@ -123,8 +127,7 @@ const sqlDb = {
   
     let schema = this.getSchema()
     let securityAttrs = getSecurityAttributes(schema, table)
-    let allowedCb = getIsAllowed(schema, table)
-    if (allowedCb && !allowedCb(manual)) {throw "Create record not allowed."}
+    if (isNotAllowed(schema, table, manual)) {throw "Create record not allowed."}
 
     let columns = getWriteAttributes(schema, table) || []
     if (options.allow_write) {columns = [...columns, ...options.allow_write]}
@@ -151,21 +154,24 @@ const sqlDb = {
     return {...obj, id: info.lastInsertRowid}
   },
 
-  findAndDestroyRecord(table, id, user) {
+  findAndDestroyRecord(table, recordOrId, manual) {
     
     if (!table) {throw "Missing table for findAndDestroyRecord"}
-  
+
+    let id = parseInt(typeof recordOrId === 'string' ? recordOrId : recordOrId.id)
     let schema = this.getSchema()
-    let securityAttrs = getSecurityAttributes(schema, table)
-    let allowedCb = getIsAllowed(schema, table)
+    let securityAttrs = getSecurityAttributes(schema, table)||[]
+    if (isNotAllowed(schema, table, manual)) {throw "Destroy record not allowed."}
 
-    let record = this.fetchRecord(table, {id: parseInt(id)}, securityAttrs||[])
+    let record = this.fetchRecord(table, {id: parseInt(id)}, securityAttrs)
 
-    // TODO: Validate record can be destroyed
-  
-    const q = 'DELETE FROM '+safe(table, schemaHelper.getTableList())+' WHERE '+key+' = ?'
-    const [query, args] = addSafetyCondition(q, [val], user, schemaHelper.getSecurityKey(table))
-    let info = db.prepare(query).run(...args)
+    securityAttrs.forEach(attr => {
+      if (record[attr] != manual[attr]) {
+        throw "Destroy record not allowed because of security key "+attr
+      }
+    })
+
+    let info = this.prepare('DELETE FROM '+safe(table, getTableList(schema))+' WHERE id  = ?').run(id)
     if (info.changes != 1) {throw "Error destroying record from table "+table+" with id "+id}
   },
 }
