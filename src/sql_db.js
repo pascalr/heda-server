@@ -77,7 +77,14 @@ const fetchStatement = (schema, tableName, conditions, attributes, options) => {
 
 //if (db.fetchTable) {throw "Can't overide fetchTable"}
 const sqlDb = {
-  setSchema(schema) {this.___schema = schema},
+  setSchema(schema) {
+    Object.keys(schema).forEach(table => {
+      let securityAttrs = getSecurityAttributes(schema, table)
+      let allowedCb = getIsAllowed(schema, table)
+      if (!securityAttrs && !allowedCb) {throw "Missing security_attrs or user_allowed in schema for table "+table}
+    })
+    this.___schema = schema
+  },
   getSchema() {return this.___schema},
 
   fetchTable(tableName, conditions, attributes, options={}) {
@@ -117,7 +124,6 @@ const sqlDb = {
     let schema = this.getSchema()
     let securityAttrs = getSecurityAttributes(schema, table)
     let allowedCb = getIsAllowed(schema, table)
-    if (!securityAttrs && !allowedCb) {throw "Missing security_attrs or user_allowed in schema for table "+table}
     if (allowedCb && !allowedCb(manual)) {throw "Create record not allowed."}
 
     let columns = getWriteAttributes(schema, table) || []
@@ -149,15 +155,18 @@ const sqlDb = {
     
     if (!table) {throw "Missing table for findAndDestroyRecord"}
   
-    //let schema = this.getSchema()
-    //let record = this.fetchRecord(table, {id: parseInt(id)}, schema[table].security_attrs)
+    let schema = this.getSchema()
+    let securityAttrs = getSecurityAttributes(schema, table)
+    let allowedCb = getIsAllowed(schema, table)
 
-    //// TODO: Validate record can be destroyed
+    let record = this.fetchRecord(table, {id: parseInt(id)}, securityAttrs||[])
+
+    // TODO: Validate record can be destroyed
   
-    //const q = 'DELETE FROM '+safe(table, schemaHelper.getTableList())+' WHERE '+key+' = ?'
-    //const [query, args] = addSafetyCondition(q, [val], user, schemaHelper.getSecurityKey(table))
-    //let info = db.prepare(query).run(...args)
-    //if (info.changes != 1) {throw "Error destroying record from table "+table+" with id "+id}
+    const q = 'DELETE FROM '+safe(table, schemaHelper.getTableList())+' WHERE '+key+' = ?'
+    const [query, args] = addSafetyCondition(q, [val], user, schemaHelper.getSecurityKey(table))
+    let info = db.prepare(query).run(...args)
+    if (info.changes != 1) {throw "Error destroying record from table "+table+" with id "+id}
   },
 }
 function injectFunctions(obj, functionsObj) {

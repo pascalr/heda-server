@@ -11,6 +11,7 @@
     "test:db": "node -r dotenv/config tests/db.js",
     "test:end_to_end": "node -r dotenv/config tests/end_to_end.js",
     "test:utils": "node -r dotenv/config tests/utils.js",
+    "test:all": "npm run test:db && npm run test:utils",
     "images:pull": "rsync -v --recursive root@heda-server.internal:/mnt/heda_volume/images/ volume/images/",
     "download_homepage": "node src/bin/download_homepage.js",
     "db:open": "sqlitebrowser var/db/dev.db",

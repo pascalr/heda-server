@@ -6,8 +6,6 @@
  *   - security_attrs???: an array of all attributes that must be set from the security object
  */
 const schema = {
-  'meals': {},
-  'mixes': {},
   'translations': {
     write_attrs: ['from', 'original', 'to', 'translated'],
     security_key: 'ADMIN_ONLY',
@@ -30,19 +28,6 @@ const schema = {
     // When creating an object, set the security attribute based on the security object
     // When updating, fetch the object to make sure the security attribute is the same as the one given from the security object
   },
-  'recipe_comments': {},
-  'recipe_notes': {},
-  'recipe_ratings': {},
-  'recipe_tools' : {},
-  'references' : {},
-  'machine_users' : {},
-  'machine_foods' : {},
-  'machines' : {},
-  'container_formats' : {},
-  'container_quantities' : {},
-  'containers' : {},
-  'foods' : {},
-  'units' : {},
   'recipe_kinds': {
     write_attrs: ['image_slug', 'name_fr', 'json_fr', 'name_en', 'json_en'],
     security_key: 'ADMIN_ONLY',
@@ -114,6 +99,51 @@ const schema = {
       return obj
     },
     security_attrs: ['user_id'],
-  }
+  },
+  'meals': {
+    is_allowed: user => false,
+  },
+  'mixes': {
+    is_allowed: user => false,
+  },
+  'recipe_comments': {
+    is_allowed: user => false,
+  },
+  'recipe_notes': {
+    is_allowed: user => false,
+  },
+  'recipe_ratings': {
+    is_allowed: user => false,
+  },
+  'recipe_tools' : {
+    is_allowed: user => false,
+  },
+  'references' : {
+    is_allowed: user => false,
+  },
+  'machine_users' : {
+    is_allowed: user => false,
+  },
+  'machine_foods' : {
+    is_allowed: user => false,
+  },
+  'machines' : {
+    is_allowed: user => false,
+  },
+  'container_formats' : {
+    is_allowed: user => false,
+  },
+  'container_quantities' : {
+    is_allowed: user => false,
+  },
+  'containers' : {
+    is_allowed: user => false,
+  },
+  'foods' : {
+    is_allowed: user => false,
+  },
+  'units' : {
+    is_allowed: user => false,
+  },
 }
 export default schema
