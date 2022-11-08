@@ -416,8 +416,7 @@ router.patch('/batch_modify', function(req, res, next) {
 router.delete('/destroy_record/:table/:id', function(req, res, next) {
 
   let {id, table} = req.params
-  db.destroyRecordWithDependants(table, id, req.user)
-  //db.safeDestroyRecord(table, id, req.user)
+  db.findAndDestroyRecordWithDependants(table, id, req.user)
   res.json({status: 'ok'})
 });
 
