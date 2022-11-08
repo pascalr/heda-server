@@ -5,7 +5,7 @@ import { ajax, changeUrl } from "./utils"
 import { t } from "../translate"
 import { localeHref, getPathFromUrl, ArrayCombination } from "../utils"
 import { useTransition, Link, currentPathIsRoot } from "./lib"
-import { SearchWhiteIcon, PersonFillWhiteIcon, XLgWhiteIcon } from '../server/image.js'
+import { SearchWhiteIcon, PersonFillWhiteIcon, XLgWhiteIcon, ListWhiteIcon } from '../server/image.js'
 import { normalizeSearchText } from "./utils"
 
 const minChars = 3
@@ -86,8 +86,8 @@ export const PublicNavbar = ({locale, renderingHome, setIsSearching}) => {
     <div className="float-end" style={{marginTop: '0.25em'}}>
       <img id="search-btn" className="clickable" src={SearchWhiteIcon} style={{marginRight: '1em', width: '1.4em'}} onClick={() => setIsSearching(true)}/>
       <div className="dropdown d-inline-block">
-        <button className="plain-btn dropdown-toggle" type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style={{marginRight: '1em', color: 'white'}}>
-          <img className="clickable" src={PersonFillWhiteIcon} style={{width: '1.74em'}}/>
+        <button className="plain-btn" type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style={{marginRight: '1em', color: 'white'}}>
+          <img className="clickable" src={ListWhiteIcon} style={{width: '1.9em'}}/>
         </button>
         <div className="dropdown-menu" aria-labelledby="dropdownUserButton">
           <a href={localeHref("/login")} className="dropdown-item">{t('Login', locale)}</a>
