@@ -6,7 +6,7 @@ import schema from './schema.js';
 import sqlDb from './sql_db.js';
 
 //import { findRecipeKindForRecipeName } from "./lib.js"
-import utils from './utils.js';
+import {now} from './utils.js';
 
 // FIXME: DB_URL should be DB_PATH, it's not an URL (doesn't start with sqlite3://...)
 let dbPath = process.env.DB_URL
@@ -128,7 +128,7 @@ db.safeUpdateField = function(table, id, field, value, user, options={}) {
   let writeAttrs = schemaHelper.getWriteAttributes(table)
   if (options.allow_write) {writeAttrs = [...writeAttrs, ...options.allow_write]}
   let query0 = 'UPDATE '+safe(table, schemaHelper.getTableList())+' SET '+safe(field, writeAttrs)+' = ?, updated_at = ? WHERE id = ?'
-  let args0 = [schemaHelper.validAttr(table, field, value), utils.now(), id]
+  let args0 = [schemaHelper.validAttr(table, field, value), now(), id]
   const [query, args] = addSafetyCondition(query0, args0, user, schemaHelper.getSecurityKey(table))
   return db.prepare(query).run(...args)
 }
@@ -200,29 +200,6 @@ db.safeDestroyRecord = function(table, id, user) {
 
   let info = db.safeDestroyTableKey(table, 'id', id, user)
   if (info.changes != 1) {throw "Error destroying record from table "+table+" with "+key+" "+id}
-}
-
-if (db.safeCreateRecord) {throw "Can't overide safeCreateRecord"}
-db.safeCreateRecord = function(table, unsafeObj, user, options={}) {
-  
-  if (!table) {throw "Missing table for createRecord"}
-
-  let obj = schemaHelper.getAllowCreate(table)(user, unsafeObj)
-  if (!obj) {throw "createRecord not allowed for current user"}
-
-  let safeTable = safe(table, schemaHelper.getTableList())
-  obj = schemaHelper.beforeCreate(table, obj)
-
-  let fields = Object.keys(obj)
-  let columns = schemaHelper.getWriteAttributes(table) || []
-  if (options.allow_write) {columns = [...columns, ...options.allow_write]}
-  let query = 'INSERT INTO '+safeTable+' (created_at,updated_at,'+fields.map(f => safe(f, columns)).join(',')+') '
-  query += 'VALUES (?,?,'+fields.map(f=>'?').join(',')+')'
-  let args = [utils.now(), utils.now(), ...fields.map(f => schemaHelper.validAttr(table, f, obj[f]))]
-  
-  let info = db.prepare(query).run(...args)
-  if (info.changes != 1) {throw "Error creating record from in "+table+"."}
-  return {...obj, id: info.lastInsertRowid}
 }
 
 
