@@ -71,8 +71,8 @@ export const Home = () => {
       </div>
     </div>
     <div style={{padding: '5em 0.3em'}}>
-      <div className='d-block d-md-flex align-items-center' style={{maxWidth: '50em', margin: 'auto'}}>
-        <div className="smartphone">
+      <div className='d-flex align-items-center' style={{maxWidth: '50em', margin: 'auto'}}>
+        <div className="smartphone d-none d-sm-block">
           <div className='content'>
             <div style={{width: '100%', border: 'none', height: '100%'}}>
               <RecipeKindViewer {...{recipeKind, recipes}} />
