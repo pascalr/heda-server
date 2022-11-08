@@ -32,7 +32,7 @@ await Promise.all(recipeKinds.map(async recipeKind => {
 
   if (translated) {
     console.log('*** UPDATING RECORD FOR',recipeKind.id,'***')
-    db.safeUpdateField('recipe_kinds', recipeKind.id, 'name_en', translated, {is_admin: true})
+    db.findAndUpdateRecord('recipe_kinds', recipeKind.id, 'name_en', translated, {is_admin: true})
   }
   
 }))

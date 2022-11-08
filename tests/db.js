@@ -26,6 +26,10 @@ assertEquals(user.user_id, recipe.user_id)
 fetched = db.fetchRecord('recipes', {id: recipe.id}, ['user_id'])
 assert(fetched, "Recipe should exists")
 assertEquals(user.user_id, fetched.user_id)
+  
+// TODO: Test that create record uses allow_write and writes the attribute to database
+// And exception if not allowed
+db.createRecord('images', {slug: 'foo.jpg'}, user, {allow_write: 'slug'})
 
 assertThrowsException('Creating a translation without being an admin should not be allowed', () => {
   db.createRecord('translations', {original: 'test', translated: 'test'}, user)

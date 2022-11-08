@@ -2,6 +2,7 @@ import betterSqlite3 from 'better-sqlite3';
 import path from 'path';
 
 import {now} from './utils.js';
+import { ensureIsArray } from './utils.js';
 
 const getTableList = (schema) => {return Object.keys(schema)}
 const getAllowCreate = (schema, table) => {return schema[table].allow_create}
@@ -133,8 +134,8 @@ const sqlDb = {
     if (isNotAllowed(schema, table, manual)) {throw "Create record not allowed."}
 
     let columns = getWriteAttributes(schema, table) || []
-    if (options.allow_write) {columns = [...columns, ...options.allow_write]}
-    let fields = Object.keys(obj).map(f => safe(f, columns))
+    if (options.allow_write) {columns = [...columns, ...ensureIsArray(options.allow_write)]}
+    let fields = Object.keys(obj).map(f => safeNoQuotes(f, columns))
 
     if (securityAttrs) {
       securityAttrs.forEach(attr => {
@@ -148,7 +149,7 @@ const sqlDb = {
     let safeTable = safe(table, getTableList(schema))
     //obj = schemaHelper.beforeCreate(table, obj)
   
-    let query = 'INSERT INTO '+safeTable+' (created_at,updated_at,'+fields.join(',')+') '
+    let query = 'INSERT INTO '+safeTable+' (created_at,updated_at,'+fields.map(f => "'"+f+"'").join(',')+') '
     query += 'VALUES (?,?,'+fields.map(f=>'?').join(',')+')'
     let args = [now(), now(), ...fields.map(f => validAttr(schema, table, f, obj[f]))]
     
@@ -196,7 +197,7 @@ const sqlDb = {
     if (isNotAllowed(schema, table, manual)) {throw "Update record not allowed "+table+" id "+id}
 
     let columns = getWriteAttributes(schema, table) || []
-    if (options.allow_write) {columns = [...columns, ...options.allow_write]}
+    if (options.allow_write) {columns = [...columns, ...ensureIsArray(options.allow_write)]}
     let fields = Object.keys(updates).map(f => safeNoQuotes(f, columns))
 
     let record = this.fetchRecord(table, {id: id}, securityAttrs)

@@ -97,9 +97,9 @@ router.post('/upload_image', function(req, res, next) {
     let lastId = db.prepare('SELECT MAX(id) from images').get()['MAX(id)']
     let slug = `${lastId+1}.${ext}`
     let image = {filename: file.name, slug}
-    image = db.createRecord('images', image, req.user, {allow_write: ['slug', 'user_id']})
+    image = db.createRecord('images', image, req.user, {allow_write: ['slug']})
     if (image.id != lastId +1) {throw "Database invalid state for images."}
-    db.safeUpdateField(record_table, record_id, record_field, slug, req.user)
+    db.findAndUpdateRecord(record_table, record_id, {[record_field]: slug}, req.user)
 
     const promises = [];
     let stream = sharp(file.data)
@@ -356,7 +356,7 @@ router.patch('/update_field/:table/:id', ensureUser, function(req, res, next) {
 
   console.log('req.body', req.body)
 
-  let info = db.safeUpdateField(table, id, field, value, req.user)
+  let info = db.findAndUpdateRecord(table, id, {[field]: value}, req.user)
   if (info.changes != 1) {return res.status(500).send("Unable to update record in database")}
   res.json({status: 'ok'})
 });
@@ -404,7 +404,7 @@ router.patch('/batch_modify', function(req, res, next) {
   let applyMods = db.transaction((mods) => {
     mods.forEach(({method, tableName, id, field, value}) => {
       if (method == 'UPDATE') {
-        let info = db.safeUpdateField(tableName, id, field, value, {user_id: req.user.user_id})
+        let info = db.findAndUpdateRecord(tableName, id, {[field]: value}, {user_id: req.user.user_id})
         if (info.changes != 1) {throw "Unable to update record in database"}
       }
     })

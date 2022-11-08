@@ -33,22 +33,10 @@ export async function translateRecipes() {
     let translatedRecipe = translatedRecipes.find(r => r.original_id == recipe.id)
     if (translatedRecipe) {
       console.log('*** UPDATING RECORD FOR',recipe.id,'***')
-      // TODO: UpdateRecord instead of UpdateField
-      if (translatedRecipe.name != translated.name) {
-        db.safeUpdateField('translated_recipes', translatedRecipe.id, 'name', translated.name, {original_id: recipe.id})
-      }
-      if (translatedRecipe.servings_name != translated.servings_name) {
-        db.safeUpdateField('translated_recipes', translatedRecipe.id, 'servings_name', translated.servings_name, {original_id: recipe.id})
-      }
-      if (translatedRecipe.ingredients != translated.ingredients) {
-        db.safeUpdateField('translated_recipes', translatedRecipe.id, 'ingredients', translated.ingredients, {original_id: recipe.id})
-      }
-      if (translatedRecipe.json != translated.json) {
-        db.safeUpdateField('translated_recipes', translatedRecipe.id, 'json', translated.json, {original_id: recipe.id})
-      }
+      db.findAndUpdateRecord('translated_recipes', translatedRecipe, translated, {original_id: recipe.id})
     } else {
       console.log('*** INSERTING RECORD FOR',recipe.id,'***')
-      db.safeCreateRecord('translated_recipes', translated, {original_id: recipe.id}, {allow_write: ['original_id', 'name', 'servings_name', 'ingredients', 'json']})
+      db.createRecord('translated_recipes', translated, {original_id: recipe.id}, {allow_write: ['original_id', 'name', 'servings_name', 'ingredients', 'json']})
     }
     
   }))
