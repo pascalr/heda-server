@@ -16,6 +16,7 @@ const schema = {
       return obj
     },
     allow_create_2: (user, obj) => user.is_admin,
+    is_allowed: user => user.is_admin,
   },
   'images': {
     write_attrs: ['filename', 'author', 'is_user_author', 'source'],
@@ -49,6 +50,7 @@ const schema = {
       if (!user.is_admin) {return null}
       return obj
     },
+    is_allowed: user => user.is_admin,
   },
   'translated_recipes': {
     write_attrs: ['name', 'servings_name', 'ingredients', 'json'],
@@ -57,6 +59,7 @@ const schema = {
       obj.original_id = user.original_id
       return obj
     },
+    security_attrs: ['original_id'],
   },
   'recipes': {
     write_attrs: ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'ingredients', 'recipe_kind_id', 'image_slug', 'servings_name'],
@@ -83,6 +86,7 @@ const schema = {
       obj.account_id = user.account_id
       return obj
     },
+    security_attrs: ['account_id'],
   },
   'favorite_recipes': {
     write_attrs: ['list_id', 'recipe_id'],
@@ -91,6 +95,7 @@ const schema = {
       obj.user_id = user.user_id
       return obj
     },
+    security_attrs: ['user_id'],
   },
   'tags': {
     write_attrs: ['name', 'image_slug', 'position'],
@@ -99,6 +104,7 @@ const schema = {
       obj.user_id = user.user_id
       return obj
     },
+    security_attrs: ['user_id'],
   },
   'suggestions': {
     write_attrs: ['tag_id', 'recipe_id'],
@@ -107,6 +113,7 @@ const schema = {
       obj.user_id = user.user_id
       return obj
     },
+    security_attrs: ['user_id'],
   }
 }
 export default schema

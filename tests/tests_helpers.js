@@ -15,8 +15,11 @@ export function header(msg) {
 }
 
 export function assertEquals(expected, actual) {
-  console.log('Expected:', expected, 'Input:', actual)
-  console.log(coloredResult(expected === actual))
+  console.log(coloredResult(expected === actual), 'Expected:', expected, 'Input:', actual)
+}
+
+export function assert(cond, msg) {
+  console.log(coloredResult(cond), msg)
 }
 
 export function assertThrowsException(msg, func) {
@@ -27,6 +30,5 @@ export function assertThrowsException(msg, func) {
 }
 
 export function assertStartsWith(expected, actual) {
-  console.log('Expected starts with:', expected, 'Input:', actual)
-  console.log(coloredResult(actual.startsWith(expected)))
+  console.log(coloredResult(actual.startsWith(expected)), 'Expected starts with:', expected, 'Input:', actual)
 }

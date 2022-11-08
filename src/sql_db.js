@@ -7,6 +7,7 @@ const getTableList = (schema) => {return Object.keys(schema)}
 const getAllowCreate = (schema, table) => {return schema[table].allow_create}
 const getWriteAttributes = (schema, table) => schema[table].write_attrs
 const getSecurityAttributes = (schema, table) => {return schema[table].security_attrs}
+const getIsAllowed = (schema, table) => {return schema[table].is_allowed}
 
 const validAttr = (schema, table, field, value) => {
   let types = schema[table].attrs_types
@@ -115,16 +116,20 @@ const sqlDb = {
   
     let schema = this.getSchema()
     let securityAttrs = getSecurityAttributes(schema, table)
-    if (!securityAttrs) {throw "Missing security attributes in schema for table "+table}
+    let allowedCb = getIsAllowed(schema, table)
+    if (!securityAttrs && !allowedCb) {throw "Missing security_attrs or user_allowed in schema for table "+table}
+    if (allowedCb && !allowedCb(manual)) {throw "Create record not allowed."}
 
     let columns = getWriteAttributes(schema, table) || []
     if (options.allow_write) {columns = [...columns, ...options.allow_write]}
     let fields = Object.keys(obj).map(f => safe(f, columns))
 
-    securityAttrs.forEach(attr => {
-      obj[attr] = manual[attr]
-      fields.push(attr)
-    })
+    if (securityAttrs) {
+      securityAttrs.forEach(attr => {
+        obj[attr] = manual[attr]
+        fields.push(attr)
+      })
+    }
     //let obj = getAllowCreate(schema, table)(user, unsafeObj)
     if (!obj) {throw "createRecord not allowed for current user"}
   
