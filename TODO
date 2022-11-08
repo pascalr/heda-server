@@ -11,19 +11,12 @@ Recette potage à la courge butternut
 remplir la page de suggestions, pas juste une ligne
 og:description for recipe kinds
 <meta property="og:locale" content="fr_CA">
-Sur la HomePage, expliquer que les recettes sont catégoriées et affichent les recettes des utilisateurs.
 Fix font glitch
 /u/5 show inside app too
 130 descriptions des RecipeKinds
 Bûche de noël, (2 oeuf) => (2 oeufs) !!!
 Une page My account
 Je pense que en anglais, il n'y a pas de «of» dans la liste des ingrédients, mais il devrait y en avoir dans le texte des instructions?
-
-Être plus clair sur le home page à quoi que l'application sert.
-
-Add analytics:
-https://www.openwebanalytics.com/
-https://www.inmotionhosting.com/support/website/analytics/gdpr-open-web-analytics/
 
 Un message de bienvenue quand un utilisateur se crée un compte pour la première fois.
 
@@ -33,16 +26,6 @@ Taboulé.
 Trempette aux artichauts.
 Chichi et Pina colada
 Ma recette de potage à la citrouille n'est comme pas fini on dirait...
-
-Faire des tests pour la database, ça m'aiderait à me décider ce que je veux que le schéma ait l'air...
-Faire des tests pour /update_field, /create_record, ...
-
-Cliquer sur login quand tu es déjà connecté devrait te redirigé vers ton home.
-Merge RecipeViewers
-
-Une application qui tag les images seraient génial. L'utiliser pour tagger mes images automatiquement.
-Ensuite, quand l'utilisateur crée une recette, suggérer des images selon le nom de la recette qui match avec les
-tags détectés.
 
 Fix servings raw_servings into servings_quantity and servings_name?
 
@@ -118,3 +101,7 @@ Faire une genre de tables des matières comme sur l'ancien site avec les livres 
 
 Aye c'est vrai il y avait les articles aussi sur hedacuisine!!!
 Si je refais quelque chose avec les articles, intégré le support de GPT-3 qui t'aide à rédiger la base des articles.
+
+Une application qui tag les images seraient génial. L'utiliser pour tagger mes images automatiquement.
+Ensuite, quand l'utilisateur crée une recette, suggérer des images selon le nom de la recette qui match avec les
+tags détectés.

@@ -61,16 +61,20 @@ router.get('/search', function(req, res, next) {
   res.json({query, results: {recipes, users}})
 });
 
-router.get('/login', function(req, res, next) {
-  res.render('login');
-});
-
-router.get('/choose_user', fetchAccountUsers, function(req, res, next) {
+function redirectHomeIfLoggedIn(req, res, next) {
   if (req.user && req.user.user_id) {
     res.redirect('/');
   } else {
-    res.render('choose_user');
+    next()
   }
+}
+
+router.get('/login', redirectHomeIfLoggedIn, function(req, res, next) {
+  res.render('login');
+});
+
+router.get('/choose_user', redirectHomeIfLoggedIn, fetchAccountUsers, function(req, res, next) {
+  res.render('choose_user');
 });
 
 router.get('/new_user', function(req, res, next) {
