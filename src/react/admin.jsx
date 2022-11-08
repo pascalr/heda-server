@@ -71,13 +71,15 @@ const RecipeKindsIndex = ({recipes, recipeKinds, publicUsers, locale}) => {
       <h1>Recipe kinds</h1>
       {recipeKinds.map(recipeKind => {
         let name = recipeKind[localeAttr('name', locale)]
-        return <Link key={recipeKind.id} path={'/admin/ek/'+recipeKind.id} className="plain-link">
-          <div className="d-flex align-items-center mb-2">
-            <div><RecipeThumbnailImage {...{recipe: recipeKind}} /></div>
-            <div className='ms-2'>{name}</div>
-            <button type='button' className='btn ms-2 btn-sm btn-outline-secondary' onClick={() => destroyRecipeKind(recipeKind)}>Destroy</button>
-          </div>
-        </Link>
+        return <div key={recipeKind.id} className='d-flex align-items-center'>
+          <Link path={'/admin/ek/'+recipeKind.id} className="plain-link">
+            <div className="d-flex align-items-center mb-2">
+              <div><RecipeThumbnailImage {...{recipe: recipeKind}} /></div>
+              <div className='ms-2'>{name}</div>
+            </div>
+          </Link>
+          <button type='button' className='btn ms-2 btn-sm btn-outline-secondary' onClick={() => destroyRecipeKind(recipeKind)}>Destroy</button>
+        </div>
       })}
       <h2>Recipes without categories</h2>
       {missings.map(recipe => {
