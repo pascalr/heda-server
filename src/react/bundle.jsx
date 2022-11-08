@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
-import { MainSearch } from './main_search'
+import { MainSearch, AppSearch } from './main_search'
 import { Home } from "./home"
 import { App } from "./app"
 import { ShowRecipe } from "./show_recipe"
@@ -20,6 +20,14 @@ export const SearchRoot = () => {
   </>
 }
 
+export const AppSearchRoot = () => {
+
+  // TODO: Show app search for /error
+  return <>
+    <AppSearch {...{user, otherProfiles, _csrf, recipes, friendsRecipes, users, recipeKinds}} />
+  </>
+}
+
 // I want the javascript to load after the images on the front page.
 // It works, but I have to remove this listener because it does not get this event anymore.
 //document.addEventListener('DOMContentLoaded', () => {
@@ -28,6 +36,9 @@ window.locale = getUrlParams(window.location.href).locale
 
 let root = document.getElementById('root-search')
 if (root) {ReactDOM.render(<SearchRoot />, root)}
+
+root = document.getElementById('root-app-search')
+if (root) {ReactDOM.render(<AppSearchRoot />, root)}
 
 root = document.getElementById('root-home')
 if (root) { ReactDOM.render(<Home />, root) }

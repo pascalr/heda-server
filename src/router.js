@@ -12,6 +12,7 @@ import { tr } from './translate.js'
 import { translateRecipes } from '../tasks/translate_recipes.js'
 import Translator, { TranslationsCacheStrategy, LogStrategy } from './translator.js'
 import { findRecipeKindForRecipeName, fetchRecipeKinds, fetchRecipeKind, descriptionRecipeIngredients } from "./lib.js"
+import analytics from './analytics.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -616,9 +617,13 @@ const renderAdmin = (req, res, next) => {
     translations: db.fetchTable('translations', {}, ['from', 'to', 'original', 'translated']),
     recipe_kinds: db.fetchTable('recipe_kinds', {}, ['name_fr', 'json_fr', 'name_en', 'json_en', 'image_slug']),
     recipes: db.fetchTable('recipes', {}, ['name', 'recipe_kind_id', 'image_slug']),
-    nbUsers: db.prepare('SELECT COUNT(*) FROM users').get()['COUNT(*)'],
-    nbAccounts: db.prepare('SELECT COUNT(*) FROM accounts').get()['COUNT(*)'],
-    public_users: db.fetchTable('users', {is_public: 1}, ['name']),
+    stats: {
+      nbUsers: db.prepare('SELECT COUNT(*) FROM users').get()['COUNT(*)'],
+      nbAccounts: db.prepare('SELECT COUNT(*) FROM accounts').get()['COUNT(*)'],
+      public_users: db.fetchTable('users', {is_public: 1}, ['name']),
+      nbRequestsTotal: analytics.nbRequestsTotal(),
+      nbDailyVisitsTotal: analytics.nbDailyVisitsTotal(),
+    },
   }
   res.render('admin')
 }

@@ -148,9 +148,10 @@ const sqlDb = {
   
     let safeTable = safe(table, getTableList(schema))
     //obj = schemaHelper.beforeCreate(table, obj)
-  
-    let query = 'INSERT INTO '+safeTable+' (created_at,updated_at,'+fields.map(f => "'"+f+"'").join(',')+') '
-    query += 'VALUES (?,?,'+fields.map(f=>'?').join(',')+')'
+ 
+    let comma = (fields.length <= 0 ? '' : ',')
+    let query = 'INSERT INTO '+safeTable+' (created_at,updated_at'+comma+fields.map(f => "'"+f+"'").join(',')+') '
+    query += 'VALUES (?,?'+comma+fields.map(f=>'?').join(',')+')'
     let args = [now(), now(), ...fields.map(f => validAttr(schema, table, f, obj[f]))]
     
     let info = this.prepare(query).run(...args)

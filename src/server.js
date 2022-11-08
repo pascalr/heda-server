@@ -19,6 +19,7 @@ import _ from 'lodash';
 import { tr } from './translate.js'
 import { enableLiveReload } from './livereload.js'
 import { SearchWhiteIcon, PersonFillWhiteIcon } from './build/image.js'
+import analytics from './analytics.js'
 
 // pass the session to the connect sqlite3 module
 // allowing it to inherit from session.Store
@@ -110,6 +111,8 @@ app.use(session({
 }));
 app.use(csrf());
 app.use(passport.authenticate('session'));
+// Server-side analytics
+app.use(analytics.checkVisit)
 app.use(function(req, res, next) {
   var msgs = req.session.messages || [];
   res.locals.messages = msgs;
