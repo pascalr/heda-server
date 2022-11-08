@@ -153,28 +153,60 @@ const sqlDb = {
     if (info.changes != 1) {throw "Error creating record from in "+table+"."}
     return {...obj, id: info.lastInsertRowid}
   },
-
-  findAndDestroyRecord(table, recordOrId, manual) {
+  
+  findAndDestroyRecords(table, key, value, manual) {
     
     if (!table) {throw "Missing table for findAndDestroyRecord"}
 
-    let id = parseInt(typeof recordOrId === 'string' ? recordOrId : recordOrId.id)
     let schema = this.getSchema()
     let securityAttrs = getSecurityAttributes(schema, table)||[]
-    if (isNotAllowed(schema, table, manual)) {throw "Destroy record not allowed."}
+    if (isNotAllowed(schema, table, manual)) {throw "Destroy record not allowed "+table+" "+key+" "+value}
 
-    let record = this.fetchRecord(table, {id: parseInt(id)}, securityAttrs)
+    let records = this.fetchTable(table, {[key]: value}, securityAttrs)
 
     securityAttrs.forEach(attr => {
-      if (record[attr] != manual[attr]) {
-        throw "Destroy record not allowed because of security key "+attr
-      }
+      records.forEach(record => {
+        if (record[attr] != manual[attr]) {
+          throw "Destroy record not allowed because of security key "+attr
+        }
+      })
     })
 
-    let info = this.prepare('DELETE FROM '+safe(table, getTableList(schema))+' WHERE id  = ?').run(id)
+    return this.prepare('DELETE FROM '+safe(table, getTableList(schema))+' WHERE '+key+' = ?').run(value)
+  },
+
+  findAndDestroyRecord(table, recordOrId, manual) {
+    
+    let id = parseInt(typeof recordOrId === 'object' ? recordOrId.id : recordOrId)
+    let info = this.findAndDestroyRecords(table, 'id', id, manual)
     if (info.changes != 1) {throw "Error destroying record from table "+table+" with id "+id}
   },
+
+  //dependant_destroy: {recipe_id: ['favorite_recipes', 'meals', 'mixes', 'recipe_comments', 'recipe_notes', 'recipe_ratings', 'recipe_tools', 'references', 'suggestions']},
+  findAndDestroyRecordWithDependants(table, recordOrId, manual) {
+
+    let schema = this.getSchema()
+    let id = parseInt(typeof recordOrId === 'string' ? recordOrId : recordOrId.id)
+    console.log('id', id)
+
+    this.transaction(() => {
+    
+      let o = schema[table].dependant_destroy || {}
+      let foreignKeys = Object.keys(o)
+      foreignKeys.forEach(foreignKey => {
+     
+        let tables = o[foreignKey]
+        tables.forEach(dependantTable => {
+
+          this.findAndDestroyRecords(dependantTable, foreignKey, id, manual)
+        })
+      })
+
+      this.findAndDestroyRecord(table, id, manual)
+    })()
+  },
 }
+
 function injectFunctions(obj, functionsObj) {
   Object.keys(functionsObj).map(name => {
     if (obj.prototype[name]) {throw "Can't inject function becasue it already exists."}

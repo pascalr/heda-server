@@ -136,3 +136,9 @@ sudo systemctl status grafana-server
 sudo vi /etc/grafana/grafana.ini # Set port to 3333 instead of 3000
 localhost:3333
 username: admin
+
+## Ads
+
+If I ever put ads.
+- Amazon cookware
+- Amazon recipe books

@@ -101,49 +101,49 @@ const schema = {
     security_attrs: ['user_id'],
   },
   'meals': {
-    is_allowed: user => false,
+    is_allowed: user => user.is_admin,
   },
   'mixes': {
-    is_allowed: user => false,
+    is_allowed: user => user.is_admin,
   },
   'recipe_comments': {
-    is_allowed: user => false,
+    is_allowed: user => user.is_admin,
   },
   'recipe_notes': {
-    is_allowed: user => false,
+    is_allowed: user => user.is_admin,
   },
   'recipe_ratings': {
-    is_allowed: user => false,
+    is_allowed: user => user.is_admin,
   },
   'recipe_tools' : {
-    is_allowed: user => false,
+    is_allowed: user => user.is_admin,
   },
   'references' : {
-    is_allowed: user => false,
+    is_allowed: user => user.is_admin,
   },
   'machine_users' : {
-    is_allowed: user => false,
+    is_allowed: user => user.is_admin,
   },
   'machine_foods' : {
-    is_allowed: user => false,
+    is_allowed: user => user.is_admin,
   },
   'machines' : {
-    is_allowed: user => false,
+    is_allowed: user => user.is_admin,
   },
   'container_formats' : {
-    is_allowed: user => false,
+    is_allowed: user => user.is_admin,
   },
   'container_quantities' : {
-    is_allowed: user => false,
+    is_allowed: user => user.is_admin,
   },
   'containers' : {
-    is_allowed: user => false,
+    is_allowed: user => user.is_admin,
   },
   'foods' : {
-    is_allowed: user => false,
+    is_allowed: user => user.is_admin,
   },
   'units' : {
-    is_allowed: user => false,
+    is_allowed: user => user.is_admin,
   },
 }
 export default schema
