@@ -108,48 +108,6 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
   const recipeTags = suggestions.filter(s => s.recipe_id == recipe.id).map(s => tags.find(t => t.id == s.tag_id))
   const favorite = favoriteRecipes.find(f => f.recipe_id == recipe.id)
 
-  //const NoteList = noteIds.map(id => {
-  //  const note = recipe.notes[id]
-
-  //  const removeNote = (evt) => {
-  //    ajax({url: recipe_recipe_note_path(recipe, note), type: 'DELETE', success: () => {
-  //      let ids = noteIds.filter(item => item != note.id)
-  //      this.setState({noteIds: ids})
-  //      delete recipe.notes[note.id]
-  //    }})
-  //  }
-
-  //  return (
-  //    <Row key={id} gap="5px" marginBottom="5px">
-  //      [{note.item_nb}]
-  //      <Block flexGrow="1">
-  //        <BubbleTiptap content={JSON.parse(note.json)} model="recipe_note" json_field="json" html_field="html" url={recipe_recipe_note_path(recipe, note)} />
-  //      </Block>
-  //      <DeleteConfirmButton id={`note-${note.id}`} onDeleteConfirm={removeNote} message="Je veux enlever cette note?" />
-  //    </Row>
-  //  )
-  //})
-
-  //const Tools = toolIds.map(id => (
-  //  <li key={id}>
-  //    {recipe.tools[id].name}
-  //  </li>
-  //))
-  //     
-  //{noteIds.length <= 0 ? '' : <>
-  //  <h3>Notes</h3>
-  //  {NoteList}
-  //</>}
-  //
-  //<h2>Outils</h2>
-  //<ul style={{fontSize: "1.1rem"}}>
-  //  {Tools}
-  //</ul>
-  //
-  //<h2>Références</h2>
-
-  //console.log(model)
-
   const translateRecipe = () => {
     ajax({url: '/translate_recipe/'+recipe.id, type: 'POST', success: (translated) => {
       window.hcu.addRecord('recipes', translated)
@@ -163,7 +121,7 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
     }, error: handleError(t('Error_creating'))})
   }
   
-  let changeOwner = (e) => {
+  const changeOwner = (e) => {
     let data = {recipeId: recipe.id, newOwnerId: user.id}
     ajax({url: '/change_recipe_owner', type: 'PATCH', data, success: () => {
       window.hcu.changeField(recipe, 'user_id', user.id)
@@ -240,3 +198,46 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
 }
 
 export default RecipeViewer;
+
+
+  //const NoteList = noteIds.map(id => {
+  //  const note = recipe.notes[id]
+
+  //  const removeNote = (evt) => {
+  //    ajax({url: recipe_recipe_note_path(recipe, note), type: 'DELETE', success: () => {
+  //      let ids = noteIds.filter(item => item != note.id)
+  //      this.setState({noteIds: ids})
+  //      delete recipe.notes[note.id]
+  //    }})
+  //  }
+
+  //  return (
+  //    <Row key={id} gap="5px" marginBottom="5px">
+  //      [{note.item_nb}]
+  //      <Block flexGrow="1">
+  //        <BubbleTiptap content={JSON.parse(note.json)} model="recipe_note" json_field="json" html_field="html" url={recipe_recipe_note_path(recipe, note)} />
+  //      </Block>
+  //      <DeleteConfirmButton id={`note-${note.id}`} onDeleteConfirm={removeNote} message="Je veux enlever cette note?" />
+  //    </Row>
+  //  )
+  //})
+
+  //const Tools = toolIds.map(id => (
+  //  <li key={id}>
+  //    {recipe.tools[id].name}
+  //  </li>
+  //))
+  //     
+  //{noteIds.length <= 0 ? '' : <>
+  //  <h3>Notes</h3>
+  //  {NoteList}
+  //</>}
+  //
+  //<h2>Outils</h2>
+  //<ul style={{fontSize: "1.1rem"}}>
+  //  {Tools}
+  //</ul>
+  //
+  //<h2>Références</h2>
+
+  //console.log(model)
