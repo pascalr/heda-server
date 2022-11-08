@@ -324,7 +324,7 @@ router.get('/imgs/:variant/:slug', function(req, res, next) {
 router.post('/create_record/:table', function(req, res, next) {
  
   let o = req.body.record
-  let record = db.createRecord(req.params.table, o, req.user})
+  let record = db.createRecord(req.params.table, o, req.user)
   res.json({...record})
 })
 
@@ -431,7 +431,7 @@ const renderApp = [ensureUser, function(req, res, next) {
   let attrs = null
   let ids = null
   o.users = db.fetchTable('users', {account_id: user.account_id}, ['name', 'gender', 'image_slug', 'locale', 'is_public'])
-  let profile = o.users.find(u => u.id === user.user_id)
+  let profile = o.users.find(u => u.id == user.user_id)
   o.recipes = db.fetchTable('recipes', {user_id: user.user_id}, RECIPE_ATTRS)
   o.favorite_recipes = db.fetchTable('favorite_recipes', {user_id: user.user_id}, ['list_id', 'recipe_id', 'updated_at'])
   let recipeIds = o.recipes.map(r => r.id)
