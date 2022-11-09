@@ -343,7 +343,7 @@ const EditableIngredientSection = ({item, index, updateIngredients, removeIngred
   </h3>
 }
 
-export const RecipeEditor = ({recipe, machines, mixes, machineFoods, foods, images, editable, user, locale}) => {
+export const RecipeEditor = ({recipe, machines, mixes, machineFoods, foods, images, editable, user, locale, recipeKinds}) => {
 
   const [orderedIngredients, setOrderedIngredients] = useState(recipe.ingredients)
   useEffect(() => {
@@ -520,6 +520,8 @@ export const RecipeEditor = ({recipe, machines, mixes, machineFoods, foods, imag
   //  </div>
   //</div>
 
+  let recipeKindName = recipe.recipe_kind_id && recipeKinds && recipeKinds.find(k => k.id == recipe.recipe_kind_id).name
+
   return (<>
     <div className="recipe">
       <div className="d-block d-md-flex">
@@ -575,6 +577,19 @@ export const RecipeEditor = ({recipe, machines, mixes, machineFoods, foods, imag
       
         <h2>{t('Instructions')}</h2>
         <RecipeTiptap recipe={recipe} editable={true} ingredients={ingredients} />
+
+        <h2>{t('Recipe_kind')}</h2>
+        <AutocompleteInput name="recipe_kind_id" choices={recipeKinds}
+          defaultValue={recipeKindName}
+          onSelect={(e, term, item) => {
+            window.hcu.updateField(recipe, 'recipe_kind_id', item.dataset.id)
+          }} onBlur={(name) => {
+            let k = (recipeKinds||[]).find(e => e.name == name);
+            if (k) {
+              window.hcu.updateField(recipe, 'recipe_kind_id', k.id)
+            }
+          }} minChars={0}
+        />
       </div>
     </div>
   </>)

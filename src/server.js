@@ -101,6 +101,7 @@ app.use(express.static(path.join(__dirname, '../node_modules/@popperjs/core/dist
 app.use(express.static(path.join(__dirname, '../node_modules/toastr/')));
 app.use(express.static(path.join(__dirname, '../node_modules/prosemirror-menu/style/')));
 app.use(express.static(path.join(__dirname, '../node_modules/swiper/')));
+app.use(express.static(path.join(__dirname, '../node_modules/js-autocomplete/')));
 app.use(express.static(path.join(__dirname, '../public')));
 
 app.use(session({

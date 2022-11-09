@@ -211,3 +211,15 @@ input[type="checkbox"] {
   background: white;
   overflow: scroll;
 }
+
+.autocomplete-suggestion {
+  display: block;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  font-size: 1.12em !important;
+}
+.autocomplete-suggestion > img {
+  margin-right: 8px;
+  width: 71px;
+  height: 48px;
+}

@@ -19,9 +19,8 @@ export const Home = () => {
   window.disableLazyLoading = getUrlParams().disableLazyLoading
 
   const locale = getLocale()
-  const [recipes1,] = useState(gon.recipes1)
-  const [recipes2,] = useState(gon.recipes2)
   const recipe = useHcuState([gon.recipe], {tableName: 'recipes'})[0]
+  const [kinds,] = useState(gon.kinds)
 
   if (!window.hcu) {initHcu(); window.hcu.makeDummy() }
 
@@ -65,20 +64,17 @@ export const Home = () => {
         <p>{t('Home_4')}</p>
       </div>
       <div className="trunk">
-        <h3>{t('Home_8')}</h3>
-        <Carrousel {...{items: recipes1, preloadItem}}>{item => <>
-          <a href={localeHref("/k/"+item.id)} className="plain-link">
-            <RecipeSmallImage {...{recipe: item}} />
-            <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
-          </a>
-        </>}</Carrousel>
-        <h3>{t('Many_meals')}</h3>
-        <Carrousel {...{items: recipes2, preloadItem}}>{item => <>
-          <a href={localeHref("/k/"+item.id)} className="plain-link">
-            <RecipeSmallImage {...{recipe: item}} />
-            <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
-          </a>
-        </>}</Carrousel>
+        {kinds.map(k => {
+          return <div key={k.id}>
+            <h2><a href={localeHref('/d/'+k.id)} className='plain-link'>{k.name}</a></h2>
+            <Carrousel {...{items: k.recipeKinds||[]}}>{item => <>
+              <a href={localeHref("/k/"+item.id)} className="plain-link">
+                <RecipeSmallImage {...{recipe: item}} />
+                <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
+              </a>
+            </>}</Carrousel>
+          </div>
+        })}
       </div>
     </div>
     <div style={{padding: '5em 0.3em', backgroundColor: '#fafbfc'}}>

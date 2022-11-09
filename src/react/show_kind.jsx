@@ -43,7 +43,7 @@ export const KindViewer = ({kind, ancestors, kinds, recipeKinds}) => {
           </a>
         </div>
       })}
-      {kinds.map(k => {
+      {(kinds||[]).map(k => {
         return <div key={k.id}>
           <h2><a href={localeHref('/d/'+k.id)} className='plain-link'>{k.name}</a></h2>
           <Carrousel {...{items: k.recipeKinds||[]}}>{item => <>

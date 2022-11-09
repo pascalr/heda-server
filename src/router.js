@@ -632,11 +632,14 @@ const renderHome = function(req, res, next) {
   let id = (res.locals.locale != 'fr') ? 773 : 82
   let ids1 = [96, 91, 98, 51];
   let ids2 = [49, 108, 133, 66];
-  res.locals.gon = {
-    recipes1: fetchRecipeKinds(db, {id: ids1}, res.locals.locale, false),
-    recipes2: fetchRecipeKinds(db, {id: ids2}, res.locals.locale, false),
-    recipe: db.fetchRecord('recipes', {id}, RECIPE_ATTRS),
-  }
+  let o = {}
+  o.recipe = db.fetchRecord('recipes', {id}, RECIPE_ATTRS)
+  o.kinds = fetchKinds(db, {id: [1,6]}, res.locals.locale)
+  o.kinds.forEach(k => {
+    // TODO: Limit to 6
+    k.recipeKinds = fetchRecipeKinds(db, {kind_id: k.id}, res.locals.locale, false)
+  })
+  res.locals.gon = o
   res.render('home');
 }
 router.get('/home', renderHome);

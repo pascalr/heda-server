@@ -70,10 +70,12 @@ export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors}) => {
       <br/>
       <div>
         {recipes && recipes.length > 0 ? <>
-          <div className='fs-13 mb-1'>
-            {t('Users_recipes')} ({recipeIdx+1} {t('of')} {recipes.length})
-            <button className="btn btn-sm btn-outline-primary mx-2" disabled={recipeIdx === 0} onClick={() => setRecipeIdx(recipeIdx-1)}>{t('Previous_f')}</button>
-            <button className="btn btn-sm btn-outline-primary" disabled={recipeIdx === recipes.length-1} onClick={() => setRecipeIdx(recipeIdx+1)}>{t('Next_f')}</button>
+          <div className='fs-13 d-flex align-items-center mb-1'>
+            <div>({recipeIdx+1} {t('of')} {recipes.length}) {recipes.length > 1 ? t('recipes') : t('recipe')}</div>
+            <div>
+              <button className="btn btn-sm btn-outline-primary mx-2" disabled={recipeIdx === 0} onClick={() => setRecipeIdx(recipeIdx-1)}>{t('Previous_f')}</button>
+              <button className="btn btn-sm btn-outline-primary" disabled={recipeIdx === recipes.length-1} onClick={() => setRecipeIdx(recipeIdx+1)}>{t('Next_f')}</button>
+            </div>
           </div>
           <Recipe {...{recipe: recipes[recipeIdx]}} />
         </> : <p>{t('There_are_no_recipe_in_this_category_yet')}.</p>}
