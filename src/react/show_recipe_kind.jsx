@@ -52,7 +52,7 @@ export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors}) => {
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb" style={{margin: '-0.15em 0 0.5em 0'}}>
           {(kindAncestors||[]).map(kind => {
-            return <li key={kind.kid} className="breadcrumb-item"><a href={localeHref('/d/'+kind.id)}>{kind.name}</a></li>
+            return <li key={kind.id} className="breadcrumb-item"><a href={localeHref('/d/'+kind.id)}>{kind.name}</a></li>
           })}
           <li className="breadcrumb-item active" aria-current="page">{recipeKind.name}</li>
         </ol>
