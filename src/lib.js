@@ -37,6 +37,18 @@ export function fetchRecipeKind(db, conditions, locale, fetchDescription=true) {
   if (fetchDescription) {obj.description_json = r[localeAttr('json', locale)]}
   return obj
 }
+export function fetchKind(db, conditions, locale) {
+  let attrs = [localeAttr('name', locale), 'kind_id']
+  let r = db.fetchRecord('kinds', conditions, attrs)
+  return {id: r.id, kind_id: r.kind_id, name: r[localeAttr('name', locale)]}
+}
+export function fetchKindWithAncestors(db, conditions, locale) {
+  let kind = fetchKind(db, conditions, locale)
+  if (kind.kind_id) {
+    return [...fetchKindWithAncestors(db, {id: kind.kind_id}, locale), kind]
+  }
+  return [kind]
+}
 
 export function needsPreposition(qty) {
   let q = new Quantity({raw: qty})

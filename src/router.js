@@ -11,7 +11,7 @@ import { localeHref, now, ensureIsArray } from './utils.js';
 import { tr } from './translate.js'
 import { translateRecipes } from '../tasks/translate_recipes.js'
 import Translator, { TranslationsCacheStrategy, LogStrategy } from './translator.js'
-import { findRecipeKindForRecipeName, fetchRecipeKinds, fetchRecipeKind, descriptionRecipeIngredients } from "./lib.js"
+import { findRecipeKindForRecipeName, fetchRecipeKinds, fetchRecipeKind, descriptionRecipeIngredients, fetchKindWithAncestors } from "./lib.js"
 import analytics from './analytics.js'
 
 const __filename = fileURLToPath(import.meta.url);
@@ -554,6 +554,10 @@ router.get('/k/:id', function(req, res, next) {
   o.recipe_kind = fetchRecipeKind(db, {id: req.params.id}, res.locals.locale)
   if (!o.recipe_kind) {throw 'Unable to fetch recipe kind. Not existent.'}
 
+  if (o.recipe_kind.kind_id) {
+    o.kind_ancestors = fetchKindWithAncestors(db, {id: o.recipe_kind.kind_id}, res.locals.locale)
+  }
+
   // FIXME: recipes.*
   //o.recipes = db.prepare("SELECT recipes.*, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.is_public = 1 AND recipes.recipe_kind_id = ?;").all(o.recipe_kind.id)
   // Only fetch recipes in the current locale. Temporary
@@ -613,11 +617,17 @@ router.get('/', function(req, res, next) {
     let ids1 = [96, 91, 98, 51];
     let ids2 = [49, 108, 133, 66];
     let recipeKindId = 66
+    let recipeKind = fetchRecipeKind(db, {id: recipeKindId}, res.locals.locale)
+    let kind_ancestors = null
+    if (recipeKind.kind_id) {
+      kind_ancestors = fetchKindWithAncestors(db, {id: o.recipe_kind.kind_id}, res.locals.locale)
+    }
     res.locals.gon = {
       recipes1: fetchRecipeKinds(db, {id: ids1}, res.locals.locale, false),
       recipes2: fetchRecipeKinds(db, {id: ids2}, res.locals.locale, false),
       recipe: db.fetchRecord('recipes', {id}, RECIPE_ATTRS),
-      recipes: db.prepare("SELECT recipes.*, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.locale = ? AND users.is_public = 1 AND recipes.recipe_kind_id = ?;").all(res.locals.locale, recipeKindId)
+      recipes: db.prepare("SELECT recipes.*, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.locale = ? AND users.is_public = 1 AND recipes.recipe_kind_id = ?;").all(res.locals.locale, recipeKindId),
+      kind_ancestors
     }
     return res.render('home');
   }

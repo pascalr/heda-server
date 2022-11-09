@@ -43,7 +43,7 @@ const Recipe = ({recipe}) => {
   </div>
 }
 
-export const RecipeKindViewer = ({recipeKind, recipes}) => {
+export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors}) => {
 
   if (!recipeKind) {return ''}
 
@@ -51,6 +51,14 @@ export const RecipeKindViewer = ({recipeKind, recipes}) => {
 
   return <>
     <div className="trunk">
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb" style={{margin: '-0.5em 0 0.5em 0'}}>
+          {kindAncestors.map(kind => {
+            return <li key={kind.kid} className="breadcrumb-item"><a href={localeHref('/d/'+kind.id)}>{kind.name}</a></li>
+          })}
+          <li className="breadcrumb-item active" aria-current="page">{recipeKind.name}</li>
+        </ol>
+      </nav>
       <div className="d-flex">
         <RecipeMediumImage {...{recipe: recipeKind}} />
         <div style={{marginRight: '1em'}}></div>
@@ -81,11 +89,12 @@ export const ShowRecipeKind = () => {
   const locale = getLocale()
   const [recipeKind, ] = useState(gon.recipe_kind)
   const [recipes, ] = useState(gon.recipes)
+  const [kindAncestors, ] = useState(gon.kind_ancestors||[])
 
   // TODO: Show credit
   //<div><RecipeMediumImage {...{recipe: recipeKind, images, showCredit: true}} /></div>
   return <>
     <MainSearch {...{locale}} />
-    <RecipeKindViewer {...{recipeKind, recipes}} />
+    <RecipeKindViewer {...{recipeKind, recipes, kindAncestors}} />
   </>
 }

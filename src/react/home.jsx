@@ -24,6 +24,7 @@ export const Home = () => {
   const [recipes2,] = useState(gon.recipes2)
   const [recipes,] = useState(gon.recipes)
   const recipe = useHcuState([gon.recipe], {tableName: 'recipes'})[0]
+  const [kindAncestors, ] = useState(gon.kind_ancestors||[])
 
   let recipeKind = recipes2.find(r => r.id == 66)
 
@@ -75,7 +76,7 @@ export const Home = () => {
         <div className="smartphone d-none d-sm-block">
           <div className='content'>
             <div style={{width: '100%', border: 'none', height: '100%'}}>
-              <RecipeKindViewer {...{recipeKind, recipes}} />
+              <RecipeKindViewer {...{recipeKind, recipes, kindAncestors}} />
             </div>
           </div>
         </div>
