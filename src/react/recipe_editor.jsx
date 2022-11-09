@@ -7,7 +7,7 @@ import { DeleteConfirmButton } from './components/delete_confirm_button'
 import { RecipeTiptap, BubbleTiptap } from './tiptap'
 import {AutocompleteInput, updateRecord, TextField, CollectionSelect, TextAreaField} from './form'
 import { parseIngredientsAndHeaders, serializeIngredientsAndHeaders, prettyPreposition } from '../lib'
-import {EditRecipeImageModal, EditableImage} from './modals/recipe_image'
+import {EditableImage} from './modals/recipe_image'
 import {PasteIngredientsButton} from './modals/paste_ingredients'
 import { t } from "../translate"
 
@@ -345,8 +345,6 @@ const EditableIngredientSection = ({item, index, updateIngredients, removeIngred
 
 export const RecipeEditor = ({recipe, machines, mixes, machineFoods, foods, images, editable, user, locale}) => {
 
-  const [showImageModal, setShowImageModal] = useState(false)
-
   const [orderedIngredients, setOrderedIngredients] = useState(recipe.ingredients)
   useEffect(() => {
     setOrderedIngredients(recipe.ingredients)
@@ -525,7 +523,7 @@ export const RecipeEditor = ({recipe, machines, mixes, machineFoods, foods, imag
   return (<>
     <div className="recipe">
       <div className="d-block d-md-flex">
-        <div><EditableImage {...{recipe, images, showImageModal, setShowImageModal}}/></div>
+        <div><EditableImage {...{recipe, images}}/></div>
         <div style={{height: '20px', minWidth: '20px'}}></div>
         <div style={{width: '100%'}}>
           <h1>

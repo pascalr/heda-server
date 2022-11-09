@@ -8,7 +8,10 @@ import { image_path } from '../routes'
 import { isTrue } from "../utils"
 import { t } from "../../translate"
 
-export const EditableImage = ({recipe, images, showImageModal, setShowImageModal}) => {
+export const EditableImage = ({recipe, images}) => {
+
+  const [showImageModal, setShowImageModal] = useState(false)
+
   return <div className="over-container">
     <EditRecipeImageModal {...{recipe, images}} show={showImageModal}
                            handleClose={() => setShowImageModal(false)} />

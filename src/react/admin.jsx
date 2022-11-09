@@ -16,7 +16,7 @@ import { ajax } from "./utils"
 import Translator, { TranslationsCacheStrategy, LogStrategy, StoreStrategy } from '../translator'
 import { RecipeThumbnailImage, RecipeMediumImage } from "./image"
 import { DescriptionTiptap } from "./tiptap"
-import {EditRecipeImageModal} from './modals/recipe_image'
+import {EditRecipeImageModal, EditableImage} from './modals/recipe_image'
 
 const AdminTabs = ({machines}) => {
   return <>
@@ -47,8 +47,6 @@ const EditKind = ({id, kinds}) => {
 
 const EditRecipeKind = ({id, recipeKinds, images}) => {
 
-  const [showImageModal, setShowImageModal] = useState(false)
-
   let recipeKind = recipeKinds.find(k => k.id == id)
  
   //const translateRecipeKind = () => {
@@ -56,10 +54,9 @@ const EditRecipeKind = ({id, recipeKinds, images}) => {
   //<button type="button" className="btn btn-primare" onClick={translateRecipeKind}>Translate FR to EN</button>
   
   return <>
-    <EditRecipeImageModal {...{recipe: recipeKind, images}} show={showImageModal}/>
     <div className='trunk'>
       <h3>Edit recipe kind</h3>
-      <RecipeMediumImage {...{recipe: recipeKind}} />
+      <EditableImage {...{recipe: recipeKind, images}}/>
       <br/><br/>
       <h2>Français</h2>
       <h1 className="ff-satisfy bold fs-25"><TextField model={recipeKind} field='name_fr' style={{width: '100%'}} /></h1>
@@ -344,7 +341,7 @@ export const Admin = () => {
     {match: "/admin/sql", elem: () => <SQLPage />},
     {match: "/admin/ki", elem: () => <RecipeKindsIndex {...{recipeKinds, recipes, publicUsers, locale, kinds}} />},
     {match: "/admin/di", elem: () => <KindsIndex {...{kinds, recipeKinds, locale}} />},
-    {match: "/admin/ek/:id", elem: ({id}) => <EditRecipeKind {...{id, recipeKinds}} />},
+    {match: "/admin/ek/:id", elem: ({id}) => <EditRecipeKind {...{id, recipeKinds, images}} />},
     {match: "/admin/ed/:id", elem: ({id}) => <EditKind {...{id, kinds}} />},
     {match: "/admin/translate_recipe", elem: () => <TranslateRecipePage {...{recipes, locale, translations}} />},
     {match: "/admin", elem: () => <AdminPage {...{stats, publicUsers}} />},
