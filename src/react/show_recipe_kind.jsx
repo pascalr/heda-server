@@ -19,14 +19,14 @@ const RecipeAttribute = ({recipe, attr, label}) => {
 }
 
 const Recipe = ({recipe}) => {
-  return <div className="p-2" style={{border: '1px solid black', borderRadius: '5px'}}>
+  return <div style={{border: '1px solid black'}}>
     <div className="p-2 ps-3 white" style={{backgroundColor: '#212529'}}>
       <div className="float-end">{t('by')} <a className="plain-link underline white" href={'/u/'+recipe.user_id}>{recipe.user_name}</a></div>
       <div className="fs-12 bold">
         <a className="plain-link white" href={'/r/'+recipe.id}>{recipe.name}</a>
       </div>
     </div>
-    <div className="recipe-body">
+    <div className="recipe-body p-2">
 
       <RecipeAttribute {...{recipe, attr: 'preparation_time', label: 'Preparation'}} />
       <RecipeAttribute {...{recipe, attr: 'cooking_time', label: 'Cooking'}} />
