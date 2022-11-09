@@ -46,7 +46,9 @@ const fetchStatement = (schema, tableName, conditions, attrs, options) => {
 
   let attributes = ensureIsArray(attrs)
   let tb = safeNoQuotes(tableName, getTableList(schema))
-  let s = "SELECT '"+[tb+".id'",...attributes.map(a => '"'+a+'"')].join(', ')+" FROM '"+tb+"'"
+  // Adding the table is required for joins, but that I must extract table.id and not id.
+  //let s = "SELECT '"+[tb+".id'",...attributes.map(a => '"'+a+'"')].join(', ')+" FROM '"+tb+"'"
+  let s = "SELECT "+["id",...attributes.map(a => '"'+a+'"')].join(', ')+" FROM '"+tb+"'"
   let a = []
 
   // FIXME: Does not work quite yet

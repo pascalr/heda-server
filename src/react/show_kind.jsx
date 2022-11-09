@@ -5,7 +5,7 @@ import { Carrousel } from "./carrousel"
 import { RecipeSmallImage } from "./image"
 import { MainSearch } from './main_search'
 //import { getLocale } from "./lib"
-//import { t } from "../translate"
+import { t } from "../translate"
 //import { IngredientList } from "./recipe_viewer"
 //import { DescriptionTiptap, RecipeTiptap } from "./tiptap"
 //import { prettyMinutes } from "../lib"
@@ -14,12 +14,15 @@ export const KindViewer = ({kind, ancestors, kinds, recipeKinds}) => {
 
   if (!kind) {return ''}
 
+  let childCount = kind.child_count || 0
+
   return <>
     <div className="trunk">
       {!ancestors || ancestors.length === 0 ? '' :
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb" style={{margin: '-0.15em 0 0.5em 0'}}>
             {ancestors.map(k => {
+              console.log('ancestor', k)
               return <li key={k.id} className="breadcrumb-item"><a href={localeHref('/d/'+k.id)}>{k.name}</a></li>
             })}
             <li className="breadcrumb-item active" aria-current="page">{kind.name}</li>
@@ -35,7 +38,7 @@ export const KindViewer = ({kind, ancestors, kinds, recipeKinds}) => {
               <div style={{width: '1em'}}/>
               <div>
                 <div className='ff-satisfy fs-2 bold mt-3' style={{lineHeight: 1}}>{k.name}</div>
-                <div className='fs-13'>(0 recette)</div>
+                <div className='fs-13'>({childCount} {childCount > 1 ? t('recipes') : t('recipe')})</div>
               </div>
             </div>
           </a>

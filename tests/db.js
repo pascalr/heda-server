@@ -72,6 +72,8 @@ fetched = db.fetchRecord('recipes', {id: recipe.id}, ['name'])
 console.log('fetched', fetched)
 assertEquals("mod", fetched.name)
 
+// TODO: Test id, because when I tried doing join, I added table to id, and then id was not working anymore, because it was table.id and not id only.
+
 // Testing fetchTable join
 //header('Testing fetchTable join')
 //kind = db.createRecord('kinds', {name_fr: 'Test', name_en: 'Test'}, admin)

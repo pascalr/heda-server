@@ -38,15 +38,15 @@ export function fetchRecipeKind(db, conditions, locale, fetchDescription=true) {
   return obj
 }
 export function fetchKind(db, conditions, locale) {
-  let attrs = [localeAttr('name', locale), 'kind_id']
+  let attrs = [localeAttr('name', locale), 'kind_id', 'child_count']
   let r = db.fetchRecord('kinds', conditions, attrs)
-  return {id: r.id, kind_id: r.kind_id, name: r[localeAttr('name', locale)]}
+  return {id: r.id, child_count: r.child_count, kind_id: r.kind_id, name: r[localeAttr('name', locale)]}
 }
 export function fetchKinds(db, conditions, locale) {
-  let attrs = [localeAttr('name', locale), 'kind_id']
+  let attrs = [localeAttr('name', locale), 'kind_id', 'child_count']
   let records = db.fetchTable('kinds', conditions, attrs)
   return records.map(r => (
-    {id: r.id, kind_id: r.kind_id, name: r[localeAttr('name', locale)]}
+    {id: r.id, child_count: r.child_count, kind_id: r.kind_id, name: r[localeAttr('name', locale)]}
   ))
 }
 export function fetchKindWithAncestors(db, conditions, locale) {
