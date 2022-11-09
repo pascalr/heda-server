@@ -181,6 +181,8 @@ const HomePage = ({tags, recipes, suggestions, favoriteRecipes, recipeKinds}) =>
     return acc
   }, {})
   const sTags = sortBy(tags, "position")
+    
+  let randomRecipes = shuffle(recipeKinds)
 
   //<h2 className="fs-12 italic gray">{t('Suggestions_for_you')}</h2>
   return <>
@@ -202,8 +204,12 @@ const HomePage = ({tags, recipes, suggestions, favoriteRecipes, recipeKinds}) =>
         <RecipeCarrousel {...{items}}/>
       </div>
     })}
-    <h2 className="fs-14 bold">{t('Suggestions_for_you')}</h2>
-    <RecipeCarrousel {...{items: shuffle(recipeKinds).slice(0,10), isRecipeKind: true}}/>
+    <h2 className="fs-14 italic gray">{t('Suggestions_for_you')}</h2>
+    <RecipeCarrousel {...{items: randomRecipes.slice(0,10), isRecipeKind: true}}/>
+    <h2 className="fs-14 italic gray">{t('Suggestions_for_you')}</h2>
+    <RecipeCarrousel {...{items: randomRecipes.slice(11,20), isRecipeKind: true}}/>
+    <h2 className="fs-14 italic gray">{t('Suggestions_for_you')}</h2>
+    <RecipeCarrousel {...{items: randomRecipes.slice(21,30), isRecipeKind: true}}/>
   </> 
 }
 
