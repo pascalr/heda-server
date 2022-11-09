@@ -11,7 +11,7 @@ import { localeHref, now, ensureIsArray } from './utils.js';
 import { tr } from './translate.js'
 import { translateRecipes } from '../tasks/translate_recipes.js'
 import Translator, { TranslationsCacheStrategy, LogStrategy } from './translator.js'
-import { findRecipeKindForRecipeName, fetchRecipeKinds, fetchRecipeKind, descriptionRecipeIngredients, fetchKindWithAncestors } from "./lib.js"
+import { findRecipeKindForRecipeName, fetchRecipeKinds, fetchRecipeKind, descriptionRecipeIngredients, fetchKindWithAncestors, fetchKinds } from "./lib.js"
 import analytics from './analytics.js'
 
 const __filename = fileURLToPath(import.meta.url);
@@ -550,8 +550,12 @@ router.get('/d/:id', function(req, res, next) {
   o.ancestors = fetchKindWithAncestors(db, {id}, res.locals.locale)
   o.kind = o.ancestors.pop(-1)
   if (!o.kind) {throw 'Unable to fetch kind. Not existent.'}
-  o.kinds = fetchKinds(db, {kind_id: id}, res.locals.locale)
-  o.recipe_kinds = fetchRecipeKinds(db, {kind_id: id}, res.locals.locale)
+  o.kinds = fetchKinds(db, {kind_id: id}, res.locals.locale)||[]
+  o.kinds.forEach(k => {
+    // TODO: Limit to 6
+    k.recipeKinds = fetchRecipeKinds(db, {kind_id: k.id}, res.locals.locale, false)
+  })
+  o.recipe_kinds = fetchRecipeKinds(db, {kind_id: id}, res.locals.locale, false)
 
   res.locals.gon = o
   res.render('show_kind');

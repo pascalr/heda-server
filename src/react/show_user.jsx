@@ -18,7 +18,7 @@ const RecipeAttribute = ({recipe, attr, label}) => {
   </div>
 }
 
-const RecipeSmallItem = ({recipe, images, recipeKinds}) => {
+const RecipeSmallItem = ({recipe}) => {
   let ingredients = parseIngredientsAndHeaders(recipe.ingredients).filter(i => !i.header)
   // TODO: Sort the ingredients by weight.
   let mainIngredients = ingredients.slice(0,4)
@@ -28,7 +28,7 @@ const RecipeSmallItem = ({recipe, images, recipeKinds}) => {
     <a href={localeHref("/r/"+recipe.id)} className="plain-link">
       <li>
         <div className="d-block d-sm-flex">
-          <RecipeSmallImage {...{recipe, recipeKinds, images}} />
+          <RecipeSmallImage {...{recipe}} />
           <div style={{marginRight: '1em'}}></div>
           <div>
             <div className="fsr-22 ff-satisfy bold mt-2" style={{lineHeight: '1'}}>{recipe.name}</div>
@@ -46,12 +46,12 @@ const RecipeSmallItem = ({recipe, images, recipeKinds}) => {
   )
 }
 
-const RecipeThumbnailItem = ({recipe, images, recipeKinds}) => {
+const RecipeThumbnailItem = ({recipe}) => {
   return (
     <a href={localeHref("/r/"+recipe.id)} className="plain-link">
       <li style={{fontSize: '1.1rem'}}>
         <div className="d-flex align-items-center">
-          <RecipeThumbnailImage {...{recipe, recipeKinds, images}} />
+          <RecipeThumbnailImage {...{recipe}} />
           <div style={{marginRight: '0.5em'}}></div>
           <span>{recipe.name}</span>
         </div>
