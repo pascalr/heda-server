@@ -52,7 +52,7 @@ export const Home = () => {
           </div>
         </div>
         <div style={{width: '2em', flexShrink: '0'}}/>
-        <div>
+        <div className="ff-montserra">
           <h2>{t('Home_11')}</h2>
           <p>{t('Home_12')}</p>
           <p>{t('Home_13')}</p>
@@ -60,7 +60,7 @@ export const Home = () => {
       </div>
     </div>
     <div style={{padding: '5em 0.3em'}}>
-      <div style={{maxWidth: '40em', margin: 'auto'}}>
+      <div className="ff-montserra" style={{maxWidth: '40em', margin: 'auto'}}>
         <h2>{t('Home_3')}</h2>
         <p>{t('Home_4')}</p>
       </div>
