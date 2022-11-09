@@ -7,9 +7,8 @@ import { DeleteConfirmButton } from './components/delete_confirm_button'
 import { RecipeTiptap, BubbleTiptap } from './tiptap'
 import {AutocompleteInput, updateRecord, TextField, CollectionSelect, TextAreaField} from './form'
 import { parseIngredientsAndHeaders, serializeIngredientsAndHeaders, prettyPreposition } from '../lib'
-import {EditRecipeImageModal} from './modals/recipe_image'
+import {EditRecipeImageModal, EditableImage} from './modals/recipe_image'
 import {PasteIngredientsButton} from './modals/paste_ingredients'
-import { RecipeMediumImage } from "./image"
 import { t } from "../translate"
 
 // I do something similar to Tiptap to serialize and deserialize
@@ -344,7 +343,7 @@ const EditableIngredientSection = ({item, index, updateIngredients, removeIngred
   </h3>
 }
 
-export const RecipeEditor = ({recipe, machines, mixes, machineFoods, foods, recipeKinds, images, editable, user, locale}) => {
+export const RecipeEditor = ({recipe, machines, mixes, machineFoods, foods, images, editable, user, locale}) => {
 
   const [showImageModal, setShowImageModal] = useState(false)
 
@@ -526,18 +525,7 @@ export const RecipeEditor = ({recipe, machines, mixes, machineFoods, foods, reci
   return (<>
     <div className="recipe">
       <div className="d-block d-md-flex">
-        <div>
-          <div className="over-container">
-            <EditRecipeImageModal {...{recipe, recipeKinds, images}} show={showImageModal}
-                                   handleClose={() => setShowImageModal(false)} />
-            <div style={{cursor: "pointer"}} onClick={() => setShowImageModal(true)}>
-              <RecipeMediumImage {...{recipe, recipeKinds, images}} />
-              <div className="bottom-right" style={{color: 'white', fontSize: '2em'}}>
-                <img src="/icons/pencil-circle.svg" style={{width: "5rem", padding: "0.5rem"}}/>
-              </div>
-            </div>
-          </div> 
-        </div>
+        <div><EditableImage {...{recipe, images, showImageModal, setShowImageModal}}/></div>
         <div style={{height: '20px', minWidth: '20px'}}></div>
         <div style={{width: '100%'}}>
           <h1>

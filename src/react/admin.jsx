@@ -16,6 +16,7 @@ import { ajax } from "./utils"
 import Translator, { TranslationsCacheStrategy, LogStrategy, StoreStrategy } from '../translator'
 import { RecipeThumbnailImage, RecipeMediumImage } from "./image"
 import { DescriptionTiptap } from "./tiptap"
+import {EditRecipeImageModal} from './modals/recipe_image'
 
 const AdminTabs = ({machines}) => {
   return <>
@@ -44,15 +45,18 @@ const EditKind = ({id, kinds}) => {
   </>
 }
 
-const EditRecipeKind = ({id, recipeKinds}) => {
+const EditRecipeKind = ({id, recipeKinds, images}) => {
+
+  const [showImageModal, setShowImageModal] = useState(false)
+
   let recipeKind = recipeKinds.find(k => k.id == id)
-  // TODO: Editable image
  
   //const translateRecipeKind = () => {
   //}
   //<button type="button" className="btn btn-primare" onClick={translateRecipeKind}>Translate FR to EN</button>
   
   return <>
+    <EditRecipeImageModal {...{recipe: recipeKind, images}} show={showImageModal}/>
     <div className='trunk'>
       <h3>Edit recipe kind</h3>
       <RecipeMediumImage {...{recipe: recipeKind}} />
@@ -331,6 +335,7 @@ export const Admin = () => {
   const recipeKinds = useHcuState(gon.recipe_kinds, {tableName: 'recipe_kinds'})
   const recipes = useHcuState(gon.recipes||[], {tableName: 'recipes'})
   const kinds = useHcuState(gon.kinds, {tableName: 'kinds'})
+  const images = useHcuState(gon.images||[], {tableName: 'images'})
   const [publicUsers,] = useState(gon.public_users||[])
   const [stats,] = useState(gon.stats)
 

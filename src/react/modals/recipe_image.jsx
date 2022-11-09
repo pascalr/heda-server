@@ -3,11 +3,25 @@ import ReactDOM from 'react-dom'
 import Modal from 'react-bootstrap/Modal'
 
 import {clearRecord, ImageSelector, TextField, ImageField, RadioField} from '../form'
+import { RecipeMediumImage } from "../image"
 import { image_path } from '../routes'
 import { isTrue } from "../utils"
 import { t } from "../../translate"
 
-export const EditRecipeImageModal = ({recipe, recipeKinds, images, show, handleClose}) => {
+export const EditableImage = ({recipe, images, showImageModal, setShowImageModal}) => {
+  return <div className="over-container">
+    <EditRecipeImageModal {...{recipe, images}} show={showImageModal}
+                           handleClose={() => setShowImageModal(false)} />
+    <div style={{cursor: "pointer"}} onClick={() => setShowImageModal(true)}>
+      <RecipeMediumImage {...{recipe, images}} />
+      <div className="bottom-right" style={{color: 'white', fontSize: '2em'}}>
+        <img src="/icons/pencil-circle.svg" style={{width: "5rem", padding: "0.5rem"}}/>
+      </div>
+    </div>
+  </div> 
+}
+
+export const EditRecipeImageModal = ({recipe, images, show, handleClose}) => {
 
   const image = recipe.image_slug ? images.find(e => e.slug == recipe.image_slug) : null
   const imagePath = recipe.image_slug ? image_path(recipe.image_slug, 'medium') : "/img/default_recipe_01.png"
