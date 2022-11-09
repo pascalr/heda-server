@@ -4,6 +4,15 @@ Une recette que j'ai fait* cette semaine.
 C'est vraiment bon et c'est super facile à faire!
 Je n'ai même pas eu le temps de finir ma bière sur le balcon que Céline avait fini de la préparer!
 
+Ajouter Cowboy cookies aux biscuits aux brisures de chocolat.
+Laisser l'utilisateur choisir???
+
+fetchRecipeKinds (..., false) FIXME THIS SHIT
+/d/6 => Je veux avoir recipe_count, mais je ne veux pas avoir json...
+fetchRecipeKinds(..., ['recipe_count', 'json'])
+
+/d/6 inside of app...
+
 Quiche should not be a recipe kind.
 Quiche should be a kind.
 Quiche aux épinards is a recipe kind.

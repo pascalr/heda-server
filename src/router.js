@@ -555,7 +555,8 @@ router.get('/d/:id', function(req, res, next) {
     // TODO: Limit to 6
     k.recipeKinds = fetchRecipeKinds(db, {kind_id: k.id}, res.locals.locale, false)
   })
-  o.recipe_kinds = fetchRecipeKinds(db, {kind_id: id}, res.locals.locale, false)
+  // FIXME: Fetch recipe_count but not json
+  o.recipe_kinds = fetchRecipeKinds(db, {kind_id: id}, res.locals.locale)
 
   res.locals.gon = o
   res.render('show_kind');

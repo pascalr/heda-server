@@ -57,9 +57,9 @@ export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors}) => {
           <li className="breadcrumb-item active" aria-current="page">{recipeKind.name}</li>
         </ol>
       </nav>
-      <div className="d-flex">
+      <div className="d-block d-md-flex">
         <RecipeMediumImage {...{recipe: recipeKind}} />
-        <div style={{marginRight: '1em'}}></div>
+        <div style={{margin: '0.5em 0.5em'}}></div>
         <div>
           <h1 className="ff-satisfy bold fs-25">{recipeKind.name}</h1>
           <div className="fs-09">

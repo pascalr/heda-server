@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { UserThumbnailImage, RecipeThumbnailImage } from "./image"
 import { ajax, changeUrl } from "./utils"
 import { t } from "../translate"
-import { localeHref, getPathFromUrl, ArrayCombination } from "../utils"
+import { localeHref, getPathFromUrl, ArrayCombination, getUrlParams } from "../utils"
 import { useTransition, Link, currentPathIsRoot } from "./lib"
 import { SearchWhiteIcon, PersonFillWhiteIcon, XLgWhiteIcon, ListWhiteIcon } from '../server/image.js'
 import { normalizeSearchText } from "./utils"
@@ -176,6 +176,16 @@ export const AppSearch = ({user, otherProfiles, _csrf, recipes, friendsRecipes, 
 export const MainSearch = ({locale, renderingHome}) => {
 
   const [data, setData] = useState(undefined) // New way of doing this
+ 
+  // Allow hidding nav by adding noNav=true to the url
+  const [hidden, setHidden] = useState(false)
+  useEffect(() => {
+
+    if (getUrlParams(window.location.href).noNav) {
+      setHidden(true)
+    }
+  }, [])
+  if (hidden) {return ''}
 
   const config = {
 

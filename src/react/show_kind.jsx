@@ -4,7 +4,7 @@ import { localeHref } from "../utils"
 import { Carrousel } from "./carrousel"
 import { RecipeSmallImage } from "./image"
 import { MainSearch } from './main_search'
-//import { getLocale } from "./lib"
+import { getLocale } from "./lib"
 import { t } from "../translate"
 //import { IngredientList } from "./recipe_viewer"
 //import { DescriptionTiptap, RecipeTiptap } from "./tiptap"
@@ -60,7 +60,7 @@ export const KindViewer = ({kind, ancestors, kinds, recipeKinds}) => {
 
 export const ShowKind = () => {
 
-  //const locale = getLocale()
+  const locale = getLocale()
   const [kind, ] = useState(gon.kind)
   const [kinds, ] = useState(gon.kinds)
   const [recipeKinds, ] = useState(gon.recipe_kinds)
