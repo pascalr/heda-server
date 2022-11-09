@@ -520,7 +520,9 @@ export const RecipeEditor = ({recipe, machines, mixes, machineFoods, foods, imag
   //  </div>
   //</div>
 
+  console.log('recipe_kind_id', recipe.recipe_kind_id)
   let recipeKindName = recipe.recipe_kind_id && recipeKinds && recipeKinds.find(k => k.id == recipe.recipe_kind_id).name
+  console.log('recipeKindName', recipeKindName)
 
   return (<>
     <div className="recipe">
@@ -583,11 +585,6 @@ export const RecipeEditor = ({recipe, machines, mixes, machineFoods, foods, imag
           defaultValue={recipeKindName}
           onSelect={(e, term, item) => {
             window.hcu.updateField(recipe, 'recipe_kind_id', item.dataset.id)
-          }} onBlur={(name) => {
-            let k = (recipeKinds||[]).find(e => e.name == name);
-            if (k) {
-              window.hcu.updateField(recipe, 'recipe_kind_id', k.id)
-            }
           }} minChars={0}
         />
       </div>

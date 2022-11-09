@@ -57,8 +57,13 @@ export const AutocompleteInput = ({minChars, name, defaultValue, choices, placeh
       }
     }
   }, [])
+
+  useEffect(() => {
+    inputRef.current.value = defaultValue
+  }, [defaultValue])
+
   return <>
-    <input type="search" name={name} id={name} placeholder={placeholder} defaultValue={defaultValue} aria-label="Search" autoComplete="off" ref={inputRef} onBlur={() => {
+    <input type="search" name={name} id={name} placeholder={placeholder} aria-label="Search" autoComplete="off" ref={inputRef} onBlur={() => {
       if (selected) {selected = false; return}
       onBlur ? onBlur(inputRef.current.value) : null}
     }/>
