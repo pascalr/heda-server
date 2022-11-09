@@ -719,6 +719,7 @@ router.post('/match_recipe_kinds', ensureAdmin, function(req, res, next) {
   let recipeKinds = db.fetchTable('recipe_kinds', {}, ['name_fr', 'name_en'])
   let recipes = db.fetchTable('recipes', {recipe_kind_id: null}, ['name', 'recipe_kind_id', 'user_id'])
   recipes.forEach(recipe => {
+    if (recipe.recipe_kind_id) {return console.log('Skipping recipe already has a recipe_kind_id')}
     let recipeKind = findRecipeKindForRecipeName(recipe.name, recipeKinds)
     if (recipeKind) {
       console.log('Found recipe kind ', recipeKind.name)

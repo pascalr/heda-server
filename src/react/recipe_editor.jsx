@@ -520,9 +520,7 @@ export const RecipeEditor = ({recipe, machines, mixes, machineFoods, foods, imag
   //  </div>
   //</div>
 
-  console.log('recipe_kind_id', recipe.recipe_kind_id)
-  let recipeKindName = recipe.recipe_kind_id && recipeKinds && recipeKinds.find(k => k.id == recipe.recipe_kind_id).name
-  console.log('recipeKindName', recipeKindName)
+  let recipeKindName = recipe.recipe_kind_id && recipeKinds && recipeKinds.find(k => k.id == recipe.recipe_kind_id)?.name
 
   return (<>
     <div className="recipe">

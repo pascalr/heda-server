@@ -4,12 +4,12 @@ Une recette que j'ai fait* cette semaine.
 C'est vraiment bon et c'est super facile à faire!
 Je n'ai même pas eu le temps de finir ma bière sur le balcon que Céline avait fini de la préparer!
 
+dump Kinds, RecipeKinds, Recipes, names, json and aspell it
+aspell translations
+
 Il manques les brisures de chocolat dans ma recette de cowboys cookies...
 
-You can easily compare recipe based on their ingredients.
-
 Ajouter Cowboy cookies aux biscuits aux brisures de chocolat.
-Laisser l'utilisateur choisir???
 
 fetchRecipeKinds (..., false) FIXME THIS SHIT
 /d/6 => Je veux avoir recipe_count, mais je ne veux pas avoir json...
@@ -17,26 +17,12 @@ fetchRecipeKinds(..., ['recipe_count', 'json'])
 
 /d/6 inside of app...
 
-Quiche should not be a recipe kind.
-Quiche should be a kind.
-Quiche aux épinards is a recipe kind.
-Quiche lorraine is a recipe kind.
-
 Ajouter un bouton pour dupliquer la recette au lieu d'être dans le dropdown.
 
 Une flèche rouge «try me» écrit à la main vis à vis le smart phone.
 
-Corriger les fautes dans src/translate
-
 TODO: Add a constraint that a kind kind_id cannot be itself...
-
-KINDS!!!
-
-Kinds child count
-
-Faire une page Home sur la coche!!!
-
-Recette potage à la courge butternut
+a validate key inside the schema that is called at every create and update.
 
 /contact, when logged in, show app navbar
 
