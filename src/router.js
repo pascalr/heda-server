@@ -536,6 +536,16 @@ router.get('/r/:id', function(req, res, next) {
   res.render('show_recipe');
 }, renderApp);
 
+router.get('/d/:id', function(req, res, next) {
+
+  if (req.user && req.user.user_id) { return next(); }
+
+  let o = {}
+
+  res.locals.gon = o
+  res.render('show_kind');
+}, renderApp);
+
 router.get('/k/:id', function(req, res, next) {
 
   if (req.user && req.user.user_id) { return next(); }
