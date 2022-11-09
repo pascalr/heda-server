@@ -182,80 +182,6 @@ export const InlineDocument = Node.create({
   content: 'inline*',
 })
 
-// FIXME: This does not work... because is is not a block?
-//const CustomItalic = Italic.extend({
-//  addInputRules() {
-//    return [
-//      textblockTypeInputRule({
-//        find: new RegExp("^(\\/)\\s$"),
-//        type: this.type,
-//      })
-//    ]
-//  },
-//})
-
-//const ModelLinkComponent = ({node, updateAttributes}) => {
-//  const [value, setValue] = useState('')
-//  const [suggestions, setSuggestions] = useState([])
-//
-//  const model = MODELS[node.attrs.model]
-//  if (!model) {return null;}
-//
-//  if (node.attrs.modelId) {
-//    const record = model.records.find(f => f.id == node.attrs.modelId)
-//    if (model && record) {
-//      return (
-//        <NodeViewWrapper className="inline-block">
-//          <span data-link-model={node.attrs.model}>
-//            <a href={model.linkUrl(record)}>{model.linkLabel(record)}</a>
-//          </span>
-//        </NodeViewWrapper>
-//      )
-//    }
-//  }
-//
-//  const inputFieldProps = {
-//    placeholder: model.placeholder,
-//    value,
-//    onChange: (e, {newValue}) => setValue(newValue),
-//    //ref: foodInputField,
-//  };
-//  
-//  const setModel = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
-//    console.log("Setting model!")
-//    updateAttributes({modelId: suggestion.id, linkName: suggestionValue})
-//  }
-//
-//  // node.attrs....
-//  // FIXME: Autosuggest code here is a duplicate...
-//  //<input type="text" size="12" value={value} placeholder="Food name..." onChange={(e) => setValue(e.target.value)} />
-//  return (
-//    <NodeViewWrapper className="inline-block">
-//      <Autosuggest
-//        suggestions={suggestions}
-//        onSuggestionsFetchRequested={({value}) => {
-//          const inputValue = value.trim().toLowerCase();
-//          const inputLength = inputValue.length;
-//         
-//          const matched = inputLength === 0 ? [] : model.records.filter(record =>
-//            record.name.includes(inputValue)
-//          )
-//          // Order the matches by relevance?
-//          setSuggestions(matched)
-//        }}
-//        onSuggestionsClearRequested={() => setSuggestions([])}
-//        getSuggestionValue={suggestion => suggestion.name}
-//        renderSuggestion={(suggestion, { isHighlighted }) => (
-//          <div style={{ background: isHighlighted ? '#4095bf' : 'white', color: isHighlighted ? 'white' : 'black' }}>
-//            {suggestion.name}
-//          </div>
-//        )}
-//        onSuggestionSelected={setModel}
-//        inputProps={inputFieldProps}
-//      />
-//    </NodeViewWrapper>
-//  )
-//}
 
 if (typeof gon === 'undefined') {var gon = {}}
 const MODELS = {
@@ -275,70 +201,6 @@ const DeprecatedLinkModel = Node.create({
     return ['span', {}, '']
   },
 })
-
-//const LinkModel = Node.create({
-//  name: 'link-model',
-//  priority: 1000,
-//  group: 'inline',
-//  inline: true,
-//  selectable: true,
-//
-//  addAttributes() {
-//    return {
-//      modelId: {
-//        default: null,
-//        parseHTML: element => element.getAttribute('model-id'),
-//        renderHTML: attributes => {
-//          if (attributes.modelId == null) {return {}}
-//          return {'model-id': attributes.modelId}
-//        },
-//      },
-//      model: {
-//        default: null,
-//        parseHTML: element => element.getAttribute('model'),
-//        renderHTML: attributes => {
-//          if (attributes.model == null) {return {}}
-//          return {'model': attributes.model}
-//        },
-//      },
-//    }
-//  },
-//
-//  parseHTML() {
-//    return [{ tag: 'span[data-link-model]' },]
-//  },
-//
-//  renderHTML({node, HTMLAttributes}) {
-//    const HTMLAttrs = {'data-link-model': HTMLAttributes['model'], 'data-model-id': HTMLAttributes['model-id']}
-//    const model = MODELS[node.attrs.model]
-//
-//    if (model && node.attrs.modelId) {
-//      const record = model.records.find(f => f.id == node.attrs.modelId)
-//      if (record) {
-//        let a = ['a', {href: model.linkUrl(record)}, model.linkLabel(record)]
-//        console.log(['span', HTMLAttrs, a])
-//        return ['span', HTMLAttrs, a]
-//      }
-//    }
-//    console.log(['span', HTMLAttrs, '[BROKEN LINK]'])
-//    return ['span', HTMLAttrs, '[BROKEN LINK]']
-//  },
-//
-//
-//  addNodeView() {
-//    return ReactNodeViewRenderer(ModelLinkComponent)
-//  },
-//
-//  addCommands() {
-//    return {
-//      insertLinkModel: (model, id=null) => ({ commands }) => {
-//        console.log("insertLinkModel")
-//        return commands.insertContent({type: 'link-model', attrs: {model: model, modelId: id}})
-//        //return commands.insertContent(`<span data-link-model="${model}"></span>`)
-//      },
-//    }
-//  },
-//})
 
 const CustomHeading = Heading.extend({
   addInputRules() {
@@ -852,13 +714,15 @@ export const RecipeTiptap = ({recipe, editable, ingredients}) => {
 
   const [showHelpModal, setShowHelpModal] = useState(false)
 
+  console.log('render RecipeTiptap')
+
   gon.recipe = recipe // For tiptap
   gon.recipe_ingredients = parseIngredientsOldFormat(recipe.ingredients)
 
   const content = recipe.json ? JSON.parse(recipe.json) : null
   // Transforming the ingredients object into a string so it rerenders only when
   // it really changes, not because the object refence id is not the same
-  const dependencies = [JSON.stringify(ingredients)]
+  const dependencies = [recipe.id, JSON.stringify(ingredients)]
   const editor = useEditor(recipeEditor(content, editable), dependencies)
 
   useEffect(() => {
@@ -959,3 +823,145 @@ const registerEditorWithEffect = (editor, model, json_field, url) => {
 //  }
 //}
 //window.onbeforeunload = this.preventLeavingWithoutModifications
+//
+//
+
+//const LinkModel = Node.create({
+//  name: 'link-model',
+//  priority: 1000,
+//  group: 'inline',
+//  inline: true,
+//  selectable: true,
+//
+//  addAttributes() {
+//    return {
+//      modelId: {
+//        default: null,
+//        parseHTML: element => element.getAttribute('model-id'),
+//        renderHTML: attributes => {
+//          if (attributes.modelId == null) {return {}}
+//          return {'model-id': attributes.modelId}
+//        },
+//      },
+//      model: {
+//        default: null,
+//        parseHTML: element => element.getAttribute('model'),
+//        renderHTML: attributes => {
+//          if (attributes.model == null) {return {}}
+//          return {'model': attributes.model}
+//        },
+//      },
+//    }
+//  },
+//
+//  parseHTML() {
+//    return [{ tag: 'span[data-link-model]' },]
+//  },
+//
+//  renderHTML({node, HTMLAttributes}) {
+//    const HTMLAttrs = {'data-link-model': HTMLAttributes['model'], 'data-model-id': HTMLAttributes['model-id']}
+//    const model = MODELS[node.attrs.model]
+//
+//    if (model && node.attrs.modelId) {
+//      const record = model.records.find(f => f.id == node.attrs.modelId)
+//      if (record) {
+//        let a = ['a', {href: model.linkUrl(record)}, model.linkLabel(record)]
+//        console.log(['span', HTMLAttrs, a])
+//        return ['span', HTMLAttrs, a]
+//      }
+//    }
+//    console.log(['span', HTMLAttrs, '[BROKEN LINK]'])
+//    return ['span', HTMLAttrs, '[BROKEN LINK]']
+//  },
+//
+//
+//  addNodeView() {
+//    return ReactNodeViewRenderer(ModelLinkComponent)
+//  },
+//
+//  addCommands() {
+//    return {
+//      insertLinkModel: (model, id=null) => ({ commands }) => {
+//        console.log("insertLinkModel")
+//        return commands.insertContent({type: 'link-model', attrs: {model: model, modelId: id}})
+//        //return commands.insertContent(`<span data-link-model="${model}"></span>`)
+//      },
+//    }
+//  },
+//})
+//
+//
+// FIXME: This does not work... because is is not a block?
+//const CustomItalic = Italic.extend({
+//  addInputRules() {
+//    return [
+//      textblockTypeInputRule({
+//        find: new RegExp("^(\\/)\\s$"),
+//        type: this.type,
+//      })
+//    ]
+//  },
+//})
+
+//const ModelLinkComponent = ({node, updateAttributes}) => {
+//  const [value, setValue] = useState('')
+//  const [suggestions, setSuggestions] = useState([])
+//
+//  const model = MODELS[node.attrs.model]
+//  if (!model) {return null;}
+//
+//  if (node.attrs.modelId) {
+//    const record = model.records.find(f => f.id == node.attrs.modelId)
+//    if (model && record) {
+//      return (
+//        <NodeViewWrapper className="inline-block">
+//          <span data-link-model={node.attrs.model}>
+//            <a href={model.linkUrl(record)}>{model.linkLabel(record)}</a>
+//          </span>
+//        </NodeViewWrapper>
+//      )
+//    }
+//  }
+//
+//  const inputFieldProps = {
+//    placeholder: model.placeholder,
+//    value,
+//    onChange: (e, {newValue}) => setValue(newValue),
+//    //ref: foodInputField,
+//  };
+//  
+//  const setModel = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
+//    console.log("Setting model!")
+//    updateAttributes({modelId: suggestion.id, linkName: suggestionValue})
+//  }
+//
+//  // node.attrs....
+//  // FIXME: Autosuggest code here is a duplicate...
+//  //<input type="text" size="12" value={value} placeholder="Food name..." onChange={(e) => setValue(e.target.value)} />
+//  return (
+//    <NodeViewWrapper className="inline-block">
+//      <Autosuggest
+//        suggestions={suggestions}
+//        onSuggestionsFetchRequested={({value}) => {
+//          const inputValue = value.trim().toLowerCase();
+//          const inputLength = inputValue.length;
+//         
+//          const matched = inputLength === 0 ? [] : model.records.filter(record =>
+//            record.name.includes(inputValue)
+//          )
+//          // Order the matches by relevance?
+//          setSuggestions(matched)
+//        }}
+//        onSuggestionsClearRequested={() => setSuggestions([])}
+//        getSuggestionValue={suggestion => suggestion.name}
+//        renderSuggestion={(suggestion, { isHighlighted }) => (
+//          <div style={{ background: isHighlighted ? '#4095bf' : 'white', color: isHighlighted ? 'white' : 'black' }}>
+//            {suggestion.name}
+//          </div>
+//        )}
+//        onSuggestionSelected={setModel}
+//        inputProps={inputFieldProps}
+//      />
+//    </NodeViewWrapper>
+//  )
+//}
