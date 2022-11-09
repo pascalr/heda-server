@@ -25,15 +25,14 @@ export const Home = () => {
   const [recipes,] = useState(gon.recipes)
   const recipe = useHcuState([gon.recipe], {tableName: 'recipes'})[0]
   const [kindAncestors, ] = useState(gon.kind_ancestors||[])
-
-  let recipeKind = recipes2.find(r => r.id == 66)
+  const [recipeKind,] = useState(gon.recipe_kind)
 
   if (!window.hcu) {initHcu(); window.hcu.makeDummy() }
 
   const preloadItem = (i) => {if (i.image_slug) {preloadImage('/imgs/small/'+i.image_slug)}}
   return <>
     <MainSearch {...{locale, renderingHome: true}} />
-    <div style={{padding: '3em 0.3em 5em 0.3em', maxWidth: '70em', margin: 'auto'}}>
+    <div style={{padding: '5em 0.3em 10em 0.3em', maxWidth: '70em', margin: 'auto'}}>
       <div className="d-block d-md-flex">
         <div className='flex-grow-1'></div>
         <div style={{width: '25em', maxWidth: '100%', margin: 'auto', fontFamily: 'Montserra'}}>
@@ -50,6 +49,23 @@ export const Home = () => {
       </div>
     </div>
     <div style={{padding: '5em 0.3em', backgroundColor: '#fafbfc'}}>
+      <div className='d-flex align-items-center' style={{maxWidth: '50em', margin: 'auto'}}>
+        <div className="smartphone d-none d-sm-block">
+          <div className='content'>
+            <div style={{width: '100%', border: 'none', height: '100%'}}>
+              <RecipeKindViewer {...{recipeKind, recipes, kindAncestors}} />
+            </div>
+          </div>
+        </div>
+        <div style={{width: '2em', flexShrink: '0'}}/>
+        <div>
+          <h2>{t('Home_11')}</h2>
+          <p>{t('Home_12')}</p>
+          <p>{t('Home_13')}</p>
+        </div>
+      </div>
+    </div>
+    <div style={{padding: '5em 0.3em'}}>
       <div style={{maxWidth: '40em', margin: 'auto'}}>
         <h2>{t('Home_3')}</h2>
         <p>{t('Home_4')}</p>
@@ -69,23 +85,6 @@ export const Home = () => {
             <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
           </a>
         </>}</Carrousel>
-      </div>
-    </div>
-    <div style={{padding: '5em 0.3em'}}>
-      <div className='d-flex align-items-center' style={{maxWidth: '50em', margin: 'auto'}}>
-        <div className="smartphone d-none d-sm-block">
-          <div className='content'>
-            <div style={{width: '100%', border: 'none', height: '100%'}}>
-              <RecipeKindViewer {...{recipeKind, recipes, kindAncestors}} />
-            </div>
-          </div>
-        </div>
-        <div style={{width: '2em', flexShrink: '0'}}/>
-        <div>
-          <h2>{t('Home_11')}</h2>
-          <p>{t('Home_12')}</p>
-          <p>{t('Home_13')}</p>
-        </div>
       </div>
     </div>
     <div style={{padding: '5em 0.3em', backgroundColor: '#fafbfc'}}>
