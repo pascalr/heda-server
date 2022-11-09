@@ -714,8 +714,6 @@ export const RecipeTiptap = ({recipe, editable, ingredients}) => {
 
   const [showHelpModal, setShowHelpModal] = useState(false)
 
-  console.log('render RecipeTiptap')
-
   gon.recipe = recipe // For tiptap
   gon.recipe_ingredients = parseIngredientsOldFormat(recipe.ingredients)
 
