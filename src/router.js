@@ -659,7 +659,7 @@ const ensureAdmin = (req, res, next) => {
 const renderAdmin = (req, res, next) => {
   res.locals.gon = {
     translations: db.fetchTable('translations', {}, ['from', 'to', 'original', 'translated']),
-    recipe_kinds: db.fetchTable('recipe_kinds', {}, ['name_fr', 'json_fr', 'name_en', 'json_en', 'image_slug', 'kind_id']),
+    recipe_kinds: db.fetchTable('recipe_kinds', {}, ['name_fr', 'json_fr', 'name_en', 'json_en', 'image_slug', 'kind_id', 'recipe_count']),
     kinds: db.fetchTable('kinds', {}, ['name_fr', 'name_en', 'kind_id']),
     recipes: db.fetchTable('recipes', {}, ['name', 'recipe_kind_id', 'image_slug']),
     stats: {
@@ -702,6 +702,17 @@ router.post('/translate_recipe/:id', ensureAdmin, function(req, res, next) {
     res.json(newRecipe)
   })
 });
+router.post('/update_kinds_count', ensureAdmin, function(req, res, next) {
+
+  let recipeKinds = fetchRecipeKinds(db, {}, res.locals.locale)
+  recipeKinds.forEach(recipeKind => {
+    let count = db.prepare('SELECT COUNT(*) FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.is_public = 1 AND recipe_kind_id = ?').get(recipeKind.id)['COUNT(*)']
+    if (recipeKind.recipe_count != count) {
+      db.findAndUpdateRecord('recipe_kinds', recipeKind, {recipe_count: count}, req.user)
+    }
+  })
+  res.send('Ok done!')
+})
 router.post('/match_recipe_kinds', ensureAdmin, function(req, res, next) {
 
   let recipeKinds = db.fetchTable('recipe_kinds', {}, ['name_fr', 'name_en'])
@@ -710,7 +721,7 @@ router.post('/match_recipe_kinds', ensureAdmin, function(req, res, next) {
     let recipeKind = findRecipeKindForRecipeName(recipe.name, recipeKinds)
     if (recipeKind) {
       console.log('Found recipe kind ', recipeKind.name)
-      db.safeUpdateField('recipes', recipe.id, 'recipe_kind_id', recipeKind.id, {user_id: recipe.user_id})
+      db.findAndUpdateRecord('recipes', recipe, {'recipe_kind_id': recipeKind.id}, {user_id: recipe.user_id})
     }
   })
   res.send('Ok done!')

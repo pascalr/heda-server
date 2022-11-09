@@ -14,8 +14,6 @@ export const KindViewer = ({kind, ancestors, kinds, recipeKinds}) => {
 
   if (!kind) {return ''}
 
-  let childCount = kind.child_count || 0
-
   return <>
     <div className="trunk">
       {!ancestors || ancestors.length === 0 ? '' :
@@ -31,6 +29,7 @@ export const KindViewer = ({kind, ancestors, kinds, recipeKinds}) => {
       }
       <h1>{kind.name}</h1>
       {recipeKinds.map(k => {
+        let count = k.recipe_count || 0
         return <div key={k.id} className="mb-3">
           <a href={localeHref("/k/"+k.id)} className="plain-link">
             <div className='d-flex'>
@@ -38,7 +37,7 @@ export const KindViewer = ({kind, ancestors, kinds, recipeKinds}) => {
               <div style={{width: '1em'}}/>
               <div>
                 <div className='ff-satisfy fs-2 bold mt-3' style={{lineHeight: 1}}>{k.name}</div>
-                <div className='fs-13'>({childCount} {childCount > 1 ? t('recipes') : t('recipe')})</div>
+                <div className='fs-13'>({count} {count > 1 ? t('recipes') : t('recipe')})</div>
               </div>
             </div>
           </a>

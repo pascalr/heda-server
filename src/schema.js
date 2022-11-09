@@ -18,7 +18,7 @@ const schema = {
     // When updating, fetch the object to make sure the security attribute is the same as the one given from the security object
   },
   'recipe_kinds': {
-    write_attrs: ['image_slug', 'name_fr', 'json_fr', 'name_en', 'json_en', 'kind_id'],
+    write_attrs: ['image_slug', 'name_fr', 'json_fr', 'name_en', 'json_en', 'kind_id', 'recipe_count'],
     is_allowed: user => user.is_admin,
   },
   'translated_recipes': {

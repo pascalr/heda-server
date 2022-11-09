@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import toastr from 'toastr'
 //import { createRoot } from 'react-dom/client';
 
-import { TextInput, TextField } from "./form"
+import { TextInput, TextField, CollectionSelect } from "./form"
 import { Link, useOrFetchRecipe, getLocale } from "./lib"
 import { localeAttr } from "../lib"
 import { MainSearch } from './main_search'
@@ -21,11 +21,26 @@ const AdminTabs = ({machines}) => {
   return <>
     <ul className="nav nav-tabs mb-3">
       <HomeTab {...{title: t('Admin'), path: '/admin'}} />
+      <HomeTab {...{title: t('Kinds'), path: '/admin/di'}} />
       <HomeTab {...{title: t('RecipeKinds'), path: '/admin/ki'}} />
       <HomeTab {...{title: t('SQL'), path: '/admin/sql'}} />
       <HomeTab {...{title: t('Translations'), path: '/admin/translations'}} />
       <HomeTab {...{title: t('Translate Recipe'), path: '/admin/translate_recipe'}} />
     </ul>
+  </>
+}
+
+const EditKind = ({id, kinds}) => {
+  let kind = kinds.find(k => k.id == id)
+  
+  return <>
+    <div className='trunk'>
+      <h3>Edit kind</h3>
+      <h2>Français</h2>
+      <h1 className="ff-satisfy bold fs-25"><TextField model={kind} field='name_fr' style={{width: '100%'}} /></h1>
+      <h2>English</h2>
+      <h1 className="ff-satisfy bold fs-25"><TextField model={kind} field='name_en' style={{width: '100%'}} /></h1>
+    </div>
   </>
 }
 
@@ -54,7 +69,39 @@ const EditRecipeKind = ({id, recipeKinds}) => {
   </>
 }
 
-const RecipeKindsIndex = ({recipes, recipeKinds, publicUsers, locale}) => {
+const KindsIndex = ({kinds, recipeKinds, locale}) => {
+
+  const createKind = (kind) => {
+    window.hcu.createRecord('kinds', {})
+  }
+  const destroyKind = (kind) => {
+    if (confirm("Êtes-vous certain de vouloir supprimer cette catégorie définitivement?")) {
+      window.hcu.destroyRecord(kind)
+    }
+  }
+
+  return <>
+    <div className='trunk'>
+      <div className="d-flex gap-15 align-items-center">
+        <h1>Kinds</h1>
+        <button type="button" className="btn btn-outline-primary btn-sm" onClick={createKind}>Create kind</button>
+      </div>
+      {kinds.map(kind => {
+        let name = kind[localeAttr('name', locale)] || 'Untitled'
+        return <div key={kind.id} className='d-flex align-items-center'>
+          <CollectionSelect model={kind} field="kind_id" options={kinds.map(k => k.id)} showOption={(id) => kinds.find(k => k.id == id)[localeAttr('name', locale)]} includeBlank="true" />
+          <div className='mx-2'>/</div>
+          <Link path={'/admin/ed/'+kind.id} className="plain-link">
+            <div>{name}</div>
+          </Link>
+          <button type='button' className='btn ms-2 btn-sm btn-outline-secondary' onClick={() => destroyKind(kind)}>Destroy</button>
+        </div>
+      })}
+    </div>
+  </>
+}
+
+const RecipeKindsIndex = ({recipes, recipeKinds, publicUsers, locale, kinds}) => {
   const missings = recipes.filter(r => !r.recipe_kind_id)
 
   const createRecipeKind = (recipe) => {
@@ -72,10 +119,12 @@ const RecipeKindsIndex = ({recipes, recipeKinds, publicUsers, locale}) => {
       {recipeKinds.map(recipeKind => {
         let name = recipeKind[localeAttr('name', locale)]
         return <div key={recipeKind.id} className='d-flex align-items-center'>
+          <CollectionSelect model={recipeKind} field="kind_id" options={kinds.map(k => k.id)} showOption={(id) => kinds.find(k => k.id == id)[localeAttr('name', locale)]} includeBlank="true" />
+          <div className='mx-2'>/</div>
           <Link path={'/admin/ek/'+recipeKind.id} className="plain-link">
             <div className="d-flex align-items-center mb-2">
               <div><RecipeThumbnailImage {...{recipe: recipeKind}} /></div>
-              <div className='ms-2'>{name}</div>
+              <div className='ms-2'>{name} ({recipeKind.recipe_count || 0})</div>
             </div>
           </Link>
           <button type='button' className='btn ms-2 btn-sm btn-outline-secondary' onClick={() => destroyRecipeKind(recipeKind)}>Destroy</button>
@@ -99,6 +148,11 @@ const AdminPage = ({stats, publicUsers}) => {
 
   const [missings, setMissings] = useState(null)
 
+  const updateKindsCount = () => {
+    ajax({url: '/update_kinds_count', type: 'POST', success: () => {
+      toastr.info("Update kinds count successfull.")
+    }, error: handleError("Error updating kinds count.") })
+  }
   const backupDb = () => {
     ajax({url: '/backup_db', type: 'POST', success: () => {
       toastr.info("Database backup up successfully.")
@@ -134,6 +188,7 @@ const AdminPage = ({stats, publicUsers}) => {
       <button className="btn btn-primary mx-2" type="button" onClick={backupDb}>Backup database</button>
       <button className="btn btn-primary mx-2" type="button" onClick={translateRecipes}>Translate recipes</button>
       <button className="btn btn-primary mx-2" type="button" onClick={matchRecipeKinds}>Match recipe kinds</button>
+      <button className="btn btn-primary mx-2" type="button" onClick={updateKindsCount}>Update kinds count</button>
       <br/><br/><br/><h2>Output</h2>
       {missings ? <>
         <h3>Missing translations</h3>
@@ -275,14 +330,17 @@ export const Admin = () => {
   const translations = useHcuState(gon.translations, {tableName: 'translations'})
   const recipeKinds = useHcuState(gon.recipe_kinds, {tableName: 'recipe_kinds'})
   const recipes = useHcuState(gon.recipes||[], {tableName: 'recipes'})
+  const kinds = useHcuState(gon.kinds, {tableName: 'kinds'})
   const [publicUsers,] = useState(gon.public_users||[])
   const [stats,] = useState(gon.stats)
 
   const routes = [
     {match: "/admin/translations", elem: () => <TranslationsPage {...{translations}} />},
     {match: "/admin/sql", elem: () => <SQLPage />},
-    {match: "/admin/ki", elem: () => <RecipeKindsIndex {...{recipeKinds, recipes, publicUsers, locale}} />},
+    {match: "/admin/ki", elem: () => <RecipeKindsIndex {...{recipeKinds, recipes, publicUsers, locale, kinds}} />},
+    {match: "/admin/di", elem: () => <KindsIndex {...{kinds, recipeKinds, locale}} />},
     {match: "/admin/ek/:id", elem: ({id}) => <EditRecipeKind {...{id, recipeKinds}} />},
+    {match: "/admin/ed/:id", elem: ({id}) => <EditKind {...{id, kinds}} />},
     {match: "/admin/translate_recipe", elem: () => <TranslateRecipePage {...{recipes, locale, translations}} />},
     {match: "/admin", elem: () => <AdminPage {...{stats, publicUsers}} />},
   ]

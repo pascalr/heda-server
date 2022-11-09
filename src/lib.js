@@ -19,34 +19,36 @@ export function descriptionRecipeIngredients(recipe, locale) {
 export function localeAttr(attr, locale) {
   return attr+'_'+(locale||'en')
 }
+// fetchDescription also fetch recipe_count
 export function fetchRecipeKinds(db, conditions, locale, fetchDescription=true) {
   let attrs = [localeAttr('name', locale), 'image_slug', 'kind_id']
-  if (fetchDescription) {attrs.push(localeAttr('json', locale))}
+  if (fetchDescription) {attrs.push(localeAttr('json', locale)); attrs.push('recipe_count')}
   let records = db.fetchTable('recipe_kinds', conditions, attrs)
   return records.map(r => {
     let obj = {id: r.id, kind_id: r.kind_id, image_slug: r.image_slug, name: r[localeAttr('name', locale)]}
-    if (fetchDescription) {obj.description_json = r[localeAttr('json', locale)]}
+    if (fetchDescription) {obj.description_json = r[localeAttr('json', locale)]; obj.recipe_count = r.recipe_count}
     return obj
   })
 }
+// fetchDescription also fetch recipe_count
 export function fetchRecipeKind(db, conditions, locale, fetchDescription=true) {
   let attrs = [localeAttr('name', locale), 'image_slug', 'kind_id']
-  if (fetchDescription) {attrs.push(localeAttr('json', locale))}
+  if (fetchDescription) {attrs.push(localeAttr('json', locale)); attrs.push('recipe_count')}
   let r = db.fetchRecord('recipe_kinds', conditions, attrs)
   let obj = {id: r.id, kind_id: r.kind_id, image_slug: r.image_slug, name: r[localeAttr('name', locale)]}
-  if (fetchDescription) {obj.description_json = r[localeAttr('json', locale)]}
+  if (fetchDescription) {obj.description_json = r[localeAttr('json', locale)]; obj.recipe_count = r.recipe_count}
   return obj
 }
 export function fetchKind(db, conditions, locale) {
-  let attrs = [localeAttr('name', locale), 'kind_id', 'child_count']
+  let attrs = [localeAttr('name', locale), 'kind_id']
   let r = db.fetchRecord('kinds', conditions, attrs)
-  return {id: r.id, child_count: r.child_count, kind_id: r.kind_id, name: r[localeAttr('name', locale)]}
+  return {id: r.id, kind_id: r.kind_id, name: r[localeAttr('name', locale)]}
 }
 export function fetchKinds(db, conditions, locale) {
-  let attrs = [localeAttr('name', locale), 'kind_id', 'child_count']
+  let attrs = [localeAttr('name', locale), 'kind_id']
   let records = db.fetchTable('kinds', conditions, attrs)
   return records.map(r => (
-    {id: r.id, child_count: r.child_count, kind_id: r.kind_id, name: r[localeAttr('name', locale)]}
+    {id: r.id, kind_id: r.kind_id, name: r[localeAttr('name', locale)]}
   ))
 }
 export function fetchKindWithAncestors(db, conditions, locale) {
