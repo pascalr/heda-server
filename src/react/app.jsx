@@ -211,15 +211,17 @@ const ShowRecipeKind = ({recipeKindId, ...props}) => {
 
   const [recipeKind, setRecipeKind] = useState(null)
   const [recipes, setRecipes] = useState(null)
+  const [kindAncestors, setKindAncestors] = useState(null)
 
   useEffect(() => {
     ajax({url: localeHref2('/fetch_recipe_kind/'+recipeKindId, props.locale), type: 'GET', success: (result) => {
+      setKindAncestors(result.kindAncestors)
       setRecipeKind(result.recipeKind)
       setRecipes(result.recipes)
     }})
   }, [recipeKindId])
   return <>
-    <RecipeKindViewer {...{...props, recipeKind, recipes}} />
+    <RecipeKindViewer {...{...props, recipeKind, recipes, kindAncestors}} />
   </>
 }
 

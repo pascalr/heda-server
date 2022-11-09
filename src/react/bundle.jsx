@@ -8,6 +8,7 @@ import { App } from "./app"
 import { ShowRecipe } from "./show_recipe"
 import { ShowRecipeKind } from "./show_recipe_kind"
 import { ShowUser } from "./show_user"
+import { ShowKind } from "./show_kind"
 import { getUrlParams } from "../utils"
 import { getLocale } from "./lib"
 
@@ -48,6 +49,9 @@ if (root) {ReactDOM.render(<App/>, root)}
   
 root = document.getElementById('root-r')
 if (root) {ReactDOM.render(<ShowRecipe />, root)}
+  
+root = document.getElementById('root-d')
+if (root) {ReactDOM.render(<ShowKind />, root)}
   
 root = document.getElementById('root-u')
 if (root) {ReactDOM.render(<ShowUser />, root)}

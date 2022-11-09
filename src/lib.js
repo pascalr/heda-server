@@ -20,20 +20,20 @@ export function localeAttr(attr, locale) {
   return attr+'_'+(locale||'en')
 }
 export function fetchRecipeKinds(db, conditions, locale, fetchDescription=true) {
-  let attrs = [localeAttr('name', locale), 'image_slug']
+  let attrs = [localeAttr('name', locale), 'image_slug', 'kind_id']
   if (fetchDescription) {attrs.push(localeAttr('json', locale))}
   let records = db.fetchTable('recipe_kinds', conditions, attrs)
   return records.map(r => {
-    let obj = {id: r.id, image_slug: r.image_slug, name: r[localeAttr('name', locale)]}
+    let obj = {id: r.id, kind_id: r.kind_id, image_slug: r.image_slug, name: r[localeAttr('name', locale)]}
     if (fetchDescription) {obj.description_json = r[localeAttr('json', locale)]}
     return obj
   })
 }
 export function fetchRecipeKind(db, conditions, locale, fetchDescription=true) {
-  let attrs = [localeAttr('name', locale), 'image_slug']
+  let attrs = [localeAttr('name', locale), 'image_slug', 'kind_id']
   if (fetchDescription) {attrs.push(localeAttr('json', locale))}
   let r = db.fetchRecord('recipe_kinds', conditions, attrs)
-  let obj = {id: r.id, image_slug: r.image_slug, name: r[localeAttr('name', locale)]}
+  let obj = {id: r.id, kind_id: r.kind_id, image_slug: r.image_slug, name: r[localeAttr('name', locale)]}
   if (fetchDescription) {obj.description_json = r[localeAttr('json', locale)]}
   return obj
 }
@@ -41,6 +41,13 @@ export function fetchKind(db, conditions, locale) {
   let attrs = [localeAttr('name', locale), 'kind_id']
   let r = db.fetchRecord('kinds', conditions, attrs)
   return {id: r.id, kind_id: r.kind_id, name: r[localeAttr('name', locale)]}
+}
+export function fetchKinds(db, conditions, locale) {
+  let attrs = [localeAttr('name', locale), 'kind_id']
+  let records = db.fetchTable('kinds', conditions, attrs)
+  return records.map(r => (
+    {id: r.id, kind_id: r.kind_id, name: r[localeAttr('name', locale)]}
+  ))
 }
 export function fetchKindWithAncestors(db, conditions, locale) {
   let kind = fetchKind(db, conditions, locale)

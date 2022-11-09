@@ -396,7 +396,12 @@ router.get('/fetch_recipe_kind/:id', function(req, res, next) {
   let recipeKind = fetchRecipeKind(db, {id: req.params.id}, res.locals.locale)
   // FIXME: SELECT recipes.*
   let recipes = db.prepare("SELECT recipes.*, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.locale = ? AND users.is_public = 1 AND recipes.recipe_kind_id = ?;").all(res.locals.locale, recipeKind.id)
-  res.json({recipeKind, recipes})
+  if (recipeKind.kind_id) {
+    let kindAncestors = fetchKindWithAncestors(db, {id: recipeKind.kind_id}, res.locals.locale)
+    res.json({recipeKind, recipes, kindAncestors})
+  } else {
+    res.json({recipeKind, recipes})
+  }
 });
 router.get('/fetch_search_data', function(req, res, next) {
 
@@ -541,6 +546,12 @@ router.get('/d/:id', function(req, res, next) {
   if (req.user && req.user.user_id) { return next(); }
 
   let o = {}
+  let id = parseInt(req.params.id)
+  o.ancestors = fetchKindWithAncestors(db, {id}, res.locals.locale)
+  o.kind = o.ancestors.pop(-1)
+  if (!o.kind) {throw 'Unable to fetch kind. Not existent.'}
+  o.kinds = fetchKinds(db, {kind_id: id}, res.locals.locale)
+  o.recipe_kinds = fetchRecipeKinds(db, {kind_id: id}, res.locals.locale)
 
   res.locals.gon = o
   res.render('show_kind');
@@ -644,7 +655,8 @@ const ensureAdmin = (req, res, next) => {
 const renderAdmin = (req, res, next) => {
   res.locals.gon = {
     translations: db.fetchTable('translations', {}, ['from', 'to', 'original', 'translated']),
-    recipe_kinds: db.fetchTable('recipe_kinds', {}, ['name_fr', 'json_fr', 'name_en', 'json_en', 'image_slug']),
+    recipe_kinds: db.fetchTable('recipe_kinds', {}, ['name_fr', 'json_fr', 'name_en', 'json_en', 'image_slug', 'kind_id']),
+    kinds: db.fetchTable('kinds', {}, ['name_fr', 'name_en', 'kind_id']),
     recipes: db.fetchTable('recipes', {}, ['name', 'recipe_kind_id', 'image_slug']),
     stats: {
       nbUsers: db.prepare('SELECT COUNT(*) FROM users').get()['COUNT(*)'],

@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react'
-import ReactDOM from 'react-dom'
-//import { createRoot } from 'react-dom/client';
 
 import { localeHref } from "../utils"
 import { RecipeMediumImage } from "./image"
@@ -52,8 +50,8 @@ export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors}) => {
   return <>
     <div className="trunk">
       <nav aria-label="breadcrumb">
-        <ol className="breadcrumb" style={{margin: '-0.5em 0 0.5em 0'}}>
-          {kindAncestors.map(kind => {
+        <ol className="breadcrumb" style={{margin: '-0.15em 0 0.5em 0'}}>
+          {(kindAncestors||[]).map(kind => {
             return <li key={kind.kid} className="breadcrumb-item"><a href={localeHref('/d/'+kind.id)}>{kind.name}</a></li>
           })}
           <li className="breadcrumb-item active" aria-current="page">{recipeKind.name}</li>
