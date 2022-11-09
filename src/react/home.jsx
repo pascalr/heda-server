@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
 import { RecipeEditor } from "./recipe_editor"
-import { RecipeKindViewer } from "./show_recipe_kind"
 import { UserThumbnailImage, RecipeSmallImage, RecipeThumbnailImage, RecipeImage } from "./image"
 import { ajax, preloadImage } from "./utils"
 import { t } from "../translate"
@@ -22,10 +21,7 @@ export const Home = () => {
   const locale = getLocale()
   const [recipes1,] = useState(gon.recipes1)
   const [recipes2,] = useState(gon.recipes2)
-  const [recipes,] = useState(gon.recipes)
   const recipe = useHcuState([gon.recipe], {tableName: 'recipes'})[0]
-  const [kindAncestors, ] = useState(gon.kind_ancestors||[])
-  const [recipeKind,] = useState(gon.recipe_kind)
 
   if (!window.hcu) {initHcu(); window.hcu.makeDummy() }
 

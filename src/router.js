@@ -630,20 +630,12 @@ const renderHome = function(req, res, next) {
 
   // Use this to generate gon, but then use JSON.stringify(gon) and copy paste directly inside home.jsx
   let id = (res.locals.locale != 'fr') ? 773 : 82
-  let ids1 = [96, 91, 98];
+  let ids1 = [96, 91, 98, 51];
   let ids2 = [49, 108, 133, 66];
-  let recipeKindId = 51
-  let recipe_kind = fetchRecipeKind(db, {id: recipeKindId}, res.locals.locale)
-  let kind_ancestors = null
-  if (recipe_kind.kind_id) {
-    kind_ancestors = fetchKindWithAncestors(db, {id: recipe_kind.kind_id}, res.locals.locale)
-  }
   res.locals.gon = {
     recipes1: fetchRecipeKinds(db, {id: ids1}, res.locals.locale, false),
     recipes2: fetchRecipeKinds(db, {id: ids2}, res.locals.locale, false),
     recipe: db.fetchRecord('recipes', {id}, RECIPE_ATTRS),
-    recipes: db.prepare("SELECT recipes.*, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.locale = ? AND users.is_public = 1 AND recipes.recipe_kind_id = ?;").all(res.locals.locale, recipeKindId),
-    recipe_kind, kind_ancestors
   }
   res.render('home');
 }
