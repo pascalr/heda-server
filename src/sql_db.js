@@ -40,12 +40,23 @@ const safe = (str, allowed) => {
   return "'"+safeNoQuotes(str, allowed)+"'"
 }
 
-const fetchStatement = (schema, tableName, conditions, attributes, options) => {
+const fetchStatement = (schema, tableName, conditions, attrs, options) => {
   
   if (!tableName) {throw "Missing table for fetch"}
 
-  let s = 'SELECT '+['id',...attributes.map(a => '"'+a+'"')].join(', ')+' FROM '+safe(tableName, getTableList(schema))
+  let attributes = ensureIsArray(attrs)
+  let tb = safeNoQuotes(tableName, getTableList(schema))
+  let s = "SELECT '"+[tb+".id'",...attributes.map(a => '"'+a+'"')].join(', ')+" FROM '"+tb+"'"
   let a = []
+
+  // FIXME: Does not work quite yet
+  if (options.join) {
+    ensureIsArray(options.join).forEach(({table, key, foreign}) => {
+      let t = safe(table, getTableList(schema))
+      s += ' JOIN '+t+' ON '+t+'.'+foreign+' = '+tb+'.'+key
+    })
+  }
+
   if (Array.isArray(conditions)) {
     // The first element is the query, the second is the arguments
     s += ' WHERE '+conditions[0]

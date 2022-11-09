@@ -15,6 +15,8 @@ let invalid = {}
 let recipe = null
 let fetched = null
 let record = null
+let kind = null
+let recipeKind = null
 
 // Testing createRecord
 header('Testing createRecord')
@@ -69,3 +71,10 @@ db.findAndUpdateRecord('recipes', recipe, {name: 'mod'}, user)
 fetched = db.fetchRecord('recipes', {id: recipe.id}, ['name'])
 console.log('fetched', fetched)
 assertEquals("mod", fetched.name)
+
+// Testing fetchTable join
+//header('Testing fetchTable join')
+//kind = db.createRecord('kinds', {name_fr: 'Test', name_en: 'Test'}, admin)
+//db.createRecord('recipe_kinds', {kind_id: kind.id, name_fr: 'Test2', name_en: 'Test2'}, admin)
+//db.createRecord('recipe_kinds', {kind_id: kind.id, name_fr: 'Test3', name_en: 'Test3'}, admin)
+//console.log('results', db.fetchTable('kinds', {id: kind.id}, 'recipe_kinds.name_fr', {join: {table: 'recipe_kinds', key: 'id', foreign: 'kind_id'}}))
