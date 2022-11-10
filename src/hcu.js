@@ -104,6 +104,12 @@ export const initHcu = () => {
     updateTable(tableName, old => [...old, {...record, table_name: tableName}])
     if (callback) {callback(record)}
   }
+  // Check if the record is in memory
+  window.hcu.hasRecord = (tableName, record) => {
+    if (!tableName) { throw "Error: hcu.hasRecord must have valid tableName" }
+    let table = getCurrentTable(tableName)
+    return !!table.find(r => r.id == record.id)
+  }
   //window.hcu.fetchRecord = (tableName, id, successCallback=null) => {
   //  if (!tableName) { throw "Error: hcu.fetchRecord must have valid tableName" }
   //  let url = '/fetch_record/'+tableName+'/'+id

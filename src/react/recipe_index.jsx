@@ -64,6 +64,8 @@ const RecipeListItemMenu = ({fav, recipe, editUserRecipe, user}) => {
 
 export const RecipeList = ({list, selected, suggestions, tags, editUserRecipe, mixes, recipes, user, images}) => {
 
+  console.log('RecipeList', list)
+
   return (<>
     <ul id="recipes" className="recipe-list">
       {list.map((item, current) => {
@@ -95,6 +97,8 @@ export const RecipeIndex = ({favoriteRecipes, suggestions, tags, mixes, recipes,
 
   const [recipeToEdit, setRecipeToEdit] = useState(null)
   const [showModal, setShowModal] = useState(true)
+  
+  console.log('favoriteRecipes', favoriteRecipes)
 
   let userRecipes = []
   let favList = []

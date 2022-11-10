@@ -94,13 +94,16 @@ const MixIngredients = ({mix}) => {
   </>
 }
 
-export const FavoriteButton = ({recipe,user,favorite, ...props}) => {
+export const FavoriteButton = ({recipe, user, favorite, ...props}) => {
   if (recipe.user_id == user.id) {return ''}
   const handleClick = () => {
     if (favorite) {
       window.hcu.destroyRecord(favorite)
     } else {
       window.hcu.createRecord('favorite_recipes', {recipe_id: recipe.id})
+      if (!window.hcu.hasRecord('recipes', recipe)) {
+        window.hcu.addRecord('recipes', recipe)
+      }
     }
   }
   let img = favorite ? "/icons/star-fill.svg" : "/icons/star.svg"
