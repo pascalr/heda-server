@@ -184,7 +184,7 @@ const HomePage = ({tags, recipes, suggestions, favoriteRecipes, recipeKinds}) =>
   }, {})
   const sTags = sortBy(tags, "position")
     
-  let randomRecipes = shuffle(recipeKinds)
+  let randomRecipes = shuffle(recipeKinds.filter(k => k.recipe_count))
 
   //<h2 className="fs-12 italic gray">{t('Suggestions_for_you')}</h2>
   return <>
