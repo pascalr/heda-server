@@ -4,6 +4,8 @@ Une recette que j'ai fait* cette semaine.
 C'est vraiment bon et c'est super facile à faire!
 Je n'ai même pas eu le temps de finir ma bière sur le balcon que Céline avait fini de la préparer!
 
+Afficher l'image de la recette (en haut à droite) dans les recettes de recipe_kinds.
+
 grep is_public des user et enlever partout.
 
 Suggestions should be dependant destroy of tags.
