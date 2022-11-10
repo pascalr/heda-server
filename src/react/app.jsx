@@ -187,6 +187,8 @@ const HomePage = ({tags, recipes, suggestions, favoriteRecipes, recipeKinds}) =>
 
   //<h2 className="fs-12 italic gray">{t('Suggestions_for_you')}</h2>
   return <>
+    <h2 className="fs-14 italic gray">{t('Suggestions_for_you')}</h2>
+    <RecipeCarrousel {...{items: randomRecipes.slice(0,10), isRecipeKind: true}}/>
     {lists.map(list => {
       if (list.records.length <= 0) {return ''}
       return <div key={list.title}>
@@ -205,8 +207,6 @@ const HomePage = ({tags, recipes, suggestions, favoriteRecipes, recipeKinds}) =>
         <RecipeCarrousel {...{items}}/>
       </div>
     })}
-    <h2 className="fs-14 italic gray">{t('Suggestions_for_you')}</h2>
-    <RecipeCarrousel {...{items: randomRecipes.slice(0,10), isRecipeKind: true}}/>
     <h2 className="fs-14 italic gray">{t('Suggestions_for_you')}</h2>
     <RecipeCarrousel {...{items: randomRecipes.slice(11,20), isRecipeKind: true}}/>
     <h2 className="fs-14 italic gray">{t('Suggestions_for_you')}</h2>
