@@ -48,6 +48,12 @@ export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors, recipeButt
   if (!recipeKind) {return ''}
 
   const [recipeIdx, setRecipeIdx] = useState(0)
+ 
+  let recipeButtonsV = recipeButtons && recipes && recipes.length > 0 && recipeButtons(recipes[recipeIdx])
+  let recipeButtonsE = recipeButtonsV ?
+    <div style={{border: '2px solid #212529', padding: '0.4em 0.4em 0.2em 0.4em', borderBottom: 'none', borderTopLeftRadius: '0.5em', borderTopRightRadius: '0.5em', flexShrink: '0'}}>
+      {recipeButtons(recipes[recipeIdx])}
+    </div> : ''
 
   return <>
     <div className="trunk">
@@ -81,9 +87,7 @@ export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors, recipeButt
               </div>
             </div>
             <div className='flex-grow-1' />
-            {recipeButtons ? <div style={{border: '2px solid #212529', padding: '0.4em 0.4em 0.2em 0.4em', borderBottom: 'none', borderTopLeftRadius: '0.5em', borderTopRightRadius: '0.5em', flexShrink: '0'}}>
-              {recipeButtons(recipes[recipeIdx])}
-            </div> : ''}
+            {recipeButtonsE}
           </div>
           <Recipe {...{recipe: recipes[recipeIdx]}} />
         </> : <p>{t('There_are_no_recipe_in_this_category_yet')}.</p>}

@@ -382,7 +382,7 @@ router.get('/fetch_recipe_kind/:id', function(req, res, next) {
 
   let recipeKind = fetchRecipeKind(db, {id: req.params.id}, res.locals.locale)
   // FIXME: SELECT recipes.*
-  let recipes = db.prepare("SELECT recipes.*, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.locale = ? AND recipes.is_public = 1 AND recipes.recipe_kind_id = ?;").all(res.locals.locale, recipeKind.id)
+  let recipes = db.prepare("SELECT recipes.*, users.locale, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE recipes.is_public = 1 AND recipes.recipe_kind_id = ?;").all(recipeKind.id)
   if (recipeKind.kind_id) {
     let kindAncestors = fetchKindWithAncestors(db, {id: recipeKind.kind_id}, res.locals.locale)
     res.json({recipeKind, recipes, kindAncestors})
@@ -580,7 +580,7 @@ router.get('/k/:id', function(req, res, next) {
   //o.recipes = db.prepare("SELECT recipes.*, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.is_public = 1 AND recipes.recipe_kind_id = ?;").all(o.recipe_kind.id)
   // Only fetch recipes in the current locale. Temporary
   // Ideally, locale is a filter, it should be possible to see all. By default only the selected locale.
-  o.recipes = db.prepare("SELECT recipes.*, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.locale = ? AND recipes.is_public = 1 AND recipes.recipe_kind_id = ?;").all(res.locals.locale, o.recipe_kind.id)
+  o.recipes = db.prepare("SELECT recipes.*, users.locale, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE recipes.is_public = 1 AND recipes.recipe_kind_id = ?;").all(o.recipe_kind.id)
 
   res.locals.gon = o
   res.render('show_recipe_kind');

@@ -250,14 +250,13 @@ const ShowRecipeKind = ({user, favoriteRecipes, recipeKindId, ...props}) => {
   }, [recipeKindId])
 
   const recipeButtons = (recipe) => {
+    if (user.id == recipe.user_id) {return null}
     const favorite = favoriteRecipes?.find(f => f.recipe_id == recipe.id)
     return <>
       <FavoriteButton {...{recipe, user, favorite}} className='plain-btn' width='32' />
-      {recipe.user_id != user.id ? <>
-        <button type="button" className="plain-btn" onClick={() => duplicateRecipe(recipe)}>
-          <img style={{width: '1.8em'}} src="/icons/pencil-plus.svg" className="ms-2" title={t('Copy_and_edit')} />
-        </button> 
-      </> : null}
+      <button type="button" className="plain-btn" onClick={() => duplicateRecipe(recipe)}>
+        <img style={{width: '1.8em'}} src="/icons/pencil-plus.svg" className="ms-2" title={t('Copy_and_edit')} />
+      </button> 
     </>
   }
         //<div className="dropdown d-inline-block">
