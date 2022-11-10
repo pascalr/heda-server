@@ -103,7 +103,21 @@ export const PublicNavbar = ({locale, renderingHome, setIsSearching}) => {
   </>
 }
 
+/**
+ * Allow hidding nav by adding noNav=true to the url
+ */
+export const useHiddenNavParam = () => {
+ 
+  const [hidden, setHidden] = useState(false)
+  useEffect(() => {
+    if (getUrlParams(window.location.href).noNav) {setHidden(true)}
+  }, [])
+  return hidden
+}
+
 export const AppSearch = ({user, otherProfiles, _csrf, recipes, friendsRecipes, users, recipeKinds}) => {
+  
+  if (useHiddenNavParam()) {return ''}
 
   let locale = user.locale
   let renderingHome = currentPathIsRoot()
@@ -176,16 +190,7 @@ export const AppSearch = ({user, otherProfiles, _csrf, recipes, friendsRecipes, 
 export const MainSearch = ({locale, renderingHome}) => {
 
   const [data, setData] = useState(undefined) // New way of doing this
- 
-  // Allow hidding nav by adding noNav=true to the url
-  const [hidden, setHidden] = useState(false)
-  useEffect(() => {
-
-    if (getUrlParams(window.location.href).noNav) {
-      setHidden(true)
-    }
-  }, [])
-  if (hidden) {return ''}
+  if (useHiddenNavParam()) {return ''}
 
   const config = {
 

@@ -27,7 +27,7 @@ export const Home = () => {
   const preloadItem = (i) => {if (i.image_slug) {preloadImage('/imgs/small/'+i.image_slug)}}
   return <>
     <MainSearch {...{locale, renderingHome: true}} />
-    <div style={{padding: '5em 0.3em 10em 0.3em', maxWidth: '70em', margin: 'auto'}}>
+    <div style={{padding: '4em 0.3em 8em 0.3em', maxWidth: '70em', margin: 'auto'}}>
       <div className="d-block d-md-flex">
         <div className='flex-grow-1'></div>
         <div style={{width: '25em', maxWidth: '100%', margin: 'auto', fontFamily: 'Montserra'}}>
@@ -43,6 +43,7 @@ export const Home = () => {
         <div className='flex-grow-1'></div>
       </div>
     </div>
+    <hr style={{border: '1px solid black', width: '70%', margin: 'auto'}} />
     <div style={{padding: '5em 0.3em', backgroundColor: '#fafbfc'}}>
       <div className='d-flex align-items-center' style={{maxWidth: '50em', margin: 'auto'}}>
         <div className="smartphone d-none d-sm-block">
@@ -58,6 +59,7 @@ export const Home = () => {
         </div>
       </div>
     </div>
+    <hr style={{border: '1px solid black', width: '70%', margin: 'auto'}} />
     <div style={{padding: '5em 0.3em'}}>
       <div className="ff-montserra" style={{maxWidth: '40em', margin: 'auto'}}>
         <h2>{t('Home_3')}</h2>
@@ -77,6 +79,7 @@ export const Home = () => {
         })}
       </div>
     </div>
+    <hr style={{border: '1px solid black', width: '70%', margin: 'auto'}} />
     <div style={{padding: '5em 0.3em', backgroundColor: '#fafbfc'}}>
       <div className="trunk">
         <div className="ff-montserra mb-2">

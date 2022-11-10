@@ -19,7 +19,7 @@ import { RecipeThumbnailImage, RecipeSmallImage, RecipeMediumImage } from "./ima
 import { t } from "../translate"
 import { Carrousel } from './carrousel'
 import {EditMix, ShowMix} from './recipe_editor'
-import { AppSearch } from './main_search'
+import { AppSearch, useHiddenNavParam } from './main_search'
 import { useRouter } from "./router"
 
 const EditTag = ({tagId, tags}) => {
@@ -134,6 +134,7 @@ export const HomeTab = ({title, path}) => {
   </>
 }
 const HomeTabs = ({machines}) => {
+  if (useHiddenNavParam()) {return ''}
   return <>
     <ul className="nav nav-tabs mb-3">
       <HomeTab {...{title: t('Suggestions'), path: '/'}} />
