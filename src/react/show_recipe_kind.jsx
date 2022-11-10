@@ -19,26 +19,28 @@ const RecipeAttribute = ({recipe, attr, label}) => {
 }
 
 const Recipe = ({recipe}) => {
-  return <div style={{border: '1px solid black'}}>
-    <div className="p-2 ps-3 white" style={{backgroundColor: '#212529'}}>
-      <div className="float-end">{t('by')} <a className="plain-link underline white" href={'/u/'+recipe.user_id}>{recipe.user_name}</a></div>
-      <div className="fs-12 bold">
-        <a className="plain-link white" href={'/r/'+recipe.id}>{recipe.name}</a>
+  return <>
+    <div style={{border: '1px solid black'}}>
+      <div className="p-2 ps-3 white" style={{backgroundColor: '#212529'}}>
+        <div className="float-end">{t('by')} <a className="plain-link underline white" href={'/u/'+recipe.user_id}>{recipe.user_name}</a></div>
+        <div className="fs-12 bold">
+          <a className="plain-link white" href={'/r/'+recipe.id}>{recipe.name}</a>
+        </div>
+      </div>
+      <div className="recipe-body p-2">
+
+        <RecipeAttribute {...{recipe, attr: 'preparation_time', label: 'Preparation'}} />
+        <RecipeAttribute {...{recipe, attr: 'cooking_time', label: 'Cooking'}} />
+        <RecipeAttribute {...{recipe, attr: 'total_time', label: 'Total'}} />
+
+        <h2 style={{flexGrow: '1'}}>{t('Ingredients')}</h2>
+        <IngredientList {...{recipe}} />
+      
+        <h2>{t('Instructions')}</h2>
+        <RecipeTiptap recipe={recipe} editable={false} />
       </div>
     </div>
-    <div className="recipe-body p-2">
-
-      <RecipeAttribute {...{recipe, attr: 'preparation_time', label: 'Preparation'}} />
-      <RecipeAttribute {...{recipe, attr: 'cooking_time', label: 'Cooking'}} />
-      <RecipeAttribute {...{recipe, attr: 'total_time', label: 'Total'}} />
-
-      <h2 style={{flexGrow: '1'}}>{t('Ingredients')}</h2>
-      <IngredientList {...{recipe}} />
-    
-      <h2>{t('Instructions')}</h2>
-      <RecipeTiptap recipe={recipe} editable={false} />
-    </div>
-  </div>
+  </>
 }
 
 export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors}) => {
@@ -70,11 +72,18 @@ export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors}) => {
       <br/>
       <div id='recipes'>
         {recipes && recipes.length > 0 ? <>
-          <div className='fs-13 d-flex align-items-center mb-1'>
-            <div>({recipeIdx+1} {t('of')} {recipes.length}) {recipes.length > 1 ? t('recipes') : t('recipe')}</div>
-            <div>
-              <button className="btn btn-sm btn-outline-primary mx-2" disabled={recipeIdx === 0} onClick={() => setRecipeIdx(recipeIdx-1)}>{t('Previous_f')}</button>
-              <button className="btn btn-sm btn-outline-primary" disabled={recipeIdx === recipes.length-1} onClick={() => setRecipeIdx(recipeIdx+1)}>{t('Next_f')}</button>
+          <div className='d-flex align-items-end'>
+            <div className='fs-13 d-flex align-items-center flex-wrap mb-1'>
+              <div>({recipeIdx+1} {t('of')} {recipes.length}) {recipes.length > 1 ? t('recipes') : t('recipe')}</div>
+              <div>
+                <button className="btn btn-sm btn-outline-primary mx-2" disabled={recipeIdx === 0} onClick={() => setRecipeIdx(recipeIdx-1)}>{t('Previous_f')}</button>
+                <button className="btn btn-sm btn-outline-primary" disabled={recipeIdx === recipes.length-1} onClick={() => setRecipeIdx(recipeIdx+1)}>{t('Next_f')}</button>
+              </div>
+            </div>
+            <div className='flex-grow-1' />
+            <div style={{border: '2px solid #212529', padding: '0.4em 0.4em 0.2em 0.4em', borderBottom: 'none', borderTopLeftRadius: '0.5em', borderTopRightRadius: '0.5em', flexShrink: '0'}}>
+              <img style={{width: '1.8em'}} src="/icons/heart.svg" className='me-1' />
+              <img style={{width: '1.8em'}} src="/icons/three-dots-vertical.svg" />
             </div>
           </div>
           <Recipe {...{recipe: recipes[recipeIdx]}} />
