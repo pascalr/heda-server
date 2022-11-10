@@ -48,7 +48,7 @@ export const Home = () => {
       <div className='d-flex align-items-center' style={{maxWidth: '50em', margin: 'auto'}}>
         <div className="smartphone d-none d-sm-block">
           <div className='content'>
-            <iframe src={localeHref("/k/51?noNav=true")} style={{marginTop: '0.3em', width: '100%', border: 'none', height: '100%'}}/>
+            <iframe src={localeHref("/k/51")} style={{width: '100%', border: 'none', height: '100%'}}/>
           </div>
         </div>
         <div style={{width: '2em', flexShrink: '0'}}/>

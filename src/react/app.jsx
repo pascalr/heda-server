@@ -134,7 +134,7 @@ export const HomeTab = ({title, path}) => {
   </>
 }
 const HomeTabs = ({machines}) => {
-  if (useHiddenNavParam()) {return ''}
+  //if (useHiddenNavParam()) {return ''}
   return <>
     <ul className="nav nav-tabs mb-3">
       <HomeTab {...{title: t('Suggestions'), path: '/'}} />

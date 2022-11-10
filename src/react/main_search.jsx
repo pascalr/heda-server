@@ -117,7 +117,7 @@ export const useHiddenNavParam = () => {
 
 export const AppSearch = ({user, otherProfiles, _csrf, recipes, friendsRecipes, users, recipeKinds}) => {
   
-  if (useHiddenNavParam()) {return ''}
+  //if (useHiddenNavParam()) {return ''}
 
   let locale = user.locale
   let renderingHome = currentPathIsRoot()
@@ -190,7 +190,7 @@ export const AppSearch = ({user, otherProfiles, _csrf, recipes, friendsRecipes, 
 export const MainSearch = ({locale, renderingHome}) => {
 
   const [data, setData] = useState(undefined) // New way of doing this
-  if (useHiddenNavParam()) {return ''}
+  //if (useHiddenNavParam()) {return ''}
 
   const config = {
 
