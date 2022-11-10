@@ -5,7 +5,7 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, Link, currentPathIs, currentPathIsRoot } from "./lib"
 import { findRecipeKindForRecipeName } from "../lib"
-import { RecipeList, RecipeIndex } from './recipe_index'
+import { RecipeList, RecipeIndex, duplicateRecipe } from './recipe_index'
 import { changeUrl, ajax, normalizeSearchText, preloadImage, join, bindSetter, capitalize, isTrue } from "./utils"
 import { localeHref2, getUrlParams, sortBy, sortByDate, shuffle } from "../utils"
 import { icon_path, image_path, image_slug_variant_path } from './routes'
@@ -252,10 +252,20 @@ const ShowRecipeKind = ({user, favoriteRecipes, recipeKindId, ...props}) => {
   const recipeButtons = (recipe) => {
     const favorite = favoriteRecipes?.find(f => f.recipe_id == recipe.id)
     return <>
-      <FavoriteButton {...{recipe, user, favorite}} className='plain-btn' />
+      <FavoriteButton {...{recipe, user, favorite}} className='plain-btn' width='32' />
+      {recipe.user_id != user.id ? <>
+        <button type="button" className="plain-btn" onClick={() => duplicateRecipe(recipe)}>
+          <img style={{width: '1.8em'}} src="/icons/pencil-plus.svg" className="ms-2" title={t('Copy_and_edit')} />
+        </button> 
+      </> : null}
     </>
-      //<img style={{width: '1.8em'}} src="/icons/three-dots-vertical.svg" />
   }
+        //<div className="dropdown d-inline-block">
+        //  <img style={{width: '1.8em'}} src="/icons/three-dots-vertical.svg" className="clickable ms-1" data-bs-toggle="dropdown" />
+        //  <div className="dropdown-menu">
+        //    <button type="button" className="dropdown-item" onClick={() => duplicateRecipe(recipe)}>{t('Copy_and_edit')}</button> 
+        //  </div>
+        //</div>
 
   return <>
     <RecipeKindViewer {...{...props, recipeKind, recipes: kindRecipes, kindAncestors, recipeButtons}} />

@@ -94,7 +94,7 @@ const MixIngredients = ({mix}) => {
   </>
 }
 
-export const FavoriteButton = ({recipe, user, favorite, ...props}) => {
+export const FavoriteButton = ({recipe, user, favorite, width, ...props}) => {
   if (recipe.user_id == user.id) {return ''}
   const handleClick = () => {
     if (favorite) {
@@ -107,8 +107,9 @@ export const FavoriteButton = ({recipe, user, favorite, ...props}) => {
     }
   }
   let img = favorite ? "/icons/star-fill.svg" : "/icons/star.svg"
+  let title = favorite ? t('Remove_from_my_favorites') : t('Add_to_my_favorites')
   return <button type="button" className="btn btn-outline-secondary" onClick={handleClick} {...props}>
-    <img src={img} width="24"></img>
+    <img src={img} width={width||"24"} title={title}></img>
   </button>
 }
   
