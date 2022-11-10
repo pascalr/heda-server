@@ -43,7 +43,7 @@ function initGon(req, res, next) {
 }
 
 function fetchAccountUsers(req, res, next) {
-  let attrs = ['name', 'gender', 'image_slug', 'locale', 'is_public']
+  let attrs = ['name', 'gender', 'image_slug', 'locale']
   res.locals.users = db.fetchTable('users', {account_id: req.user.account_id}, attrs)
   if (res.locals.gon) {res.locals.gon.users = res.locals.users}
   next()
@@ -372,16 +372,17 @@ router.patch('/update_field/:table/:id', ensureUser, function(req, res, next) {
 
 router.get('/fetch_recipe/:id', function(req, res, next) {
 
-  let recipe = db.fetchRecord('recipes', {id: req.params.id}, RECIPE_ATTRS)
-  let user = db.fetchRecord('users', {id: recipe.user_id}, ['is_public', 'name'])
-  if (!user || (!user.is_public && user.account_id !== req.user.account_id)) {throw "Can't fetch a private recipe."}
+  let recipe = db.fetchRecord('recipes', {id: req.params.id, is_public: 1}, RECIPE_ATTRS)
+  if (!recipe) {throw "Can't fetch a recipe. Does not exist or is private"}
+  // TODO: JOIN instead of seperate query
+  let user = db.fetchRecord('users', {id: recipe.user_id}, ['name'])
   res.json({...recipe, user_name: user.name})
 });
 router.get('/fetch_recipe_kind/:id', function(req, res, next) {
 
   let recipeKind = fetchRecipeKind(db, {id: req.params.id}, res.locals.locale)
   // FIXME: SELECT recipes.*
-  let recipes = db.prepare("SELECT recipes.*, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.locale = ? AND users.is_public = 1 AND recipes.recipe_kind_id = ?;").all(res.locals.locale, recipeKind.id)
+  let recipes = db.prepare("SELECT recipes.*, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.locale = ? AND recipes.is_public = 1 AND recipes.recipe_kind_id = ?;").all(res.locals.locale, recipeKind.id)
   if (recipeKind.kind_id) {
     let kindAncestors = fetchKindWithAncestors(db, {id: recipeKind.kind_id}, res.locals.locale)
     res.json({recipeKind, recipes, kindAncestors})
@@ -407,7 +408,7 @@ router.get('/fetch_kind/:id', function(req, res, next) {
 router.get('/fetch_search_data', function(req, res, next) {
 
   let recipeKinds = fetchRecipeKinds(db, {}, res.locals.locale, false)
-  let publicUsers = db.fetchTable('users', {is_public: 1}, ['name', 'image_slug'])
+  let publicUsers = db.fetchTable('users', {}, ['name', 'image_slug'])
   res.json({recipeKinds, publicUsers})
 });
 
@@ -444,7 +445,8 @@ const renderApp = [ensureUser, function(req, res, next) {
   let o = {}
   let attrs = null
   let ids = null
-  o.users = db.fetchTable('users', {account_id: user.account_id}, ['name', 'gender', 'image_slug', 'locale', 'is_public'])
+  //o.users = db.fetchTable('users', {account_id: user.account_id}, ['name', 'gender', 'image_slug', 'locale', 'is_public'])
+  o.users = db.fetchTable('users', {account_id: user.account_id}, ['name', 'gender', 'image_slug', 'locale'])
   let profile = o.users.find(u => u.id == user.user_id)
   o.recipes = db.fetchTable('recipes', {user_id: user.user_id}, RECIPE_ATTRS)
   o.favorite_recipes = db.fetchTable('favorite_recipes', {user_id: user.user_id}, ['list_id', 'recipe_id', 'updated_at'])
@@ -516,10 +518,9 @@ router.get('/r/:id', function(req, res, next) {
   let o = {}
   let ids = null
   let attrs = null
-  o.recipe = db.fetchRecord('recipes', {id: recipeId}, RECIPE_ATTRS)
-  if (!o.recipe) {throw 'Unable to fetch recipe. Not existent.'}
-  o.user = db.fetchRecord('users', {id: o.recipe.user_id, is_public: 1}, ['name', 'locale'])
-  if (!o.user) {throw 'Unable to fetch recipe. No permission by user.'}
+  o.recipe = db.fetchRecord('recipes', {id: recipeId, is_public: 1}, RECIPE_ATTRS)
+  if (!o.recipe) {throw 'Unable to fetch recipe. Not existent or private.'}
+  o.user = db.fetchRecord('users', {id: o.recipe.user_id}, ['name', 'locale'])
   //if (res.locals.locale != o.user.locale) {
   //  // TODO: Fetch in the proper locale
   //  attrs = ['name', 'servings_name', 'original_id', 'ingredients', 'json']
@@ -579,7 +580,7 @@ router.get('/k/:id', function(req, res, next) {
   //o.recipes = db.prepare("SELECT recipes.*, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.is_public = 1 AND recipes.recipe_kind_id = ?;").all(o.recipe_kind.id)
   // Only fetch recipes in the current locale. Temporary
   // Ideally, locale is a filter, it should be possible to see all. By default only the selected locale.
-  o.recipes = db.prepare("SELECT recipes.*, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.locale = ? AND users.is_public = 1 AND recipes.recipe_kind_id = ?;").all(res.locals.locale, o.recipe_kind.id)
+  o.recipes = db.prepare("SELECT recipes.*, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.locale = ? AND recipes.is_public = 1 AND recipes.recipe_kind_id = ?;").all(res.locals.locale, o.recipe_kind.id)
 
   res.locals.gon = o
   res.render('show_recipe_kind');
@@ -591,7 +592,7 @@ router.get('/u/:id', function(req, res, next) {
   let ids = null
   let attrs = null
 
-  let publicUsers = db.fetchTable('users', {is_public: 1}, ['name'])
+  let publicUsers = db.fetchTable('users', {}, ['name'])
   let publicUsersIds = publicUsers.map(u => u.id)
   o.user = publicUsers.find(u => u.id == userId)
 
@@ -667,7 +668,7 @@ const renderAdmin = (req, res, next) => {
     stats: {
       nbUsers: db.prepare('SELECT COUNT(*) FROM users').get()['COUNT(*)'],
       nbAccounts: db.prepare('SELECT COUNT(*) FROM accounts').get()['COUNT(*)'],
-      public_users: db.fetchTable('users', {is_public: 1}, ['name']),
+      public_users: db.fetchTable('users', {}, ['name']),
       nbRequestsTotal: analytics.nbRequestsTotal(),
       nbDailyVisitsTotal: analytics.nbDailyVisitsTotal(),
     },
@@ -708,7 +709,7 @@ router.post('/update_kinds_count', ensureAdmin, function(req, res, next) {
 
   let recipeKinds = fetchRecipeKinds(db, {}, res.locals.locale)
   recipeKinds.forEach(recipeKind => {
-    let count = db.prepare('SELECT COUNT(*) FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.is_public = 1 AND recipe_kind_id = ?').get(recipeKind.id)['COUNT(*)']
+    let count = db.prepare('SELECT COUNT(*) FROM recipes WHERE is_public = 1 AND recipe_kind_id = ?').get(recipeKind.id)['COUNT(*)']
     if (recipeKind.recipe_count != count) {
       db.findAndUpdateRecord('recipe_kinds', recipeKind, {recipe_count: count}, req.user)
     }
@@ -732,11 +733,10 @@ router.post('/match_recipe_kinds', ensureAdmin, function(req, res, next) {
 
 router.post('/duplicate_recipe/:id', function(req, res, next) {
 
-  let recipe = db.fetchRecord('recipes', {id: req.params.id}, RECIPE_ATTRS)
-  let user = db.fetchRecord('users', {id: recipe.user_id}, ['is_public'])
-  if (!user || !user.is_public) {throw "Can't duplicate a recipe by a user who is not public."}
+  let recipe = db.fetchRecord('recipes', {id: req.params.id, is_public: 1}, RECIPE_ATTRS)
+  if (!recipe) {throw "Can't duplicate a recipe. Does not exist or is private."}
   let newRecipe = {...recipe, original_id: recipe.id}
-  delete newRecipe.id;
+  delete newRecipe.id; delete newRecipe.user_id;
   newRecipe = db.createRecord('recipes', newRecipe, req.user, {allow_write: ['original_id']})
   res.json(newRecipe)
 });

@@ -28,6 +28,14 @@ const UserEditor = () => {
   }
 
   let suggestions = ["125.png", "126.png", "127.png"]
+    
+    //<b>{t('Visibility')}</b><br/>
+    //<ToggleField model={user} field="is_public" labelOn={t('public')} labelOff={t('private')} className="btn btn-primary" /><br/><br/>
+    //{user.is_public ? <>
+    //  <p>{t('n12')}</p>
+    //  <a href={"/u/"+user.id}>{window.location.origin}/u/{user.id}</a>
+    //  <br/><br/>
+    //</> : ''}
 
   return <>
     <h1>{t('Edit_profile')}</h1>
@@ -35,13 +43,6 @@ const UserEditor = () => {
     <TextField model={user} field="name" size="8" className="editable-input" /><br/><br/>
     <b>{t('Language')}</b><br/>
     <CollectionSelect model={user} field="locale" options={['en', 'fr']} showOption={e => e} includeBlank={false}/><br/><br/>
-    <b>{t('Visibility')}</b><br/>
-    <ToggleField model={user} field="is_public" labelOn={t('public')} labelOff={t('private')} className="btn btn-primary" /><br/><br/>
-    {user.is_public ? <>
-      <p>{t('n12')}</p>
-      <a href={"/u/"+user.id}>{window.location.origin}/u/{user.id}</a>
-      <br/><br/>
-    </> : ''}
     <b>{t('Image')}</b><br/>
     <ImageSelector record={user} field="image_slug" variant="original" maxSizeBytes={2*1000*1000} suggestions={suggestions} height="180px" defaultImage="/icons/person-fill.svg" />
     <hr/>

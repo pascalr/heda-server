@@ -179,6 +179,7 @@ export function tr(id, locale) {
     No_personal_recipes_yet: "Aucune recette personnelle pour l'instant",
     My_public_recipes: "Mes recettes publiques",
     My_private_recipes: "Mes recettes privées",
+    Copy_and_edit: "Copier et éditer",
   }
   if (locale == 'fr' || locale == 'FR') {
     if (!fr[id]) {console.log('Missing translation for '+id+' in '+locale)}

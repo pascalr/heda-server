@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
 
-import { ajax, normalizeSearchText } from "./utils"
+import { ajax, normalizeSearchText, changeUrl } from "./utils"
 import { EditTagsModal } from './modals/edit_tags'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import { Link } from "./lib"
 import { RecipeThumbnailImage } from "./image"
 import { t } from "../translate"
+import { handleError } from "../hcu"
   
 const updateFavoriteRecipe = (fav, list_id, recipe, user) => {
   if (fav && recipe.user_id == user.id && list_id == 0) {
@@ -28,6 +29,13 @@ export const removeRecipe = (recipe) => {
 const removeFavoriteRecipe = (fav, recipe) => {
   window.hcu.destroyRecord(fav)
   window.hcu.removeRecord(recipe)
+}
+
+export const duplicateRecipe = (recipe) => {
+  ajax({url: '/duplicate_recipe/'+recipe.id, type: 'POST', success: (dup) => {
+    window.hcu.addRecord('recipes', dup)
+    changeUrl('/e/'+dup.id)
+  }, error: handleError(t('Error_creating'))})
 }
 
 export const ChangeVisibilityMenuItem = ({recipe}) => {
@@ -61,6 +69,7 @@ const RecipeListItemMenu = ({fav, recipe, editUserRecipe, user}) => {
         <hr className="dropdown-divider"/>
         <AddToListMenu {...{fav, recipe, user}} />
         <hr className="dropdown-divider"/>
+        {recipe.user_id != user.id ? <button type="button" className="dropdown-item" onClick={() => duplicateRecipe(recipe)}>{t('Copy_and_edit')}</button> : ''}
         {recipe.user_id == user.id ? <button type="button" className="dropdown-item" onClick={() => {removeRecipe(recipe)}}>{t('Delete_recipe')}</button> : ''}
         {user.id != recipe.user_id ? <button type="button" className="dropdown-item" onClick={() => removeFavoriteRecipe(fav, recipe)}>{t('Remove_from_favorites')}</button> : ''}
       </span>

@@ -7,7 +7,7 @@ import { Link, useOrFetchRecipe } from "./lib"
 import { parseIngredientsAndHeaders, quantityWithPreposition, prettyPreposition } from "../lib"
 import { RecipeMediumImage } from "./image"
 import { EditTagsModal } from './modals/edit_tags'
-import { removeRecipe, AddToListMenu, ChangeVisibilityMenuItem } from './recipe_index'
+import { removeRecipe, AddToListMenu, ChangeVisibilityMenuItem, duplicateRecipe } from './recipe_index'
 import { t } from "../translate"
 import { handleError } from "../hcu"
 
@@ -111,7 +111,7 @@ export const FavoriteButton = ({recipe, user, favorite, ...props}) => {
     <img src={img} width="24"></img>
   </button>
 }
-
+  
 export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKinds, images, user, users, recipes, suggestions, tags}) => {
 
   const [showModal, setShowModal] = useState(false)
@@ -130,12 +130,6 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
     ajax({url: '/translate_recipe/'+recipe.id, type: 'POST', success: (translated) => {
       window.hcu.addRecord('recipes', translated)
       changeUrl('/e/'+translated.id)
-    }, error: handleError(t('Error_creating'))})
-  }
-  const duplicateRecipe = () => {
-    ajax({url: '/duplicate_recipe/'+recipe.id, type: 'POST', success: (dup) => {
-      window.hcu.addRecord('recipes', dup)
-      changeUrl('/e/'+dup.id)
     }, error: handleError(t('Error_creating'))})
   }
   
@@ -183,7 +177,7 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
                 {recipeBelongsToSiblings ? <button type="button" className="dropdown-item" onClick={changeOwner}>{t('Attribute_to_this_profile')}</button> : ''}
                 {recipe.user_id == user.id ? <li><ChangeVisibilityMenuItem recipe={recipe} /></li> : ''}
                 {recipe.user_id == user.id ? <li><button type="button" className="dropdown-item" onClick={() => {removeRecipe(recipe) && changeUrl('/l')}}>{t('Delete_recipe')}</button></li> : ''}
-                {recipe.user_id != user.id ? <button type="button" className="dropdown-item" onClick={duplicateRecipe}>Duplicate recipe</button> : ''}
+                {recipe.user_id != user.id ? <button type="button" className="dropdown-item" onClick={() => duplicateRecipe(recipe)}>{t('Copy_and_edit')}</button> : ''}
                 {user.is_admin && recipe.user_id != user.id ? <button type="button" className="dropdown-item" onClick={translateRecipe}>Translate recipe</button> : ''}
               </div>
             </span>
