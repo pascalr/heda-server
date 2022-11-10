@@ -449,7 +449,7 @@ const NewRecipe = ({recipeKinds}) => {
   </>
 }
 
-class AppErrorBoundary extends React.Component {
+export class AppErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
     this.state = { hasError: false };

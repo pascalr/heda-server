@@ -7,7 +7,7 @@ import { TextInput, TextField, CollectionSelect } from "./form"
 import { Link, useOrFetchRecipe, getLocale } from "./lib"
 import { localeAttr } from "../lib"
 import { MainSearch } from './main_search'
-import { HomeTab } from './app'
+import { HomeTab, AppErrorBoundary } from './app'
 import { t } from "../translate"
 import { useRouter } from "./router"
 import { initHcu, useHcuState, handleError } from '../hcu'
@@ -354,7 +354,9 @@ export const Admin = () => {
     <MainSearch {...{locale}} />
     <div style={{padding: '0 0.5em'}}>
       <AdminTabs/>
-      {elem}
+      <AppErrorBoundary key={idx}>
+        {elem}
+      </AppErrorBoundary>
     </div>
     <br/><br/><br/><br/><br/><br/><br/><br/>
   </>
