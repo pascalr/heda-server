@@ -94,6 +94,21 @@ const MixIngredients = ({mix}) => {
   </>
 }
 
+export const FavoriteButton = ({recipe,user,favorite, ...props}) => {
+  if (recipe.user_id == user.id) {return ''}
+  const handleClick = () => {
+    if (favorite) {
+      window.hcu.destroyRecord(favorite)
+    } else {
+      window.hcu.createRecord('favorite_recipes', {recipe_id: recipe.id})
+    }
+  }
+  let img = favorite ? "/icons/star-fill.svg" : "/icons/star.svg"
+  return <button type="button" className="btn btn-outline-secondary" onClick={handleClick} {...props}>
+    <img src={img} width="24"></img>
+  </button>
+}
+
 export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKinds, images, user, users, recipes, suggestions, tags}) => {
 
   const [showModal, setShowModal] = useState(false)
@@ -154,20 +169,7 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
             <button type="button" className="btn btn-outline-secondary" onClick={() => setShowModal(true)}>
               <img src="/icons/tags.svg" width="24"></img>
             </button>
-            {function() {
-              if (recipe.user_id == user.id) {return ''}
-              let img = favorite ? "/icons/star-fill.svg" : "/icons/star.svg"
-              const handleClick = () => {
-                if (favorite) {
-                  window.hcu.destroyRecord(favorite)
-                } else {
-                  window.hcu.createRecord('favorite_recipes', {recipe_id: recipe.id})
-                }
-              }
-              return <button type="button" className="btn btn-outline-secondary" onClick={handleClick}>
-                <img src={img} width="24"></img>
-              </button>
-            }()}
+            <FavoriteButton {...{recipe, user, favorite}} />
             <span className="dropdown">
               <a className="btn btn-outline-secondary" href="FIXME" data-bs-toggle="dropdown">
                 <img src="/icons/three-dots.svg" width="24"></img>

@@ -12,7 +12,7 @@ import { icon_path, image_path, image_slug_variant_path } from './routes'
 import {TextField, TextInput, CollectionSelect, ImageField, ImageSelector} from './form'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import {RecipeEditor} from "./recipe_editor"
-import {RecipeViewer} from "./recipe_viewer"
+import {RecipeViewer, FavoriteButton} from "./recipe_viewer"
 import {RecipeKindViewer} from "./show_recipe_kind"
 import {KindViewer} from "./show_kind"
 import { initHcu, useHcuState } from '../hcu'
@@ -235,7 +235,7 @@ const ShowKind = ({kindId, locale}) => {
   </>
 }
 
-const ShowRecipeKind = ({recipeKindId, ...props}) => {
+const ShowRecipeKind = ({user, favoriteRecipes, recipeKindId, ...props}) => {
 
   const [recipeKind, setRecipeKind] = useState(null)
   const [recipes, setRecipes] = useState(null)
@@ -248,8 +248,17 @@ const ShowRecipeKind = ({recipeKindId, ...props}) => {
       setRecipes(result.recipes)
     }})
   }, [recipeKindId])
+
+  const recipeButtons = (recipe) => {
+    const favorite = favoriteRecipes?.find(f => f.recipe_id == recipe.id)
+    return <>
+      <FavoriteButton {...{recipe, user, favorite}} className='plain-btn' />
+    </>
+      //<img style={{width: '1.8em'}} src="/icons/three-dots-vertical.svg" />
+  }
+
   return <>
-    <RecipeKindViewer {...{...props, recipeKind, recipes, kindAncestors}} />
+    <RecipeKindViewer {...{...props, recipeKind, recipes, kindAncestors, recipeButtons}} />
   </>
 }
 
@@ -504,7 +513,7 @@ export const App = () => {
       <ShowRecipe {...{recipeId: id, recipes, mixes, favoriteRecipes, recipeKinds, images, user, users, suggestions, tags}} />
     },
     {match: "/k/:id", elem: ({id}) =>
-      <ShowRecipeKind {...{recipeKindId: id, recipes, recipeKinds, images, locale}} />
+      <ShowRecipeKind {...{recipeKindId: id, recipes, recipeKinds, images, locale, user, favoriteRecipes}} />
     },
     {match: "/d/:id", elem: ({id}) =>
       <ShowKind {...{kindId: id, locale}} />

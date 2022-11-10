@@ -774,7 +774,7 @@ export const DescriptionTiptap = ({model, json_field, url, editable}) => {
 
   const editor = useEditor({
     extensions: DescriptionExtensions,
-    content: JSON.parse(model[json_field]||'{}'),
+    content: model[json_field] ? JSON.parse(model[json_field]): null,
     editable,
   })
 

@@ -43,7 +43,7 @@ const Recipe = ({recipe}) => {
   </>
 }
 
-export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors}) => {
+export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors, recipeButtons}) => {
 
   if (!recipeKind) {return ''}
 
@@ -81,10 +81,9 @@ export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors}) => {
               </div>
             </div>
             <div className='flex-grow-1' />
-            <div style={{border: '2px solid #212529', padding: '0.4em 0.4em 0.2em 0.4em', borderBottom: 'none', borderTopLeftRadius: '0.5em', borderTopRightRadius: '0.5em', flexShrink: '0'}}>
-              <img style={{width: '1.8em'}} src="/icons/heart.svg" className='me-1' />
-              <img style={{width: '1.8em'}} src="/icons/three-dots-vertical.svg" />
-            </div>
+            {recipeButtons ? <div style={{border: '2px solid #212529', padding: '0.4em 0.4em 0.2em 0.4em', borderBottom: 'none', borderTopLeftRadius: '0.5em', borderTopRightRadius: '0.5em', flexShrink: '0'}}>
+              {recipeButtons(recipes[recipeIdx])}
+            </div> : ''}
           </div>
           <Recipe {...{recipe: recipes[recipeIdx]}} />
         </> : <p>{t('There_are_no_recipe_in_this_category_yet')}.</p>}
