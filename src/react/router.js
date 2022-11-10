@@ -36,12 +36,12 @@ export const useRouter = (routes, defaultElement) => {
     }
   }, [])
   
-  if (route === null) {return ''}
+  if (route === null) {return {idx: -1, elem: ''}}
 
   let e = (route.idx < 0) ? defaultElement : routes[route.idx].elem
   let el = null
   if (typeof e !== 'function') {el = e}
   else {el = e(route.params)}
   
-  return el
+  return {idx: route.idx, elem: el}
 }

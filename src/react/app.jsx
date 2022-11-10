@@ -440,6 +440,36 @@ const NewRecipe = ({recipeKinds}) => {
   </>
 }
 
+class AppErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  // Update state so the next render will show the fallback UI.    
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    // TODO: Log the error to an error reporting service
+    //logErrorToMyService(error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return <>
+        <div className="trunk text-center">
+          <br/><br/><br/>
+          <img src="/sorry.jpg" style={{height: '50vh', margin: 'auto'}}/>
+          <br/><br/><br/>
+          <h1 className="h003">{t('Sorry_error')}</h1>
+        </div>
+      </>
+    }
+    return this.props.children;
+  }
+}
+
 export const App = () => {
   
   const [isSearching, setIsSearching] = useState(false)
@@ -504,7 +534,7 @@ export const App = () => {
   
   const defaultElement = (params) => <HomePage {...{recipes, tags, suggestions, favoriteRecipes, machines, recipeKinds}} />
 
-  const elem = useRouter(routes, defaultElement)
+  const {elem,idx} = useRouter(routes, defaultElement)
 
   const [_csrf, setCsrf] = useState('')
   useEffect(() => {
@@ -518,7 +548,9 @@ export const App = () => {
     <AppSearch {...{user, otherProfiles, _csrf, recipes, friendsRecipes, users, recipeKinds}} />
     <div className="trunk">
       <HomeTabs machines={machines} />
-      {elem}
+      <AppErrorBoundary key={'err-boundary-'+idx}>
+        {elem}
+      </AppErrorBoundary>
     </div>
   </>)
 }

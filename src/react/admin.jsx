@@ -348,7 +348,7 @@ export const Admin = () => {
   ]
   const defaultElement = (params) => <TranslationsPage />
   
-  const elem = useRouter(routes, defaultElement)
+  const {elem,idx} = useRouter(routes, defaultElement)
   
   return <>
     <MainSearch {...{locale}} />
