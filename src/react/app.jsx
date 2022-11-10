@@ -14,6 +14,7 @@ import { DeleteConfirmButton } from './components/delete_confirm_button'
 import {RecipeEditor} from "./recipe_editor"
 import {RecipeViewer} from "./recipe_viewer"
 import {RecipeKindViewer} from "./show_recipe_kind"
+import {KindViewer} from "./show_kind"
 import { initHcu, useHcuState } from '../hcu'
 import { RecipeThumbnailImage, RecipeSmallImage, RecipeMediumImage } from "./image"
 import { t } from "../translate"
@@ -212,6 +213,26 @@ const HomePage = ({tags, recipes, suggestions, favoriteRecipes, recipeKinds}) =>
     <h2 className="fs-14 italic gray">{t('Suggestions_for_you')}</h2>
     <RecipeCarrousel {...{items: randomRecipes.slice(21,30), isRecipeKind: true}}/>
   </> 
+}
+
+const ShowKind = ({kindId, locale}) => {
+
+  const [kind, setKind] = useState(null)
+  const [kinds, setKinds] = useState(null)
+  const [recipeKinds, setRecipeKinds] = useState(null)
+  const [ancestors, setAncestors] = useState(null)
+
+  useEffect(() => {
+    ajax({url: localeHref2('/fetch_kind/'+kindId, locale), type: 'GET', success: (result) => {
+      setKind(result.kind)
+      setKinds(result.kinds)
+      setRecipeKinds(result.recipeKinds)
+      setAncestors(result.ancestors)
+    }})
+  }, [kindId])
+  return <>
+    <KindViewer {...{kind, ancestors, kinds, recipeKinds}} />
+  </>
 }
 
 const ShowRecipeKind = ({recipeKindId, ...props}) => {
@@ -454,6 +475,9 @@ export const App = () => {
     },
     {match: "/k/:id", elem: ({id}) =>
       <ShowRecipeKind {...{recipeKindId: id, recipes, recipeKinds, images, locale}} />
+    },
+    {match: "/d/:id", elem: ({id}) =>
+      <ShowKind {...{kindId: id, locale}} />
     },
     {match: "/t/:id", elem: ({id}) => 
       <EditTag {...{tagId: id, tags}} />

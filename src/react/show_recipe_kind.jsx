@@ -68,7 +68,7 @@ export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors}) => {
         </div>
       </div>
       <br/>
-      <div>
+      <div id='recipes'>
         {recipes && recipes.length > 0 ? <>
           <div className='fs-13 d-flex align-items-center mb-1'>
             <div>({recipeIdx+1} {t('of')} {recipes.length}) {recipes.length > 1 ? t('recipes') : t('recipe')}</div>

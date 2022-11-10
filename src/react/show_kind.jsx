@@ -28,7 +28,18 @@ export const KindViewer = ({kind, ancestors, kinds, recipeKinds}) => {
         </nav>
       }
       <h1>{kind.name}</h1>
-      {recipeKinds.map(k => {
+      {(kinds||[]).map(k => {
+        return <div key={k.id}>
+          <h2><a href={localeHref('/d/'+k.id)} className='plain-link'>{k.name}</a></h2>
+          <Carrousel {...{items: k.recipeKinds||[]}}>{item => <>
+            <a href={localeHref("/k/"+item.id)} className="plain-link">
+              <RecipeSmallImage {...{recipe: item}} />
+              <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
+            </a>
+          </>}</Carrousel>
+        </div>
+      })}
+      {(recipeKinds||[]).map(k => {
         let count = k.recipe_count || 0
         return <div key={k.id} className="mb-3">
           <a href={localeHref("/k/"+k.id)} className="plain-link">
@@ -41,17 +52,6 @@ export const KindViewer = ({kind, ancestors, kinds, recipeKinds}) => {
               </div>
             </div>
           </a>
-        </div>
-      })}
-      {(kinds||[]).map(k => {
-        return <div key={k.id}>
-          <h2><a href={localeHref('/d/'+k.id)} className='plain-link'>{k.name}</a></h2>
-          <Carrousel {...{items: k.recipeKinds||[]}}>{item => <>
-            <a href={localeHref("/k/"+item.id)} className="plain-link">
-              <RecipeSmallImage {...{recipe: item}} />
-              <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
-            </a>
-          </>}</Carrousel>
         </div>
       })}
     </div>

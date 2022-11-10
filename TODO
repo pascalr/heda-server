@@ -8,8 +8,9 @@ dump Kinds, RecipeKinds, Recipes, names, json and aspell it
 aspell translations
 
 Il manques les brisures de chocolat dans ma recette de cowboys cookies...
+Cowboy cookies in english
 
-Ajouter Cowboy cookies aux biscuits aux brisures de chocolat.
+Check with smartphones all the new pages
 
 fetchRecipeKinds (..., false) FIXME THIS SHIT
 /d/6 => Je veux avoir recipe_count, mais je ne veux pas avoir json...

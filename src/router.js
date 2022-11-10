@@ -369,21 +369,6 @@ router.patch('/update_field/:table/:id', ensureUser, function(req, res, next) {
   res.json({status: 'ok'})
 });
 
-// WARNING: All users have access to these
-const ALLOWED_COLUMNS_GET = {
-  'recipes': RECIPE_ATTRS
-}
-router.get('/fetch_record/:table/:id', function(req, res, next) {
-
-  let id = req.params.id
-  let table = req.params.table
-  if (Object.keys(ALLOWED_COLUMNS_GET).includes(table)) {
-    const record = db.fetchRecord(table, {id: id}, ALLOWED_COLUMNS_GET[table])
-    res.json({...record})
-  } else {
-    throw new Error("FetchRecord not allowed")
-  }
-});
 router.get('/fetch_recipe/:id', function(req, res, next) {
 
   let recipe = db.fetchRecord('recipes', {id: req.params.id}, RECIPE_ATTRS)
@@ -402,6 +387,21 @@ router.get('/fetch_recipe_kind/:id', function(req, res, next) {
   } else {
     res.json({recipeKind, recipes})
   }
+});
+router.get('/fetch_kind/:id', function(req, res, next) {
+
+  let id = parseInt(req.params.id)
+  let ancestors = fetchKindWithAncestors(db, {id}, res.locals.locale)
+  let kind = ancestors.pop(-1)
+  if (!kind) {throw 'Unable to fetch kind. Not existent.'}
+  let kinds = fetchKinds(db, {kind_id: id}, res.locals.locale)||[]
+  kinds.forEach(k => {
+    // TODO: Limit to 6
+    k.recipeKinds = fetchRecipeKinds(db, {kind_id: k.id}, res.locals.locale, false)
+  })
+  // FIXME: Fetch recipe_count but not json
+  let recipeKinds = fetchRecipeKinds(db, {kind_id: id}, res.locals.locale)
+  res.json({kind, ancestors, kinds, recipeKinds})
 });
 router.get('/fetch_search_data', function(req, res, next) {
 
@@ -747,3 +747,21 @@ function handleError(err, req, res, next) {
 
 export default router;
 //module.exports = router;
+//
+//
+
+//// WARNING: All users have access to these
+//const ALLOWED_COLUMNS_GET = {
+//  'recipes': RECIPE_ATTRS
+//}
+//router.get('/fetch_record/:table/:id', function(req, res, next) {
+//
+//  let id = req.params.id
+//  let table = req.params.table
+//  if (Object.keys(ALLOWED_COLUMNS_GET).includes(table)) {
+//    const record = db.fetchRecord(table, {id: id}, ALLOWED_COLUMNS_GET[table])
+//    res.json({...record})
+//  } else {
+//    throw new Error("FetchRecord not allowed")
+//  }
+//});
