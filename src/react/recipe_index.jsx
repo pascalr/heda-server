@@ -81,7 +81,7 @@ export const RecipeList = ({list, selected, suggestions, tags, editUserRecipe, m
               </div>
             </Link>
               {mix ? <img src="/img/logo_001.svg" width="24" height="24"/> : ''}
-            <span className='ms-2' style={{color: 'gray', fontSize: '0.78em', flexShrink: '3'}}>{recipeTags.map(tag => ` #${tag.name}`)} </span>
+            <span className='ms-2' style={{color: 'gray', fontSize: '0.78em', flexShrink: '3'}}>{recipeTags.map(tag => ` #${tag?.name}`)} </span>
             <span className="flex-grow-1"/>
             <RecipeListItemMenu {...{fav, recipe, editUserRecipe, user}} />
           </li>

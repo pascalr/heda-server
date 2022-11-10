@@ -29,6 +29,7 @@ export const EditTagsModal = ({showModal, setShowModal, recipe, tags, suggestion
           <h6><b>{t('Current_tags')}:</b></h6>
           {recipeSuggestions.map(suggestion => {
             let tag = tags.find(t => t.id == suggestion.tag_id)
+            if (!tag) {return console.error('Error suggestion exists but tag missing')}
             return <span key={suggestion.id} className="btn btn-primary m-1" onClick={() => removeSuggestion(suggestion)}>{tag.name} X</span>
           })}
           <br/><br/>
