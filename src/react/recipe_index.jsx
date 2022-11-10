@@ -30,6 +30,11 @@ const removeFavoriteRecipe = (fav, recipe) => {
   window.hcu.removeRecord(recipe)
 }
 
+export const ChangeVisibilityMenuItem = ({recipe}) => {
+  let msg = recipe.is_public ? t('Make_private'): t('Make_public')
+  return <button type="button" className="dropdown-item" onClick={() => window.hcu.updateField(recipe, 'is_public', recipe.is_public ? 0 : 1)}>{msg}</button>
+}
+
 export const AddToListMenu = ({fav, recipe, user}) => {
 
   let inCookList = fav && fav.list_id == 1
@@ -52,6 +57,7 @@ const RecipeListItemMenu = ({fav, recipe, editUserRecipe, user}) => {
       <span className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
         {user.id != recipe.user_id ? '' : <Link path={'/e/'+recipe.id} className="dropdown-item">{t('Edit')}</Link>}
         <button type="button" className="dropdown-item" onClick={() => editUserRecipe(recipe)}>{t('Tag')}</button>
+        <ChangeVisibilityMenuItem recipe={recipe} />
         <hr className="dropdown-divider"/>
         <AddToListMenu {...{fav, recipe, user}} />
         <hr className="dropdown-divider"/>
@@ -100,12 +106,16 @@ export const RecipeIndex = ({favoriteRecipes, suggestions, tags, mixes, recipes,
   
   console.log('favoriteRecipes', favoriteRecipes)
 
-  let userRecipes = []
+  let publicRecipes = []
+  let privateRecipes = []
   let favList = []
 
   recipes.forEach((recipe) => {
     f = favoriteRecipes.find(r => r.recipe_id == recipe.id)
-    if (recipe.user_id == user.id) { userRecipes.push({recipe: recipe, fav: f}) }
+    if (recipe.user_id == user.id) {
+      if (recipe.is_public) {publicRecipes.push({recipe: recipe, fav: f})}
+      else {privateRecipes.push({recipe: recipe, fav: f})}
+    }
     else if (f) { favList.push({recipe: recipe, fav: f}) }
   })
 
@@ -119,8 +129,15 @@ export const RecipeIndex = ({favoriteRecipes, suggestions, tags, mixes, recipes,
   return (<>
     <EditTagsModal {...{recipe: recipeToEdit, tags, suggestions, showModal, setShowModal}} />
     <br/>
-    <h3 className="h001">{t('Personal_recipes')}</h3>
-    {userRecipes.length == 0 ? <p>Aucune recette pour l'instant.</p> : <RecipeList list={userRecipes} {...listArgs} />}
+    {publicRecipes.length || privateRecipes.length ? '' : <p>{t('No_personal_recipes_yet')}.</p>}
+    {publicRecipes.length == 0 ? null : <>
+      <h3 className="h001">{t('My_public_recipes')}</h3>
+      <RecipeList list={publicRecipes} {...listArgs} />
+    </>}
+    {privateRecipes.length == 0 ? null : <>
+      <h3 className="h001">{t('My_private_recipes')}</h3>
+      <RecipeList list={privateRecipes} {...listArgs} />
+    </>}
     {favList.length == 0 ? null : <>
       <h3 className="h001">{t('Favorite_recipes')}</h3>
       <RecipeList list={favList} {...listArgs} />

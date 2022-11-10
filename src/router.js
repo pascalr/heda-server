@@ -21,7 +21,7 @@ let p = process.env.VOLUME_PATH
 let VOLUME_FOLDER = p[0] == '.' ? path.join(__dirname, '..', p) : p
 let IMAGE_FOLDER = path.join(VOLUME_FOLDER, 'images')
 
-const RECIPE_ATTRS = ['user_id', 'name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'ingredients', 'image_slug', 'servings_name', 'original_id']
+const RECIPE_ATTRS = ['user_id', 'name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'ingredients', 'image_slug', 'servings_name', 'original_id', 'is_public']
 
 //const ensureLogIn = connectEnsureLogin.ensureLoggedIn;
 //const ensureLoggedIn = ensureLogIn();
@@ -49,17 +49,18 @@ function fetchAccountUsers(req, res, next) {
   next()
 }
 
-router.get('/search', function(req, res, next) {
-  let query = req.query.q
-  let tokens = query.replace(' ', '%')
-
-  // TODO: Create another field for recipes called name_search, where it is in lowercase and where there are no accents
-  let recipes = db.prepare("SELECT recipes.id, recipes.name, recipes.image_slug, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.locale = ? AND users.is_public = 1 AND recipes.name LIKE '%"+tokens+"%' COLLATE NOCASE LIMIT 30;").all(res.locals.locale)
-
-  let users = db.prepare("SELECT id, name, image_slug FROM users WHERE is_public = 1 AND name LIKE '%"+tokens+"%' COLLATE NOCASE LIMIT 30;").all()
-
-  res.json({query, results: {recipes, users}})
-});
+// DEPRECATED
+//router.get('/search', function(req, res, next) {
+//  let query = req.query.q
+//  let tokens = query.replace(' ', '%')
+//
+//  // TODO: Create another field for recipes called name_search, where it is in lowercase and where there are no accents
+//  let recipes = db.prepare("SELECT recipes.id, recipes.name, recipes.image_slug, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.locale = ? AND users.is_public = 1 AND recipes.name LIKE '%"+tokens+"%' COLLATE NOCASE LIMIT 30;").all(res.locals.locale)
+//
+//  let users = db.prepare("SELECT id, name, image_slug FROM users WHERE is_public = 1 AND name LIKE '%"+tokens+"%' COLLATE NOCASE LIMIT 30;").all()
+//
+//  res.json({query, results: {recipes, users}})
+//});
 
 function redirectHomeIfLoggedIn(req, res, next) {
   if (req.user && req.user.user_id) {

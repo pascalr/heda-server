@@ -112,6 +112,8 @@ export function tr(id, locale) {
     Search: 'Rechercher',
     Search_for_a_public_member: 'Rechercher un membre publique',
     Public_members: 'Membres publics',
+    Make_public: 'Rendre public',
+    Make_private: 'Rendre privé',
     private: 'privé',
     public: 'public',
     Visibility: 'Visibilité',
@@ -174,6 +176,9 @@ export function tr(id, locale) {
     Error_fetching: 'Une erreur est survenue qui a empêché de montrer cet item.',
     Error_creating: 'Une erreur est survenue qui a empêché de créer cet item.',
     Error_updating: 'Une erreur est survenue qui a empêché la modification cet item.',
+    No_personal_recipes_yet: "Aucune recette personnelle pour l'instant",
+    My_public_recipes: "Mes recettes publiques",
+    My_private_recipes: "Mes recettes privées",
   }
   if (locale == 'fr' || locale == 'FR') {
     if (!fr[id]) {console.log('Missing translation for '+id+' in '+locale)}
