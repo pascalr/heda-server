@@ -43,17 +43,29 @@ const Recipe = ({recipe}) => {
   </>
 }
 
-export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors, recipeButtons}) => {
-
-  if (!recipeKind) {return ''}
+export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors, recipeButtons, locale}) => {
 
   const [recipeIdx, setRecipeIdx] = useState(0)
+  const [localeFilter, setLocaleFilter] = useState(locale)
+
+  if (!recipeKind || !recipes) {return ''}
+
+  let filtered = recipes.filter(r => {
+    let filtered = false
+    if (localeFilter) {filtered = filtered || r.locale != localeFilter}
+    return !filtered
+  })
+  console.log('recipes', recipes)
+  console.log('filtered', filtered)
  
-  let recipeButtonsV = recipeButtons && recipes && recipes.length > 0 && recipeButtons(recipes[recipeIdx])
+  let recipeButtonsV = recipeButtons && filtered && filtered.length > 0 && recipeButtons(filtered[recipeIdx])
   let recipeButtonsE = recipeButtonsV ?
     <div style={{border: '2px solid #212529', padding: '0.4em 0.4em 0.2em 0.4em', borderBottom: 'none', borderTopLeftRadius: '0.5em', borderTopRightRadius: '0.5em', flexShrink: '0'}}>
-      {recipeButtons(recipes[recipeIdx])}
+      {recipeButtons(filtered[recipeIdx])}
     </div> : ''
+
+  let idx = recipeIdx >= filtered.length ? recipeIdx - 1 : recipeIdx
+  let nbFiltered = recipes.length - filtered.length
 
   return <>
     <div className="trunk">
@@ -77,19 +89,34 @@ export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors, recipeButt
       </div>
       <br/>
       <div id='recipes'>
-        {recipes && recipes.length > 0 ? <>
+        {filtered && filtered.length > 0 ? <>
           <div className='d-flex align-items-end'>
-            <div className='fs-13 d-flex align-items-center flex-wrap mb-1'>
-              <div>({recipeIdx+1} {t('of')} {recipes.length}) {recipes.length > 1 ? t('recipes') : t('recipe')}</div>
-              <div>
-                <button className="btn btn-sm btn-outline-primary mx-2" disabled={recipeIdx === 0} onClick={() => setRecipeIdx(recipeIdx-1)}>{t('Previous_f')}</button>
-                <button className="btn btn-sm btn-outline-primary" disabled={recipeIdx === recipes.length-1} onClick={() => setRecipeIdx(recipeIdx+1)}>{t('Next_f')}</button>
+            <div>
+              <div className='fs-13 d-flex align-items-center flex-wrap mb-1'>
+                <div>({idx+1} {t('of')} {filtered.length}) {filtered.length > 1 ? t('recipes') : t('recipe')} {nbFiltered > 0 ? <i className="gray fs-08">({nbFiltered} {t('filtered')})</i> : ''}</div>
+                <div>
+                  <button className="btn btn-sm btn-outline-primary mx-2" disabled={idx === 0} onClick={() => setRecipeIdx(idx-1)}>{t('Previous_f')}</button>
+                  <button className="btn btn-sm btn-outline-primary" disabled={idx === filtered.length-1} onClick={() => setRecipeIdx(idx+1)}>{t('Next_f')}</button>
+                  <button className="btn btn-sm btn-outline-secondary mx-2" type="button" data-bs-toggle="collapse" data-bs-target="#filters" aria-expanded="false" aria-controls="filters">{t('Filter')}</button>
+                </div>
+              </div>
+              <div className="collapse" id="filters">
+                <div className="dropdown">
+                  <button className="btn btn-sm btn-outline-secondary dropdown-toggle mb-1" data-bs-toggle="dropdown" type="button">
+                    {t('Language')}
+                  </button>
+                  <div className="dropdown-menu">
+                    <button type="button" className="dropdown-item" onClick={() => {setLocaleFilter(null)}}>None</button> 
+                    <button type="button" className="dropdown-item" onClick={() => {setLocaleFilter('fr')}}>FR</button> 
+                    <button type="button" className="dropdown-item" onClick={() => {setLocaleFilter('en')}}>EN</button> 
+                  </div>
+                </div>
               </div>
             </div>
             <div className='flex-grow-1' />
             {recipeButtonsE}
           </div>
-          <Recipe {...{recipe: recipes[recipeIdx]}} />
+          <Recipe {...{recipe: filtered[idx]}} />
         </> : <p>{t('There_are_no_recipe_in_this_category_yet')}.</p>}
       </div>
     </div>
@@ -107,6 +134,6 @@ export const ShowRecipeKind = () => {
   //<div><RecipeMediumImage {...{recipe: recipeKind, images, showCredit: true}} /></div>
   return <>
     <MainSearch {...{locale}} />
-    <RecipeKindViewer {...{recipeKind, recipes, kindAncestors}} />
+    <RecipeKindViewer {...{recipeKind, recipes, kindAncestors, locale}} />
   </>
 }
