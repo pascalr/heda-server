@@ -200,9 +200,10 @@ export function queryToParams(query) {
 /**
  * Extract and convert the query string to an object.
  */
-export function getUrlParams(url=null) {
+export function getUrlParams(raw=null) {
   // FIXME: Use window.location.search instead of window.location.href...
-  if (!url) {url = window.location.href}
+  if (!raw) {raw = window.location.href}
+  let url = raw.split('#')[0]
   let s = url.split('?', 2)
   if (s.length < 2) {return []}
   return queryToParams(s[1])
