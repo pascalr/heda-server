@@ -4,7 +4,9 @@ Une recette que j'ai fait* cette semaine.
 C'est vraiment bon et c'est super facile à faire!
 Je n'ai même pas eu le temps de finir ma bière sur le balcon que Céline avait fini de la préparer!
 
-Filtrer les recettes des recipe kinds par locale. Pouvoir les afficher quand même.
+Set admin locale, and make locale necessary for users in db. Default "en"
+
+Ajouter un grand footer noir.
 
 Le recipe kind (riz devrait être riz (ingrédient))
 

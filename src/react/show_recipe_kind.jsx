@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 
 import { localeHref } from "../utils"
-import { RecipeMediumImage } from "./image"
+import { RecipeMediumImage, RecipeSmallImage } from "./image"
 import { MainSearch } from './main_search'
 import { getLocale } from "./lib"
 import { t } from "../translate"
@@ -28,12 +28,15 @@ const Recipe = ({recipe}) => {
         </div>
       </div>
       <div className="recipe-body p-2">
+        <div className="float-start mb-2 me-2">
+          <RecipeSmallImage {...{recipe}} />
+        </div>
 
         <RecipeAttribute {...{recipe, attr: 'preparation_time', label: 'Preparation'}} />
         <RecipeAttribute {...{recipe, attr: 'cooking_time', label: 'Cooking'}} />
         <RecipeAttribute {...{recipe, attr: 'total_time', label: 'Total'}} />
 
-        <h2 style={{flexGrow: '1'}}>{t('Ingredients')}</h2>
+        <h2 style={{flexGrow: '1', clear: 'left'}}>{t('Ingredients')}</h2>
         <IngredientList {...{recipe}} />
       
         <h2>{t('Instructions')}</h2>

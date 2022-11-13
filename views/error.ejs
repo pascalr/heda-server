@@ -4,7 +4,7 @@
     <%- include('partials/head') %>
   </head>
   <body>
-    <div style="max-width: 800px; margin: auto; padding: 0.5em 0; text-align: center;">
+    <div class="root trunk" style="text-align: center;">
       <br><br><br>
       <img src="/sorry.jpg" style="height: 50vh; margin: auto;">
       <br><br><br>
@@ -12,5 +12,6 @@
       <a href="<%- localeHref(req, '/') %>" class="btn btn-primary"><%- tr('Back', locale) %></a>
       <a href="<%- localeHref(req, '/contact') %>" class="btn btn-secondary"><%- tr('Contact_us', locale) %></a>
     </div>
+    <%- include('partials/footer') %>
   </body>
 </html>

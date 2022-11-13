@@ -11,6 +11,10 @@
   }
 }
 
+.root {
+  min-height: 100vh;
+}
+
 .wide-trunk {
   min-width: 230px;
   max-width: 1400px;

@@ -7,15 +7,18 @@
     <link rel="stylesheet" href="/build/toastr.min.css">
   </head>
   <body>
-    <div id="root-search"></div>
-    <div class="trunk">
-      <h1><%- tr("Contact_us", locale) %></h1>
-      <p><%- tr("Contact_msg", locale) %></p>
-      <img src="/email.png" />
-      <button class="btn btn-primary" onclick="navigator.clipboard.writeText('pascal.rainville@gmail.com')">Copier</button>
-      <br/><br/>
-      <a href="/" class="btn btn-primary"><%- tr("Back", locale) %></a>
+    <div class="root">
+      <div id="root-search"></div>
+      <div class="trunk">
+        <h1><%- tr("Contact_us", locale) %></h1>
+        <p><%- tr("Contact_msg", locale) %></p>
+        <img src="/email.png" />
+        <button class="btn btn-primary" onclick="navigator.clipboard.writeText('pascal.rainville@gmail.com')">Copier</button>
+        <br/><br/>
+        <a href="/" class="btn btn-primary"><%- tr("Back", locale) %></a>
+      </div>
     </div>
+    <%- include('partials/footer') %>
   </body>
 </html>
 
