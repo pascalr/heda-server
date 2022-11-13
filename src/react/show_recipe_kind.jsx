@@ -19,6 +19,7 @@ const RecipeAttribute = ({recipe, attr, label}) => {
 }
 
 const Recipe = ({recipe}) => {
+  if (!recipe) {return null}
   return <>
     <div style={{border: '1px solid black'}}>
       <div className="p-2 ps-3 white" style={{backgroundColor: '#212529'}}>
@@ -92,7 +93,7 @@ export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors, recipeButt
       </div>
       <br/>
       <div id='recipes'>
-        {filtered && filtered.length > 0 ? <>
+        {recipes && recipes.length > 0 ? <>
           <div className='d-flex align-items-end'>
             <div>
               <div className='fs-13 d-flex align-items-center flex-wrap mb-1'>

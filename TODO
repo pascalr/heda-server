@@ -4,6 +4,9 @@ Une recette que j'ai fait* cette semaine.
 C'est vraiment bon et c'est super facile à faire!
 Je n'ai même pas eu le temps de finir ma bière sur le balcon que Céline avait fini de la préparer!
 
+Utiliser le design des recettes des RecipeKind pour le design de ShowRecipe. Simplement rajouter un header pour l'utilisateur qui a créé la recette. NON, ben ça dépend. Parce que si les utilisateurs font juste copier coller les recettes, on ne veut pas trop mettre en avant plan l'utilisateur qui a copier la recette. Mais si c'est une recette innovatrice, on veut.
+Ou bien oui c'est correct de mettre en avant plan l'utilisateur, parce que l'idée c'est qu'un visiteur qui aime la recette va vouloir voir des recettes similaires du même auteur possible? Le visiteur veut ses goûts, pas tant ses créations...
+
 Set admin locale, and make locale necessary for users in db. Default "en"
 
 Ajouter un grand footer noir.
