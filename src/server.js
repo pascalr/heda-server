@@ -27,6 +27,7 @@ import SQLiteStoreModule from 'connect-sqlite3'
 const SQLiteStore = SQLiteStoreModule(session);
 
 import router from './router.js';
+import adminRouter from './admin_router.js';
 import { getUrlParams, localeHref, getPathFromUrl } from './utils.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -131,6 +132,7 @@ app.use(function(req, res, next) {
 });
 
 app.use('/', router);
+app.use('/', adminRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
