@@ -4,11 +4,12 @@ import connectEnsureLogin from 'connect-ensure-login'
 import { fileURLToPath } from 'url';
 import sharp from 'sharp'
 import path from 'path';
+import _ from 'lodash';
 
 import { db } from './db.js';
 import { getTableList, safeNoQuotes, getWriteAttributes } from './sql_db.js';
 import passport from './passport.js';
-import { localeHref, now, ensureIsArray } from './utils.js';
+import { localeHref, now, ensureIsArray, shuffle } from './utils.js';
 import { tr } from './translate.js'
 import { translateRecipes } from '../tasks/translate_recipes.js'
 import Translator, { TranslationsCacheStrategy, LogStrategy } from './translator.js'
@@ -372,6 +373,21 @@ router.patch('/update_field/:table/:id', ensureUser, function(req, res, next) {
   res.json({status: 'ok'})
 });
 
+router.get('/fetch_explore', function(req, res, next) {
+
+  let users = db.fetchTable('users', {}, ['name', 'image_slug'])
+  // FIXME: Add limit inside SQL, but limit per user id, not total
+  let recipes = db.fetchTable('recipes', {is_public: 1, user_id: users.map(u => u.id)}, RECIPE_ATTRS)
+  let recipesByUserId = _.groupBy(recipes, 'user_id')
+  let userIds = _.keys(recipesByUserId).map(id => parseInt(id))
+  userIds.forEach(userId => {
+    // Randomize and limit to 10
+    recipesByUserId[userId] = shuffle(recipesByUserId[userId]).slice(0,10)
+  })
+  users = users.filter(u => userIds.includes(u.id))
+  res.json({users, recipesByUserId})
+});
+
 router.get('/fetch_recipe/:id', function(req, res, next) {
 
   let recipe = db.fetchRecord('recipes', {id: req.params.id, is_public: 1}, RECIPE_ATTRS)
@@ -503,6 +519,7 @@ const renderApp = [ensureUser, function(req, res, next) {
 
 router.get('/e/:id', renderApp)
 router.get('/c', renderApp)
+router.get('/x', renderApp)
 router.get('/t/:id', renderApp)
 router.get('/l', renderApp)
 router.get('/n', renderApp)

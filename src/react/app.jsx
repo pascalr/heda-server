@@ -16,7 +16,7 @@ import {RecipeViewer, FavoriteButton} from "./recipe_viewer"
 import {RecipeKindViewer} from "./show_recipe_kind"
 import {KindViewer} from "./show_kind"
 import { initHcu, useHcuState } from '../hcu'
-import { RecipeThumbnailImage, RecipeSmallImage, RecipeMediumImage } from "./image"
+import { UserThumbnailImage, RecipeThumbnailImage, RecipeSmallImage, RecipeMediumImage } from "./image"
 import { t } from "../translate"
 import { Carrousel } from './carrousel'
 import {EditMix, ShowMix} from './recipe_editor'
@@ -140,6 +140,7 @@ const HomeTabs = ({machines}) => {
   return <>
     <ul className="nav nav-tabs mb-3">
       <HomeTab {...{title: t('My_recipes'), path: '/l'}} />
+      <HomeTab {...{title: t('Explore'), path: '/x'}} />
       <HomeTab {...{title: t('Suggestions'), path: '/'}} />
       {machines.map((machine) => (
         <HomeTab key={'m'+machine.id} {...{title: machine.name, path: '/m/'+machine.id}} />
@@ -159,6 +160,25 @@ const RecipeCarrousel = ({items, isRecipeKind}) => {
       </Link>
     </>}</Carrousel>
   </>
+}
+
+const ExplorePage = ({tags, recipes, suggestions, favoriteRecipes, recipeKinds}) => {
+
+  const data = useCacheOrFetch(localeHref2('/fetch_explore', locale))
+
+  if (!data) {return null}
+
+  return <>
+    {(data.users||[]).map(user => {
+      return <div key={user.id}>
+        <div className='d-flex align-items-end'>
+          <UserThumbnailImage {...{user}} />
+          <h2 className="fs-14 bold">{user.name}</h2>
+        </div>
+        <RecipeCarrousel {...{items: data.recipesByUserId[user.id]}}/>
+      </div>
+    })}
+  </> 
 }
 
 const HomePage = ({tags, recipes, suggestions, favoriteRecipes, recipeKinds}) => {
@@ -526,6 +546,7 @@ export const App = () => {
   window.locale = user.locale
 
   const routes = [
+    {match: "/x", elem: () => <ExplorePage {...{recipes, tags, suggestions, favoriteRecipes, machines, recipeKinds}}/>},
     {match: "/c", elem: () => <EditTags {...{tags}} />},
     {match: "/n", elem: () => <NewRecipe {...{recipeKinds}} />},
     {match: "/l", elem: () => <MyRecipes {...{recipes, suggestions, favoriteRecipes, tags, mixes, recipeKinds, user, images}} />},
