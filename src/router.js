@@ -698,6 +698,12 @@ router.get('/fetch_all/:table', ensureAdmin, function(req, res, next) {
   let all = db.fetchTable(table, {}, columns)
   res.json(all)
 });
+router.get('/fetch_single/:table/:id', ensureAdmin, function(req, res, next) {
+  let table = safeNoQuotes(req.params.table, getTableList(schema))
+  let columns = getWriteAttributes(schema, table) || []
+  let record = db.fetchRecord(table, {id: parseInt(req.params.id)}, columns)
+  res.json(record)
+});
 router.post('/translate_recipe/:id', ensureAdmin, function(req, res, next) {
 
   let recipe = db.fetchRecord('recipes', {id: req.params.id}, RECIPE_ATTRS)

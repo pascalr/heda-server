@@ -246,22 +246,36 @@ const Console = () => {
 
   useEffect(() => {
     inputRef.current.focus()
+
+    Object.keys(schema).forEach(table => {
+      window[table] = {}
+      window[table].all = () => new Promise(function(resolve, reject) {
+        ajax({url: '/fetch_all/'+table, type: 'GET', success: (rows) => {
+          resolve(rows)
+        }, error: () => {reject()} })
+      })
+      window[table].find = (id) => new Promise(function(resolve, reject) {
+        ajax({url: '/fetch_single/'+table+'/'+id, type: 'GET', success: (row) => {
+          resolve(row)
+        }, error: () => {reject()} })
+      })
+    })
   }, [])
   useEffect(() => {
     inputRef.current.scrollIntoView(false)
   }, [cmd, output])
 
-  function submitCommand(e) {
-    e.preventDefault()
-    let tokens = cmd.split(/[ =]/)
-    let [table, id, method] = tokens[0].split('.')
-    console.log('table', table)
-    console.log('id', id)
-    console.log('method', method)
-    if (id === 'all') {
-      ajax({url: '/fetch_all/'+table, type: 'GET', success: (rows) => {
-        setOutput([...output, '> '+cmd, JSON.stringify(rows, null, 2)])
-      }, error: handleError("Error updating kinds count.") })
+  function submitCommand(evt) {
+    evt.preventDefault()
+
+    try {
+      var eval2 = eval // To avoid direct eval with bundler
+      Promise.resolve(eval2(cmd)).then(result => {
+        setOutput([...output, '> '+cmd, result])
+        window._ = result
+      })
+    } catch (err) {
+      setOutput([...output, '> '+cmd, ''+err])
     }
     setCmd('')
   }
@@ -272,6 +286,11 @@ const Console = () => {
       <div id='console' style={{border: '1px solid black', maxHeight: '75vh', overflowY: 'scroll'}} className='p-2'>
         {output.map((e,i) => {
           let style = i % 2 === 1 ? {color: 'red'} : {}
+          if (typeof e === 'function') {
+            return <pre key={i} style={style}>[Function]</pre>
+          } else if (typeof e === 'object') {
+            return <pre key={i} style={style}>{JSON.stringify(e, null, 2)}</pre>
+          }
           return <pre key={i} style={style}>{e}</pre>
         })}
         <form onSubmit={submitCommand}>
@@ -282,6 +301,7 @@ const Console = () => {
           </div>
         </form>
       </div>
+      <br/><p>Note: Use «_» to get the last value.</p>
     </div>
   </>
 }

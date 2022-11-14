@@ -230,3 +230,4 @@ input[type="checkbox"] {
 }
 
 #console input:focus {outline:none;}
+#console pre {margin-bottom: 0;}
