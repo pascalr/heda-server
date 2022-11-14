@@ -18,7 +18,7 @@ const RecipeAttribute = ({recipe, attr, label}) => {
   </>
 }
 
-const Recipe = ({recipe}) => {
+const Recipe = ({recipe, recipeKind}) => {
   if (!recipe) {return null}
   return <>
     <div style={{border: '1px solid black'}}>
@@ -29,9 +29,11 @@ const Recipe = ({recipe}) => {
         </div>
       </div>
       <div className="recipe-body p-2">
-        <div className="float-start mb-2 me-2">
-          <RecipeSmallImage {...{recipe}} />
-        </div>
+        {recipe.image_slug && recipe.image_slug != recipeKind.image_slug ?
+          <div className="float-start mb-2 me-2">
+            <RecipeSmallImage {...{recipe}} />
+          </div>
+        : null}
 
         <RecipeAttribute {...{recipe, attr: 'preparation_time', label: 'Preparation'}} />
         <RecipeAttribute {...{recipe, attr: 'cooking_time', label: 'Cooking'}} />
@@ -120,7 +122,7 @@ export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors, recipeButt
             <div className='flex-grow-1' />
             {recipeButtonsE}
           </div>
-          <Recipe {...{recipe: filtered[idx]}} />
+          <Recipe {...{recipe: filtered[idx], recipeKind}} />
         </> : <p>{t('There_are_no_recipe_in_this_category_yet')}.</p>}
       </div>
     </div>
