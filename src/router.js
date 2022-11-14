@@ -14,7 +14,6 @@ import { tr } from './translate.js'
 import { translateRecipes } from '../tasks/translate_recipes.js'
 import Translator, { TranslationsCacheStrategy, LogStrategy } from './translator.js'
 import { findRecipeKindForRecipeName, fetchRecipeKinds, fetchRecipeKind, descriptionRecipeIngredients, fetchKindWithAncestors, fetchKinds } from "./lib.js"
-import analytics from './analytics.js'
 import schema from './schema.js'
 
 const __filename = fileURLToPath(import.meta.url);
@@ -373,7 +372,7 @@ router.patch('/update_field/:table/:id', ensureUser, function(req, res, next) {
   res.json({status: 'ok'})
 });
 
-router.get('/fetch_explore', function(req, res, next) {
+router.get('/fetch_explore_users', function(req, res, next) {
 
   let users = db.fetchTable('users', {}, ['name', 'image_slug'])
   // FIXME: Add limit inside SQL, but limit per user id, not total
@@ -386,6 +385,22 @@ router.get('/fetch_explore', function(req, res, next) {
   })
   users = users.filter(u => userIds.includes(u.id))
   res.json({users, recipesByUserId})
+});
+
+router.get('/fetch_explore', function(req, res, next) {
+
+  let kinds = fetchKinds(db, {}, res.locals.locale)
+  let recipeKinds = fetchRecipeKinds(db, {}, res.locals.locale)
+  const kindAncestorId = (k, isKind) => k?.kind_id ? kindAncestorId(kinds.find(d => d.id == k.kind_id), true) : isKind ? k?.id : undefined
+  let recipeKindsByAncestorId = _.groupBy(recipeKinds, kindAncestorId)
+  delete recipeKindsByAncestorId.undefined
+  let kindIds = _.keys(recipeKindsByAncestorId).map(id => parseInt(id))
+  kindIds.forEach(kindId => {
+    // Randomize and limit to 10
+    recipeKindsByAncestorId[kindId] = shuffle(recipeKindsByAncestorId[kindId]).slice(0,10)
+  })
+  kinds = kinds.filter(k => kindIds.includes(k.id))
+  res.json({kinds, recipeKindsByAncestorId})
 });
 
 router.get('/fetch_recipe/:id', function(req, res, next) {
@@ -520,6 +535,7 @@ const renderApp = [ensureUser, function(req, res, next) {
 router.get('/e/:id', renderApp)
 router.get('/c', renderApp)
 router.get('/x', renderApp)
+router.get('/s', renderApp)
 router.get('/t/:id', renderApp)
 router.get('/l', renderApp)
 router.get('/n', renderApp)

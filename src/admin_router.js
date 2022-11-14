@@ -1,5 +1,8 @@
 import express from 'express';
 
+import { db } from './db.js';
+import analytics from './analytics.js'
+
 const router = express.Router();
 
 // All the routes here are only available to users that are admin.

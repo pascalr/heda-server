@@ -140,6 +140,7 @@ const HomeTabs = ({machines}) => {
   return <>
     <ul className="nav nav-tabs mb-3">
       <HomeTab {...{title: t('My_recipes'), path: '/l'}} />
+      <HomeTab {...{title: t('Users'), path: '/s'}} />
       <HomeTab {...{title: t('Explore'), path: '/x'}} />
       <HomeTab {...{title: t('Suggestions'), path: '/'}} />
       {machines.map((machine) => (
@@ -162,9 +163,9 @@ const RecipeCarrousel = ({items, isRecipeKind}) => {
   </>
 }
 
-const ExplorePage = ({tags, recipes, suggestions, favoriteRecipes, recipeKinds}) => {
+const UsersPage = ({}) => {
 
-  const data = useCacheOrFetch(localeHref2('/fetch_explore', locale))
+  const data = useCacheOrFetch(localeHref2('/fetch_explore_users', locale))
 
   if (!data) {return null}
 
@@ -176,6 +177,22 @@ const ExplorePage = ({tags, recipes, suggestions, favoriteRecipes, recipeKinds})
           <h2 className="fs-14 bold">{user.name}</h2>
         </div>
         <RecipeCarrousel {...{items: data.recipesByUserId[user.id]}}/>
+      </div>
+    })}
+  </> 
+}
+
+const ExplorePage = ({}) => {
+
+  const data = useCacheOrFetch(localeHref2('/fetch_explore', locale))
+
+  if (!data) {return null}
+
+  return <>
+    {(data.kinds||[]).map(kind => {
+      return <div key={kind.id}>
+        <h2 className="fs-14 bold"><a href={'/d/'+kind.id} className="plain-link">{kind.name}</a></h2>
+        <RecipeCarrousel {...{items: data.recipeKindsByAncestorId[kind.id]||[]}}/>
       </div>
     })}
   </> 
@@ -546,7 +563,8 @@ export const App = () => {
   window.locale = user.locale
 
   const routes = [
-    {match: "/x", elem: () => <ExplorePage {...{recipes, tags, suggestions, favoriteRecipes, machines, recipeKinds}}/>},
+    {match: "/s", elem: () => <UsersPage />},
+    {match: "/x", elem: () => <ExplorePage />},
     {match: "/c", elem: () => <EditTags {...{tags}} />},
     {match: "/n", elem: () => <NewRecipe {...{recipeKinds}} />},
     {match: "/l", elem: () => <MyRecipes {...{recipes, suggestions, favoriteRecipes, tags, mixes, recipeKinds, user, images}} />},
