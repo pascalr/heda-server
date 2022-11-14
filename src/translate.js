@@ -130,6 +130,7 @@ export function tr(id, locale) {
     Image_suggestions: "Suggestions d'images",
     My_profile: 'Mon profil',
     My_account: 'Mon compte',
+    My_list: 'Ma liste',
     Logout: 'Déconnexion',
     New_profile: 'Nouveau profil',
     Switch_user: "Changer d'utilisateur",

@@ -136,11 +136,11 @@ export const HomeTab = ({title, path}) => {
 }
 const HomeTabs = ({machines}) => {
   //if (useHiddenNavParam()) {return ''}
+      //<HomeTab {...{title: t('Tags'), path: '/c'}} />
   return <>
     <ul className="nav nav-tabs mb-3">
-      <HomeTab {...{title: t('Suggestions'), path: '/'}} />
       <HomeTab {...{title: t('My_recipes'), path: '/l'}} />
-      <HomeTab {...{title: t('Tags'), path: '/c'}} />
+      <HomeTab {...{title: t('Suggestions'), path: '/'}} />
       {machines.map((machine) => (
         <HomeTab key={'m'+machine.id} {...{title: machine.name, path: '/m/'+machine.id}} />
       ))}
@@ -404,8 +404,19 @@ const HedaIndex = ({machineId, machines}) => {
 }
 
 const MyRecipes = (props) => {
+  
+  let toCookList = []
+  props.favoriteRecipes.forEach(fav => {
+    let recipe = props.recipes.find(r => r.id == fav.recipe_id)
+    if (fav.list_id == 1) { toCookList.push({recipe, fav}) }
+  })
+  toCookList = sortBy(toCookList, (r => new Date(r.fav.updated_at).getTime())).reverse()
 
   return (<>
+    {toCookList.length < 0 ? null : <>
+      <h2 className="fs-14 bold">{t('My_list')}</h2>
+      <RecipeCarrousel {...{items: toCookList.map(r => r.recipe)}}/>
+    </>}
     <div className="d-flex gap-20 align-items-center">
       <h2>{t('My_recipes')}</h2>
       <Link path='/n' className="btn btn-outline-primary btn-sm">{t('New_recipe')}</Link>
