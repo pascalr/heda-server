@@ -17,6 +17,7 @@ import Translator, { TranslationsCacheStrategy, LogStrategy, StoreStrategy } fro
 import { RecipeThumbnailImage, RecipeMediumImage } from "./image"
 import { DescriptionTiptap } from "./tiptap"
 import {EditRecipeImageModal, EditableImage} from './modals/recipe_image'
+import schema from '../schema'
 
 const AdminTabs = ({machines}) => {
   return <>
@@ -25,6 +26,7 @@ const AdminTabs = ({machines}) => {
       <HomeTab {...{title: t('Kinds'), path: '/admin/di'}} />
       <HomeTab {...{title: t('RecipeKinds'), path: '/admin/ki'}} />
       <HomeTab {...{title: t('SQL'), path: '/admin/sql'}} />
+      <HomeTab {...{title: t('Console'), path: '/admin/console'}} />
       <HomeTab {...{title: t('Translations'), path: '/admin/translations'}} />
       <HomeTab {...{title: t('Translate Recipe'), path: '/admin/translate_recipe'}} />
     </ul>
@@ -232,6 +234,58 @@ const TranslationsPage = ({translations}) => {
   </>
 }
 
+const SelectTableName = () => {
+ return <CollectionSelect field="table_name" options={Object.keys(schema)} showOption={n => n} onChange={() => {}} />
+}
+
+const Console = () => {
+  
+  const [cmd, setCmd] = useState('')
+  const [output, setOutput] = useState([])
+  const inputRef = useRef(null)
+
+  useEffect(() => {
+    inputRef.current.focus()
+  }, [])
+  useEffect(() => {
+    inputRef.current.scrollIntoView(false)
+  }, [cmd, output])
+
+  function submitCommand(e) {
+    e.preventDefault()
+    let tokens = cmd.split(/[ =]/)
+    let [table, id, method] = tokens[0].split('.')
+    console.log('table', table)
+    console.log('id', id)
+    console.log('method', method)
+    if (id === 'all') {
+      ajax({url: '/fetch_all/'+table, type: 'GET', success: (rows) => {
+        setOutput([...output, '> '+cmd, JSON.stringify(rows, null, 2)])
+      }, error: handleError("Error updating kinds count.") })
+    }
+    setCmd('')
+  }
+
+  return <>
+    <div className='trunk'>
+      <h1>Console</h1>
+      <div id='console' style={{border: '1px solid black', maxHeight: '75vh', overflowY: 'scroll'}} className='p-2'>
+        {output.map((e,i) => {
+          let style = i % 2 === 1 ? {color: 'red'} : {}
+          return <pre key={i} style={style}>{e}</pre>
+        })}
+        <form onSubmit={submitCommand}>
+          <div className='d-flex'>
+            <span className='me-1'>&gt;</span>
+            <input type="text" value={cmd} onChange={(e) => setCmd(e.target.value)} className='flex-grow-1 plain-input' ref={inputRef} />
+            <button type="submit" className='d-none' />
+          </div>
+        </form>
+      </div>
+    </div>
+  </>
+}
+
 const SQLPage = () => {
   return <>
     <div className='trunk'>
@@ -339,6 +393,7 @@ export const Admin = () => {
   const routes = [
     {match: "/admin/translations", elem: () => <TranslationsPage {...{translations}} />},
     {match: "/admin/sql", elem: () => <SQLPage />},
+    {match: "/admin/console", elem: () => <Console />},
     {match: "/admin/ki", elem: () => <RecipeKindsIndex {...{recipeKinds, recipes, publicUsers, locale, kinds}} />},
     {match: "/admin/di", elem: () => <KindsIndex {...{kinds, recipeKinds, locale}} />},
     {match: "/admin/ek/:id", elem: ({id}) => <EditRecipeKind {...{id, recipeKinds, images}} />},

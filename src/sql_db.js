@@ -1,12 +1,15 @@
+// TODO: To do joins, check out the db.expand function from better-sqlite3
+// https://github.com/WiseLibs/better-sqlite3/blob/master/docs/api.md#pragmastring-options---results
+
 import betterSqlite3 from 'better-sqlite3';
 import path from 'path';
 
 import {now} from './utils.js';
 import { ensureIsArray } from './utils.js';
 
-const getTableList = (schema) => {return Object.keys(schema)}
+export const getTableList = (schema) => {return Object.keys(schema)}
 const getAllowCreate = (schema, table) => {return schema[table].allow_create}
-const getWriteAttributes = (schema, table) => schema[table].write_attrs
+export const getWriteAttributes = (schema, table) => schema[table].write_attrs
 const getSecurityAttributes = (schema, table) => {return schema[table].security_attrs}
 const getIsAllowed = (schema, table) => {return schema[table].is_allowed}
 
@@ -27,7 +30,7 @@ const validAttr = (schema, table, field, value) => {
 }
 
 const ALLOWED_CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
-const safeNoQuotes = (str, allowed) => {
+export const safeNoQuotes = (str, allowed) => {
   let s = '';
   [...str].forEach(c => {
     if (ALLOWED_CHARS.includes(c)) {s += c}

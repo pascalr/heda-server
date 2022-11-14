@@ -6,6 +6,7 @@ import sharp from 'sharp'
 import path from 'path';
 
 import { db } from './db.js';
+import { getTableList, safeNoQuotes, getWriteAttributes } from './sql_db.js';
 import passport from './passport.js';
 import { localeHref, now, ensureIsArray } from './utils.js';
 import { tr } from './translate.js'
@@ -13,6 +14,7 @@ import { translateRecipes } from '../tasks/translate_recipes.js'
 import Translator, { TranslationsCacheStrategy, LogStrategy } from './translator.js'
 import { findRecipeKindForRecipeName, fetchRecipeKinds, fetchRecipeKind, descriptionRecipeIngredients, fetchKindWithAncestors, fetchKinds } from "./lib.js"
 import analytics from './analytics.js'
+import schema from './schema.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -655,7 +657,7 @@ router.get('/', function(req, res, next) {
 
 
 const ensureAdmin = (req, res, next) => {
-  if (req.user.is_admin) {return next()}
+  if (req.user?.is_admin) {return next()}
   return next('Error account must be an admin.')
 }
 
@@ -690,6 +692,12 @@ router.post('/translate_recipes', ensureAdmin, function(req, res, next) {
     res.json({missings})
   })
 })
+router.get('/fetch_all/:table', ensureAdmin, function(req, res, next) {
+  let table = safeNoQuotes(req.params.table, getTableList(schema))
+  let columns = getWriteAttributes(schema, table) || []
+  let all = db.fetchTable(table, {}, columns)
+  res.json(all)
+});
 router.post('/translate_recipe/:id', ensureAdmin, function(req, res, next) {
 
   let recipe = db.fetchRecord('recipes', {id: req.params.id}, RECIPE_ATTRS)

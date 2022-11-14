@@ -252,7 +252,7 @@ export const ColorField = ({model, field}) => {
  */
 // Example: <CollectionSelect model={recipe} field="recipe_kind_id" options={recipe_kinds.map(k => k.id)} showOption={(id) => recipe_kinds.find(k => k.id == id).name} includeBlank="true">
 export const CollectionSelect = ({model, field, options, showOption, includeBlank, onChange}) => {
-  const [value, setValue] = useState(model[field])
+  const [value, setValue] = useState(model ? model[field] : '')
 
   const updateField = (e) => {
     let val = e.target.value
@@ -264,7 +264,7 @@ export const CollectionSelect = ({model, field, options, showOption, includeBlan
   }
 
   return (
-    <select name={model.table_name+"["+field+"]"} id={field} value={value||''} onChange={updateField}>
+    <select name={field} id={field} value={value||''} onChange={updateField}>
       {includeBlank ? <option value="" key="1" label=" "></option> : null}
       {options.map((opt, i) => {
         return <option value={opt} key={i+2}>{showOption(opt)}</option>

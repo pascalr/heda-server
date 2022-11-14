@@ -228,3 +228,5 @@ input[type="checkbox"] {
   width: 71px;
   height: 48px;
 }
+
+#console input:focus {outline:none;}
