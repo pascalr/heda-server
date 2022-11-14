@@ -6,29 +6,22 @@ Je n'ai même pas eu le temps de finir ma bière sur le balcon que Céline avait
 
 Utiliser le design des recettes des RecipeKind pour le design de ShowRecipe. Simplement rajouter un header pour l'utilisateur qui a créé la recette. NON, ben ça dépend. Parce que si les utilisateurs font juste copier coller les recettes, on ne veut pas trop mettre en avant plan l'utilisateur qui a copier la recette. Mais si c'est une recette innovatrice, on veut.
 Ou bien oui c'est correct de mettre en avant plan l'utilisateur, parce que l'idée c'est qu'un visiteur qui aime la recette va vouloir voir des recettes similaires du même auteur possible? Le visiteur veut ses goûts, pas tant ses créations...
+Demander à Céline.
+
+Image suggestions for recipes. When creating and when editing image.
+Strawberry pie should show all the images of pie because they contain pie in both.
+Tags my images.
+
+Ask users that upload images if others can use it too.
 
 Set admin locale, and make locale necessary for users in db. Default "en"
 
-Ajouter un grand footer noir.
-
 Le recipe kind (riz devrait être riz (ingrédient))
-
-Afficher l'image de la recette (en haut à droite) dans les recettes de recipe_kinds.
-
-grep is_public des user et enlever partout.
 
 Suggestions should be dependant destroy of tags.
 
 // TODO: Log the error to an error reporting service
 //logErrorToMyService(error, errorInfo);
-
-FIX LE BUG À CÉLINE!!!
-HANDLE LES BUGS EN AFFICHANT UN MESSAGE D'ERREUR!!!
-
-Rajouter un is_public à chaque recette au lieu de l'utilisateur.
-Parce que si un utilisateur est publique et qu'il commence à créer une recette, il faut vraiment qu'il clique dessus pour confirmer, on ne veut pas publier des ébauches de recettes.
-
-Dans mes recettes, séparer en Mes recettes publiques et Mes recettes privées.
 
 (Idée de même)
 Ajouter une page à l'application qui est la même que la page publique de l'utilisateur.
