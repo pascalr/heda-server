@@ -143,6 +143,7 @@ const HomeTabs = ({machines}) => {
       <HomeTab {...{title: t('Users'), path: '/s'}} />
       <HomeTab {...{title: t('Explore'), path: '/x'}} />
       <HomeTab {...{title: t('Suggestions'), path: '/'}} />
+      <HomeTab {...{title: t('Suggestions2'), path: '/g'}} />
       {machines.map((machine) => (
         <HomeTab key={'m'+machine.id} {...{title: machine.name, path: '/m/'+machine.id}} />
       ))}
@@ -201,6 +202,42 @@ const ExplorePage = ({}) => {
       </div>
     })}
   </> 
+}
+
+const QuestionPage = ({title, answers, answer}) => {
+  return <>
+    <br/>
+    <h2 className='text-center'>{title}?</h2>
+    <br/>
+    <div className='m-auto' style={{width: 'fit-content'}}>
+      {answers.map(a =>
+        <button key={a} type="button" className="btn btn-outline-primary d-block m-2" style={{minWidth: '10em'}} onClick={() => answer(a)}>{a}</button>
+      )}
+    </div>
+  </>
+}
+
+const Suggestions2Page = () => {
+
+  const [answers, setAnswers] = useState([])
+
+  let questions = [
+    {title: 'Quoi cuisiner', answers: ['Une entrée', 'Un repas', 'Un dessert', "N'importe quoi"]},
+    {title: 'Quelle quantité', answers: ['Petite', 'Moyenne', "Grosse", 'Peu importe']},
+    {title: 'Difficulté', answers: ['Simple', 'Normale', 'Gastronomique', 'Peu importe']},
+    {title: 'Pour quand', answers: ['Tout de suite', 'Bientôt', 'Peu importe']},
+  ]
+  
+  if (answers.length >= questions.length) {return <h1>DONE</h1>}
+
+  const answer = (response) => {
+    setAnswers([...answers, response]) 
+  }
+
+  let question = questions[answers.length]
+  return <>
+    <QuestionPage {...{...question, answer}} />
+  </>
 }
 
 const HomePage = ({tags, recipes, suggestions, favoriteRecipes, recipeKinds}) => {
@@ -569,6 +606,7 @@ export const App = () => {
 
   const routes = [
     {match: "/s", elem: () => <UsersPage />},
+    {match: "/g", elem: () => <Suggestions2Page />},
     {match: "/x", elem: () => <ExplorePage />},
     {match: "/c", elem: () => <EditTags {...{tags}} />},
     {match: "/n", elem: () => <NewRecipe {...{recipeKinds}} />},

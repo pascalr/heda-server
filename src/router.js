@@ -534,6 +534,7 @@ const renderApp = [ensureUser, function(req, res, next) {
 
 router.get('/e/:id', renderApp)
 router.get('/c', renderApp)
+router.get('/g', renderApp)
 router.get('/x', renderApp)
 router.get('/s', renderApp)
 router.get('/t/:id', renderApp)
