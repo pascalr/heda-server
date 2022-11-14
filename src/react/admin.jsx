@@ -307,18 +307,47 @@ const Console = () => {
 }
 
 const SQLPage = () => {
+
+  const [code, setCode] = useState('')
+  const [table, setTable] = useState('table_name')
+  const [column1, setColumn1] = useState('column_a')
+  const [column2, setColumn2] = useState('column_b')
+
+  function executeSQL() {
+    if (confirm("Êtes-vous certain de vouloir exécuter ce code SQL?")) {
+      ajax({url: '/exe_sql', type: 'POST', data: {code}, success: () => {
+        toastr.info("Migration successfull.")
+      }, error: handleError("Error executing migration.") })
+    }
+  }
   return <>
     <div className='trunk'>
       <h1>SQL page</h1>
-      <textarea style={{width: '100%', height: '20em'}} />
-      <button className="btn btn-primary">Execute</button>
+      <textarea style={{width: '100%', height: '20em'}} value={code} onChange={e => setCode(e.target.value)} />
+      <button className="btn btn-primary" onClick={executeSQL}>Execute</button>
       <br/><br/><br/>
+      <h6>Query generator:</h6>
+      <b>TABLE:</b> <input value={table} onChange={e => setTable(e.target.value)} /><br/>
+      <b>COLUMN 1:</b> <input value={column1} onChange={e => setColumn1(e.target.value)} /><br/>
+      <b>COLUMN 2:</b> <input value={column2} onChange={e => setColumn2(e.target.value)} /><br/>
+      <b>TYPES:</b> INTEGER, TEXT, BLOB, REAL, NUMERIC<br/>
       <h6>Exemples:</h6>
       <ul>
-        <li>DELETE FROM table_name WHERE id = 0;</li>
-        <li>SELECT * FROM table_name WHERE id = 0;</li>
-        <li>UPDATE table_name SET name = foo, value = bar, updated_at = ? WHERE id = 0;</li>
-        <li>INSERT INTO table_name (created_at, updated_at, name, value) VALUES (?, ?, 'foo', 'bar');</li>
+        <li>DELETE FROM {table} WHERE id = 0;</li>
+        <li>SELECT * FROM {table} WHERE id = 0;</li>
+        <li>UPDATE {table} SET name = foo, value = bar, updated_at = ? WHERE id = 0;</li>
+        <li>UPDATE users SET locale = 'en' WHERE locale IS NULL;</li>
+        <li>INSERT INTO {table} (created_at, updated_at, name, value) VALUES (?, ?, 'foo', 'bar');</li>
+        <li>ALTER TABLE {table} ADD column_name_a TEXT NULL, column_name_b INTEGER NULL;</li>
+        <li>(INTEGER, TEXT, BLOB, REAL, NUMERIC)</li>
+        <li>ALTER TABLE: https://www.sqlite.org/lang_altertable.html</li>
+        <li>
+          <b>Change column constraints:</b><br/>
+          ALTER TABLE {table} ADD COLUMN {column2} TEXT NOT NULL DEFAULT('en');<br/>
+          UPDATE {table} SET {column2} = {column1};<br/>
+          ALTER TABLE {table} DROP COLUMN {column1};<br/>
+          ALTER TABLE {table} RENAME COLUMN {column2} TO {column1};<br/>
+        </li>
       </ul>
     </div>
   </>

@@ -686,6 +686,13 @@ router.post('/backup_db', ensureAdmin, function(req, res, next) {
   db.doBackup()
   res.send('Database backup successful.')
 })
+router.post('/exe_sql', ensureAdmin, function(req, res, next) {
+  db.doBackup()
+  db.transaction(() => {
+    db.exec(req.body.code)
+    res.send('OK')
+  })()
+})
 router.post('/translate_recipes', ensureAdmin, function(req, res, next) {
   db.doBackup()
   translateRecipes().then(missings => {
