@@ -157,7 +157,7 @@ const RecipeCarrousel = ({items, isRecipeKind}) => {
     <Carrousel {...{items, preloadItem, maxItems: 3}}>{item => <>
       <Link {...{className: 'plain-link', path: p+item.id}}>
         <RecipeSmallImage {...{recipe: item}} />
-        <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
+        <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name} {isRecipeKind ? <span className='d-inline-block fs-075'>{'('+item.recipe_count+' '+(item.recipe_count > 1 ? t('recipes') : t('recipe'))+')'}</span> : null}</div>
       </Link>
     </>}</Carrousel>
   </>
@@ -185,14 +185,19 @@ const UsersPage = ({}) => {
 const ExplorePage = ({}) => {
 
   const data = useCacheOrFetch(localeHref2('/fetch_explore', locale))
+  const [kinds, setKinds] = useState([])
+
+  useEffect(() => {
+    if (data) {setKinds(shuffle(data.kinds||[]))}
+  }, [data])
 
   if (!data) {return null}
 
   return <>
-    {(data.kinds||[]).map(kind => {
+    {kinds.map(kind => {
       return <div key={kind.id}>
         <h2 className="fs-14 bold"><a href={'/d/'+kind.id} className="plain-link">{kind.name}</a></h2>
-        <RecipeCarrousel {...{items: data.recipeKindsByAncestorId[kind.id]||[]}}/>
+        <RecipeCarrousel {...{items: data.recipeKindsByAncestorId[kind.id], isRecipeKind: true}}/>
       </div>
     })}
   </> 

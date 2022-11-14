@@ -97,6 +97,10 @@ img {
 }
 
 /* font sizes */
+.fs-07 { font-size: 0.7em; }
+.fsr-07 { font-size: 0.7rem; }
+.fs-075 { font-size: 0.75em; }
+.fsr-075 { font-size: 0.75rem; }
 .fs-08 { font-size: 0.8em; }
 .fsr-08 { font-size: 0.8rem; }
 .fs-085 { font-size: 0.85em; }
