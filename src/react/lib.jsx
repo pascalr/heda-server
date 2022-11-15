@@ -75,9 +75,11 @@ export const currentPathIs = (p) => {
 
 export const Link = ({className, children, active, path, onClick, ...props}) => {
   const handleClick = (evt) => {
-    evt.preventDefault()
-    if (onClick) {onClick(evt)}
-    changeUrl(path)
+    if (window.preventLinksDefaultEvent) {
+      evt.preventDefault()
+      if (onClick) {onClick(evt)}
+      changeUrl(path)
+    }
   }
   return <a className={join(className, active ? 'active' : null)} href={path} onClick={handleClick} {...props}>{children}</a>
 }

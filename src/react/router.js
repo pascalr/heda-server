@@ -24,6 +24,7 @@ export const useRouter = (routes, defaultElement) => {
       matchRoutes(event.detail.pathname, event.detail.params)
     }
     window.addEventListener('history-changed', historyChanged)
+    window.preventLinksDefaultEvent = true
     return () => {
       window.removeEventListener('history-changed', historyChanged)
     }
