@@ -24,8 +24,6 @@ const QuestionPage = ({title, answers, answer}) => {
 
   return <>
     <br/>
-    <h2 className='text-center'>{title}?</h2>
-    <br/>
     <div className='m-auto' style={{width: 'fit-content'}}>
       {answers.map(a =>
         <button key={a} type="button" className="btn btn-outline-primary d-block m-2" style={{minWidth: '10em'}} onClick={() => answer(a)}>{textForAttribute[a]}</button>
@@ -38,11 +36,11 @@ const QuestionPage = ({title, answers, answer}) => {
 export const SuggestionsPage = ({}) => {
 
   const [answers, setAnswers] = useState([])
-  const [suggestions, setSuggestions] = useState([])
+  const [result, setResult] = useState({})
 
   useEffect(() => {
-    ajax({url: '/fetch_suggestions', type: 'GET', success: (result) => {
-      setSuggestions(result)
+    ajax({url: '/fetch_suggestions', type: 'GET', data: {answers}, success: (result) => {
+      setResult(result)
     }})
   }, [answers])
 
@@ -58,10 +56,16 @@ export const SuggestionsPage = ({}) => {
   }
 
   let question = questions[answers.length]
+  let nbResult = result.nbSuggestions||0
+  let isDone = answers.length >= questions.length
   return <>
-    { (answers.length >= questions.length) ? null : <QuestionPage {...{...question, answer}} />}
+    <br/>
+    <h2 className='text-center'>
+      {isDone ? <>{t('Result')}: {nbResult}</> : question.title+'?'}
+    </h2>
+    { isDone ? null : <QuestionPage {...{...question, answer}} />}
     <br/><br/>
     <h2 className="fs-14 bold">{t('Suggestions')}</h2>
-    <RecipeCarrousel {...{items: suggestions, isRecipeKind: true}}/>
+    <RecipeCarrousel {...{items: result.suggestions||[], isRecipeKind: true}}/>
   </>
 }

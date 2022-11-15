@@ -95,7 +95,6 @@ function convertFormDataValue(val) {
 **/
 export function ajax(params) {
 
-  console.log('ajax', params)
   if (!params.url) {throw "ajax missing params url"}
 
   let headers = {}
@@ -110,8 +109,10 @@ export function ajax(params) {
   let url = params.url
   let body = null
   if (params.type == "GET") {
-    if (params.data) {throw "Error ajax GET request cannnot have data, use query params instead."}
-    //url += '?' + new URLSearchParams(params).toString()
+    //if (params.data) {throw "Error ajax GET request cannnot have data, use query params instead."}
+    if (params.data) {
+      url += '?' + new URLSearchParams(params.data).toString()
+    }
   } else if (params.data instanceof FormData) {
 
     body = new FormData()
@@ -136,8 +137,10 @@ export function ajax(params) {
       if (params.error) { params.error(data) }
     }
   }
+  
+  console.log('fetch '+url, params)
 
-  fetch(params.url, {
+  fetch(url, {
     method: params.type,
     mode: 'cors', // no-cors, *cors, same-origin
     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached

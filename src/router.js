@@ -373,10 +373,13 @@ router.patch('/update_field/:table/:id', ensureUser, function(req, res, next) {
 });
 
 router.get('/fetch_suggestions', function(req, res, next) {
+
+  let answers = req.query.answers.split(',')
+  console.log('answers', answers)
   
   let recipeKinds = fetchRecipeKinds(db, {}, res.locals.locale)
-  let suggestions = shuffle(recipeKinds).slice(0,10)
-  res.json(suggestions)
+  let suggestions = shuffle(recipeKinds)
+  res.json({suggestions: suggestions.slice(0,10), nbSuggestions: suggestions.length})
 })
 
 router.get('/fetch_explore_users', function(req, res, next) {
