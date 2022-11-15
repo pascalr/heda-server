@@ -3,6 +3,8 @@ import createError from 'http-errors';
 
 import { db } from './db.js';
 import analytics from './analytics.js'
+import { kindAncestorId } from "./lib.js"
+import { fetchRecipeKinds } from "./lib.js"
 
 const router = express.Router();
 
@@ -42,6 +44,17 @@ router.post('/calc_recipe_kinds', function(req, res, next) {
 
   let recipeKinds = fetchRecipeKinds(db, {}, res.locals.locale)
   recipeKinds.forEach(recipeKind => {
+    let mealId = 17; let appetizerId = 35; let dessertId = 12;
+    let ancestorId = kindAncestorId(recipeKind)
+    let is_meal = 0.0
+    let is_appetizer = 0.0
+    let is_other = 0.0
+    let is_dessert = 0.0
+    if (ancestorId == mealId) {is_meal = 1.0}
+    else if (ancestorId == appetizerId) {is_appetizer = 1.0}
+    else if (ancestorId == dessertId) {is_dessert = 1.0}
+    else {is_other = 1.0}
+    db.findAndUpdateRecord('recipe_kinds', recipeKind, {is_meal, is_appetizer, is_other, is_dessert}, req.user)
   })
 
   res.send('OK')

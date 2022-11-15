@@ -7,6 +7,14 @@ export function extractFoodNameFromIngredient(label) {
   return label.split(',')[0]
 }
 
+/**
+ * Get the recipeKind or the kind ancestor id.
+ * Ex: Dessert / Pie / Apple pie => In: Apple pie; Out: Dessert.id
+ */
+export function kindAncestorId(kinds, k, isKind=false) {
+  return k?.kind_id ? kindAncestorId(kinds, kinds.find(d => d.id == k.kind_id), true) : isKind ? k?.id : undefined
+}
+
 // Used for meta tag og:description
 export function descriptionRecipeIngredients(recipe, locale) {
   if (!recipe.ingredients) {return ''}

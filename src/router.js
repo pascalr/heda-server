@@ -13,7 +13,7 @@ import { localeHref, now, ensureIsArray, shuffle } from './utils.js';
 import { tr } from './translate.js'
 import { translateRecipes } from '../tasks/translate_recipes.js'
 import Translator, { TranslationsCacheStrategy, LogStrategy } from './translator.js'
-import { findRecipeKindForRecipeName, fetchRecipeKinds, fetchRecipeKind, descriptionRecipeIngredients, fetchKindWithAncestors, fetchKinds } from "./lib.js"
+import { findRecipeKindForRecipeName, fetchRecipeKinds, fetchRecipeKind, descriptionRecipeIngredients, fetchKindWithAncestors, fetchKinds, kindAncestorId } from "./lib.js"
 import schema from './schema.js'
 
 const __filename = fileURLToPath(import.meta.url);
@@ -401,8 +401,7 @@ router.get('/fetch_explore', function(req, res, next) {
 
   let kinds = fetchKinds(db, {}, res.locals.locale)
   let recipeKinds = fetchRecipeKinds(db, {}, res.locals.locale)
-  const kindAncestorId = (k, isKind) => k?.kind_id ? kindAncestorId(kinds.find(d => d.id == k.kind_id), true) : isKind ? k?.id : undefined
-  let recipeKindsByAncestorId = _.groupBy(recipeKinds, kindAncestorId)
+  let recipeKindsByAncestorId = _.groupBy(recipeKinds, (k) => kindAncestorId(kinds, k))
   delete recipeKindsByAncestorId.undefined
   let kindIds = _.keys(recipeKindsByAncestorId).map(id => parseInt(id))
   kindIds.forEach(kindId => {

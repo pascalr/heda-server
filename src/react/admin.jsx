@@ -161,6 +161,11 @@ const AdminPage = ({stats, publicUsers}) => {
       toastr.info("Database backup up successfully.")
     }, error: handleError("Error backing up database.") })
   }
+  const calcRecipeKinds = () => {
+    ajax({url: '/calc_recipe_kinds', type: 'POST', success: () => {
+      toastr.info("Success.")
+    }, error: handleError("Failure.") })
+  }
   const matchRecipeKinds = () => {
     ajax({url: '/match_recipe_kinds', type: 'POST', success: () => {
       toastr.info("Recipe kinds matched successfully. Reload page to see changes.")
@@ -188,10 +193,11 @@ const AdminPage = ({stats, publicUsers}) => {
       <b>Public users:</b><br/>
       {publicUsers.map(u => <div key={u.id}>{u.name}</div>)}
       <br/><br/><h2>Manual commands</h2>
-      <button className="btn btn-primary mx-2" type="button" onClick={backupDb}>Backup database</button>
-      <button className="btn btn-primary mx-2" type="button" onClick={translateRecipes}>Translate recipes</button>
-      <button className="btn btn-primary mx-2" type="button" onClick={matchRecipeKinds}>Match recipe kinds</button>
-      <button className="btn btn-primary mx-2" type="button" onClick={updateKindsCount}>Update kinds count</button>
+      <button className="btn btn-primary m-2" type="button" onClick={backupDb}>Backup database</button>
+      <button className="btn btn-primary m-2" type="button" onClick={translateRecipes}>Translate recipes</button>
+      <button className="btn btn-primary m-2" type="button" onClick={matchRecipeKinds}>Match recipe kinds</button>
+      <button className="btn btn-primary m-2" type="button" onClick={updateKindsCount}>Update kinds count</button>
+      <button className="btn btn-primary m-2" type="button" onClick={calcRecipeKinds}>Calc recipe kinds</button>
       <br/><br/><br/><h2>Output</h2>
       {missings ? <>
         <h3>Missing translations</h3>
