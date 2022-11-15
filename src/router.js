@@ -13,7 +13,7 @@ import { localeHref, now, ensureIsArray, shuffle } from './utils.js';
 import { tr } from './translate.js'
 import { translateRecipes } from '../tasks/translate_recipes.js'
 import Translator, { TranslationsCacheStrategy, LogStrategy } from './translator.js'
-import { findRecipeKindForRecipeName, fetchRecipeKinds, fetchRecipeKind, descriptionRecipeIngredients, fetchKindWithAncestors, fetchKinds, kindAncestorId } from "./lib.js"
+import { findRecipeKindForRecipeName, fetchRecipeKinds2, fetchRecipeKinds, fetchRecipeKind, descriptionRecipeIngredients, fetchKindWithAncestors, fetchKinds, kindAncestorId } from "./lib.js"
 import schema from './schema.js'
 
 const __filename = fileURLToPath(import.meta.url);
@@ -377,9 +377,17 @@ router.get('/fetch_suggestions', function(req, res, next) {
   let answers = req.query.answers.split(',')
   console.log('answers', answers)
   
-  let recipeKinds = fetchRecipeKinds(db, {}, res.locals.locale)
-  let suggestions = shuffle(recipeKinds)
-  res.json({suggestions: suggestions.slice(0,10), nbSuggestions: suggestions.length})
+  let recipeKinds = fetchRecipeKinds2(db, {}, res.locals.locale, ['name', 'image_slug', 'recipe_count', 'is_meal', 'is_appetizer', 'is_dessert', 'is_simple', 'is_normal', 'is_gourmet', 'is_other', 'is_very_fast', 'is_fast', 'is_small_qty', 'is_big_qty', 'is_medium_qty'])
+  let suggestions = _.sortBy(recipeKinds, k => {
+    let score = Math.random()*0.001
+    answers.forEach(answer => {
+      if (answer) {console.log('here', answer); score = score + (k[answer]||0.0); console.log('there', score)}
+    })
+    return score
+  }).reverse()
+  // Don't send search data to the user, only what is necessary.
+  let result = suggestions.slice(0,10).map(k => _.pick(k, ['name', 'image_slug', 'recipe_count']))
+  res.json({suggestions: result, nbSuggestions: suggestions.length})
 })
 
 router.get('/fetch_explore_users', function(req, res, next) {

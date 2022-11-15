@@ -1,6 +1,7 @@
 import { normalizeSearchText } from "./react/utils.js"
 import Quantity from './quantity.js'
 import { t, tr } from './translate.js'
+import { ensureIsArray } from './utils.js';
 
 // gros oignon espagnol, finement coupé => gros oignon espagnol
 export function extractFoodNameFromIngredient(label) {
@@ -27,7 +28,33 @@ export function descriptionRecipeIngredients(recipe, locale) {
 export function localeAttr(attr, locale) {
   return attr+'_'+(locale||'en')
 }
+
+/**
+ * Modifies the array to replace the attr with the locale attr. ([name] => [name_fr])
+ */
+function replaceAttrWithLocale(attrs, attr, locale) {
+  let i = attrs.indexOf(attr)
+  if (i !== -1) {
+    attrs.splice(i,1) // Remove attr
+    attrs.push(localeAttr(attr, locale)) // Add locale attr
+  }
+  return i !== -1
+}
+
+export function fetchRecipeKinds2(db, conditions, locale, attributes) {
+
+  let attrs = [...ensureIsArray(attributes)]
+  let replacedName = replaceAttrWithLocale(attrs, 'name', locale)
+  let replacedDesc = replaceAttrWithLocale(attrs, 'json', locale)
+  let records = db.fetchTable('recipe_kinds', conditions, attrs)
+  return records.map(r => {
+    if (replacedName) {let n = localeAttr('name', locale); r.name = r[n]; delete r[n]}
+    if (replacedDesc) {let n = localeAttr('json', locale); r.json = r[n]; delete r[n]}
+    return r
+  })
+}
 // fetchDescription also fetch recipe_count
+// FIXME: DEPRECATED USE fetchRecipeKinds2
 export function fetchRecipeKinds(db, conditions, locale, fetchDescription=true) {
   let attrs = [localeAttr('name', locale), 'image_slug', 'kind_id']
   if (fetchDescription) {attrs.push(localeAttr('json', locale)); attrs.push('recipe_count')}
