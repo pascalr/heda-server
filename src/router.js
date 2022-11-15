@@ -372,6 +372,13 @@ router.patch('/update_field/:table/:id', ensureUser, function(req, res, next) {
   res.json({status: 'ok'})
 });
 
+router.get('/fetch_suggestions', function(req, res, next) {
+  
+  let recipeKinds = fetchRecipeKinds(db, {}, res.locals.locale)
+  let suggestions = shuffle(recipeKinds).slice(0,10)
+  res.json(suggestions)
+})
+
 router.get('/fetch_explore_users', function(req, res, next) {
 
   let users = db.fetchTable('users', {}, ['name', 'image_slug'])

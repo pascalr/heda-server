@@ -11,6 +11,7 @@ import { initHcu, useHcuState } from '../hcu'
 import { localeHref, getUrlParams } from "../utils"
 import { MainSearch } from './main_search'
 import { getLocale } from "./lib"
+import { SuggestionsPage } from "./suggestions"
 
 export const Home = () => {
 
@@ -23,6 +24,20 @@ export const Home = () => {
   const [kinds,] = useState(gon.kinds)
 
   if (!window.hcu) {initHcu(); window.hcu.makeDummy() }
+
+  //<div className="trunk">
+  //  {kinds.map(k => {
+  //    return <div key={k.id}>
+  //      <h2><a href={localeHref('/d/'+k.id)} className='plain-link'>{k.name}</a></h2>
+  //      <Carrousel {...{items: k.recipeKinds||[]}}>{item => <>
+  //        <a href={localeHref("/k/"+item.id)} className="plain-link">
+  //          <RecipeSmallImage {...{recipe: item}} />
+  //          <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
+  //        </a>
+  //      </>}</Carrousel>
+  //    </div>
+  //  })}
+  //</div>
 
   const preloadItem = (i) => {if (i.image_slug) {preloadImage('/imgs/small/'+i.image_slug)}}
   return <>
@@ -60,24 +75,12 @@ export const Home = () => {
       </div>
     </div>
     <hr style={{border: '1px solid black', width: '70%', margin: 'auto'}} />
-    <div style={{padding: '5em 0.3em'}}>
+    <div className='trunk'style={{padding: '5em 0.3em'}}>
       <div className="ff-montserra" style={{maxWidth: '40em', margin: 'auto'}}>
         <h2>{t('Home_3')}</h2>
         <p>{t('Home_4')}</p>
       </div>
-      <div className="trunk">
-        {kinds.map(k => {
-          return <div key={k.id}>
-            <h2><a href={localeHref('/d/'+k.id)} className='plain-link'>{k.name}</a></h2>
-            <Carrousel {...{items: k.recipeKinds||[]}}>{item => <>
-              <a href={localeHref("/k/"+item.id)} className="plain-link">
-                <RecipeSmallImage {...{recipe: item}} />
-                <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
-              </a>
-            </>}</Carrousel>
-          </div>
-        })}
-      </div>
+      <SuggestionsPage />
     </div>
     <hr style={{border: '1px solid black', width: '70%', margin: 'auto'}} />
     <div style={{padding: '5em 0.3em', backgroundColor: '#fafbfc'}}>

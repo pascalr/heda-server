@@ -1,4 +1,5 @@
 import express from 'express';
+import createError from 'http-errors';
 
 import { db } from './db.js';
 import analytics from './analytics.js'
@@ -6,9 +7,10 @@ import analytics from './analytics.js'
 const router = express.Router();
 
 // All the routes here are only available to users that are admin.
+// Respond with 404 if the user is not an admin.
 router.use((req, res, next) => {
   if (req.user?.is_admin) {return next()}
-  return next('Error account must be an admin.')
+  next(createError(404));
 })
 
 const renderAdmin = (req, res, next) => {

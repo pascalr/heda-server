@@ -6,7 +6,7 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, Link, currentPathIs, currentPathIsRoot } from "./lib"
 import { findRecipeKindForRecipeName } from "../lib"
 import { RecipeList, RecipeIndex, duplicateRecipe } from './recipe_index'
-import { changeUrl, ajax, normalizeSearchText, preloadImage, join, bindSetter, capitalize, isTrue } from "./utils"
+import { changeUrl, ajax, normalizeSearchText, join, bindSetter, capitalize, isTrue } from "./utils"
 import { localeHref2, getUrlParams, sortBy, sortByDate, shuffle } from "../utils"
 import { icon_path, image_path, image_slug_variant_path } from './routes'
 import {TextField, TextInput, CollectionSelect, ImageField, ImageSelector} from './form'
@@ -16,12 +16,13 @@ import {RecipeViewer, FavoriteButton} from "./recipe_viewer"
 import {RecipeKindViewer} from "./show_recipe_kind"
 import {KindViewer} from "./show_kind"
 import { initHcu, useHcuState } from '../hcu'
-import { UserThumbnailImage, RecipeThumbnailImage, RecipeSmallImage, RecipeMediumImage } from "./image"
+import { UserThumbnailImage, RecipeThumbnailImage, RecipeMediumImage } from "./image"
 import { t } from "../translate"
-import { Carrousel } from './carrousel'
 import {EditMix, ShowMix} from './recipe_editor'
 import { AppSearch, useHiddenNavParam } from './main_search'
 import { useRouter } from "./router"
+import { SuggestionsPage } from "./suggestions"
+import { RecipeCarrousel } from './core'
 
 const EditTag = ({tagId, tags}) => {
   const [name, setName] = useState('')
@@ -150,19 +151,6 @@ const HomeTabs = ({machines}) => {
   </>
 }
 
-const RecipeCarrousel = ({items, isRecipeKind}) => {
-  const preloadItem = (i) => {if (i.image_slug) {preloadImage('/imgs/small/'+i.image_slug)}}
-  let p = isRecipeKind ? '/k/' : '/r/'
-  return <>
-    <Carrousel {...{items, preloadItem, maxItems: 3}}>{item => <>
-      <Link {...{className: 'plain-link', path: p+item.id}}>
-        <RecipeSmallImage {...{recipe: item}} />
-        <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name} {isRecipeKind ? <span className='d-inline-block fs-075'>{'('+item.recipe_count+' '+(item.recipe_count > 1 ? t('recipes') : t('recipe'))+')'}</span> : null}</div>
-      </Link>
-    </>}</Carrousel>
-  </>
-}
-
 const UsersPage = ({}) => {
 
   const data = useCacheOrFetch(localeHref2('/fetch_explore_users', locale))
@@ -201,47 +189,6 @@ const ExplorePage = ({}) => {
       </div>
     })}
   </> 
-}
-
-const QuestionPage = ({title, answers, answer}) => {
-  return <>
-    <br/>
-    <h2 className='text-center'>{title}?</h2>
-    <br/>
-    <div className='m-auto' style={{width: 'fit-content'}}>
-      {answers.map(a =>
-        <button key={a} type="button" className="btn btn-outline-primary d-block m-2" style={{minWidth: '10em'}} onClick={() => answer(a)}>{a}</button>
-      )}
-    </div>
-  </>
-}
-
-const SuggestionsPage = ({recipeKinds}) => {
-
-  const [answers, setAnswers] = useState([])
-
-  let randomRecipes = shuffle(recipeKinds.filter(k => k.recipe_count))
-
-  let questions = [
-    {title: 'Quoi cuisiner', answers: ['Une entrée', 'Un repas', 'Un dessert', "Autre", "Peu importe"]},
-    {title: 'Quelle quantité', answers: ['Petite', 'Moyenne', "Grosse", 'Peu importe']},
-    {title: 'Difficulté', answers: ['Simple', 'Normale', 'Gastronomique', 'Peu importe']},
-    {title: 'Pour quand', answers: ['Tout de suite', 'Bientôt', 'Peu importe']},
-  ]
-  
-  if (answers.length >= questions.length) {return <h1>DONE</h1>}
-
-  const answer = (response) => {
-    setAnswers([...answers, response]) 
-  }
-
-  let question = questions[answers.length]
-  return <>
-    <QuestionPage {...{...question, answer}} />
-    <br/><br/>
-    <h2 className="fs-14 bold">{t('Suggestions')}</h2>
-    <RecipeCarrousel {...{items: randomRecipes.slice(0,10), isRecipeKind: true}}/>
-  </>
 }
 
 const ShowKind = ({kindId, locale}) => {
