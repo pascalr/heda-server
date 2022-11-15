@@ -54,6 +54,10 @@ const EditRecipeKind = ({id, recipeKinds, images}) => {
   //const translateRecipeKind = () => {
   //}
   //<button type="button" className="btn btn-primare" onClick={translateRecipeKind}>Translate FR to EN</button>
+ 
+  let ids = recipeKinds.map(k => k.id).sort()
+  let i = ids.indexOf(recipeKind.id)
+  let nextId = (i == ids.length-1 || i==-1) ? null : ids[i+1]
   
   return <>
     <div className='trunk'>
@@ -68,6 +72,8 @@ const EditRecipeKind = ({id, recipeKinds, images}) => {
       <h1 className="ff-satisfy bold fs-25"><TextField model={recipeKind} field='name_en' style={{width: '100%'}} /></h1>
       <div className="fs-09"><DescriptionTiptap {...{model: recipeKind, json_field: 'json_en'}} /></div>
       <br/><br/>
+      {i != 0 ? <Link className='btn btn-primary me-2' path={'/admin/ek/'+ids[i-1]}>Previous</Link> : null}
+      {nextId ? <Link className='btn btn-primary me-2' path={'/admin/ek/'+nextId}>Next</Link> : null}
     </div>
   </>
 }
