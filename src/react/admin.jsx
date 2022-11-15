@@ -60,7 +60,7 @@ const EditRecipeKind = ({id, recipeKinds, images}) => {
   let nextId = (i == ids.length-1 || i==-1) ? null : ids[i+1]
   
   return <>
-    <div className='trunk'>
+    <div key={id} className='trunk'>
       <h3>Edit recipe kind</h3>
       <EditableImage {...{recipe: recipeKind, images}}/>
       <br/><br/>
@@ -71,11 +71,23 @@ const EditRecipeKind = ({id, recipeKinds, images}) => {
       <h2>English</h2>
       <h1 className="ff-satisfy bold fs-25"><TextField model={recipeKind} field='name_en' style={{width: '100%'}} /></h1>
       <div className="fs-09"><DescriptionTiptap {...{model: recipeKind, json_field: 'json_en'}} /></div>
-      <br/><br/>
-      <b>Appetizer: </b><RangeField model={recipeKind} field='is_appetizer' min="0.0" max="1.0" step="0.1" /><br/>
-      <b>Meal: </b><RangeField model={recipeKind} field='is_meal' min="0.0" max="1.0" step="0.1" /><br/>
-      <b>Dessert: </b><RangeField model={recipeKind} field='is_dessert' min="0.0" max="1.0" step="0.1" /><br/>
-      <b>Other: </b><RangeField model={recipeKind} field='is_other' min="0.0" max="1.0" step="0.1" /><br/>
+      <br/>
+      <br/><h6>Kind of food</h6>
+      <b>Appetizer: </b><RangeField model={recipeKind} field='is_appetizer' min="0" max="1" step="0.1" /><br/>
+      <b>Meal: </b><RangeField model={recipeKind} field='is_meal' min="0" max="1" step="0.1" /><br/>
+      <b>Dessert: </b><RangeField model={recipeKind} field='is_dessert' min="0" max="1" step="0.1" /><br/>
+      <b>Other: </b><RangeField model={recipeKind} field='is_other' min="0" max="1" step="0.1" /><br/>
+      <br/><h6>Quantity</h6>
+      <b>Small: </b><RangeField model={recipeKind} field='is_small_qty' min="0" max="1" step="0.1" /><br/>
+      <b>Medium: </b><RangeField model={recipeKind} field='is_medium_qty' min="0" max="1" step="0.1" /><br/>
+      <b>Big: </b><RangeField model={recipeKind} field='is_big_qty' min="0" max="1" step="0.1" /><br/>
+      <br/><h6>Difficulty</h6>
+      <b>Simple: </b><RangeField model={recipeKind} field='is_simple' min="0" max="1" step="0.1" /><br/>
+      <b>Normal: </b><RangeField model={recipeKind} field='is_normal' min="0" max="1" step="0.1" /><br/>
+      <b>Gourmet: </b><RangeField model={recipeKind} field='is_gourmet' min="0" max="1" step="0.1" /><br/>
+      <br/><h6>Speed</h6>
+      <b>Very fast (now): </b><RangeField model={recipeKind} field='is_very_fast' min="0" max="1" step="0.1" /><br/>
+      <b>Fast (latter): </b><RangeField model={recipeKind} field='is_fast' min="0" max="1" step="0.1" /><br/>
       <br/><br/>
       {i != 0 ? <Link className='btn btn-primary me-2' path={'/admin/ek/'+ids[i-1]}>Previous</Link> : null}
       {nextId ? <Link className='btn btn-primary me-2' path={'/admin/ek/'+nextId}>Next</Link> : null}

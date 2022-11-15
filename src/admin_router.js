@@ -4,7 +4,7 @@ import createError from 'http-errors';
 import { db } from './db.js';
 import analytics from './analytics.js'
 import { kindAncestorId } from "./lib.js"
-import { fetchKinds, fetchRecipeKinds } from "./lib.js"
+import { fetchKinds, fetchRecipeKinds, fetchRecipeKinds2 } from "./lib.js"
 
 const router = express.Router();
 
@@ -16,9 +16,12 @@ router.use((req, res, next) => {
 })
 
 const renderAdmin = (req, res, next) => {
+
+  let recipeKinds = fetchRecipeKinds2(db, {}, res.locals.locale, ['name_fr', 'json_fr', 'name_en', 'json_en', 'kind_id', 'image_slug', 'recipe_count', 'is_meal', 'is_appetizer', 'is_dessert', 'is_simple', 'is_normal', 'is_gourmet', 'is_other', 'is_very_fast', 'is_fast', 'is_small_qty', 'is_big_qty', 'is_medium_qty'])
+
   res.locals.gon = {
     translations: db.fetchTable('translations', {}, ['from', 'to', 'original', 'translated']),
-    recipe_kinds: db.fetchTable('recipe_kinds', {}, ['name_fr', 'json_fr', 'name_en', 'json_en', 'image_slug', 'kind_id', 'recipe_count']),
+    recipe_kinds: recipeKinds,
     kinds: db.fetchTable('kinds', {}, ['name_fr', 'name_en', 'kind_id']),
     recipes: db.fetchTable('recipes', {}, ['name', 'recipe_kind_id', 'image_slug']),
     stats: {
