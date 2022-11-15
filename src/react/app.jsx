@@ -217,9 +217,11 @@ const QuestionPage = ({title, answers, answer}) => {
   </>
 }
 
-const Suggestions2Page = () => {
+const Suggestions2Page = ({recipeKinds}) => {
 
   const [answers, setAnswers] = useState([])
+
+  let randomRecipes = shuffle(recipeKinds.filter(k => k.recipe_count))
 
   let questions = [
     {title: 'Quoi cuisiner', answers: ['Une entrée', 'Un repas', 'Un dessert', "N'importe quoi"]},
@@ -237,6 +239,9 @@ const Suggestions2Page = () => {
   let question = questions[answers.length]
   return <>
     <QuestionPage {...{...question, answer}} />
+    <br/><br/>
+    <h2 className="fs-14 bold">{t('Suggestions')}</h2>
+    <RecipeCarrousel {...{items: randomRecipes.slice(0,10), isRecipeKind: true}}/>
   </>
 }
 
@@ -606,7 +611,7 @@ export const App = () => {
 
   const routes = [
     {match: "/s", elem: () => <UsersPage />},
-    {match: "/g", elem: () => <Suggestions2Page />},
+    {match: "/g", elem: () => <Suggestions2Page {...{recipeKinds}} />},
     {match: "/x", elem: () => <ExplorePage />},
     {match: "/c", elem: () => <EditTags {...{tags}} />},
     {match: "/n", elem: () => <NewRecipe {...{recipeKinds}} />},
