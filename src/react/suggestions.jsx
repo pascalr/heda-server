@@ -46,8 +46,8 @@ export const SuggestionsPage = ({}) => {
 
   let questions = [
     {title: t('What_to_eat'), answers: ['is_appetizer', 'is_meal', 'is_dessert', "is_other"]},
-    {title: t('What_quantity'), answers: ['is_small_qty', 'is_medium_qty', "is_big_qty"]},
     {title: t('Difficulty'), answers: ['is_simple', 'is_normal', 'is_gourmet']},
+    {title: t('What_quantity'), answers: ['is_small_qty', 'is_medium_qty', "is_big_qty"]},
     {title: t('For_when'), answers: ['is_very_fast', 'is_fast']},
   ]
 
