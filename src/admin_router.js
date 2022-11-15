@@ -4,7 +4,7 @@ import createError from 'http-errors';
 import { db } from './db.js';
 import analytics from './analytics.js'
 import { kindAncestorId } from "./lib.js"
-import { fetchRecipeKinds } from "./lib.js"
+import { fetchKinds, fetchRecipeKinds } from "./lib.js"
 
 const router = express.Router();
 
@@ -42,10 +42,12 @@ router.post('/backup_db', function(req, res, next) {
 })
 router.post('/calc_recipe_kinds', function(req, res, next) {
 
-  let recipeKinds = fetchRecipeKinds(db, {}, res.locals.locale)
+  let kinds = fetchKinds(db, {}, res.locals.locale)
+  let recipeKinds = fetchRecipeKinds(db, {}, res.locals.locale, true)
   recipeKinds.forEach(recipeKind => {
     let mealId = 17; let appetizerId = 35; let dessertId = 12;
-    let ancestorId = kindAncestorId(recipeKind)
+    let ancestorId = kindAncestorId(kinds, recipeKind)
+    console.log('ancestorId', ancestorId)
     let is_meal = 0.0
     let is_appetizer = 0.0
     let is_other = 0.0
