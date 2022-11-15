@@ -214,11 +214,21 @@ export const updateRecordField = (model, field, value, url, getter, setter) => {
  *   field: The field to be modified
  * }
  */
-export const TextField = ({model, field, inputRef, onUpdate, url, getter, setter, ...props}) => {
+export const TextField = ({model, field, inputRef, ...props}) => {
   const [value, setValue] = useState(model[field])
   
   return (
     <input type="text" value={value||''} name={model.table_name+"["+field+"]"} id={field} ref={inputRef} {...props}
+      onChange={(e) => setValue(e.target.value)}
+      onBlur={(e) => {window.hcu.updateField(model, field, value)}} />
+  )
+}
+// min, max, step
+export const RangeField = ({model, field, inputRef, ...props}) => {
+  const [value, setValue] = useState(model[field])
+  
+  return (
+    <input type="range" value={value||''} name={model.table_name+"["+field+"]"} id={field} ref={inputRef} {...props}
       onChange={(e) => setValue(e.target.value)}
       onBlur={(e) => {window.hcu.updateField(model, field, value)}} />
   )

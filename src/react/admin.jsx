@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import toastr from 'toastr'
 //import { createRoot } from 'react-dom/client';
 
-import { TextInput, TextField, CollectionSelect } from "./form"
+import { TextInput, TextField, CollectionSelect, RangeField } from "./form"
 import { Link, useOrFetchRecipe, getLocale } from "./lib"
 import { localeAttr } from "../lib"
 import { MainSearch } from './main_search'
@@ -71,6 +71,11 @@ const EditRecipeKind = ({id, recipeKinds, images}) => {
       <h2>English</h2>
       <h1 className="ff-satisfy bold fs-25"><TextField model={recipeKind} field='name_en' style={{width: '100%'}} /></h1>
       <div className="fs-09"><DescriptionTiptap {...{model: recipeKind, json_field: 'json_en'}} /></div>
+      <br/><br/>
+      <b>Appetizer: </b><RangeField model={recipeKind} field='is_appetizer' min="0.0" max="1.0" step="0.1" /><br/>
+      <b>Meal: </b><RangeField model={recipeKind} field='is_meal' min="0.0" max="1.0" step="0.1" /><br/>
+      <b>Dessert: </b><RangeField model={recipeKind} field='is_dessert' min="0.0" max="1.0" step="0.1" /><br/>
+      <b>Other: </b><RangeField model={recipeKind} field='is_other' min="0.0" max="1.0" step="0.1" /><br/>
       <br/><br/>
       {i != 0 ? <Link className='btn btn-primary me-2' path={'/admin/ek/'+ids[i-1]}>Previous</Link> : null}
       {nextId ? <Link className='btn btn-primary me-2' path={'/admin/ek/'+nextId}>Next</Link> : null}
