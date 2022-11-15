@@ -12,43 +12,15 @@ Rentrer les données à partir de Red velvet cake (/admin/ek/18)
 
 En bas de la page Home ajouter un petit texte qui explique que ce site est tout nouveau, mettre une date aussi.
 
-The ability to back up suggestions...
-
-Chauqe recipe kind devrait avoir un pointage pour chaque catégorie allant de 0 à 1.
-
 Use Link instead of <a href> everywhere, this way it works both inside the app and outside.
 
 Boulette de pois chiches ne s'affiche pas correctement parce que je l'avais modifier pour être une recette Heda.
-
-What do I like about my website?
-- Images
-- Tree of kinds/recipe kinds/recipes.
-What do I don't like?
-- Suggestions
-
-Qu'est ce que vous voulez cuisiner?
-  - Un plate pour emporter à un potluck
-  - Une recette rapide pour ce soir
-  - Un plat pour toute la semaine
-  - Un mets fancy pour des invités
-
-Set admin locale, and make locale necessary for users in db. Default "en"
-
-Le recipe kind (riz devrait être riz (ingrédient))
 
 Suggestions should be dependant destroy of tags.
 ( I don't know if I still want tags anymore so let's keep this as is... )
 
 // TODO: Log the error to an error reporting service
 //logErrorToMyService(error, errorInfo);
-
-(Idée de même)
-Ajouter une page à l'application qui est la même que la page publique de l'utilisateur.
-Ça serait la page principale quand il cliquerait dessus.
-
-(Idée de même)
-Ajouter un dashboard dans la page d'acceuil de l'application.
-Image à gauche, et ajouter du texte à communiquer avec les gens.
 
 Quand il n'y a pas de recette, ajouter un bouton créer une recette.
 

@@ -10,6 +10,11 @@
     padding: 0.5em;
   }
 }
+@media screen and (min-width: 400px) {
+  .d-xsm-flex {
+    display: flex !important;
+  }
+}
 
 .root {
   min-height: 100vh;

@@ -43,9 +43,9 @@ export const KindViewer = ({kind, ancestors, kinds, recipeKinds}) => {
         let count = k.recipe_count || 0
         return <div key={k.id} className="mb-3">
           <a href={localeHref("/k/"+k.id)} className="plain-link">
-            <div className='d-flex'>
+            <div className='d-block d-xsm-flex'>
               <RecipeSmallImage {...{recipe: k}} />
-              <div style={{width: '1em'}}/>
+              <div style={{width: '1em', marginTop: '-0.5em'}}/>
               <div>
                 <div className='ff-satisfy fs-2 bold mt-3' style={{lineHeight: 1}}>{k.name}</div>
                 <div className='fs-13'>({count} {count > 1 ? t('recipes') : t('recipe')})</div>
