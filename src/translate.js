@@ -118,7 +118,7 @@ export function tr(id, locale) {
     Home_8: "Desserts",
     Home_9: "Un éditeur de recette spécialisé",
     Home_10: "Créez des recettes rapidement à l'aide d'un éditeur de recette spécialisé. Explorez par vous-même ce qu'il peut faire ici-bas!",
-    Home_11: "Un bibliothèque de recettes gratuites",
+    Home_11: "Des recettes par catégories",
     Home_12: "Les recettes sont classées par catégories pour pouvoir facilement les comparer. (Ex: Biscuits aux brisures de chocolats)",
     Home_13: "Trouvez la recette qui vous plaît le plus et utilisez la comme point de départ. Copiez et personnalisez!",
     Help_login: 'Vous avez déjà un compte?',

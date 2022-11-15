@@ -61,7 +61,13 @@ export const SuggestionsPage = ({}) => {
   return <>
     <br/>
     <h2 className='text-center'>
+      {answers.length >= 1 ? <>
+        <button type='button' className='plain-btn me-2' onClick={() => {setAnswers(answers.slice(0,-1))}}>
+          <img src='/icons/arrow-left-square.svg' width='26' />
+        </button>
+      </> : null}
       {isDone ? <>{t('Result')}: {nbResult}</> : question.title+'?'}
+      {answers.length >= 1 ? <img src='/icons/arrow-left-square-white.svg' width='26' /> : null}
     </h2>
     { isDone ? null : <QuestionPage {...{...question, answer}} />}
     <br/><br/>

@@ -386,7 +386,7 @@ router.get('/fetch_suggestions', function(req, res, next) {
     return score
   }).reverse()
   // Don't send search data to the user, only what is necessary.
-  let result = suggestions.slice(0,10).map(k => _.pick(k, ['name', 'image_slug', 'recipe_count']))
+  let result = suggestions.slice(0,10).map(k => _.pick(k, ['id', 'name', 'image_slug', 'recipe_count']))
   res.json({suggestions: result, nbSuggestions: suggestions.length})
 })
 
