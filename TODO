@@ -14,6 +14,8 @@ The ability to back up suggestions...
 
 Chauqe recipe kind devrait avoir un pointage pour chaque catégorie allant de 0 à 1.
 
+Use Link instead of <a href> everywhere, this way it works both inside the app and outside.
+
 Boulette de pois chiches ne s'affiche pas correctement parce que je l'avais modifier pour être une recette Heda.
 
 What do I like about my website?

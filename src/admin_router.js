@@ -38,6 +38,14 @@ router.post('/backup_db', function(req, res, next) {
   db.doBackup()
   res.send('Database backup successful.')
 })
+router.post('/calc_recipe_kinds', function(req, res, next) {
+
+  let recipeKinds = fetchRecipeKinds(db, {}, res.locals.locale)
+  recipeKinds.forEach(recipeKind => {
+  })
+
+  res.send('OK')
+})
 router.post('/exe_sql', function(req, res, next) {
   db.doBackup()
   db.transaction(() => {
