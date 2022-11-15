@@ -8,11 +8,21 @@ Utiliser le design des recettes des RecipeKind pour le design de ShowRecipe. Sim
 Ou bien oui c'est correct de mettre en avant plan l'utilisateur, parce que l'idée c'est qu'un visiteur qui aime la recette va vouloir voir des recettes similaires du même auteur possible? Le visiteur veut ses goûts, pas tant ses créations...
 Demander à Céline.
 
+Chauqe recipe kind devrait avoir un pointage pour chaque catégorie allant de 0 à 1.
+is_dessert
+is_meal
+is_appetizer
+is_other
+is_small_qty
+is_medium_qty
+is_big_qty
+is_simple
+is_normal
+is_gourmet
+is_very_fast
+is_fast
 
 Boulette de pois chiches ne s'affiche pas correctement parce que je l'avais modifier pour être une recette Heda.
-
-Hotdog au tofu pané et Tofu au beurre ont le mauvais Kind. Ils sont dans Ingrédients...
-
 
 What do I like about my website?
 - Images

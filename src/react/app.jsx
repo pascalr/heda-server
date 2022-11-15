@@ -139,11 +139,10 @@ const HomeTabs = ({machines}) => {
       //<HomeTab {...{title: t('Tags'), path: '/c'}} />
   return <>
     <ul className="nav nav-tabs mb-3">
-      <HomeTab {...{title: t('My_recipes'), path: '/l'}} />
+      <HomeTab {...{title: t('My_recipes'), path: '/'}} />
       <HomeTab {...{title: t('Users'), path: '/s'}} />
       <HomeTab {...{title: t('Explore'), path: '/x'}} />
-      <HomeTab {...{title: t('Suggestions'), path: '/'}} />
-      <HomeTab {...{title: t('Suggestions2'), path: '/g'}} />
+      <HomeTab {...{title: t('Suggestions'), path: '/g'}} />
       {machines.map((machine) => (
         <HomeTab key={'m'+machine.id} {...{title: machine.name, path: '/m/'+machine.id}} />
       ))}
@@ -217,14 +216,14 @@ const QuestionPage = ({title, answers, answer}) => {
   </>
 }
 
-const Suggestions2Page = ({recipeKinds}) => {
+const SuggestionsPage = ({recipeKinds}) => {
 
   const [answers, setAnswers] = useState([])
 
   let randomRecipes = shuffle(recipeKinds.filter(k => k.recipe_count))
 
   let questions = [
-    {title: 'Quoi cuisiner', answers: ['Une entrée', 'Un repas', 'Un dessert', "N'importe quoi"]},
+    {title: 'Quoi cuisiner', answers: ['Une entrée', 'Un repas', 'Un dessert', "Autre", "Peu importe"]},
     {title: 'Quelle quantité', answers: ['Petite', 'Moyenne', "Grosse", 'Peu importe']},
     {title: 'Difficulté', answers: ['Simple', 'Normale', 'Gastronomique', 'Peu importe']},
     {title: 'Pour quand', answers: ['Tout de suite', 'Bientôt', 'Peu importe']},
@@ -243,60 +242,6 @@ const Suggestions2Page = ({recipeKinds}) => {
     <h2 className="fs-14 bold">{t('Suggestions')}</h2>
     <RecipeCarrousel {...{items: randomRecipes.slice(0,10), isRecipeKind: true}}/>
   </>
-}
-
-const HomePage = ({tags, recipes, suggestions, favoriteRecipes, recipeKinds}) => {
-
-  //let favList = {title: t("Favorites"), records: []}
-  let toCookList = {title: t('To_cook_soon'), records: []}
-  let toTryList = {title: t('To_try'), records: []}
-  favoriteRecipes.forEach(fav => {
-    let recipe = recipes.find(r => r.id == fav.recipe_id)
-    if (fav.list_id == 1) { toCookList.records.push({recipe, fav}) }
-    else if (fav.list_id == 2) { toTryList.records.push({recipe, fav}) }
-    //else { favList.records.push({recipe, fav}) }
-  })
-  toCookList.records = sortBy(toCookList.records, (r => new Date(r.fav.updated_at).getTime())).reverse()
-  toTryList.records = sortBy(toTryList.records, (r => new Date(r.fav.updated_at).getTime())).reverse()
-  const lists = [toCookList, toTryList]
-  //const lists = [toCookList, favList, toTryList]
-
-  let suggestionsByTagId = suggestions.reduce((acc, suggestion) => {
-    let prev = acc[suggestion.tag_id]
-    acc[suggestion.tag_id] = !prev ? [suggestion] : [...prev, suggestion]
-    return acc
-  }, {})
-  const sTags = sortBy(tags, "position")
-    
-  let randomRecipes = shuffle(recipeKinds.filter(k => k.recipe_count))
-
-  //<h2 className="fs-12 italic gray">{t('Suggestions_for_you')}</h2>
-  return <>
-    <h2 className="fs-14 italic gray">{t('Suggestions_for_you')}</h2>
-    <RecipeCarrousel {...{items: randomRecipes.slice(0,10), isRecipeKind: true}}/>
-    {lists.map(list => {
-      if (list.records.length <= 0) {return ''}
-      return <div key={list.title}>
-        <h2 className="fs-14 bold">{list.title}</h2>
-        <RecipeCarrousel {...{items: list.records.map(r => r.recipe)}}/>
-      </div>
-    })}
-    {sTags.map(tag => {
-      if (!suggestionsByTagId[tag.id]) {return ''}
-      const unsortedItems = suggestionsByTagId[tag.id].map(sugg => recipes.find(r => r.id == sugg.recipe_id))
-      const itemsWithImages = unsortedItems.filter(r => r.image_slug)
-      const itemsWithoutImages = unsortedItems.filter(r => !r.image_slug)
-      const items = [...shuffle(itemsWithImages), ...shuffle(itemsWithoutImages)]
-      return <div key={tag.id}>
-        <h2 className="fs-14 bold">{tag.name}</h2>
-        <RecipeCarrousel {...{items}}/>
-      </div>
-    })}
-    <h2 className="fs-14 italic gray">{t('Suggestions_for_you')}</h2>
-    <RecipeCarrousel {...{items: randomRecipes.slice(11,20), isRecipeKind: true}}/>
-    <h2 className="fs-14 italic gray">{t('Suggestions_for_you')}</h2>
-    <RecipeCarrousel {...{items: randomRecipes.slice(21,30), isRecipeKind: true}}/>
-  </> 
 }
 
 const ShowKind = ({kindId, locale}) => {
@@ -611,11 +556,10 @@ export const App = () => {
 
   const routes = [
     {match: "/s", elem: () => <UsersPage />},
-    {match: "/g", elem: () => <Suggestions2Page {...{recipeKinds}} />},
+    {match: "/g", elem: () => <SuggestionsPage {...{recipeKinds}} />},
     {match: "/x", elem: () => <ExplorePage />},
     {match: "/c", elem: () => <EditTags {...{tags}} />},
     {match: "/n", elem: () => <NewRecipe {...{recipeKinds}} />},
-    {match: "/l", elem: () => <MyRecipes {...{recipes, suggestions, favoriteRecipes, tags, mixes, recipeKinds, user, images}} />},
     {match: "/r/:id", elem: ({id}) =>
       <ShowRecipe {...{recipeId: id, recipes, mixes, favoriteRecipes, recipeKinds, images, user, users, suggestions, tags}} />
     },
@@ -648,7 +592,7 @@ export const App = () => {
     },
   ]
   
-  const defaultElement = (params) => <HomePage {...{recipes, tags, suggestions, favoriteRecipes, machines, recipeKinds}} />
+  const defaultElement = (params) => <MyRecipes {...{recipes, suggestions, favoriteRecipes, tags, mixes, recipeKinds, user, images}} />
 
   const {elem,idx} = useRouter(routes, defaultElement)
 
@@ -980,3 +924,59 @@ document.addEventListener('DOMContentLoaded', () => {
 //const PAGE_18 = 18
 //const PAGE_19 = 19
 //const PAGE_20 = 20
+  //
+//
+//
+//const HomePage = ({tags, recipes, suggestions, favoriteRecipes, recipeKinds}) => {
+//
+//  //let favList = {title: t("Favorites"), records: []}
+//  let toCookList = {title: t('To_cook_soon'), records: []}
+//  let toTryList = {title: t('To_try'), records: []}
+//  favoriteRecipes.forEach(fav => {
+//    let recipe = recipes.find(r => r.id == fav.recipe_id)
+//    if (fav.list_id == 1) { toCookList.records.push({recipe, fav}) }
+//    else if (fav.list_id == 2) { toTryList.records.push({recipe, fav}) }
+//    //else { favList.records.push({recipe, fav}) }
+//  })
+//  toCookList.records = sortBy(toCookList.records, (r => new Date(r.fav.updated_at).getTime())).reverse()
+//  toTryList.records = sortBy(toTryList.records, (r => new Date(r.fav.updated_at).getTime())).reverse()
+//  const lists = [toCookList, toTryList]
+//  //const lists = [toCookList, favList, toTryList]
+//
+//  let suggestionsByTagId = suggestions.reduce((acc, suggestion) => {
+//    let prev = acc[suggestion.tag_id]
+//    acc[suggestion.tag_id] = !prev ? [suggestion] : [...prev, suggestion]
+//    return acc
+//  }, {})
+//  const sTags = sortBy(tags, "position")
+//    
+//  let randomRecipes = shuffle(recipeKinds.filter(k => k.recipe_count))
+//
+//  //<h2 className="fs-12 italic gray">{t('Suggestions_for_you')}</h2>
+//  return <>
+//    <h2 className="fs-14 italic gray">{t('Suggestions_for_you')}</h2>
+//    <RecipeCarrousel {...{items: randomRecipes.slice(0,10), isRecipeKind: true}}/>
+//    {lists.map(list => {
+//      if (list.records.length <= 0) {return ''}
+//      return <div key={list.title}>
+//        <h2 className="fs-14 bold">{list.title}</h2>
+//        <RecipeCarrousel {...{items: list.records.map(r => r.recipe)}}/>
+//      </div>
+//    })}
+//    {sTags.map(tag => {
+//      if (!suggestionsByTagId[tag.id]) {return ''}
+//      const unsortedItems = suggestionsByTagId[tag.id].map(sugg => recipes.find(r => r.id == sugg.recipe_id))
+//      const itemsWithImages = unsortedItems.filter(r => r.image_slug)
+//      const itemsWithoutImages = unsortedItems.filter(r => !r.image_slug)
+//      const items = [...shuffle(itemsWithImages), ...shuffle(itemsWithoutImages)]
+//      return <div key={tag.id}>
+//        <h2 className="fs-14 bold">{tag.name}</h2>
+//        <RecipeCarrousel {...{items}}/>
+//      </div>
+//    })}
+//    <h2 className="fs-14 italic gray">{t('Suggestions_for_you')}</h2>
+//    <RecipeCarrousel {...{items: randomRecipes.slice(11,20), isRecipeKind: true}}/>
+//    <h2 className="fs-14 italic gray">{t('Suggestions_for_you')}</h2>
+//    <RecipeCarrousel {...{items: randomRecipes.slice(21,30), isRecipeKind: true}}/>
+//  </> 
+//}
