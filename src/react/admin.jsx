@@ -264,8 +264,17 @@ const TranslationsPage = ({translations}) => {
   </>
 }
 
-const SelectTableName = () => {
- return <CollectionSelect field="table_name" options={Object.keys(schema)} showOption={n => n} onChange={() => {}} />
+const withTableSelector = () => {
+  const [table, setTable] = useState(null)
+
+  let options = Object.keys(schema).sort()
+  let elem = <select value={table||''} onChange={(e) => setTable(e.target.value)}>
+    <option value="" label=" "></option>
+    {options.map((opt, i) => {
+      return <option value={opt} key={opt}>{opt}</option>
+    })}
+  </select>
+  return [table, elem]
 }
 
 const Console = () => {
@@ -472,7 +481,8 @@ const TranslateRecipePage = ({translations, recipes, locale}) => {
 
 const DbPage = () => {
 
-  const [table, setTable] = useState('table_name')
+  //const [table, setTable] = useState('table_name')
+  const [table, tableSelector] = withTableSelector()
   const [data, setData] = useState(null)
 
   useEffect(() => {
@@ -484,9 +494,15 @@ const DbPage = () => {
 
   let columns = Object.keys(data?.at(0)||{})
 
+  const updateField = (row, field) => {
+    console.log('row', row)
+    console.log('field', field)
+  }
+
   return <>
     <h1>DB</h1>
-    <b>TABLE: </b> <input value={table} onChange={e => setTable(e.target.value)} /><br/>
+    <b>TABLE: </b> {tableSelector}
+    <br/>
     <table className='table table-striped'>
       <thead className='thead-dark'>
         <tr>
@@ -496,7 +512,13 @@ const DbPage = () => {
       <tbody>
         {(data||[]).map(row => {
           return <tr key={row.id}>
-            {columns.map(c => <td key={c}>{row[c]}</td>)}
+            {columns.map(c => {
+              if (c == 'id' || c == 'updated_at' || c == 'created_at') {
+                return <td key={c}>{row[c]}</td>
+              } else {
+                return <td key={c}><input defaultValue={row[c]} type='text' onBlur={() => {updateField(row, c)}} /></td>
+              }
+            })}
           </tr>
         })}
       </tbody>
