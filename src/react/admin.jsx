@@ -348,7 +348,7 @@ const Console = () => {
 const SQLPage = () => {
 
   const [code, setCode] = useState('')
-  const [table, setTable] = useState('table_name')
+  const [table, tableSelector] = withTableSelector()
   const [column1, setColumn1] = useState('column_a')
   const [column2, setColumn2] = useState('column_b')
   const [addColumn, setAddColumn] = useState('name sum:real')
@@ -376,7 +376,7 @@ const SQLPage = () => {
       <button className="btn btn-primary" onClick={executeSQL}>Execute</button>
       <br/><br/><br/>
       <h6>Query generator:</h6>
-      <b>TABLE:</b> <input value={table} onChange={e => setTable(e.target.value)} /><br/>
+      <b>TABLE:</b> {tableSelector}<br/>
       <b>COLUMN 1:</b> <input value={column1} onChange={e => setColumn1(e.target.value)} /><br/>
       <b>COLUMN 2:</b> <input value={column2} onChange={e => setColumn2(e.target.value)} /><br/>
       <b>TYPES:</b> INTEGER, TEXT, BLOB, REAL, NUMERIC<br/>
