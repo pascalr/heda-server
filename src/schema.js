@@ -53,6 +53,7 @@ const schema = {
     is_allowed: user => user.is_admin,
   },
   'mixes': {
+    write_attrs: ['name', 'instructions', 'recipe_id'],
     is_allowed: user => user.is_admin,
   },
   'recipe_comments': {

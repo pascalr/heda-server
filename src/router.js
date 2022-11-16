@@ -7,14 +7,12 @@ import path from 'path';
 import _ from 'lodash';
 
 import { db } from './db.js';
-import { getTableList, safeNoQuotes, getWriteAttributes } from './sql_db.js';
 import passport from './passport.js';
 import { localeHref, now, ensureIsArray, shuffle } from './utils.js';
 import { tr } from './translate.js'
 import { translateRecipes } from '../tasks/translate_recipes.js'
 import Translator, { TranslationsCacheStrategy, LogStrategy } from './translator.js'
 import { findRecipeKindForRecipeName, fetchRecipeKinds2, fetchRecipeKinds, fetchRecipeKind, descriptionRecipeIngredients, fetchKindWithAncestors, fetchKinds, kindAncestorId } from "./lib.js"
-import schema from './schema.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

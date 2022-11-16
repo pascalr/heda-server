@@ -26,6 +26,7 @@ const AdminTabs = ({machines}) => {
       <HomeTab {...{title: t('Kinds'), path: '/admin/di'}} />
       <HomeTab {...{title: t('RecipeKinds'), path: '/admin/ki'}} />
       <HomeTab {...{title: t('SQL'), path: '/admin/sql'}} />
+      <HomeTab {...{title: t('DB'), path: '/admin/db'}} />
       <HomeTab {...{title: t('Console'), path: '/admin/console'}} />
       <HomeTab {...{title: t('Translations'), path: '/admin/translations'}} />
       <HomeTab {...{title: t('Translate Recipe'), path: '/admin/translate_recipe'}} />
@@ -469,6 +470,40 @@ const TranslateRecipePage = ({translations, recipes, locale}) => {
   </>
 }
 
+const DbPage = () => {
+
+  const [table, setTable] = useState('table_name')
+  const [data, setData] = useState(null)
+
+  useEffect(() => {
+    ajax({url: '/fetch_all/'+table, type: 'GET', success: (rows) => {
+      console.log('rows', rows)
+      setData(rows)
+    }})
+  }, [table])
+
+  let columns = Object.keys(data?.at(0)||{})
+
+  return <>
+    <h1>DB</h1>
+    <b>TABLE: </b> <input value={table} onChange={e => setTable(e.target.value)} /><br/>
+    <table className='table table-striped'>
+      <thead className='thead-dark'>
+        <tr>
+          {columns.map(c => <th key={c}>{c}</th>)}
+        </tr>
+      </thead>
+      <tbody>
+        {(data||[]).map(row => {
+          return <tr key={row.id}>
+            {columns.map(c => <td key={c}>{row[c]}</td>)}
+          </tr>
+        })}
+      </tbody>
+    </table>
+  </>
+}
+
 export const Admin = () => {
   
   if (!window.hcu) {initHcu()}
@@ -485,6 +520,7 @@ export const Admin = () => {
   const routes = [
     {match: "/admin/translations", elem: () => <TranslationsPage {...{translations}} />},
     {match: "/admin/sql", elem: () => <SQLPage />},
+    {match: "/admin/db", elem: () => <DbPage />},
     {match: "/admin/console", elem: () => <Console />},
     {match: "/admin/ki", elem: () => <RecipeKindsIndex {...{recipeKinds, recipes, publicUsers, locale, kinds}} />},
     {match: "/admin/di", elem: () => <KindsIndex {...{kinds, recipeKinds, locale}} />},
