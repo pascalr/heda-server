@@ -149,14 +149,31 @@ export function parseIngredientsAndHeaders(text) {
     const key = `${i}-${line}`
     // An ingredient section
     if (line[0] == '#') {
-      return {key: key, header: line.substr(1).trim()}
+      return {key, header: line.substr(1).trim()}
     }
     let args = line.split(";")
     itemNb += 1
-    return {key: key, qty: args[0].trim(), label: args[1].trim(), item_nb: itemNb}
+    return {key, qty: args[0].trim(), label: args[1].trim(), item_nb: itemNb}
   }).filter(e => e)
 }
+function parseHedaInstructionsIngredients(raw) {
+  if (!raw) {return []}
+
+  let result = []
+  let instructions = raw.split(';')
+  instructions.forEach((instruction,i) => {
+    const key = `heda-${i}-${instruction}`
+    let args = instruction.split(',')
+    let cmd = args[0]
+    if (cmd == 'ADD') {
+      result.push({key, qty: args[1]?.trim()||'', label: args[2]?.trim()||''})
+    } else if (cmd == 'CONTAINER' && args[1]) {
+      result.push({key, header: args[1]})
+    }
+  })
+  return result
+}
 export function recipeIngredientsAndHeaders(recipe) {
-  return parseIngredientsAndHeaders(recipe.ingredients)
+  return [...parseIngredientsAndHeaders(recipe.ingredients), ...parseHedaInstructionsIngredients(recipe.heda_instructions)]
 }
 

@@ -486,17 +486,22 @@ const DbPage = () => {
   const [data, setData] = useState(null)
 
   useEffect(() => {
-    ajax({url: '/fetch_all/'+table, type: 'GET', success: (rows) => {
-      console.log('rows', rows)
-      setData(rows)
-    }})
+    if (table) {
+      ajax({url: '/fetch_all/'+table, type: 'GET', success: (rows) => {
+        setData(rows)
+      }})
+    }
   }, [table])
 
   let columns = Object.keys(data?.at(0)||{})
 
-  const updateField = (row, field) => {
-    console.log('row', row)
-    console.log('field', field)
+  const updateField = (row, field, value) => {
+    if (row[field] != value) {
+      let data = {field, value}
+      ajax({url: '/update_field/'+table+'/'+row.id, type: 'PATCH', data: data, success: () => {
+        toastr.info("Changes successfull.")
+      }, error: handleError(t('Error_updating')) })
+    }
   }
 
   return <>
@@ -516,7 +521,7 @@ const DbPage = () => {
               if (c == 'id' || c == 'updated_at' || c == 'created_at') {
                 return <td key={c}>{row[c]}</td>
               } else {
-                return <td key={c}><input defaultValue={row[c]} type='text' onBlur={() => {updateField(row, c)}} /></td>
+                return <td key={c}><input defaultValue={row[c]} type='text' onBlur={(e) => {updateField(row, c, e.target.value)}} /></td>
               }
             })}
           </tr>
