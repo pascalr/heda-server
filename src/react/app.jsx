@@ -9,7 +9,7 @@ import { RecipeList, RecipeIndex, duplicateRecipe } from './recipe_index'
 import { changeUrl, ajax, normalizeSearchText, join, bindSetter, capitalize, isTrue } from "./utils"
 import { localeHref2, getUrlParams, sortBy, sortByDate, shuffle } from "../utils"
 import { icon_path, image_path, image_slug_variant_path } from './routes'
-import {TextField, TextInput, CollectionSelect, ImageField, ImageSelector} from './form'
+import {TextField, CollectionSelect, ImageField, ImageSelector} from './form'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import {RecipeEditor} from "./recipe_editor"
 import {RecipeViewer, FavoriteButton} from "./recipe_viewer"
@@ -532,7 +532,7 @@ export const App = () => {
       <ShowMix {...{machineId: machineId, mixId: id, recipes, machines, mixes, machineFoods}} />,
     },
     {match: "/m/:machineId/e/:id", elem: ({id, machineId}) => 
-      <EditMix {...{machineId: machineId, mixId: id, recipes, machines, mixes, machineFoods}} />
+      <EditMix {...{machineId: machineId, mixId: id, machines, mixes, machineFoods}} />
     },
     {match: "/m/:id", elem: ({id}) => 
       <HedaIndex {...{machineId: id, machines}} />,

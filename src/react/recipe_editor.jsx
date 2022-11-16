@@ -2,10 +2,10 @@ import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
-import { ajax } from "./utils"
+import { ajax, changeUrl } from "./utils"
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import { RecipeTiptap, BubbleTiptap } from './tiptap'
-import {AutocompleteInput, updateRecord, TextField, CollectionSelect, TextAreaField} from './form'
+import {TextInput, AutocompleteInput, updateRecord, TextField, CollectionSelect, TextAreaField} from './form'
 import { parseIngredientsAndHeaders, serializeIngredientsAndHeaders, prettyPreposition } from '../lib'
 import {EditableImage} from './modals/recipe_image'
 import {PasteIngredientsButton} from './modals/paste_ingredients'
@@ -74,9 +74,9 @@ const labelForCmdType = (cmdType) => {
   return t ? t.label.fr : cmdType.id
 }
 
-export const ShowMix = ({machineId, mixId, recipes, machines, mixes, machineFoods}) => {
+export const ShowMix = ({machineId, mixId, machines, mixes, machineFoods}) => {
   
-  const context = {recipes, machines, mixes, machineFoods}
+  const context = {machines, mixes, machineFoods}
 
   const machine = machineId ? machines.find(m => m.id == machineId) : null
   const currentMachineFoods = machine ? machineFoods.filter(m => m.machine_id == machine.id) : machineFoods
@@ -117,9 +117,158 @@ export const ShowMix = ({machineId, mixId, recipes, machines, mixes, machineFood
   </>)
 }
 
-export const EditMix = ({machineId, mixId, recipes, recipeId, machines, mixes, machineFoods}) => {
+export const EditHedaInstructions = ({recipe, machineFoods}) => {
 
-  const context = {recipes, machines, mixes, machineFoods}
+  const context = {machineFoods}
+
+  let hedaInstructions = recipe.heda_instructions
+
+  //const recipeHTML = useCacheOrFetchHTML(inline_recipe_path({id: mix.recipe_id}), {waitFor: mix.recipe_id})
+
+  const update = () => {
+    window.hcu.updateField(recipe, 'heda_instructions', hedaInstructions)
+  }
+  
+  const instructions = (hedaInstructions||'').split(';')
+
+  const addInstruction = () => {
+    hedaInstructions = (hedaInstructions||'')+';'; update()
+  }
+  const removeInstruction = (line) => {
+    let e = [...instructions]
+    e.splice(line, 1)
+    hedaInstructions = e.join(';'); update()
+  }
+  const changeInstruction = (cmd,line) => {
+    instructions[line] = cmd
+    hedaInstructions = instructions.join(';')
+    update()
+  }
+  const updateArg = (argNb, value, line) => {
+    let args = instructions[line].split(',')
+    args[argNb] = value
+    instructions[line] = args.join(',')
+    hedaInstructions = instructions.join(';')
+    console.log('calling update 01'); update()
+  }
+  const handleDrop = ({source, destination, type, draggableId}) => {
+    if (!destination) return; // Ignore drop outside droppable container
+    
+    var updatedList = [...instructions];
+    const [reorderedItem] = updatedList.splice(source.index, 1);
+    updatedList.splice(destination.index, 0, reorderedItem);
+
+    hedaInstructions = updatedList.join(';')
+    update()
+  }
+  const moveMixAddToIng = (obj, line) => {
+    let data = {recipe_ingredient: {
+      raw: obj.qty,
+      raw_food: obj.machineFoodName
+    }}
+    ajax({url: recipe_recipe_ingredients_path(gon.recipe), type: 'POST', data: data, success: (ingredient) => {
+      window.recipe_editor.current.addIng(ingredient)
+      removeInstruction(line)
+    }})
+  }
+
+  const eInstructions = instructions.map((instruction,line) => {
+
+    let args = instruction.split(',')
+    let cmd = args[0]
+
+    let cmdType = CMD_TYPES.find(e => e.id == cmd)
+    let obj = cmdType ? cmdType.parse(args, context) : null
+    if (obj) {obj.type = cmdType}
+
+    let eArgs = ''
+    if (obj && obj.type.id == "ADD") {
+      eArgs = (<>
+        <TextInput defaultValue={obj.qty} onBlur={(qty) => updateArg(1, qty, line)} />
+        <AutocompleteInput name="food" choices={machineFoods} defaultValue={obj.machineFoodName}
+          onSelect={(e, term, item) => {
+            f = machineFoods.find(e => e.id == item.dataset.id);
+            updateArg(2, `${item.dataset.id}-${f ? f.name : ''}`, line)
+          }} onBlur={(name) => {
+            f = machineFoods.find(e => e.name  == name);
+            updateArg(2, `${f ? f.id : ''}-${name}`, line)
+          }} minChars={0}
+        />
+      </>)
+    } else if (obj && obj.type.id == "CONTAINER") {
+      eArgs = (<>
+        <TextInput defaultValue={obj.id} onBlur={(id) => updateArg(1, id, line)} />
+      </>)
+    }
+
+    return (
+      <Draggable key={`drag-instruction-${line}-${args}`} draggableId={`drag-instruction-${line}-${args}`} index={line}>
+        {(provided) => (<>
+          <div className="item-container" ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
+            <li key={`${line}-${instruction}`} className={`list-group-item${!obj || obj.errors ? ' cmd-error' : ''}`}>
+              <img className="clickable float-end" style={{marginTop: '0.4em'}} src="/icons/x-lg.svg" width="18" height="18" onClick={() => removeInstruction(line)}></img>
+              {(obj && obj.type.id == "ADD") ? <img className="clickable float-end" style={{marginRight: '0.4em', marginTop: '0.4em'}} src="/icons/arrow-down-up.svg" width="18" height="18" onClick={() => moveMixAddToIng(obj, line)}></img> : ''}
+    
+              {!obj || obj.errors ? <img className="float-end" style={{marginRight: '0.6em', marginTop: '0.4em'}} src="/icons/info-circle.svg" width="18" height="18"></img> : ''}
+              <div className='d-flex gap-10'>
+                <div className="dropdown">
+                  <button className="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {obj ? obj.type.label.fr : cmd}
+                  </button>
+                  <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    {CMD_TYPES.filter(e => e != cmd).map((cmdType,i) => (
+                      <span key={i} className="dropdown-item" onClick={() => changeInstruction(cmdType.id, line)}>
+                        {labelForCmdType(cmdType)}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                {eArgs}
+              </div>
+            </li>
+          </div>
+        </>)}
+      </Draggable>
+    )
+  })
+
+  //const recipeIds = favoriteRecipes.map(r => r.recipe_id).concat(recipes.map(r => r.id))
+  //const recipeNames = {}
+  //favoriteRecipes.forEach(r => {recipeNames[r.recipe_id] = r.name})
+  //recipes.forEach(r => {recipeNames[r.id] = r.name})
+  //  <br/><br/>
+  //  <h2>Recette</h2>
+  //  <h3>Lier avec une recette existante:</h3>
+  //  <CollectionSelect model={mix} field="recipe_id" options={recipeIds} showOption={(id) => recipeNames[id]} includeBlank="true" onChange={id => {mix.recipe_id = id; update()}} />
+  //  <h3>Lier en clonant une recette existante:</h3>
+  //  <h3>Créer une nouvelle recette:</h3>
+  //  <h3>Aperçu</h3>
+  //  {recipeHTML ? <div dangerouslySetInnerHTML={{__html: recipeHTML}} /> : ''}
+
+  // <h1 contentEditable suppressContentEditableWarning={true} onBlur={(e) => {updateName(e.target.innerText)}}>
+  //   {mix.name || 'Sans nom'}
+  // </h1>
+  // <h2>Commandes</h2>
+  return (<>
+    <DragDropContext onDragEnd={handleDrop}>
+      <Droppable droppableId="instructions-container">
+        {(provided) => (<>
+          <div className="instructions-container" {...provided.droppableProps} ref={provided.innerRef}>
+            <ul className="list-group">{eInstructions}</ul>
+            {provided.placeholder}
+          </div>
+        </>)}
+      </Droppable>
+    </DragDropContext>
+    <div style={{height: '0.5em'}}></div>
+    <img className="clickable" src="/icons/plus-circle.svg" width="24" height="24" onClick={addInstruction}></img>
+  </>)
+}
+
+// DEPRECATED: Use EditHedaInstructions
+export const EditMix = ({machineId, mixId, recipeId, machines, mixes, machineFoods}) => {
+
+  const context = {machines, mixes, machineFoods}
 
   const machine = machineId ? machines.find(m => m.id == machineId) : null
   const currentMachineFoods = machine ? machineFoods.filter(m => m.machine_id == machine.id) : machineFoods
@@ -468,9 +617,9 @@ export const RecipeEditor = ({recipe, machines, mixes, machineFoods, foods, imag
   //  <p>Vous pouvez ajouter des instructions pour automatiser cette recette.</p>
   //  <button type="button" className="btn btn-primary" onClick={createMix}>Ajouter</button>
   //</>)
-  let mixEditor = mix ? <>
+  let mixEditor = user.is_admin ? <>
     <h2>{t('Commands')}</h2>
-    <EditMix {...{machines, mixes, machineFoods, recipes}} />
+    <EditHedaInstructions {...{recipe, machineFoods}} />
   </> : null
 
   let changeOwner = (e) => {

@@ -23,7 +23,7 @@ let p = process.env.VOLUME_PATH
 let VOLUME_FOLDER = p[0] == '.' ? path.join(__dirname, '..', p) : p
 let IMAGE_FOLDER = path.join(VOLUME_FOLDER, 'images')
 
-const RECIPE_ATTRS = ['user_id', 'name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'ingredients', 'image_slug', 'servings_name', 'original_id', 'is_public']
+const RECIPE_ATTRS = ['user_id', 'name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'ingredients', 'image_slug', 'servings_name', 'original_id', 'is_public', 'heda_instructions']
 
 //const ensureLogIn = connectEnsureLogin.ensureLoggedIn;
 //const ensureLoggedIn = ensureLogIn();

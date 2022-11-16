@@ -9,7 +9,7 @@ import { image_slug_variant_path } from "./routes"
 import { t } from "../translate"
 import { localeHref, getUrlParams } from "../utils"
 import { getLocale } from "./lib"
-import { parseIngredientsAndHeaders, extractFoodNameFromIngredient, prettyMinutes } from "../lib"
+import { recipeIngredientsAndHeaders, extractFoodNameFromIngredient, prettyMinutes } from "../lib"
 
 const RecipeAttribute = ({recipe, attr, label}) => {
   if (!recipe[attr]) {return ''}
@@ -19,7 +19,7 @@ const RecipeAttribute = ({recipe, attr, label}) => {
 }
 
 const RecipeSmallItem = ({recipe}) => {
-  let ingredients = parseIngredientsAndHeaders(recipe.ingredients).filter(i => !i.header)
+  let ingredients = recipeIngredientsAndHeaders(recipe).filter(i => !i.header)
   // TODO: Sort the ingredients by weight.
   let mainIngredients = ingredients.slice(0,4)
   let labels = mainIngredients.map(i => extractFoodNameFromIngredient(i.label)).join(', ')

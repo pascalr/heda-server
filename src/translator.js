@@ -14,7 +14,7 @@
 //Pouvoir supprimer une traduction
 //Voir les traductions manquantes et ajouter un bouton pour les traduire automatiquement avec google translate.
 
-import { parseIngredientsAndHeaders, serializeIngredientsAndHeaders } from './lib.js';
+import { recipeIngredientsAndHeaders, serializeIngredientsAndHeaders } from './lib.js';
 import Quantity from './quantity.js';
 
 function replaceFirstChar(string, char) {
@@ -173,8 +173,8 @@ class Translator {
     return node
   }
 
-  async translateIngredientsAndHeaders(ingredients) {
-    let ingredientsAndHeaders = parseIngredientsAndHeaders(ingredients)
+  async translateIngredientsAndHeaders(recipe) {
+    let ingredientsAndHeaders = recipeIngredientsAndHeaders(recipe)
     let translatedIngAndHeaders = await Promise.all(ingredientsAndHeaders.map(async ingOrHeader => {
       let r = {...ingOrHeader}
       if (r.header) { // Header
@@ -201,7 +201,7 @@ class Translator {
     if (recipe.json) {
       translated.json = JSON.stringify(await this.translateTiptapContent(JSON.parse(recipe.json)))
     }
-    translated.ingredients = await this.translateIngredientsAndHeaders(recipe.ingredients)
+    translated.ingredients = await this.translateIngredientsAndHeaders(recipe)
     return translated
   }
 }

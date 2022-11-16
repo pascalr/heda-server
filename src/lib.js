@@ -19,7 +19,7 @@ export function kindAncestorId(kinds, k, isKind=false) {
 // Used for meta tag og:description
 export function descriptionRecipeIngredients(recipe, locale) {
   if (!recipe.ingredients) {return ''}
-  const ingredientsAndHeaders = parseIngredientsAndHeaders(recipe.ingredients)
+  const ingredientsAndHeaders = recipeIngredientsAndHeaders(recipe)
   const ingredients = ingredientsAndHeaders.filter(e => e.label || e.qty)
   if (ingredients.length === 0) {return ''}
   return tr("Ingredients", locale) + ": " + ingredients.map(ing => extractFoodNameFromIngredient(ing.label)).join(" · ")
@@ -140,6 +140,7 @@ export function serializeIngredientsAndHeaders(ingredients) {
   }).join("\n")
 }
 
+// It's better to use recipeIngredientsAndHeaders, use this only when necessary
 export function parseIngredientsAndHeaders(text) {
   if (!text) {return []}
   let itemNb = 0
@@ -154,5 +155,8 @@ export function parseIngredientsAndHeaders(text) {
     itemNb += 1
     return {key: key, qty: args[0].trim(), label: args[1].trim(), item_nb: itemNb}
   }).filter(e => e)
+}
+export function recipeIngredientsAndHeaders(recipe) {
+  return parseIngredientsAndHeaders(recipe.ingredients)
 }
 

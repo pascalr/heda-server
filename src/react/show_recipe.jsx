@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
 import { MainSearch } from './main_search'
-import { parseIngredientsAndHeaders, prettyPreposition } from "../lib"
+import { recipeIngredientsAndHeaders, prettyPreposition } from "../lib"
 import { normalizeSearchText, join, capitalize } from "./utils"
 import { image_slug_variant_path } from "./routes"
 import { t } from "../translate"

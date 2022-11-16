@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom'
 import { ajax, changeUrl } from "./utils"
 import { RecipeTiptap, BubbleTiptap } from './tiptap'
 import { Link, useOrFetchRecipe } from "./lib"
-import { parseIngredientsAndHeaders, quantityWithPreposition, prettyPreposition } from "../lib"
+import { recipeIngredientsAndHeaders, quantityWithPreposition, prettyPreposition } from "../lib"
 import { RecipeMediumImage } from "./image"
 import { EditTagsModal } from './modals/edit_tags'
 import { removeRecipe, AddToListMenu, ChangeVisibilityMenuItem, duplicateRecipe } from './recipe_index'
@@ -13,7 +13,7 @@ import { handleError } from "../hcu"
 
 export const IngredientList = ({recipe}) => {
 
-  const ingredientsAndHeaders = parseIngredientsAndHeaders(recipe.ingredients)
+  const ingredientsAndHeaders = recipeIngredientsAndHeaders(recipe)
   const ingredients = ingredientsAndHeaders.filter(e => e.label || e.qty)
 
   return <div id="ing_list">
