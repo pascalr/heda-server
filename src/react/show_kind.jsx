@@ -16,7 +16,7 @@ export const KindViewer = ({kind, ancestors, kinds, recipeKinds}) => {
 
   return <>
     <div className="trunk">
-      {!ancestors || ancestors.length === 0 ? '' :
+      {!ancestors?.length ? null :
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb" style={{margin: '-0.15em 0 0.5em 0'}}>
             {ancestors.map(k => {

@@ -13,8 +13,6 @@ RecipeKind recipe_count by locale. recipe_count_fr, recipe_count_en
 
 En bas de la page Home ajouter un petit texte qui explique que ce site est tout nouveau, mettre une date aussi.
 
-Use Link instead of <a href> everywhere, this way it works both inside the app and outside.
-
 Boulette de pois chiches ne s'affiche pas correctement parce que je l'avais modifier pour être une recette Heda.
 
 Suggestions should be dependant destroy of tags.

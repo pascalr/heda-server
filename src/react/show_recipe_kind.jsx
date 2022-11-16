@@ -75,14 +75,16 @@ export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors, recipeButt
 
   return <>
     <div className="trunk">
-      <nav aria-label="breadcrumb">
-        <ol className="breadcrumb" style={{margin: '-0.15em 0 0.5em 0'}}>
-          {(kindAncestors||[]).map(kind => {
-            return <li key={kind.id} className="breadcrumb-item"><a href={localeHref('/d/'+kind.id)}>{kind.name}</a></li>
-          })}
-          <li className="breadcrumb-item active" aria-current="page">{recipeKind.name}</li>
-        </ol>
-      </nav>
+      {!kindAncestors?.length ? null :
+        <nav aria-label="breadcrumb">
+          <ol className="breadcrumb" style={{margin: '-0.15em 0 0.5em 0'}}>
+            {(kindAncestors||[]).map(kind => {
+              return <li key={kind.id} className="breadcrumb-item"><a href={localeHref('/d/'+kind.id)}>{kind.name}</a></li>
+            })}
+            <li className="breadcrumb-item active" aria-current="page">{recipeKind.name}</li>
+          </ol>
+        </nav>
+      }
       <div className="d-block d-md-flex">
         <RecipeMediumImage {...{recipe: recipeKind}} />
         <div style={{margin: '0.5em 0.5em'}}></div>
