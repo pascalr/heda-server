@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 
 import { localeHref } from "../utils"
-import { Carrousel } from "./carrousel"
+import { RecipeCarrousel } from "./core"
 import { RecipeSmallImage } from "./image"
 import { MainSearch } from './main_search'
 import { getLocale } from "./lib"
@@ -31,12 +31,7 @@ export const KindViewer = ({kind, ancestors, kinds, recipeKinds}) => {
       {(kinds||[]).map(k => {
         return <div key={k.id}>
           <h2><a href={localeHref('/d/'+k.id)} className='plain-link'>{k.name}</a></h2>
-          <Carrousel {...{items: k.recipeKinds||[]}}>{item => <>
-            <a href={localeHref("/k/"+item.id)} className="plain-link">
-              <RecipeSmallImage {...{recipe: item}} />
-              <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
-            </a>
-          </>}</Carrousel>
+          <RecipeCarrousel items={k.recipeKinds||[]} isRecipeKind={true} />
         </div>
       })}
       {(recipeKinds||[]).map(k => {
