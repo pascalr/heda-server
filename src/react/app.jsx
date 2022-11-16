@@ -389,7 +389,7 @@ const MyRecipes = (props) => {
   toCookList = sortBy(toCookList, (r => new Date(r.fav.updated_at).getTime())).reverse()
 
   return (<>
-    {toCookList.length < 0 ? null : <>
+    {!toCookList?.length ? null : <>
       <h2 className="fs-14 bold">{t('My_list')}</h2>
       <RecipeCarrousel {...{items: toCookList.map(r => r.recipe)}}/>
     </>}
