@@ -377,7 +377,7 @@ const SQLPage = () => {
         <li>UPDATE {table} SET name = foo, value = bar, updated_at = ? WHERE id = 0;</li>
         <li>UPDATE users SET locale = 'en' WHERE locale IS NULL;</li>
         <li>INSERT INTO {table} (created_at, updated_at, name, value) VALUES (?, ?, 'foo', 'bar');</li>
-        <li>ALTER TABLE {table} ADD COLUMN column_name_a TEXT NULL, column_name_b INTEGER NULL;</li>
+        <li>ALTER TABLE {table} ADD COLUMN column_name_a TEXT NULL;</li>
         <li>(INTEGER, TEXT, BLOB, REAL, NUMERIC)</li>
         <li>ALTER TABLE: https://www.sqlite.org/lang_altertable.html</li>
         <li>

@@ -276,7 +276,7 @@ export const EditMix = ({machineId, mixId, recipes, recipeId, machines, mixes, m
   </>)
 }
 
-const NewIngredient = ({foods, updateIngredients, addIngredient}) => {
+const NewIngredient = ({addIngredient}) => {
   
   const [qty, setQty] = useState('')
   const [label, setLabel] = useState('')
@@ -301,7 +301,7 @@ const NewIngredient = ({foods, updateIngredients, addIngredient}) => {
   )
 }
 
-const EditableIngredient = ({recipe, ingredient, itemNb, foods, mixes, updateIngredients, removeIngredientOrHeader, locale}) => {
+const EditableIngredient = ({recipe, ingredient, itemNb, mixes, updateIngredients, removeIngredientOrHeader, locale}) => {
   
   const [qty, setQty] = useState(ingredient.qty)
   const [label, setLabel] = useState(ingredient.label)
@@ -377,21 +377,18 @@ export const RecipeEditor = ({recipe, machines, mixes, machineFoods, foods, imag
   function updateIngredients() {
     window.hcu.updateField(recipe, 'ingredients', serializeIngredientsAndHeaders(ingredientsAndHeaders))
   }
-
   function removeIngredientOrHeader(index) {
     ingredientsAndHeaders.splice(index, 1)
-    window.hcu.updateField(recipe, 'ingredients', serializeIngredientsAndHeaders(ingredientsAndHeaders))
+    updateIngredients()
   }
-
   function addIngredient(qty, label) {
     let key = `${ingredientsAndHeaders.length}-${qty}; ${label}`
     ingredientsAndHeaders.push({key, qty, label})
-    window.hcu.updateField(recipe, 'ingredients', serializeIngredientsAndHeaders(ingredientsAndHeaders))
+    updateIngredients()
   }
-
   function addIngredientSection() {
     ingredientsAndHeaders.push({key: `${ingredientsAndHeaders.length}-`, header: ''})
-    window.hcu.updateField(recipe, 'ingredients', serializeIngredientsAndHeaders(ingredientsAndHeaders))
+    updateIngredients()
   }
 
   let itemNb = 0
