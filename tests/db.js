@@ -2,6 +2,7 @@ import fs from 'fs'
 
 import { header, assertEquals, assertThrowsException, fail, pass, assert } from "./tests_helpers.js"
 import sqlDb from "../src/sql_db.js"
+import { fetchRecordLocaleAttrs } from "../src/lib.js"
 import schema from '../src/schema.js';
 
 fs.copyFileSync("var/db/dev.db", "var/db/test.db")
@@ -80,3 +81,9 @@ assertEquals("mod", fetched.name)
 //db.createRecord('recipe_kinds', {kind_id: kind.id, name_fr: 'Test2', name_en: 'Test2'}, admin)
 //db.createRecord('recipe_kinds', {kind_id: kind.id, name_fr: 'Test3', name_en: 'Test3'}, admin)
 //console.log('results', db.fetchTable('kinds', {id: kind.id}, 'recipe_kinds.name_fr', {join: {table: 'recipe_kinds', key: 'id', foreign: 'kind_id'}}))
+
+// Testing fetchRecordLocaleAttrs
+header('Testing fetchRecordLocaleAttrs')
+recipeKind = db.createRecord('recipe_kinds', {name_fr: 'Pomme', name_en: 'Apple'}, admin)
+fetched = fetchRecordLocaleAttrs(db, 'recipe_kinds', {id: recipeKind.id}, [], ['name'], 'fr')
+assertEquals(recipeKind.name_fr, fetched.name)

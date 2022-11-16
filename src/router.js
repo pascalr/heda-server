@@ -12,7 +12,7 @@ import { localeHref, now, ensureIsArray, shuffle } from './utils.js';
 import { tr } from './translate.js'
 import { translateRecipes } from '../tasks/translate_recipes.js'
 import Translator, { TranslationsCacheStrategy, LogStrategy } from './translator.js'
-import { findRecipeKindForRecipeName, fetchRecipeKinds2, fetchRecipeKinds, fetchRecipeKind, descriptionRecipeIngredients, fetchKindWithAncestors, fetchKinds, kindAncestorId } from "./lib.js"
+import { fetchTableLocaleAttrs, fetchRecordLocaleAttrs, findRecipeKindForRecipeName, fetchRecipeKinds, fetchRecipeKind, descriptionRecipeIngredients, fetchKindWithAncestors, fetchKinds, kindAncestorId } from "./lib.js"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -375,7 +375,7 @@ router.get('/fetch_suggestions', function(req, res, next) {
   let answers = req.query.answers.split(',')
   console.log('answers', answers)
   
-  let recipeKinds = fetchRecipeKinds2(db, {}, res.locals.locale, ['name', 'image_slug', 'recipe_count', 'is_meal', 'is_appetizer', 'is_dessert', 'is_simple', 'is_normal', 'is_gourmet', 'is_other', 'is_very_fast', 'is_fast', 'is_small_qty', 'is_big_qty', 'is_medium_qty'])
+  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug', 'recipe_count', 'is_meal', 'is_appetizer', 'is_dessert', 'is_simple', 'is_normal', 'is_gourmet', 'is_other', 'is_very_fast', 'is_fast', 'is_small_qty', 'is_big_qty', 'is_medium_qty'], ['name'], res.locals.locale)
   let suggestions = _.sortBy(recipeKinds, k => {
     let score = Math.random()*0.001
     answers.forEach(answer => {
@@ -405,7 +405,7 @@ router.get('/fetch_explore_users', function(req, res, next) {
 
 router.get('/fetch_explore', function(req, res, next) {
 
-  let kinds = fetchKinds(db, {}, res.locals.locale)
+  let kinds = fetchTableLocaleAttrs(db, 'kinds', {}, ['image_slug'], ['name'], res.locals.locale)
   let recipeKinds = fetchRecipeKinds(db, {}, res.locals.locale)
   let recipeKindsByAncestorId = _.groupBy(recipeKinds, (k) => kindAncestorId(kinds, k))
   delete recipeKindsByAncestorId.undefined

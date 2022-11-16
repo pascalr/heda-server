@@ -41,20 +41,42 @@ function replaceAttrWithLocale(attrs, attr, locale) {
   return i !== -1
 }
 
-export function fetchRecipeKinds2(db, conditions, locale, attributes) {
+export function fetchRecordLocaleAttrs(db, table, conditions, attributes, localeAttrs, locale) {
 
+  localeAttrs = ensureIsArray(localeAttrs)
   let attrs = [...ensureIsArray(attributes)]
-  let replacedName = replaceAttrWithLocale(attrs, 'name', locale)
-  let replacedDesc = replaceAttrWithLocale(attrs, 'json', locale)
-  let records = db.fetchTable('recipe_kinds', conditions, attrs)
-  return records.map(r => {
-    if (replacedName) {let n = localeAttr('name', locale); r.name = r[n]; delete r[n]}
-    if (replacedDesc) {let n = localeAttr('json', locale); r.json = r[n]; delete r[n]}
-    return r
+  localeAttrs.forEach(attr => {
+    attrs.push(localeAttr(attr, locale))
+  })
+  let record = db.fetchRecord(table, conditions, attrs)
+  localeAttrs.forEach(attr => {
+    let localized = localeAttr(attr, locale)
+    record[attr] = record[localized]
+    delete record[localized]
+  })
+  return record
+}
+
+export function fetchTableLocaleAttrs(db, table, conditions, attributes, localeAttrs, locale) {
+
+  localeAttrs = ensureIsArray(localeAttrs)
+  let attrs = [...ensureIsArray(attributes)]
+  localeAttrs.forEach(attr => {
+    attrs.push(localeAttr(attr, locale))
+  })
+  let records = db.fetchTable(table, conditions, attrs)
+  return records.map(record => {
+    localeAttrs.forEach(attr => {
+      let localized = localeAttr(attr, locale)
+      record[attr] = record[localized]
+      delete record[localized]
+    })
+    return record
   })
 }
+
+
 // fetchDescription also fetch recipe_count
-// FIXME: DEPRECATED USE fetchRecipeKinds2
 export function fetchRecipeKinds(db, conditions, locale, fetchDescription=true) {
   let attrs = [localeAttr('name', locale), 'image_slug', 'kind_id']
   if (fetchDescription) {attrs.push(localeAttr('json', locale)); attrs.push('recipe_count')}

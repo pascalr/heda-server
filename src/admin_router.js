@@ -6,7 +6,6 @@ import { getTableList, safeNoQuotes, getWriteAttributes } from './sql_db.js';
 import { db } from './db.js';
 import analytics from './analytics.js'
 import { kindAncestorId } from "./lib.js"
-import { fetchKinds, fetchRecipeKinds, fetchRecipeKinds2 } from "./lib.js"
 
 const router = express.Router();
 
@@ -19,7 +18,7 @@ router.use((req, res, next) => {
 
 const renderAdmin = (req, res, next) => {
 
-  let recipeKinds = fetchRecipeKinds2(db, {}, res.locals.locale, ['name_fr', 'json_fr', 'name_en', 'json_en', 'kind_id', 'image_slug', 'recipe_count', 'is_meal', 'is_appetizer', 'is_dessert', 'is_simple', 'is_normal', 'is_gourmet', 'is_other', 'is_very_fast', 'is_fast', 'is_small_qty', 'is_big_qty', 'is_medium_qty'])
+  let recipeKinds = db.fetchTable('recipe_kinds', {}, ['name_fr', 'json_fr', 'name_en', 'json_en', 'kind_id', 'image_slug', 'recipe_count', 'is_meal', 'is_appetizer', 'is_dessert', 'is_simple', 'is_normal', 'is_gourmet', 'is_other', 'is_very_fast', 'is_fast', 'is_small_qty', 'is_big_qty', 'is_medium_qty'])
 
   res.locals.gon = {
     translations: db.fetchTable('translations', {}, ['from', 'to', 'original', 'translated']),
@@ -47,6 +46,8 @@ router.post('/backup_db', function(req, res, next) {
 })
 router.post('/calc_recipe_kinds', function(req, res, next) {
 
+  throw 'Fix deprecated fetchKinds and fetchRecipeKinds'
+  throw "Don't do this for all anymore. Maybe a button to do it for a single recipe, so it tries to save me time. Set the recipe kind based on it's kind."
   let kinds = fetchKinds(db, {}, res.locals.locale)
   let recipeKinds = fetchRecipeKinds(db, {}, res.locals.locale, true)
   recipeKinds.forEach(recipeKind => {
@@ -108,7 +109,7 @@ router.post('/translate_recipe/:id', function(req, res, next) {
 });
 router.post('/update_kinds_count', function(req, res, next) {
 
-  let recipeKinds = fetchRecipeKinds(db, {}, res.locals.locale)
+  let recipeKinds = db.fetchTable('recipe_kinds', {}, ['recipe_count'])
   recipeKinds.forEach(recipeKind => {
     let count = db.prepare('SELECT COUNT(*) FROM recipes WHERE is_public = 1 AND recipe_kind_id = ?').get(recipeKind.id)['COUNT(*)']
     if (recipeKind.recipe_count != count) {
