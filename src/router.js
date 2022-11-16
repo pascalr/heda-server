@@ -446,16 +446,16 @@ router.get('/fetch_recipe_kind/:id', function(req, res, next) {
 router.get('/fetch_kind/:id', function(req, res, next) {
 
   let id = parseInt(req.params.id)
-  let ancestors = fetchKindWithAncestors(db, {id}, res.locals.locale)
+  let ancestors = fetchWithAncestors(id, 'kind_id', (id) => (
+    fetchRecordLocaleAttrs(db, 'kinds', {id: id}, ['kind_id'], ['name'], res.locals.locale)
+  ))
   let kind = ancestors.pop(-1)
   if (!kind) {throw 'Unable to fetch kind. Not existent.'}
-  let kinds = fetchKinds(db, {kind_id: id}, res.locals.locale)||[]
+  let kinds = fetchTableLocaleAttrs(db, 'kinds', {kind_id: id}, ['kind_id'], ['name'], res.locals.locale)
   kinds.forEach(k => {
-    // TODO: Limit to 6
-    k.recipeKinds = fetchRecipeKinds(db, {kind_id: k.id}, res.locals.locale, false)
+    k.recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {kind_id: k.id}, ['image_slug', 'kind_id'], ['name', 'recipe_count'], res.locals.locale, {limit: 10})
   })
-  // FIXME: Fetch recipe_count but not json
-  let recipeKinds = fetchRecipeKinds(db, {kind_id: id}, res.locals.locale)
+  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {kind_id: id}, ['image_slug', 'kind_id'], ['name', 'recipe_count'], res.locals.locale)
   res.json({kind, ancestors, kinds, recipeKinds})
 });
 router.get('/fetch_search_data', function(req, res, next) {

@@ -41,14 +41,14 @@ function replaceAttrWithLocale(attrs, attr, locale) {
   return i !== -1
 }
 
-export function fetchRecordLocaleAttrs(db, table, conditions, attributes, localeAttrs, locale) {
+export function fetchRecordLocaleAttrs(db, table, conditions, attributes, localeAttrs, locale, options) {
 
   localeAttrs = ensureIsArray(localeAttrs)
   let attrs = [...ensureIsArray(attributes)]
   localeAttrs.forEach(attr => {
     attrs.push(localeAttr(attr, locale))
   })
-  let record = db.fetchRecord(table, conditions, attrs)
+  let record = db.fetchRecord(table, conditions, attrs, options)
   localeAttrs.forEach(attr => {
     let localized = localeAttr(attr, locale)
     record[attr] = record[localized]
@@ -57,14 +57,14 @@ export function fetchRecordLocaleAttrs(db, table, conditions, attributes, locale
   return record
 }
 
-export function fetchTableLocaleAttrs(db, table, conditions, attributes, localeAttrs, locale) {
+export function fetchTableLocaleAttrs(db, table, conditions, attributes, localeAttrs, locale, options) {
 
   localeAttrs = ensureIsArray(localeAttrs)
   let attrs = [...ensureIsArray(attributes)]
   localeAttrs.forEach(attr => {
     attrs.push(localeAttr(attr, locale))
   })
-  let records = db.fetchTable(table, conditions, attrs)
+  let records = db.fetchTable(table, conditions, attrs, options)
   return records.map(record => {
     localeAttrs.forEach(attr => {
       let localized = localeAttr(attr, locale)
