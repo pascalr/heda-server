@@ -12,7 +12,7 @@ import { localeHref, now, ensureIsArray, shuffle } from './utils.js';
 import { tr } from './translate.js'
 import { translateRecipes } from '../tasks/translate_recipes.js'
 import Translator, { TranslationsCacheStrategy, LogStrategy } from './translator.js'
-import { fetchWithAncestors, fetchTableLocaleAttrs, fetchRecordLocaleAttrs, findRecipeKindForRecipeName, fetchRecipeKinds, fetchRecipeKind, descriptionRecipeIngredients, kindAncestorId } from "./lib.js"
+import { fetchWithAncestors, fetchTableLocaleAttrs, fetchRecordLocaleAttrs, findRecipeKindForRecipeName, descriptionRecipeIngredients, kindAncestorId } from "./lib.js"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -460,7 +460,7 @@ router.get('/fetch_kind/:id', function(req, res, next) {
 });
 router.get('/fetch_search_data', function(req, res, next) {
 
-  let recipeKinds = fetchRecipeKinds(db, {}, res.locals.locale, false)
+  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug'], ['name'], res.locals.locale)
   let publicUsers = db.fetchTable('users', {}, ['name', 'image_slug'])
   res.json({recipeKinds, publicUsers})
 });
@@ -506,7 +506,7 @@ const renderApp = [ensureUser, function(req, res, next) {
   let recipeIds = o.recipes.map(r => r.id)
   let missingRecipeIds = o.favorite_recipes.map(r=>r.recipe_id).filter(id => !recipeIds.includes(id))
   o.recipes = [...o.recipes, ...db.fetchTable('recipes', {id: missingRecipeIds}, RECIPE_ATTRS)]
-  o.recipe_kinds = fetchRecipeKinds(db, {}, profile.locale) // FIXME: recipe_count, but not descriptions
+  o.recipe_kinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug', 'kind_id'], ['name', 'recipe_count'], res.locals.locale)
   attrs = ['name', 'instructions', 'recipe_id', 'original_recipe_id']
   o.mixes = db.fetchTable('mixes', {user_id: user.user_id}, attrs)
   o.machine_users = db.fetchTable('machine_users', {user_id: user.user_id}, ['machine_id'])
@@ -624,7 +624,7 @@ router.get('/k/:id', function(req, res, next) {
   if (req.user && req.user.user_id) { return next(); }
 
   let o = {}
-  o.recipe_kind = fetchRecipeKind(db, {id: req.params.id}, res.locals.locale)
+  o.recipe_kind = fetchRecordLocaleAttrs(db, 'recipe_kinds', {id: req.params.id}, ['image_slug', 'kind_id'], ['name', 'json', 'recipe_count'], res.locals.locale)
   if (!o.recipe_kind) {throw 'Unable to fetch recipe kind. Not existent.'}
 
   if (o.recipe_kind.kind_id) {
@@ -662,13 +662,6 @@ router.get('/u/:id', function(req, res, next) {
   let missingRecipeIds = o.favorite_recipes.map(r=>r.recipe_id).filter(id => !recipeIds.includes(id))
   let favRecipes = db.fetchTable('recipes', {id: missingRecipeIds}, RECIPE_ATTRS).filter(r => publicUsersIds.includes(r.user_id))
   o.recipes = [...o.recipes, ...favRecipes]
-  o.recipe_kinds = fetchRecipeKinds(db, {}, res.locals.locale, false)
-
-  let slugs1 = o.recipes.map(r=>r.image_slug).filter(x=>x)
-  let slugs2 = o.recipe_kinds.map(r=>r.image_slug).filter(x=>x)
-  ids = [...slugs1, ...slugs2].map(s => s.split('.')[0])
-  attrs = ['author', 'source', 'filename', 'is_user_author', 'slug']
-  o.images = db.fetchTable('images', {id: ids}, attrs)
 
   res.locals.gon = o
   res.render('show_user');
