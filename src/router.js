@@ -12,7 +12,7 @@ import { localeHref, now, ensureIsArray, shuffle } from './utils.js';
 import { tr } from './translate.js'
 import { translateRecipes } from '../tasks/translate_recipes.js'
 import Translator, { TranslationsCacheStrategy, LogStrategy } from './translator.js'
-import { fetchWithAncestors, fetchTableLocaleAttrs, fetchRecordLocaleAttrs, findRecipeKindForRecipeName, fetchRecipeKinds, fetchRecipeKind, descriptionRecipeIngredients, fetchKindWithAncestors, fetchKinds, kindAncestorId } from "./lib.js"
+import { fetchWithAncestors, fetchTableLocaleAttrs, fetchRecordLocaleAttrs, findRecipeKindForRecipeName, fetchRecipeKinds, fetchRecipeKind, descriptionRecipeIngredients, kindAncestorId } from "./lib.js"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -436,7 +436,7 @@ router.get('/fetch_recipe_kind/:id', function(req, res, next) {
   let recipes = db.prepare("SELECT recipes.*, users.locale, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE recipes.is_public = 1 AND recipes.recipe_kind_id = ?;").all(recipeKind.id)
   if (recipeKind.kind_id) {
     let kindAncestors = fetchWithAncestors(recipeKind.kind_id, 'kind_id', (id) => (
-      fetchRecordLocaleAttrs(db, 'kinds', {id: id}, ['kind_id'], ['name'], res.locals.locale)
+      fetchRecordLocaleAttrs(db, 'kinds', {id}, ['kind_id'], ['name'], res.locals.locale)
     ))
     res.json({recipeKind, recipes, kindAncestors})
   } else {
@@ -447,7 +447,7 @@ router.get('/fetch_kind/:id', function(req, res, next) {
 
   let id = parseInt(req.params.id)
   let ancestors = fetchWithAncestors(id, 'kind_id', (id) => (
-    fetchRecordLocaleAttrs(db, 'kinds', {id: id}, ['kind_id'], ['name'], res.locals.locale)
+    fetchRecordLocaleAttrs(db, 'kinds', {id}, ['kind_id'], ['name'], res.locals.locale)
   ))
   let kind = ancestors.pop(-1)
   if (!kind) {throw 'Unable to fetch kind. Not existent.'}
@@ -605,7 +605,9 @@ router.get('/d/:id', function(req, res, next) {
 
   let o = {}
   let id = parseInt(req.params.id)
-  o.ancestors = fetchKindWithAncestors(db, {id}, res.locals.locale)
+  o.ancestors = fetchWithAncestors(id, 'kind_id', (id) => (
+    fetchRecordLocaleAttrs(db, 'kinds', {id}, ['kind_id'], ['name'], res.locals.locale)
+  ))
   o.kind = o.ancestors.pop(-1)
   if (!o.kind) {throw 'Unable to fetch kind. Not existent.'}
   o.kinds = fetchTableLocaleAttrs(db, 'kinds', {kind_id: id}, ['kind_id'], ['name'], res.locals.locale)
@@ -626,7 +628,9 @@ router.get('/k/:id', function(req, res, next) {
   if (!o.recipe_kind) {throw 'Unable to fetch recipe kind. Not existent.'}
 
   if (o.recipe_kind.kind_id) {
-    o.kind_ancestors = fetchKindWithAncestors(db, {id: o.recipe_kind.kind_id}, res.locals.locale)
+    o.kind_ancestors = fetchWithAncestors(o.recipe_kind.kind_id, 'kind_id', (id) => (
+      fetchRecordLocaleAttrs(db, 'kinds', {id}, ['kind_id'], ['name'], res.locals.locale)
+    ))
   }
 
   // FIXME: recipes.*
