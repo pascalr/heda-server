@@ -174,9 +174,9 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
               </a>
               <div className="dropdown-menu">
                 <AddToListMenu {...{fav: favorite, recipe, user}} />
-                <hr className="dropdown-divider"/>
                 {recipeBelongsToSiblings ? <button type="button" className="dropdown-item" onClick={changeOwner}>{t('Attribute_to_this_profile')}</button> : ''}
                 {recipe.user_id == user.id ? <li><ChangeVisibilityMenuItem recipe={recipe} /></li> : ''}
+                <hr className="dropdown-divider"/>
                 {recipe.user_id == user.id ? <li><button type="button" className="dropdown-item" onClick={() => {removeRecipe(recipe) && changeUrl('/l')}}>{t('Delete_recipe')}</button></li> : ''}
                 {recipe.user_id != user.id ? <button type="button" className="dropdown-item" onClick={() => duplicateRecipe(recipe)}>{t('Copy_and_edit')}</button> : ''}
                 {user.is_admin && recipe.user_id != user.id ? <button type="button" className="dropdown-item" onClick={translateRecipe}>Translate recipe</button> : ''}

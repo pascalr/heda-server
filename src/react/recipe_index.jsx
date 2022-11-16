@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 
 import { ajax, normalizeSearchText, changeUrl } from "./utils"
-import { EditTagsModal } from './modals/edit_tags'
+//import { EditTagsModal } from './modals/edit_tags'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import { Link } from "./lib"
 import { RecipeThumbnailImage } from "./image"
@@ -45,18 +45,24 @@ export const ChangeVisibilityMenuItem = ({recipe}) => {
 
 export const AddToListMenu = ({fav, recipe, user}) => {
 
-  let inCookList = fav && fav.list_id == 1
-  let inTryList = fav && fav.list_id == 2
+  //let inCookList = fav && fav.list_id == 1
+  //let inTryList = fav && fav.list_id == 2
+
+  //return <>
+  //  <h6 className="dropdown-header">{t('Add_to_list')}</h6>
+  //  <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, inCookList ? 0 : 1, recipe, user)}><img src={"/icons/"+(inCookList ? "check-" : '')+"square.svg"} /> {t('To_cook_soon')}</button>
+  //  <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, inTryList ? 0 : 2, recipe, user)}><img src={"/icons/"+(inTryList ? "check-" : '')+"square.svg"} /> {t('To_try')}</button>
+  //</>
+  let inList = fav && fav.list_id == 1
 
   return <>
-    <h6 className="dropdown-header">{t('Add_to_list')}</h6>
-    <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, inCookList ? 0 : 1, recipe, user)}><img src={"/icons/"+(inCookList ? "check-" : '')+"square.svg"} /> {t('To_cook_soon')}</button>
-    <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, inTryList ? 0 : 2, recipe, user)}><img src={"/icons/"+(inTryList ? "check-" : '')+"square.svg"} /> {t('To_try')}</button>
+    <button type="button" className="dropdown-item" onClick={() => updateFavoriteRecipe(fav, inList ? 0 : 1, recipe, user)}>{inList ? t('Remove_from_my_list') : t('Add_to_my_list')}</button>
   </>
 }
 
-const RecipeListItemMenu = ({fav, recipe, editUserRecipe, user}) => {
+const RecipeListItemMenu = ({fav, recipe, user}) => {
 
+        //<button type="button" className="dropdown-item" onClick={() => editUserRecipe(recipe)}>{t('Tag')}</button>
   return <>
     <span className="dropdown m-auto">
       <button className="plain-btn" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -64,9 +70,7 @@ const RecipeListItemMenu = ({fav, recipe, editUserRecipe, user}) => {
       </button>
       <span className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
         {user.id != recipe.user_id ? '' : <Link path={'/e/'+recipe.id} className="dropdown-item">{t('Edit')}</Link>}
-        <button type="button" className="dropdown-item" onClick={() => editUserRecipe(recipe)}>{t('Tag')}</button>
         <ChangeVisibilityMenuItem recipe={recipe} />
-        <hr className="dropdown-divider"/>
         <AddToListMenu {...{fav, recipe, user}} />
         <hr className="dropdown-divider"/>
         {recipe.user_id != user.id ? <button type="button" className="dropdown-item" onClick={() => duplicateRecipe(recipe)}>{t('Copy_and_edit')}</button> : ''}
@@ -77,7 +81,7 @@ const RecipeListItemMenu = ({fav, recipe, editUserRecipe, user}) => {
   </>
 }
 
-export const RecipeList = ({list, selected, suggestions, tags, editUserRecipe, mixes, recipes, user, images}) => {
+export const RecipeList = ({list, selected, suggestions, tags, mixes, recipes, user, images}) => {
 
   console.log('RecipeList', list)
 
@@ -100,7 +104,7 @@ export const RecipeList = ({list, selected, suggestions, tags, editUserRecipe, m
               {mix ? <img src="/img/logo_001.svg" width="24" height="24"/> : ''}
             <span className='ms-2' style={{color: 'gray', fontSize: '0.78em', flexShrink: '3'}}>{recipeTags.map(tag => ` #${tag?.name}`)} </span>
             <span className="flex-grow-1"/>
-            <RecipeListItemMenu {...{fav, recipe, editUserRecipe, user}} />
+            <RecipeListItemMenu {...{fav, recipe, user}} />
           </li>
         )
       })}
@@ -111,7 +115,7 @@ export const RecipeList = ({list, selected, suggestions, tags, editUserRecipe, m
 export const RecipeIndex = ({favoriteRecipes, suggestions, tags, mixes, recipes, user, images}) => {
 
   const [recipeToEdit, setRecipeToEdit] = useState(null)
-  const [showModal, setShowModal] = useState(true)
+  //const [showModal, setShowModal] = useState(true)
   
   console.log('favoriteRecipes', favoriteRecipes)
 
@@ -128,15 +132,15 @@ export const RecipeIndex = ({favoriteRecipes, suggestions, tags, mixes, recipes,
     else if (f) { favList.push({recipe: recipe, fav: f}) }
   })
 
-  let editUserRecipe = (recipe) => {
-    setRecipeToEdit(recipe)
-    setShowModal(true)
-  }
+  //let editUserRecipe = (recipe) => {
+  //  setRecipeToEdit(recipe)
+  //  setShowModal(true)
+  //}
 
-  let listArgs = {suggestions, tags, editUserRecipe, mixes, recipes, user, images}
+  let listArgs = {suggestions, tags, mixes, recipes, user, images}
 
+    //<EditTagsModal {...{recipe: recipeToEdit, tags, suggestions, showModal, setShowModal}} />
   return (<>
-    <EditTagsModal {...{recipe: recipeToEdit, tags, suggestions, showModal, setShowModal}} />
     <br/>
     {publicRecipes.length || privateRecipes.length ? '' : <p>{t('No_personal_recipes_yet')}.</p>}
     {publicRecipes.length == 0 ? null : <>
