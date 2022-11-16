@@ -4,11 +4,12 @@ Une recette que j'ai fait* cette semaine.
 C'est vraiment bon et c'est super facile à faire!
 Je n'ai même pas eu le temps de finir ma bière sur le balcon que Céline avait fini de la préparer!
 
-Utiliser le design des recettes des RecipeKind pour le design de ShowRecipe. Simplement rajouter un header pour l'utilisateur qui a créé la recette. NON, ben ça dépend. Parce que si les utilisateurs font juste copier coller les recettes, on ne veut pas trop mettre en avant plan l'utilisateur qui a copier la recette. Mais si c'est une recette innovatrice, on veut.
-Ou bien oui c'est correct de mettre en avant plan l'utilisateur, parce que l'idée c'est qu'un visiteur qui aime la recette va vouloir voir des recettes similaires du même auteur possible? Le visiteur veut ses goûts, pas tant ses créations...
-Demander à Céline.
+Idéalement un input field que tu peux écrire dedans (avec un petit micro à côté!):
+- Un repas québécois => poutine, mieton, ...
+- Un dessert avec des pommes => tarte aux pommmes, gâteaux aux pommes, ...
+- Apporter à un potluck => ...
 
-Rentrer les données à partir de Red velvet cake (/admin/ek/18)
+RecipeKind recipe_count by locale. recipe_count_fr, recipe_count_en
 
 En bas de la page Home ajouter un petit texte qui explique que ce site est tout nouveau, mettre une date aussi.
 
@@ -160,3 +161,81 @@ Si je refais quelque chose avec les articles, intégré le support de GPT-3 qui 
 Une application qui tag les images seraient génial. L'utiliser pour tagger mes images automatiquement.
 Ensuite, quand l'utilisateur crée une recette, suggérer des images selon le nom de la recette qui match avec les
 tags détectés.
+
+
+***************************************************
+***************************************************
+***************************************************
+MYCROFT
+***************************************************
+***************************************************
+***************************************************
+We have detected that your computer has the libjack-jackd2-0 package installed.
+Mycroft requires a conflicting package, and will likely uninstall this package.
+On some systems, this can cause other programs to be marked for removal.
+Please review the following package changes carefully.
+Press enter to continue
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+build-essential is already the newest version (12.9ubuntu3).
+pkg-config is already the newest version (0.29.2-1ubuntu3).
+pkg-config set to manually installed.
+curl is already the newest version (7.81.0-1ubuntu1.6).
+git is already the newest version (1:2.34.1-1ubuntu1.5).
+libssl-dev is already the newest version (3.0.2-0ubuntu1.7).
+libssl-dev set to manually installed.
+pulseaudio is already the newest version (1:15.99.1+dfsg1-1ubuntu2).
+pulseaudio set to manually installed.
+pulseaudio-utils is already the newest version (1:15.99.1+dfsg1-1ubuntu2).
+pulseaudio-utils set to manually installed.
+python3 is already the newest version (3.10.6-1~22.04).
+python3 set to manually installed.
+The following packages were automatically installed and are no longer required:
+  glib-networking:i386 gstreamer1.0-x:i386 libaa1:i386 libavc1394-0:i386 libcaca0:i386
+  libcairo-gobject2:i386 libdv4:i386 libgdk-pixbuf-2.0-0:i386 libgstreamer-plugins-good1.0-0:i386
+  libgudev-1.0-0:i386 libiec61883-0:i386 libmp3lame0:i386 libproxy1v5:i386 libraw1394-11:i386
+  libsamplerate0:i386 libshout3:i386 libslang2:i386 libsoup2.4-1:i386 libspeex1:i386 libsqlite3-0:i386
+  libtag1v5:i386 libtag1v5-vanilla:i386 libtwolame0:i386 libvpx7:i386 libwavpack1:i386 libxdamage1:i386
+  libxv1:i386
+Use 'sudo apt autoremove' to remove them.
+The following additional packages will be installed:
+  autotools-dev icu-devtools libasound2-dev libaudio2 libblkid-dev libfann2 libglib2.0-dev-bin
+  libjack-dev libjack0 libjpeg-turbo8-dev libjpeg8-dev libjq1 libjs-sphinxdoc libjs-underscore
+  libltdl-dev libmount-dev libonig5 libout123-0 libpcre16-3 libpcre2-dev libpcre2-posix3 libpcre3-dev
+  libpcre32-3 libpcrecpp0v5 libportaudio2 libportaudiocpp0 libpython3-dev libpython3.10-dev
+  libselinux1-dev libsepol-dev libsyn123-0 libutempter0 m4 python3-distutils python3-lib2to3
+  python3.10-dev swig4.0
+Suggested packages:
+  autoconf-archive gnu-standards autoconf-doc bison-doc libasound2-doc nas libfann-doc
+  libgirepository1.0-dev libglib2.0-doc libxml2-utils icu-doc jackd1 libtool-doc gfortran
+  | fortran95-compiler gcj-jdk m4-doc jackd oss-compat oss4-base portaudio19-doc python-setuptools-doc
+  byobu | screenie | iselect ncurses-term swig-doc swig-examples swig4.0-examples swig4.0-doc
+The following packages will be REMOVED:
+  gstreamer1.0-plugins-good:i386 libasound2-plugins:i386 libjack-jackd2-0 libjack-jackd2-0:i386
+The following NEW packages will be installed:
+  autoconf automake autotools-dev bison flac icu-devtools jq libasound2-dev libaudio2 libblkid-dev
+  libfann-dev libfann2 libffi-dev libglib2.0-dev libglib2.0-dev-bin libicu-dev libjack-dev libjack0
+  libjpeg-dev libjpeg-turbo8-dev libjpeg8-dev libjq1 libjs-sphinxdoc libjs-underscore libltdl-dev
+  libmount-dev libonig5 libout123-0 libpcre16-3 libpcre2-dev libpcre2-posix3 libpcre3-dev libpcre32-3
+  libpcrecpp0v5 libportaudio2 libportaudiocpp0 libpython3-dev libpython3.10-dev libselinux1-dev
+  libsepol-dev libsyn123-0 libtool libutempter0 m4 mpg123 portaudio19-dev python3-dev python3-distutils
+  python3-lib2to3 python3-setuptools python3.10-dev screen swig swig4.0
+0 upgraded, 54 newly installed, 4 to remove and 15 not upgraded.
+Need to get 28.1 MB of archives.
+After this operation, 108 MB of additional disk space will be used.
+Do you want to continue? [Y/n]
+
+
+
+Small quantity: OK
+Medium quantity: ???
+Big quantity: OK
+Simple: Une recette que tu ferais pour tes enfants.
+Normal: Une recette que tu ferais pour des invités.
+Gourmet: Une recette que tu mangerais dans un restaurant un peu fancy.
+Very fast: Temps total rapide: Range: 0 à 30 mins
+Fast: Temps total qui n'est pas trop trop long. Range: 30 mins à 3h
+
+Proposer les doings de sorcière seulement quand qu'on est proche de l'halloween.
+Yule log cake only for Christmas.
