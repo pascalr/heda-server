@@ -18,7 +18,7 @@ router.use((req, res, next) => {
 
 const renderAdmin = (req, res, next) => {
 
-  let recipeKinds = db.fetchTable('recipe_kinds', {}, ['name_fr', 'json_fr', 'name_en', 'json_en', 'kind_id', 'image_slug', 'recipe_count', 'is_meal', 'is_appetizer', 'is_dessert', 'is_simple', 'is_normal', 'is_gourmet', 'is_other', 'is_very_fast', 'is_fast', 'is_small_qty', 'is_big_qty', 'is_medium_qty'])
+  let recipeKinds = db.fetchTable('recipe_kinds', {}, ['name_fr', 'json_fr', 'name_en', 'json_en', 'kind_id', 'image_slug', 'recipe_count_fr', 'recipe_count_en', 'is_meal', 'is_appetizer', 'is_dessert', 'is_simple', 'is_normal', 'is_gourmet', 'is_other', 'is_very_fast', 'is_fast', 'is_small_qty', 'is_big_qty', 'is_medium_qty'])
 
   res.locals.gon = {
     translations: db.fetchTable('translations', {}, ['from', 'to', 'original', 'translated']),
@@ -107,13 +107,27 @@ router.post('/translate_recipe/:id', function(req, res, next) {
     res.json(newRecipe)
   })
 });
+router.post('/update_recipes_locale', function(req, res, next) {
+
+  let recipes = db.prepare('SELECT recipes.id as id, recipes.locale as locale, user_id, users.locale as user_locale FROM recipes JOIN users ON users.id = recipes.user_id').all()
+  recipes.forEach(recipe => {
+    if (recipe.locale != recipe.user_locale) {
+      db.findAndUpdateRecord('recipes', recipe, {locale: recipe.user_locale}, {user_id: recipe.user_id}, {allow_write: 'locale'})
+    }
+  }) 
+  res.send('Ok done!')
+})
 router.post('/update_kinds_count', function(req, res, next) {
 
-  let recipeKinds = db.fetchTable('recipe_kinds', {}, ['recipe_count'])
+  let recipeKinds = db.fetchTable('recipe_kinds', {}, ['recipe_count_fr', 'recipe_count_en'])
   recipeKinds.forEach(recipeKind => {
-    let count = db.prepare('SELECT COUNT(*) FROM recipes WHERE is_public = 1 AND recipe_kind_id = ?').get(recipeKind.id)['COUNT(*)']
-    if (recipeKind.recipe_count != count) {
-      db.findAndUpdateRecord('recipe_kinds', recipeKind, {recipe_count: count}, req.user)
+    let countFr = db.prepare("SELECT COUNT(*) FROM recipes WHERE is_public = 1 AND recipe_kind_id = ? AND locale = 'fr'").get(recipeKind.id)['COUNT(*)']
+    let countEn = db.prepare("SELECT COUNT(*) FROM recipes WHERE is_public = 1 AND recipe_kind_id = ? AND locale = 'en'").get(recipeKind.id)['COUNT(*)']
+    if (recipeKind.recipe_count_fr != countFr) {
+      db.findAndUpdateRecord('recipe_kinds', recipeKind, {recipe_count_fr: countFr}, req.user)
+    }
+    if (recipeKind.recipe_count_en != countEn) {
+      db.findAndUpdateRecord('recipe_kinds', recipeKind, {recipe_count_en: countEn}, req.user)
     }
   })
   res.send('Ok done!')

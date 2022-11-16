@@ -151,7 +151,7 @@ const RecipeKindsIndex = ({recipes, recipeKinds, publicUsers, locale, kinds}) =>
           <Link path={'/admin/ek/'+recipeKind.id} className="plain-link">
             <div className="d-flex align-items-center mb-2">
               <div><RecipeThumbnailImage {...{recipe: recipeKind}} /></div>
-              <div className='ms-2'>{name} ({recipeKind.recipe_count || 0})</div>
+              <div className='ms-2'>{name} ({(recipeKind.recipe_count_fr||0)}, {(recipeKind.recipe_count_en||0)})</div>
             </div>
           </Link>
           <button type='button' className='btn ms-2 btn-sm btn-outline-secondary' onClick={() => destroyRecipeKind(recipeKind)}>Destroy</button>
@@ -195,6 +195,11 @@ const AdminPage = ({stats, publicUsers}) => {
       toastr.info("Recipe kinds matched successfully. Reload page to see changes.")
     }, error: handleError("Error matching recipe kinds.") })
   }
+  const updateRecipesLocale = () => {
+    ajax({url: '/update_recipes_locale', type: 'POST', success: () => {
+      toastr.info("Success")
+    }, error: handleError("Fail") })
+  }
   const translateRecipes = () => {
     ajax({url: '/translate_recipes', type: 'POST', success: ({missings}) => {
       toastr.info("Translate recipes successfull.")
@@ -220,6 +225,7 @@ const AdminPage = ({stats, publicUsers}) => {
       <button className="btn btn-primary m-2" type="button" onClick={backupDb}>Backup database</button>
       <button className="btn btn-primary m-2" type="button" onClick={translateRecipes}>Translate recipes</button>
       <button className="btn btn-primary m-2" type="button" onClick={matchRecipeKinds}>Match recipe kinds</button>
+      <button className="btn btn-primary m-2" type="button" onClick={updateRecipesLocale}>Update recipes locale</button>
       <button className="btn btn-primary m-2" type="button" onClick={updateKindsCount}>Update kinds count</button>
       <button className="btn btn-primary m-2" type="button" onClick={calcRecipeKinds}>Calc recipe kinds</button>
       <br/><br/><br/><h2>Output</h2>
