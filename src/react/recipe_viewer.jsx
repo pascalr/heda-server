@@ -6,7 +6,7 @@ import { RecipeTiptap, BubbleTiptap } from './tiptap'
 import { Link, useOrFetchRecipe } from "./lib"
 import { recipeIngredientsAndHeaders, quantityWithPreposition, prettyPreposition } from "../lib"
 import { RecipeMediumImage } from "./image"
-import { EditTagsModal } from './modals/edit_tags'
+//import { EditTagsModal } from './modals/edit_tags'
 import { removeRecipe, AddToListMenu, ChangeVisibilityMenuItem, duplicateRecipe } from './recipe_index'
 import { t } from "../translate"
 import { handleError } from "../hcu"
@@ -115,7 +115,7 @@ export const FavoriteButton = ({recipe, user, favorite, width, ...props}) => {
   
 export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKinds, images, user, users, recipes, suggestions, tags}) => {
 
-  const [showModal, setShowModal] = useState(false)
+  //const [showModal, setShowModal] = useState(false)
 
   const recipe = useOrFetchRecipe(recipes, recipeId)
   console.log('recipe', recipe)
@@ -150,8 +150,11 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
     userName = recipeUser ? recipeUser.name : `user${recipe.user_id}`
   }
 
+    //<EditTagsModal {...{recipe, tags, suggestions, showModal, setShowModal}} />
+            //<button type="button" className="btn btn-outline-secondary" onClick={() => setShowModal(true)}>
+            //  <img src="/icons/tags.svg" width="24"></img>
+            //</button>
   return (<>
-    <EditTagsModal {...{recipe, tags, suggestions, showModal, setShowModal}} />
     <div className="recipe mt-3">
       <div className="d-block d-md-flex" style={{gap: '20px'}}>
         <div><RecipeMediumImage {...{recipe, images, showCredit: true}} /></div>
@@ -164,9 +167,6 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
                 <img src="/icons/pencil.svg" width="24"></img>
               </Link>
             : ''}
-            <button type="button" className="btn btn-outline-secondary" onClick={() => setShowModal(true)}>
-              <img src="/icons/tags.svg" width="24"></img>
-            </button>
             <FavoriteButton {...{recipe, user, favorite}} />
             <span className="dropdown">
               <a className="btn btn-outline-secondary" href="FIXME" data-bs-toggle="dropdown">
