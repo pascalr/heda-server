@@ -266,6 +266,12 @@ export const BaseSearch = ({locale, renderingHome, data, onItemChoosen, onTermCh
   const selectedRef = useRef(null)
   const searchTransition = useTransition(isSearching)
 
+  const reset = () => {
+    setTerm('')
+    setSearch('')
+    setSelected(-1)
+  }
+
   //const allMatching = data ? filterItems([].concat(...Object.values(data)), term) : []
   const filtered = {}
   Object.keys(data||{}).forEach(key => {filtered[key] = filterItems(data[key], term)})
@@ -292,10 +298,10 @@ export const BaseSearch = ({locale, renderingHome, data, onItemChoosen, onTermCh
   let onKeyDown = ({key}) => {
     if (key == "ArrowDown") {select(selected >= allMatching.length-1 ? -1 : selected+1)}
     else if (key == "ArrowUp") {select(selected < 0 ? allMatching.length-1 : selected-1)}
-    else if (key == "Enter") {if (onItemChoosen) {onItemChoosen(allMatching[selected], {setIsSearching})}}
+    else if (key == "Enter") {if (onItemChoosen) {reset(); onItemChoosen(allMatching[selected], {setIsSearching})}}
     else if (key == "Escape") {
       if (!term || term == '') { setIsSearching(false) }
-      else { setSearch(''); setTerm('') }
+      else { reset() }
     }
   }
 

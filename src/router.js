@@ -422,10 +422,12 @@ router.get('/fetch_explore', function(req, res, next) {
 
 router.get('/fetch_recipe/:id', function(req, res, next) {
 
-  let recipe = db.fetchRecord('recipes', {id: req.params.id, is_public: 1}, RECIPE_ATTRS)
-  if (!recipe) {throw "Can't fetch a recipe. Does not exist or is private"}
-  // TODO: JOIN instead of seperate query
+  let recipe = db.fetchRecord('recipes', {id: req.params.id}, RECIPE_ATTRS)
+  if (!recipe) {throw "Can't fetch a recipe. Does not exist."}
   let user = db.fetchRecord('users', {id: recipe.user_id}, ['name'])
+  if (!user || (recipe.is_private && user.account_id != req.user.account_id)) {
+    throw "Can't fetch private recipe."
+  }
   res.json({...recipe, user_name: user.name})
 });
 router.get('/fetch_recipe_kind/:id', function(req, res, next) {
