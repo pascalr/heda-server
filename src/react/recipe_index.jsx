@@ -8,7 +8,7 @@ import { RecipeThumbnailImage } from "./image"
 import { t } from "../translate"
 import { handleError } from "../hcu"
   
-const updateFavoriteRecipe = (fav, list_id, recipe, user) => {
+export const updateFavoriteRecipe = (fav, list_id, recipe, user) => {
   if (fav && recipe.user_id == user.id && list_id == 0) {
     window.hcu.destroyRecord(fav)
   } else if (fav) {
