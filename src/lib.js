@@ -86,47 +86,6 @@ export function fetchWithAncestors(id, attr, fetch) {
   return [record]
 }
 
-// fetchDescription also fetch recipe_count
-export function fetchRecipeKinds(db, conditions, locale, fetchDescription=true) {
-  let attrs = [localeAttr('name', locale), 'image_slug', 'kind_id']
-  if (fetchDescription) {attrs.push(localeAttr('json', locale)); attrs.push('recipe_count')}
-  let records = db.fetchTable('recipe_kinds', conditions, attrs)
-  return records.map(r => {
-    let obj = {id: r.id, kind_id: r.kind_id, image_slug: r.image_slug, name: r[localeAttr('name', locale)]}
-    if (fetchDescription) {obj.description_json = r[localeAttr('json', locale)]; obj.recipe_count = r.recipe_count}
-    return obj
-  })
-}
-// fetchDescription also fetch recipe_count
-export function fetchRecipeKind(db, conditions, locale, fetchDescription=true) {
-  let attrs = [localeAttr('name', locale), 'image_slug', 'kind_id']
-  if (fetchDescription) {attrs.push(localeAttr('json', locale)); attrs.push('recipe_count')}
-  let r = db.fetchRecord('recipe_kinds', conditions, attrs)
-  let obj = {id: r.id, kind_id: r.kind_id, image_slug: r.image_slug, name: r[localeAttr('name', locale)]}
-  if (fetchDescription) {obj.description_json = r[localeAttr('json', locale)]; obj.recipe_count = r.recipe_count}
-  return obj
-}
-export function fetchKind(db, conditions, locale) {
-  let attrs = [localeAttr('name', locale), 'kind_id']
-  let r = db.fetchRecord('kinds', conditions, attrs)
-  return r ? {id: r.id, kind_id: r.kind_id, name: r[localeAttr('name', locale)]} : null
-}
-export function fetchKinds(db, conditions, locale) {
-  let attrs = [localeAttr('name', locale), 'kind_id']
-  let records = db.fetchTable('kinds', conditions, attrs)
-  return records.map(r => (
-    {id: r.id, kind_id: r.kind_id, name: r[localeAttr('name', locale)]}
-  ))
-}
-export function fetchKindWithAncestors(db, conditions, locale) {
-  let kind = fetchKind(db, conditions, locale)
-  if (!kind) {return null}
-  if (kind.kind_id) {
-    return [...fetchKindWithAncestors(db, {id: kind.kind_id}, locale), kind]
-  }
-  return [kind]
-}
-
 export function needsPreposition(qty) {
   let q = new Quantity({raw: qty})
   return !!q.label
