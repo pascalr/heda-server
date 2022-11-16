@@ -75,6 +75,14 @@ export function fetchTableLocaleAttrs(db, table, conditions, attributes, localeA
   })
 }
 
+export function fetchWithAncestors(id, attr, fetch) {
+  let record = fetch(id)
+  if (!record) {return null}
+  if (record[attr]) {
+    return [...fetchWithAncestors(record[attr], attr, fetch), record]
+  }
+  return [record]
+}
 
 // fetchDescription also fetch recipe_count
 export function fetchRecipeKinds(db, conditions, locale, fetchDescription=true) {

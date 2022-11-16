@@ -12,7 +12,7 @@ import { localeHref, now, ensureIsArray, shuffle } from './utils.js';
 import { tr } from './translate.js'
 import { translateRecipes } from '../tasks/translate_recipes.js'
 import Translator, { TranslationsCacheStrategy, LogStrategy } from './translator.js'
-import { fetchTableLocaleAttrs, fetchRecordLocaleAttrs, findRecipeKindForRecipeName, fetchRecipeKinds, fetchRecipeKind, descriptionRecipeIngredients, fetchKindWithAncestors, fetchKinds, kindAncestorId } from "./lib.js"
+import { fetchWithAncestors, fetchTableLocaleAttrs, fetchRecordLocaleAttrs, findRecipeKindForRecipeName, fetchRecipeKinds, fetchRecipeKind, descriptionRecipeIngredients, fetchKindWithAncestors, fetchKinds, kindAncestorId } from "./lib.js"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -375,7 +375,7 @@ router.get('/fetch_suggestions', function(req, res, next) {
   let answers = req.query.answers.split(',')
   console.log('answers', answers)
   
-  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug', 'recipe_count', 'is_meal', 'is_appetizer', 'is_dessert', 'is_simple', 'is_normal', 'is_gourmet', 'is_other', 'is_very_fast', 'is_fast', 'is_small_qty', 'is_big_qty', 'is_medium_qty'], ['name'], res.locals.locale)
+  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug', 'is_meal', 'is_appetizer', 'is_dessert', 'is_simple', 'is_normal', 'is_gourmet', 'is_other', 'is_very_fast', 'is_fast', 'is_small_qty', 'is_big_qty', 'is_medium_qty'], ['name', 'recipe_count'], res.locals.locale)
   let suggestions = _.sortBy(recipeKinds, k => {
     let score = Math.random()*0.001
     answers.forEach(answer => {
@@ -405,8 +405,8 @@ router.get('/fetch_explore_users', function(req, res, next) {
 
 router.get('/fetch_explore', function(req, res, next) {
 
-  let kinds = fetchTableLocaleAttrs(db, 'kinds', {}, ['image_slug'], ['name'], res.locals.locale)
-  let recipeKinds = fetchRecipeKinds(db, {}, res.locals.locale)
+  let kinds = fetchTableLocaleAttrs(db, 'kinds', {}, ['kind_id'], ['name'], res.locals.locale)
+  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug', 'kind_id'], ['name'], res.locals.locale)
   let recipeKindsByAncestorId = _.groupBy(recipeKinds, (k) => kindAncestorId(kinds, k))
   delete recipeKindsByAncestorId.undefined
   let kindIds = _.keys(recipeKindsByAncestorId).map(id => parseInt(id))
@@ -430,11 +430,14 @@ router.get('/fetch_recipe/:id', function(req, res, next) {
 });
 router.get('/fetch_recipe_kind/:id', function(req, res, next) {
 
-  let recipeKind = fetchRecipeKind(db, {id: req.params.id}, res.locals.locale)
+  let recipeKind = fetchRecordLocaleAttrs(db, 'recipe_kinds', {id: req.params.id}, ['image_slug', 'kind_id'], ['name', 'json'], res.locals.locale)
+  //let recipes = db.fetchTable('recipes', {is_public: 1, recipe_kind_id: recipeKind.id}, RECIPE_ATTRS)
   // FIXME: SELECT recipes.*
   let recipes = db.prepare("SELECT recipes.*, users.locale, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE recipes.is_public = 1 AND recipes.recipe_kind_id = ?;").all(recipeKind.id)
   if (recipeKind.kind_id) {
-    let kindAncestors = fetchKindWithAncestors(db, {id: recipeKind.kind_id}, res.locals.locale)
+    let kindAncestors = fetchWithAncestors(recipeKind.kind_id, 'kind_id', (id) => (
+      fetchRecordLocaleAttrs(db, 'kinds', {id: id}, ['kind_id'], ['name'], res.locals.locale)
+    ))
     res.json({recipeKind, recipes, kindAncestors})
   } else {
     res.json({recipeKind, recipes})
