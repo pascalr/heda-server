@@ -508,7 +508,7 @@ const DbPage = () => {
     <h1>DB</h1>
     <b>TABLE: </b> {tableSelector}
     <br/>
-    <table className='table table-striped'>
+    <table key={table} className='table table-striped'>
       <thead className='thead-dark'>
         <tr>
           {columns.map(c => <th key={c}>{c}</th>)}

@@ -9,9 +9,14 @@ Idéalement un input field que tu peux écrire dedans (avec un petit micro à c�
 - Un dessert avec des pommes => tarte aux pommmes, gâteaux aux pommes, ...
 - Apporter à un potluck => ...
 
+utiliser fetchRecipeKinds2 partout
 RecipeKind recipe_count by locale. recipe_count_fr, recipe_count_en
 
 En bas de la page Home ajouter un petit texte qui explique que ce site est tout nouveau, mettre une date aussi.
+HedaCuisine est un tout nouveau site. Il se peut très bien qu'il possède quelques défauts. Soyez indulgents s'il vous plait et n'hésitez pas à me contacter pour toute question ou commentaire.
+Timeline:
+  - 2022: Début de création du site
+  - 2023: Sortie public du site
 
 Prevent leaving recipe editor when changes are not saved yet.
 
