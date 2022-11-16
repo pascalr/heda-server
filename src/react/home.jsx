@@ -21,7 +21,7 @@ export const Home = () => {
 
   const locale = getLocale()
   const recipe = useHcuState([gon.recipe], {tableName: 'recipes'})[0]
-  const [kinds,] = useState(gon.kinds)
+  //const [kinds,] = useState(gon.kinds||[])
 
   if (!window.hcu) {initHcu(); window.hcu.makeDummy() }
 

@@ -608,14 +608,11 @@ router.get('/d/:id', function(req, res, next) {
   o.ancestors = fetchKindWithAncestors(db, {id}, res.locals.locale)
   o.kind = o.ancestors.pop(-1)
   if (!o.kind) {throw 'Unable to fetch kind. Not existent.'}
-  o.kinds = fetchKinds(db, {kind_id: id}, res.locals.locale)||[]
+  o.kinds = fetchTableLocaleAttrs(db, 'kinds', {kind_id: id}, ['kind_id'], ['name'], res.locals.locale)
   o.kinds.forEach(k => {
-    // TODO: Limit to 6
-    k.recipeKinds = fetchRecipeKinds(db, {kind_id: k.id}, res.locals.locale, false)
+    k.recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {kind_id: k.id}, ['image_slug', 'kind_id'], ['name', 'recipe_count'], res.locals.locale, {limit: 10})
   })
-  // FIXME: Fetch recipe_count but not json
-  o.recipe_kinds = fetchRecipeKinds(db, {kind_id: id}, res.locals.locale)
-
+  o.recipe_kinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {kind_id: id}, ['image_slug', 'kind_id'], ['name', 'recipe_count'], res.locals.locale)
   res.locals.gon = o
   res.render('show_kind');
 }, renderApp);
@@ -688,15 +685,12 @@ const renderHome = function(req, res, next) {
 
   // Use this to generate gon, but then use JSON.stringify(gon) and copy paste directly inside home.jsx
   let id = (res.locals.locale != 'fr') ? 773 : 82
-  let ids1 = [96, 91, 98, 51];
-  let ids2 = [49, 108, 133, 66];
   let o = {}
   o.recipe = db.fetchRecord('recipes', {id}, RECIPE_ATTRS)
-  o.kinds = fetchKinds(db, {id: [1,6]}, res.locals.locale)
-  o.kinds.forEach(k => {
-    // TODO: Limit to 6
-    k.recipeKinds = fetchRecipeKinds(db, {kind_id: k.id}, res.locals.locale, false)
-  })
+  //o.kinds = fetchTableLocaleAttrs(db, 'kinds', {id: [1,6]}, [], ['name'], res.locals.locale)
+  //o.kinds.forEach(k => {
+  //  k.recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {kind_id: k.id}, ['image_slug', 'kind_id'], ['name', 'recipe_count'], res.locals.locale, {limit: 10})
+  //})
   res.locals.gon = o
   res.render('home');
 }
