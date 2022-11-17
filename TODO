@@ -4,13 +4,6 @@ Une recette que j'ai fait* cette semaine.
 C'est vraiment bon et c'est super facile à faire!
 Je n'ai même pas eu le temps de finir ma bière sur le balcon que Céline avait fini de la préparer!
 
-Quand il n'y a pas de recette, ajouter un bouton créer une recette.
-
-dump Kinds, RecipeKinds, Recipes, names, json and aspell it
-aspell translations
-
-«Ma liste» devrait être une autre colonne différent que «Mes favoris»??? Pas sure... demander à Céline...
-
 Diminuer la quantité de trucs loader par renderApp.
 (PAS PRIORITAIRE)
 - Enlever les images, loader une seule image lorsque que je clique sur une recette
@@ -20,18 +13,18 @@ ou une recipeKind, parce que c'est à ces moments là que j'affiche une image av
 - fetch_machine
 - fetch_recipe
 
+Mettre Explore la page principale
+
 Email validation for logging.
 
 Il manques les brisures de chocolat dans ma recette de cowboys cookies...
 Cowboy cookies in english
 
 Check with smartphones all the new pages
+Check with different browsers all the pages
 
-fetchRecipeKinds (..., false) FIXME THIS SHIT
-/d/6 => Je veux avoir recipe_count, mais je ne veux pas avoir json...
-fetchRecipeKinds(..., ['recipe_count', 'json'])
-
-/d/6 inside of app...
+dump Kinds, RecipeKinds, Recipes, names, json and aspell it
+aspell translations
 
 Ajouter un bouton pour dupliquer la recette au lieu d'être dans le dropdown.
 
@@ -39,6 +32,8 @@ Une flèche rouge «try me» écrit à la main vis à vis le smart phone.
 
 TODO: Add a constraint that a kind kind_id cannot be itself...
 a validate key inside the schema that is called at every create and update.
+
+«Ma liste» devrait être une autre colonne différent que «Mes favoris»??? Pas sure... demander à Céline...
 
 /contact, when logged in, show app navbar
 

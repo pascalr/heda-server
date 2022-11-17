@@ -81,7 +81,7 @@ const RecipeListItemMenu = ({fav, recipe, user}) => {
   </>
 }
 
-export const RecipeList = ({list, selected, suggestions, tags, mixes, recipes, user, images}) => {
+export const RecipeList = ({list, selected, recipes, user}) => {
 
   console.log('RecipeList', list)
 
@@ -89,20 +89,20 @@ export const RecipeList = ({list, selected, suggestions, tags, mixes, recipes, u
     <ul id="recipes" className="recipe-list">
       {list.map((item, current) => {
         let {fav, recipe} = item
-        let recipeTags = suggestions.filter(suggestion => suggestion.recipe_id == recipe.id).map(suggestion => tags.find(t => t.id == suggestion.tag_id))
-        let mix = mixes.find(e => e.recipe_id == recipe.id)
-
+        //let recipeTags = suggestions.filter(suggestion => suggestion.recipe_id == recipe.id).map(suggestion => tags.find(t => t.id == suggestion.tag_id))
+        //let mix = mixes.find(e => e.recipe_id == recipe.id)
+              //{mix ? <img src="/img/logo_001.svg" width="24" height="24"/> : ''}
+            //<span className='ms-2' style={{color: 'gray', fontSize: '0.78em', flexShrink: '3'}}>{recipeTags.map(tag => ` #${tag?.name}`)} </span>
+        
         return (
           <li key={recipe.id} className='d-flex align-items-center'>
             <Link path={'/r/'+recipe.id} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={current == selected ? "selected" : undefined}>
               <div className="d-flex align-items-center">
-                <RecipeThumbnailImage {...{recipe, images}} />
+                <RecipeThumbnailImage {...{recipe}} />
                 <div style={{marginRight: '0.5em'}}></div>
                 {recipe.name}
               </div>
             </Link>
-              {mix ? <img src="/img/logo_001.svg" width="24" height="24"/> : ''}
-            <span className='ms-2' style={{color: 'gray', fontSize: '0.78em', flexShrink: '3'}}>{recipeTags.map(tag => ` #${tag?.name}`)} </span>
             <span className="flex-grow-1"/>
             <RecipeListItemMenu {...{fav, recipe, user}} />
           </li>

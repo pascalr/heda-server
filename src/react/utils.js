@@ -34,7 +34,7 @@ export function omit(obj, property) {
 }
 
 export function capitalize(str) {
-  return str.replace(/^\w/, c => c.toUpperCase())
+  return str?.replace(/^\w/, c => c.toUpperCase())
 }
 
 export function join(str1, str2) {

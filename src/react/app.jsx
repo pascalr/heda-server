@@ -309,7 +309,9 @@ const MixIndex = ({machineId, machines, mixes, machineFoods}) => {
   </>)
 }
 
-const Inventory = ({machineId, machines, containerQuantities, machineFoods, foods, containerFormats}) => {
+const Inventory = ({machineId, machines, containerQuantities, machineFoods, containerFormats}) => {
+
+  let foods = [] // FIXME
 
   const machine = machines.find(m => m.id == machineId)
   const currentMachineFoods = machineFoods.filter(m => m.machine_id == machineId)
@@ -329,7 +331,7 @@ const Inventory = ({machineId, machines, containerQuantities, machineFoods, food
 
     return (
       <tr key={machineFood.id}>
-        <td>{capitalize(food.name)}</td>
+        <td>{capitalize(food?.name)}</td>
         <td>
           <div className="containers d-flex">
             <div>
@@ -486,19 +488,18 @@ export const App = () => {
 
   if (!window.hcu) {initHcu()}
 
-  const suggestions = useHcuState(gon.suggestions.filter(r => r.tag_id), {tableName: 'suggestions'}) // FIXME: Fix the data. tag_id is mandatory...
+  //const suggestions = useHcuState(gon.suggestions.filter(r => r.tag_id), {tableName: 'suggestions'}) // FIXME: Fix the data. tag_id is mandatory...
   const favoriteRecipes = useHcuState(gon.favorite_recipes, {tableName: 'favorite_recipes'})
-  const machineFoods = useHcuState(gon.machine_foods, {tableName: 'machine_foods'})
-  const mixes = useHcuState(gon.mixes, {tableName: 'mixes'})
+  //const machineFoods = useHcuState(gon.machine_foods, {tableName: 'machine_foods'})
+  //const mixes = useHcuState(gon.mixes, {tableName: 'mixes'})
   const recipes = useHcuState(gon.recipes, {tableName: 'recipes'})
   //const recipes = useHcuState(gon.recipe_kinds, {tableName: 'recipe_kinds'})
   const [recipeKinds,] = useState(gon.recipe_kinds)
-  const images = useHcuState(gon.images, {tableName: 'images'})
-  const tags = useHcuState(gon.tags, {tableName: 'tags'})
+  //const images = useHcuState(gon.images, {tableName: 'images'})
+  //const tags = useHcuState(gon.tags, {tableName: 'tags'})
   //const notes = gon.notes
-  const containerQuantities = useHcuState(gon.container_quantities, {tableName: 'container_quantities'})
-  const containerFormats = useHcuState(gon.container_formats, {tableName: 'container_formats'})
-  const foods = useHcuState(gon.foods, {tableName: 'foods'})
+  //const containerQuantities = useHcuState(gon.container_quantities, {tableName: 'container_quantities'})
+  //const containerFormats = useHcuState(gon.container_formats, {tableName: 'container_formats'})
   const machines = useHcuState(gon.machines, {tableName: 'machines'})
   const friendsRecipes = gon.friends_recipes//.filter(r => !recipeIds.includes(r.id))
   //const recipeSuggestions = gon.recipe_suggestions
@@ -528,7 +529,7 @@ export const App = () => {
       <EditRecipe {...{recipeId: id, recipes, mixes, user, users, recipeKinds, images, machineFoods, favoriteRecipes, locale}} />
     },
     {match: "/m/:id/i", elem: ({id}) => 
-      <Inventory {...{machineId: id, machines, machineFoods, containerQuantities, foods, containerFormats}} />
+      <Inventory {...{machineId: id, machines, machineFoods, containerQuantities, containerFormats}} />
     },
     {match: "/m/:id/l", elem: ({id}) =>
       <MixIndex {...{machineId: id, machines, machineFoods, mixes}} />
@@ -544,7 +545,7 @@ export const App = () => {
     },
   ]
   
-  const defaultElement = (params) => <MyRecipes {...{recipes, suggestions, favoriteRecipes, tags, mixes, recipeKinds, user, images}} />
+  const defaultElement = (params) => <MyRecipes {...{recipes, favoriteRecipes, recipeKinds, user}} />
 
   const {elem,idx} = useRouter(routes, defaultElement)
 
