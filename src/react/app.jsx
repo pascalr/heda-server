@@ -175,6 +175,8 @@ const ExplorePage = ({}) => {
   const data = useCacheOrFetch(localeHref2('/fetch_explore', locale))
   const [kinds, setKinds] = useState([])
 
+  foo.asdfsd
+
   useEffect(() => {
     if (data) {setKinds(shuffle(data.kinds||[]))}
   }, [data])
@@ -460,9 +462,10 @@ export class AppErrorBoundary extends React.Component {
     return { hasError: true };
   }
 
-  componentDidCatch(error, errorInfo) {
-    // TODO: Log the error to an error reporting service
-    //logErrorToMyService(error, errorInfo);
+  componentDidCatch(error, info) {
+    let url = window.location.pathname+(window.location.search||'')
+    let data = {error: error.toString(), info: info.componentStack, url}
+    ajax({url: '/log_error', type: 'POST', data, error: errors => console.error('ERROR AJAX...', errors)})
   }
   render() {
     if (this.state.hasError) {

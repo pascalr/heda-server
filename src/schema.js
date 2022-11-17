@@ -95,11 +95,15 @@ const schema = {
   'units' : {
     is_allowed: user => user.is_admin,
   },
+  'errors' : {
+    security_attrs: ['user_id'],
+  },
   'kinds' : {
     write_attrs: ['name_fr', 'name_en', 'kind_id'],
     is_allowed: user => user.is_admin,
   },
   'accounts' : {
+    write_attrs: [],
     is_allowed: user => false,
   },
 }

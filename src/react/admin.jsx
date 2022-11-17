@@ -369,6 +369,7 @@ const SQLPage = () => {
   const [column1, setColumn1] = useState('column_a')
   const [column2, setColumn2] = useState('column_b')
   const [addColumn, setAddColumn] = useState('name sum:real')
+  const [createTable, setCreateTable] = useState('name sum:real')
 
   function executeSQL() {
     if (confirm("Êtes-vous certain de vouloir exécuter ce code SQL?")) {
@@ -386,6 +387,7 @@ const SQLPage = () => {
     })
   }
 
+  let createTableArgs = parseArgs(createTable)
   return <>
     <div className='trunk'>
       <h1>SQL page</h1>
@@ -396,7 +398,7 @@ const SQLPage = () => {
       <b>TABLE:</b> {tableSelector}<br/>
       <b>COLUMN 1:</b> <input value={column1} onChange={e => setColumn1(e.target.value)} /><br/>
       <b>COLUMN 2:</b> <input value={column2} onChange={e => setColumn2(e.target.value)} /><br/>
-      <b>TYPES:</b> INTEGER, TEXT, BLOB, REAL, NUMERIC<br/>
+      <b>AFFINITIES:</b> INTEGER, TEXT, BLOB, REAL, NUMERIC<br/>
       <h6>Exemples:</h6>
       <ul>
         <li>DELETE FROM {table} WHERE id = 0;</li>
@@ -419,6 +421,27 @@ const SQLPage = () => {
       {parseArgs(addColumn).map(({name, type}) => {
         return <div key={name}>ALTER TABLE {table} ADD COLUMN {name} {type};</div>
       })}
+      <br/>
+      
+      <b>CREATE TABLE: </b> <input value={createTable} onChange={e => setCreateTable(e.target.value)} /><br/><br/>
+    
+      <div>
+        CREATE TABLE {table} (<br/>
+          &nbsp;&nbsp;id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,<br/>
+          &nbsp;&nbsp;created_at     TEXT    NOT NULL,<br/>
+          &nbsp;&nbsp;updated_at     TEXT    NOT NULL,<br/>
+        {createTableArgs.map(({name, type}, i) => {
+          return <div key={name}>&nbsp;&nbsp;{name} {type}{i == createTableArgs.length-1 ? '' : ','}</div>
+        })}
+        );
+      </div>
+
+      <pre>{`
+CREATE TABLE table_name(
+  id INT PRIMARY KEY     NOT NULL AUTOINCREMENT,
+  created_at     TEXT    NOT NULL,
+  updated_at     TEXT    NOT NULL
+);`}</pre>
     </div>
   </>
 }

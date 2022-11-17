@@ -4,10 +4,6 @@ Une recette que j'ai fait* cette semaine.
 C'est vraiment bon et c'est super facile à faire!
 Je n'ai même pas eu le temps de finir ma bière sur le balcon que Céline avait fini de la préparer!
 
-Prevent leaving recipe editor when changes are not saved yet.
-
-Email validation for logging.
-
 // TODO: Log the error to an error reporting service
 //logErrorToMyService(error, errorInfo);
 
@@ -26,6 +22,8 @@ ou une recipeKind, parce que c'est à ces moments là que j'affiche une image av
 - Enlever tous les trucs de machines et les mettres dans des fetchs (fetch_machine, mix dans fetch_recipe)
 - fetch_machine
 - fetch_recipe
+
+Email validation for logging.
 
 Il manques les brisures de chocolat dans ma recette de cowboys cookies...
 Cowboy cookies in english

@@ -74,6 +74,14 @@ router.get('/login', redirectHomeIfLoggedIn, function(req, res, next) {
   res.render('login');
 });
 
+router.post('/log_error', function(req, res, next) {
+
+  let attrs = ['url', 'error', 'info']
+  let err = _.pick(req.body, attrs)
+  let error = db.createRecord('errors', err, req.user, {allow_write: attrs})
+  res.send('ok')
+});
+
 router.get('/choose_user', redirectHomeIfLoggedIn, fetchAccountUsers, function(req, res, next) {
   res.render('choose_user');
 });
