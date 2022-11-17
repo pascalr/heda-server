@@ -6,7 +6,7 @@
   </head>
   <body>
     <div class="form-container">
-      <h2><a href="<%- localeHref(req, '/') %>" style="text-decoration: none;">HedaCuisine</a></h2>
+      <h2><a href="<%- localeHref(req, '/') %>" style="text-decoration: none;">HedaCuisine (<%- tr('beta', locale) %>)</a></h2>
       <h1><%- tr('Sign_in', locale) %></h1>
       <% if (hasMessages) { %>
         <% messages.forEach(function(message) { %>

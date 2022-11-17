@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { localeHref } from "../utils"
 import { RecipeMediumImage, RecipeSmallImage } from "./image"
 import { MainSearch } from './main_search'
-import { getLocale } from "./lib"
+import { getLocale, Link } from "./lib"
 import { t } from "../translate"
 import { IngredientList } from "./recipe_viewer"
 import { DescriptionTiptap, RecipeTiptap } from "./tiptap"
@@ -125,7 +125,11 @@ export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors, recipeButt
             {recipeButtonsE}
           </div>
           <Recipe {...{recipe: filtered[idx], recipeKind}} />
-        </> : <p>{t('There_are_no_recipe_in_this_category_yet')}.</p>}
+        </> : <>
+          <p>{t('There_are_no_recipe_in_this_category_yet')}.</p>
+          <br/>
+          <Link path={localeHref('/n')} className='btn btn-primary'>{t('Create_new_recipe')}</Link>
+        </>}
       </div>
     </div>
   </>

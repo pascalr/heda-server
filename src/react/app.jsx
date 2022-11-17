@@ -175,8 +175,6 @@ const ExplorePage = ({}) => {
   const data = useCacheOrFetch(localeHref2('/fetch_explore', locale))
   const [kinds, setKinds] = useState([])
 
-  foo.asdfsd
-
   useEffect(() => {
     if (data) {setKinds(shuffle(data.kinds||[]))}
   }, [data])

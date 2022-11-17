@@ -179,6 +179,7 @@ export function tr(id, locale) {
     Tags: 'Tags',
     recipe: 'recette',
     recipes: 'recettes',
+    Create_new_recipe: 'Créer une nouvelle recette',
     Create_account: 'Créer un compte',
     Create_tag: 'Créer un tag',
     Create: 'Créer',

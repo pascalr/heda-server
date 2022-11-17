@@ -34,7 +34,7 @@ const ensureLoggedIn = function(req, res, next) {
 }
 const ensureUser = function(req, res, next) {
   if (req.user && req.user.user_id) {return next()}
-  res.redirect('/')
+  res.redirect('/login')
   //next("Error the account is not logged in or the user is not selected...")
 }
 
