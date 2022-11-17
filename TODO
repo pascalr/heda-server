@@ -4,7 +4,11 @@ Une recette que j'ai fait* cette semaine.
 C'est vraiment bon et c'est super facile à faire!
 Je n'ai même pas eu le temps de finir ma bière sur le balcon que Céline avait fini de la préparer!
 
-Un nouveau bouton rajouter à ma liste.
+Risotto et boeuf bourgignon ne sont pas setter automatiquement leur Recipe Kind.
+
+Email validation for logging.
+
+«Ma liste» devrait être une autre colonne différent que «Mes favoris»??? Pas sure... demander à Céline...
 
 Idéalement un input field que tu peux écrire dedans (avec un petit micro à côté!):
 - Un repas québécois => poutine, mieton, ...

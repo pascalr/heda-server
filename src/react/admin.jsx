@@ -5,7 +5,7 @@ import toastr from 'toastr'
 
 import { TextInput, TextField, CollectionSelect, RangeField } from "./form"
 import { Link, useOrFetchRecipe, getLocale } from "./lib"
-import { localeAttr } from "../lib"
+import { localeAttr, findRecipeKindForRecipeName  } from "../lib"
 import { MainSearch } from './main_search'
 import { HomeTab, AppErrorBoundary } from './app'
 import { t } from "../translate"
@@ -129,7 +129,8 @@ const KindsIndex = ({kinds, recipeKinds, locale}) => {
 }
 
 const RecipeKindsIndex = ({recipes, recipeKinds, publicUsers, locale, kinds}) => {
-  const missings = recipes.filter(r => !r.recipe_kind_id)
+
+  const missings = recipes.filter(r => !r.recipe_kind_id && !findRecipeKindForRecipeName(r.name, recipeKinds))
 
   const createRecipeKind = (recipe) => {
     window.hcu.createRecord('recipe_kinds', {name_fr: recipe.name, image_slug: recipe.image_slug})

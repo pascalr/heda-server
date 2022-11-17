@@ -121,6 +121,7 @@ export function prettyPreposition(qty, label, locale) {
 
 export function findRecipeKindForRecipeName(recipeName, recipeKinds) {
   let name = normalizeSearchText(recipeName)
+  if (!name) {return null}
   return recipeKinds.find(k => name.includes(normalizeSearchText(k.name_fr)) || name.includes(normalizeSearchText(k.name_en)))
 }
 

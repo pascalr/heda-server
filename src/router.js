@@ -12,7 +12,7 @@ import { localeHref, now, ensureIsArray, shuffle } from './utils.js';
 import { tr } from './translate.js'
 import { translateRecipes } from '../tasks/translate_recipes.js'
 import Translator, { TranslationsCacheStrategy, LogStrategy } from './translator.js'
-import { fetchWithAncestors, fetchTableLocaleAttrs, fetchRecordLocaleAttrs, findRecipeKindForRecipeName, descriptionRecipeIngredients, kindAncestorId } from "./lib.js"
+import { fetchWithAncestors, fetchTableLocaleAttrs, fetchRecordLocaleAttrs, descriptionRecipeIngredients, kindAncestorId } from "./lib.js"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
