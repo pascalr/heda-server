@@ -6,8 +6,11 @@ import { getTableList, safeNoQuotes, getWriteAttributes } from './sql_db.js';
 import { db } from './db.js';
 import analytics from './analytics.js'
 import { kindAncestorId, findRecipeKindForRecipeName } from "./lib.js"
+import _ from 'lodash';
 
 const router = express.Router();
+
+const RECIPE_KIND_DATA_ATTRS = ['is_meal', 'is_appetizer', 'is_dessert', 'is_simple', 'is_normal', 'is_gourmet', 'is_other', 'is_very_fast', 'is_fast', 'is_small_qty', 'is_big_qty', 'is_medium_qty']
 
 // All the routes here are only available to users that are admin.
 // Respond with 404 if the user is not an admin.
@@ -18,7 +21,7 @@ router.use((req, res, next) => {
 
 const renderAdmin = (req, res, next) => {
 
-  let recipeKinds = db.fetchTable('recipe_kinds', {}, ['name_fr', 'json_fr', 'name_en', 'json_en', 'kind_id', 'image_slug', 'recipe_count_fr', 'recipe_count_en', 'is_meal', 'is_appetizer', 'is_dessert', 'is_simple', 'is_normal', 'is_gourmet', 'is_other', 'is_very_fast', 'is_fast', 'is_small_qty', 'is_big_qty', 'is_medium_qty'])
+  let recipeKinds = db.fetchTable('recipe_kinds', {}, ['name_fr', 'json_fr', 'name_en', 'json_en', 'kind_id', 'image_slug', 'recipe_count_fr', 'recipe_count_en', ...RECIPE_KIND_DATA_ATTRS])
 
   res.locals.gon = {
     translations: db.fetchTable('translations', {}, ['from', 'to', 'original', 'translated']),
@@ -131,6 +134,23 @@ router.post('/update_kinds_count', function(req, res, next) {
     }
   })
   res.send('Ok done!')
+})
+router.post('/average_recipe_kind/:id', function(req, res, next) {
+  
+  let recipeKind = db.fetchRecord('recipe_kinds', {id: req.params.id}, ['kind_id'])
+  let siblings = db.fetchTable('recipe_kinds', {kind_id: recipeKind.kind_id}, RECIPE_KIND_DATA_ATTRS)
+  siblings = siblings.filter(k => k.id != recipeKind.id)
+
+  if (siblings?.length) {
+    let data = {}
+    RECIPE_KIND_DATA_ATTRS.forEach(attr => {
+      data[attr] = _.mean(siblings.map(k => k[attr]))
+    })
+    console.log('siblings', siblings)
+    console.log('data', data)
+    db.findAndUpdateRecord('recipe_kinds', recipeKind, data, req.user)
+    res.send('Ok done!')
+  }
 })
 router.post('/match_recipe_kinds', function(req, res, next) {
 

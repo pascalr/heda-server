@@ -48,7 +48,7 @@ const EditKind = ({id, kinds}) => {
   </>
 }
 
-const EditRecipeKind = ({id, recipeKinds, images}) => {
+const EditRecipeKind = ({id, recipeKinds, kinds, images, locale}) => {
 
   let recipeKind = recipeKinds.find(k => k.id == id)
  
@@ -59,11 +59,19 @@ const EditRecipeKind = ({id, recipeKinds, images}) => {
   let ids = recipeKinds.map(k => k.id).sort()
   let i = ids.indexOf(recipeKind.id)
   let nextId = (i == ids.length-1 || i==-1) ? null : ids[i+1]
+
+  const averageKind = () => {
+    ajax({url: '/average_recipe_kind/'+id, type: 'POST', success: () => {
+      toastr.info("Success.")
+    }, error: handleError("Fail.") })
+  }
   
   return <>
     <div key={id} className='trunk'>
       <h3>Edit recipe kind</h3>
       <EditableImage {...{recipe: recipeKind, images}}/>
+      <br/><br/>
+      <b>Kind: </b><CollectionSelect model={recipeKind} field="kind_id" options={kinds.map(k => k.id)} showOption={(id) => kinds.find(k => k.id == id)[localeAttr('name', locale)]} includeBlank="true" />
       <br/><br/>
       <h2>Français</h2>
       <h1 className="ff-satisfy bold fs-25"><TextField model={recipeKind} field='name_fr' style={{width: '100%'}} /></h1>
@@ -72,6 +80,8 @@ const EditRecipeKind = ({id, recipeKinds, images}) => {
       <h2>English</h2>
       <h1 className="ff-satisfy bold fs-25"><TextField model={recipeKind} field='name_en' style={{width: '100%'}} /></h1>
       <div className="fs-09"><DescriptionTiptap {...{model: recipeKind, json_field: 'json_en'}} /></div>
+      <br/>
+      <button type='button' className='btn btn-primary me-2' onClick={averageKind}>Average based on kind</button>
       <br/>
       <br/><h6>Kind of food</h6>
       <b>Appetizer: </b><RangeField model={recipeKind} field='is_appetizer' min="0" max="1" step="0.1" /><br/>
@@ -558,7 +568,7 @@ export const Admin = () => {
     {match: "/admin/console", elem: () => <Console />},
     {match: "/admin/ki", elem: () => <RecipeKindsIndex {...{recipeKinds, recipes, publicUsers, locale, kinds}} />},
     {match: "/admin/di", elem: () => <KindsIndex {...{kinds, recipeKinds, locale}} />},
-    {match: "/admin/ek/:id", elem: ({id}) => <EditRecipeKind {...{id, recipeKinds, images}} />},
+    {match: "/admin/ek/:id", elem: ({id}) => <EditRecipeKind {...{id, recipeKinds, images, kinds, locale}} />},
     {match: "/admin/ed/:id", elem: ({id}) => <EditKind {...{id, kinds}} />},
     {match: "/admin/translate_recipe", elem: () => <TranslateRecipePage {...{recipes, locale, translations}} />},
     {match: "/admin", elem: () => <AdminPage {...{stats, publicUsers}} />},
