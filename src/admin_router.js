@@ -27,6 +27,7 @@ const renderAdmin = (req, res, next) => {
     translations: db.fetchTable('translations', {}, ['from', 'to', 'original', 'translated']),
     recipe_kinds: recipeKinds,
     kinds: db.fetchTable('kinds', {}, ['name_fr', 'name_en', 'kind_id']),
+    errors: db.fetchTable('errors', {}, ['url', 'error', 'info', 'created_at']),
     recipes: db.fetchTable('recipes', {}, ['name', 'recipe_kind_id', 'image_slug']),
     stats: {
       nbUsers: db.prepare('SELECT COUNT(*) FROM users').get()['COUNT(*)'],

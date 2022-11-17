@@ -23,6 +23,7 @@ const AdminTabs = ({machines}) => {
   return <>
     <ul className="nav nav-tabs mb-3">
       <HomeTab {...{title: t('Admin'), path: '/admin'}} />
+      <HomeTab {...{title: t('Errors'), path: '/admin/errors'}} />
       <HomeTab {...{title: t('Kinds'), path: '/admin/di'}} />
       <HomeTab {...{title: t('RecipeKinds'), path: '/admin/ki'}} />
       <HomeTab {...{title: t('SQL'), path: '/admin/sql'}} />
@@ -31,6 +32,34 @@ const AdminTabs = ({machines}) => {
       <HomeTab {...{title: t('Translations'), path: '/admin/translations'}} />
       <HomeTab {...{title: t('Translate Recipe'), path: '/admin/translate_recipe'}} />
     </ul>
+  </>
+}
+
+const ErrorsPage = ({errors}) => {
+  return <>
+    <h1>Errors</h1>
+    <table className='table table-striped'>
+      <thead className='thead-dark'>
+        <tr>
+          <th>Date</th>
+          <th>Url</th>
+          <th>Error</th>
+          <th>Info</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {(errors||[]).map(error => {
+          return <tr key={error.id}>
+            <td>{error.created_at}</td>
+            <td>{error.url}</td>
+            <td>{error.error}</td>
+            <td>{error.info}</td>
+            <td><button type='button' className='btn btn-primary' onClick={() => window.hcu.destroyRecord(error)}>Clear</button></td>
+          </tr>
+        })}
+      </tbody>
+    </table>
   </>
 }
 
@@ -182,7 +211,7 @@ const RecipeKindsIndex = ({recipes, recipeKinds, publicUsers, locale, kinds}) =>
   </>
 }
 
-const AdminPage = ({stats, publicUsers}) => {
+const AdminPage = ({stats, publicUsers, errors}) => {
 
   const [missings, setMissings] = useState(null)
 
@@ -226,6 +255,7 @@ const AdminPage = ({stats, publicUsers}) => {
   return <>
     <div className="trunk">
       <h1>Dashboard</h1>
+      <b>Errors:</b> <span className={errors.length ? 'red' : 'green'}>{errors.length}</span><br/>
       <b>Nb accounts:</b> {stats.nbAccounts}<br/>
       <b>Nb daily visits total:</b> {stats.nbDailyVisitsTotal}<br/>
       <b>Nb requests total:</b> {stats.nbRequestsTotal}<br/>
@@ -581,12 +611,14 @@ export const Admin = () => {
   const recipes = useHcuState(gon.recipes||[], {tableName: 'recipes'})
   const kinds = useHcuState(gon.kinds, {tableName: 'kinds'})
   const images = useHcuState(gon.images||[], {tableName: 'images'})
+  const errors = useHcuState(gon.errors||[], {tableName: 'errors'})
   const [publicUsers,] = useState(gon.public_users||[])
   const [stats,] = useState(gon.stats)
 
   const routes = [
     {match: "/admin/translations", elem: () => <TranslationsPage {...{translations}} />},
     {match: "/admin/sql", elem: () => <SQLPage />},
+    {match: "/admin/errors", elem: () => <ErrorsPage {...{errors}} />},
     {match: "/admin/db", elem: () => <DbPage />},
     {match: "/admin/console", elem: () => <Console />},
     {match: "/admin/ki", elem: () => <RecipeKindsIndex {...{recipeKinds, recipes, publicUsers, locale, kinds}} />},
@@ -594,7 +626,7 @@ export const Admin = () => {
     {match: "/admin/ek/:id", elem: ({id}) => <EditRecipeKind {...{id, recipeKinds, images, kinds, locale}} />},
     {match: "/admin/ed/:id", elem: ({id}) => <EditKind {...{id, kinds}} />},
     {match: "/admin/translate_recipe", elem: () => <TranslateRecipePage {...{recipes, locale, translations}} />},
-    {match: "/admin", elem: () => <AdminPage {...{stats, publicUsers}} />},
+    {match: "/admin", elem: () => <AdminPage {...{stats, publicUsers, errors}} />},
   ]
   const defaultElement = (params) => <TranslationsPage />
   

@@ -134,6 +134,8 @@ img {
 .white { color: white; }
 .black { color: black; }
 .grey, .gray { color: grey; }
+.red { color: red; }
+.green { color: green; }
 
 .bold { font-weight: bold; }
 .underline { text-decoration: underline; }
