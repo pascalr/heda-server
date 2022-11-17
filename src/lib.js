@@ -158,7 +158,11 @@ function parseHedaInstructionsIngredients(raw) {
     let args = instruction.split(',')
     let cmd = args[0]
     if (cmd == 'ADD') {
-      result.push({key, qty: args[1]?.trim()||'', label: args[2]?.trim()||''})
+      let qty = args[1]
+      let i = args[2].indexOf('-')
+      let machineFoodId = i !== -1 ? args[2].substr(0, i) : null
+      let machineFoodName = i !== -1 ? args[2].substr(i+1) : args[2]
+      result.push({key, qty, label: machineFoodName})
     } else if (cmd == 'CONTAINER' && args[1]) {
       result.push({key, header: args[1]})
     }

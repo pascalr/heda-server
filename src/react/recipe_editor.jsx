@@ -28,7 +28,7 @@ const CmdAdd = {
       let i = args[2].indexOf('-')
       obj.machineFoodId = (i == -1) ? null : args[2].substr(0,i)
       obj.machineFoodName = (i == -1) ? args[2] : args[2].substr(i+1)
-      obj.machineFood = context.machineFoods.find(e => e.id == obj.machineFoodId)
+      obj.machineFood = context.machineFoods?.find(e => e.id == obj.machineFoodId)
     }
     if (!obj.machineFood) {
       obj.errors = [`Unable to find food with name = ${args[2]}`]
@@ -455,8 +455,6 @@ const EditableIngredient = ({recipe, ingredient, itemNb, mixes, updateIngredient
   const [qty, setQty] = useState(ingredient.qty)
   const [label, setLabel] = useState(ingredient.label)
 
-  let mix = mixes.find(e => e.recipe_id == recipe.id)
-
   let moveIngToMix = () => {
     //let ins = mix.instructions+';ADD,'+ingredient.raw+','+(f ? f.name : ingredient.name)
     //ajax({url: mix_path(mix), type: 'PATCH', data: {mix: {instructions: ins}}, success: (mix) => {
@@ -464,12 +462,12 @@ const EditableIngredient = ({recipe, ingredient, itemNb, mixes, updateIngredient
     //  removeIngredient()
     //}})
   }
+        //{mix ? <img className="clickable" style={{marginRight: '0.4em'}} src="/icons/arrow-down-up.svg" width="16" height="16" onClick={moveIngToMix}></img> : '' }
 
   let preposition = prettyPreposition(ingredient.qty, ingredient.label, locale)
   return (
     <div>
       <div className="float-end">
-        {mix ? <img className="clickable" style={{marginRight: '0.4em'}} src="/icons/arrow-down-up.svg" width="16" height="16" onClick={moveIngToMix}></img> : '' }
         <DeleteConfirmButton id={`ing-${ingredient.key}`} onDeleteConfirm={() => removeIngredientOrHeader(itemNb-1)} message="Je veux enlever cet ingrédient?" />
       </div>
       <span style={{padding: "0 10px 0 0"}}><b>{itemNb}.</b></span>
@@ -503,7 +501,6 @@ export const RecipeEditor = ({recipe, machines, mixes, machineFoods, foods, imag
 
   const ingredientsAndHeaders = parseIngredientsAndHeaders(orderedIngredients)
   const ingredients = ingredientsAndHeaders.filter(e => e.label != null || e.qty != null)
-  const mix = mixes.find(m => m.recipe_id == recipe.id)
 
   function handleDrop(droppedItem) {
   
@@ -550,7 +547,7 @@ export const RecipeEditor = ({recipe, machines, mixes, machineFoods, foods, imag
               const ing = ingOrHeader
               itemNb += 1
               return <li className="list-group-item">
-                {<EditableIngredient ingredient={ingOrHeader} {...{recipe, itemNb, mixes, foods, updateIngredients, removeIngredientOrHeader, locale}} />}
+                {<EditableIngredient ingredient={ingOrHeader} {...{recipe, itemNb, foods, updateIngredients, removeIngredientOrHeader, locale}} />}
               </li>
             } else {
               return <EditableIngredientSection item={ingOrHeader} index={i} {...{updateIngredients, removeIngredientOrHeader, locale}} />

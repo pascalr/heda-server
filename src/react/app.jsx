@@ -495,7 +495,6 @@ export const App = () => {
   const recipes = useHcuState(gon.recipes, {tableName: 'recipes'})
   //const recipes = useHcuState(gon.recipe_kinds, {tableName: 'recipe_kinds'})
   const [recipeKinds,] = useState(gon.recipe_kinds)
-  //const images = useHcuState(gon.images, {tableName: 'images'})
   //const tags = useHcuState(gon.tags, {tableName: 'tags'})
   //const notes = gon.notes
   //const containerQuantities = useHcuState(gon.container_quantities, {tableName: 'container_quantities'})
@@ -506,6 +505,7 @@ export const App = () => {
   const [users,] = useState(gon.users)
   const [user,] = useState(gon.user)
   window.locale = user.locale
+  const images = useHcuState([], {tableName: 'images'})
 
   const routes = [
     {match: "/s", elem: () => <UsersPage />},
@@ -514,10 +514,10 @@ export const App = () => {
     {match: "/c", elem: () => <EditTags {...{tags}} />},
     {match: "/n", elem: () => <NewRecipe {...{recipeKinds}} />},
     {match: "/r/:id", elem: ({id}) =>
-      <ShowRecipe {...{recipeId: id, recipes, mixes, favoriteRecipes, recipeKinds, images, user, users, suggestions, tags}} />
+      <ShowRecipe {...{recipeId: id, recipes, favoriteRecipes, recipeKinds, user, users}} />
     },
     {match: "/k/:id", elem: ({id}) =>
-      <ShowRecipeKind {...{recipeKindId: id, recipes, recipeKinds, images, locale, user, favoriteRecipes}} />
+      <ShowRecipeKind {...{recipeKindId: id, recipes, recipeKinds, locale, user, favoriteRecipes}} />
     },
     {match: "/d/:id", elem: ({id}) =>
       <ShowKind {...{kindId: id, locale}} />
@@ -526,7 +526,7 @@ export const App = () => {
       <EditTag {...{tagId: id, tags}} />
     },
     {match: "/e/:id", elem: ({id}) => 
-      <EditRecipe {...{recipeId: id, recipes, mixes, user, users, recipeKinds, images, machineFoods, favoriteRecipes, locale}} />
+      <EditRecipe {...{recipeId: id, recipes, user, users, recipeKinds, favoriteRecipes, images, locale}} />
     },
     {match: "/m/:id/i", elem: ({id}) => 
       <Inventory {...{machineId: id, machines, machineFoods, containerQuantities, containerFormats}} />

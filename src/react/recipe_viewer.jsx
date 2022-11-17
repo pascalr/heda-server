@@ -71,29 +71,6 @@ export const RecipeAttributes = ({recipe, userName}) => {
   </>
 }
 
-const MixIngredients = ({mix}) => {
-  if (!mix) {return ''}
-
-  return <>
-    {mix.instructions.split(';').map((line,n) => {
-      if (line.startsWith('CONTAINER')) {
-        let id = line.split(',')[1]
-        return <h3 key={n} style={{marginTop: '0.8em', marginBottom: '0.2em'}}>{isNaN(id) ? id : 'Contenant '+id}</h3>
-      } else if (line.startsWith('ADD')) {
-        let args = line.split(',')
-        let qty = args[1]
-        let i = args[2].indexOf('-')
-        let machineFoodId = i ? args[2].substr(0, i) : null
-        let machineFoodName = i ? args[2].substr(i+1) : args[2]
-        let prettyQty = quantityWithPreposition(qty, machineFoodName, window.locale)
-        return <li key={n} className="list-group-item">
-          <span>{prettyQty} <span className="food-name">{machineFoodName}</span></span>
-        </li>
-      }
-    })}
-  </>
-}
-
 export const FavoriteButton = ({recipe, user, favorite, width, ...props}) => {
   if (recipe.user_id == user.id) {return ''}
   const handleClick = () => {
@@ -113,7 +90,7 @@ export const FavoriteButton = ({recipe, user, favorite, width, ...props}) => {
   </button>
 }
   
-export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKinds, images, user, users, recipes, suggestions, tags}) => {
+export const RecipeViewer = ({recipeId, page, favoriteRecipes, recipeKinds, user, users, recipes}) => {
 
   //const [showModal, setShowModal] = useState(false)
 
@@ -123,8 +100,7 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
 
   const noteIds = recipe.notes ? Object.values(recipe.notes).sort((a,b) => a.item_nb - b.item_nb).map(ing => ing.id) : []
   const toolIds = []
-  const mix = mixes.find(m => m.recipe_id == recipe.id)
-  const recipeTags = suggestions.filter(s => s.recipe_id == recipe.id).map(s => tags.find(t => t.id == s.tag_id))
+  //const recipeTags = suggestions.filter(s => s.recipe_id == recipe.id).map(s => tags.find(t => t.id == s.tag_id))
   const favorite = favoriteRecipes.find(f => f.recipe_id == recipe.id)
 
   const translateRecipe = () => {
@@ -157,7 +133,7 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, mixes, recipeKind
   return (<>
     <div className="recipe mt-3">
       <div className="d-block d-md-flex" style={{gap: '20px'}}>
-        <div><RecipeMediumImage {...{recipe, images, showCredit: true}} /></div>
+        <div><RecipeMediumImage {...{recipe, showCredit: true}} /></div>
         <div style={{height: '20px', width: '0'}}></div>
         <div style={{width: '100%'}}>
           <RecipeAttributes {...{recipe, userName}} />
