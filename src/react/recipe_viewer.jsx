@@ -71,6 +71,12 @@ export const RecipeAttributes = ({recipe, userName}) => {
   </>
 }
 
+export const DuplicateButton = ({recipe, ...props}) => {
+  return <button type="button" className="plain-btn" onClick={() => duplicateRecipe(recipe)} {...props} >
+    <img style={{width: '1.8em'}} src="/icons/files.svg" title={t('Copy_and_edit')} />
+  </button> 
+}
+
 export const AddToListButton = ({recipe, user, favorite, ...props}) => {
 
   const inList = favorite && favorite.list_id == 1
