@@ -49,7 +49,7 @@ export const Home = () => {
           <h1 className="fs-25">Heda cuisine</h1>
           <h5><i>{t('Home_2')}</i></h5>
           <p className="py-3 fs-095">{t('Home_1')}</p>
-          <a className="btn btn-primary" style={{padding: '0.5em 3em', margin: 'auto'}} href={localeHref("/login")}>{t('Sign_in')}</a>
+          <a className="btn btn-primary" style={{padding: '0.5em 3em', margin: 'auto'}} href={localeHref("/login")}>{t('Sign_in')} ({t('beta')})</a>
         </div>
         <div className='flex-grow-1' style={{height: '3em'}}></div>
         <div style={{width: '25em', maxWidth: '100%', margin: 'auto'}}>
@@ -91,6 +91,15 @@ export const Home = () => {
         </div>
         <div style={{border: "2px solid black", padding: '0.5em', borderRadius: '5px'}}>
           <RecipeEditor recipe={recipe} images={[]} mixes={[]} foods={[]} locale={locale} editable={true} user={{id: recipe.user_id}} />
+        </div>
+      </div>
+    </div>
+    <hr style={{border: '1px solid black', width: '70%', margin: 'auto'}} />
+    <div style={{padding: '5em 0.3em'}}>
+      <div className="trunk">
+        <div className="ff-montserra mb-2">
+          <h2>{t('About_HedaCuisine')}</h2>
+          <p>{t('Home_14')}</p>
         </div>
       </div>
     </div>
