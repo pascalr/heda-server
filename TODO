@@ -4,38 +4,21 @@ Une recette que j'ai fait* cette semaine.
 C'est vraiment bon et c'est super facile à faire!
 Je n'ai même pas eu le temps de finir ma bière sur le balcon que Céline avait fini de la préparer!
 
-Diminuer la quantité de trucs loader par renderApp.
-(PAS PRIORITAIRE)
-- Enlever les images, loader une seule image lorsque que je clique sur une recette
-ou une recipeKind, parce que c'est à ces moments là que j'affiche une image avec le crédit.
-- Enlever foods, units
-- Enlever tous les trucs de machines et les mettres dans des fetchs (fetch_machine, mix dans fetch_recipe)
-- fetch_machine
-- fetch_recipe
-
-Mettre Explore la page principale
-
 Email validation for logging.
-
-Il manques les brisures de chocolat dans ma recette de cowboys cookies...
-Cowboy cookies in english
 
 Check with smartphones all the new pages
 Check with different browsers all the pages
 
+Ajouter un bouton pour dupliquer la recette au lieu d'être dans le dropdown.
+
+/contact, when logged in, show app navbar
+
+Mettre Explore la page principale
+
 dump Kinds, RecipeKinds, Recipes, names, json and aspell it
 aspell translations
 
-Ajouter un bouton pour dupliquer la recette au lieu d'être dans le dropdown.
-
-Une flèche rouge «try me» écrit à la main vis à vis le smart phone.
-
-TODO: Add a constraint that a kind kind_id cannot be itself...
-a validate key inside the schema that is called at every create and update.
-
 «Ma liste» devrait être une autre colonne différent que «Mes favoris»??? Pas sure... demander à Céline...
-
-/contact, when logged in, show app navbar
 
 Image suggestions for recipes. When creating and when editing image.
 Strawberry pie should show all the images of pie because they contain pie in both.
@@ -44,7 +27,6 @@ Tag my images.
 Ask users that upload images if others can use it too.
 Put that setting inside user instead of for each image?
 
-remplir la page de suggestions, pas juste une ligne
 og:description for recipe kinds
 <meta property="og:locale" content="fr_CA">
 Fix font glitch
@@ -56,38 +38,11 @@ Je pense que en anglais, il n'y a pas de «of» dans la liste des ingrédients, 
 
 Un message de bienvenue quand un utilisateur se crée un compte pour la première fois.
 
-Renversé à l'ananas.
-Potage à la courge butternut.
-Taboulé.
-Trempette aux artichauts.
-Chichi et Pina colada
 Ma recette de potage à la citrouille n'est comme pas fini on dirait...
 
-Fix servings raw_servings into servings_quantity and servings_name?
+Ajouter Hedacuisine sur mon site de CV.
 
-Il faut simplement que je tag d'une manière quelquonque des recettes.
-Je peux utiliser les tags des utilisateurs publiques?
-Un jour idéalement du machine learning pour choisir quels tags montrer, quelles recettes montrer.
-Laisser tout comme c'est présentement, le fait de pouvoir créer des tags, mais en rajouter aussi pour les recipe kinds comme ça pour les suggestions.
-Ne pas faire tout de suite, réfléchir en premier, mais enlever le fait que ce soit le user qui tag les recettes.
-Sur un dashboard admin, voir les nouvelles recettes publiques que les gens ont créé et les tagger moi-même?
-Tagger avec des recipe kinds que je gère?
-Quand je crée un utilisateur, demander si l'utilisateur veut rendre sont compte privé ou publique.
-Publique: Tout le monde vont pouvoir voir vos recettes
-Privé: Vous seul aurez accès à vos recettes
-Pouvoir réagir aux recettes suggérés?
-
-I can translate by myself using Moses? http://www2.statmt.org/moses/
-
-Prendre des recettes de là?
-https://recipes.fandom.com/wiki/Baked_Buffalo_Wings
-
-Sur mon site internet de CV, rajouter une ligne sur la page d'acceuil, Portfolio, avec des liens vers les meilleurs projets que j'ai fait.
-
-Longer sessions (1 month!), refresh le 1 mois lorsque l'utilisateur se connecte?, ne pas avoir à se logger souvent.
 Quand tu déplaces des ingrédients, modifier le json pour changer les numéros d'ingrédients.
-Use Docker instead of Herkou build pack
-https://www.docker.com/blog/getting-started-with-docker-using-node-jspart-i/
 
 Later:
 Est-ce que je peux utiliser TypeScript ne serait-ce que pour s'assurer que les variables ne sont pas nulls?
@@ -223,3 +178,8 @@ Fast: Temps total qui n'est pas trop trop long. Range: 30 mins à 3h
 
 Proposer les doings de sorcière seulement quand qu'on est proche de l'halloween.
 Yule log cake only for Christmas.
+
+I can translate by myself using Moses? http://www2.statmt.org/moses/
+
+Prendre des recettes de là?
+https://recipes.fandom.com/wiki/Baked_Buffalo_Wings

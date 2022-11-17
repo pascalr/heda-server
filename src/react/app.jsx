@@ -5,14 +5,14 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, Link, currentPathIs, currentPathIsRoot } from "./lib"
 import { findRecipeKindForRecipeName } from "../lib"
-import { RecipeList, RecipeIndex, duplicateRecipe, updateFavoriteRecipe } from './recipe_index'
+import { RecipeList, RecipeIndex, duplicateRecipe } from './recipe_index'
 import { changeUrl, ajax, normalizeSearchText, join, bindSetter, capitalize, isTrue } from "./utils"
 import { localeHref2, getUrlParams, sortBy, sortByDate, shuffle } from "../utils"
 import { icon_path, image_path, image_slug_variant_path } from './routes'
 import {TextField, CollectionSelect, ImageField, ImageSelector} from './form'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
 import {RecipeEditor} from "./recipe_editor"
-import {RecipeViewer, FavoriteButton} from "./recipe_viewer"
+import {RecipeViewer, FavoriteButton, AddToListButton} from "./recipe_viewer"
 import {RecipeKindViewer} from "./show_recipe_kind"
 import {KindViewer} from "./show_kind"
 import { initHcu, useHcuState } from '../hcu'
@@ -228,12 +228,9 @@ const ShowRecipeKind = ({user, favoriteRecipes, recipeKindId, ...props}) => {
   const recipeButtons = (recipe) => {
     if (user.id == recipe.user_id) {return null}
     const favorite = favoriteRecipes?.find(f => f.recipe_id == recipe.id)
-    const inList = favorite && favorite.list_id == 1
     return <>
       <FavoriteButton {...{recipe, user, favorite}} className='plain-btn' width='32' />
-      <button type="button" className="plain-btn" onClick={() => updateFavoriteRecipe(favorite, inList ? 0 : 1, recipe, user)}>
-        <img style={{width: '1.8em'}} src={"/icons/"+(inList ? 'remove' : 'add')+"-list.svg"} className="ms-2" title={inList ? t('Remove_from_my_list') : t('Add_to_my_list')} />
-      </button> 
+      <AddToListButton {...{recipe, user, favorite}} className='plain-btn ms-2' width='32' />
       <button type="button" className="plain-btn" onClick={() => duplicateRecipe(recipe)}>
         <img style={{width: '1.8em'}} src="/icons/files.svg" className="ms-2" title={t('Copy_and_edit')} />
       </button> 

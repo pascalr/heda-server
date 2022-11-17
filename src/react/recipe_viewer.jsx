@@ -7,7 +7,7 @@ import { Link, useOrFetch } from "./lib"
 import { recipeIngredientsAndHeaders, quantityWithPreposition, prettyPreposition } from "../lib"
 import { RecipeMediumImage } from "./image"
 //import { EditTagsModal } from './modals/edit_tags'
-import { removeRecipe, AddToListMenu, ChangeVisibilityMenuItem, duplicateRecipe } from './recipe_index'
+import { removeRecipe, AddToListMenu, ChangeVisibilityMenuItem, duplicateRecipe, updateFavoriteRecipe } from './recipe_index'
 import { t } from "../translate"
 import { handleError } from "../hcu"
 
@@ -71,6 +71,15 @@ export const RecipeAttributes = ({recipe, userName}) => {
   </>
 }
 
+export const AddToListButton = ({recipe, user, favorite, ...props}) => {
+
+  const inList = favorite && favorite.list_id == 1
+
+  return <button type="button" className="plain-btn" onClick={() => updateFavoriteRecipe(favorite, inList ? 0 : 1, recipe, user)} {...props}>
+    <img style={{width: '1.8em'}} src={"/icons/"+(inList ? 'remove' : 'add')+"-list.svg"} title={inList ? t('Remove_from_my_list') : t('Add_to_my_list')} />
+  </button> 
+}
+
 export const FavoriteButton = ({recipe, user, favorite, width, ...props}) => {
   if (recipe.user_id == user.id) {return ''}
   const handleClick = () => {
@@ -83,7 +92,7 @@ export const FavoriteButton = ({recipe, user, favorite, width, ...props}) => {
       }
     }
   }
-  let img = favorite ? "/icons/star-fill.svg" : "/icons/star.svg"
+  let img = favorite ? "/icons/heart-fill.svg" : "/icons/heart.svg"
   let title = favorite ? t('Remove_from_my_favorites') : t('Add_to_my_favorites')
   return <button type="button" className="btn btn-outline-secondary" onClick={handleClick} {...props}>
     <img src={img} width={width||"24"} title={title}></img>
@@ -145,6 +154,7 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, recipeKinds, user
               </Link>
             : ''}
             <FavoriteButton {...{recipe, user, favorite}} />
+            <AddToListButton {...{recipe, user, favorite}} className='btn btn-outline-secondary' />
             <span className="dropdown">
               <a className="btn btn-outline-secondary" href="FIXME" data-bs-toggle="dropdown">
                 <img src="/icons/three-dots.svg" width="24"></img>
