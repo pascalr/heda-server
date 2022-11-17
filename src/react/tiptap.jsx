@@ -719,7 +719,7 @@ export const RecipeTiptap = ({recipe, editable, ingredients}) => {
   // it really changes, not because the object refence id is not the same
   const dependencies = [recipe.id, JSON.stringify(ingredients)]
   const editor = useEditor(recipeEditor(content, editable), dependencies)
-  useSavingEditor(editor, recipe, 'json')
+  if (editable) {useSavingEditor(editor, recipe, 'json')}
 
   return (
     <div>
@@ -766,7 +766,7 @@ export const DescriptionTiptap = ({model, json_field, editable}) => {
     content: model[json_field] ? JSON.parse(model[json_field]): null,
     editable,
   })
-  useSavingEditor(editor, model, json_field)
+  if (editable) {useSavingEditor(editor, model, json_field)}
 
   return (
     <div>
@@ -782,39 +782,42 @@ export const DescriptionTiptap = ({model, json_field, editable}) => {
 }
 
 const useSavingEditor = (editor, model, json_field) => {
-  
+
   useEffect(() => {
 
     if (editor) {
+      editor.isCommited = true
       editor.on('update', ({ editor }) => {
-        editor.isDirty = true
+        editor.isCommited = false
       })
 
       let interval = setInterval(function() {
-        if (!editor.isDirty) {return;}
-        editor.isDirty = false
+        if (editor.isCommited || editor.isCommiting) {return;}
+        editor.isCommiting = true
         let json = JSON.stringify(editor.getJSON())
         if (json != model[json_field]) {
           console.log('Saving changes for '+model.table_name+' '+json_field);
           window.hcu.updateField(model, json_field, json)
+          editor.isCommiting = false
+          editor.isCommited = true
         }
       }, 1*1000);
+        
+      // FIXME: This only works for a single editor...
+      window.onbeforeunload = () => {
+        if (!editor.isCommited) {
+          return 'There are unsaved changes. Are you sure you want to leave?';
+        }
+      }
 
-      return () => clearInterval(interval);
+      return () => {
+        // FIXME: This only works for a single editor...
+        window.onbeforeunload = () => {}
+        clearInterval(interval);
+      }
     }
   }, [editor])
 }
-
-//preventLeavingWithoutModifications() {
-//  for (let editor in this.editors) {
-//    if (editor && JSON.stringify(editor.getJSON()) != editor.savedJSON) {
-//      return 'There are unsaved changes. Are you sure you want to leave?';
-//    }
-//  }
-//}
-//window.onbeforeunload = this.preventLeavingWithoutModifications
-//
-//
 
 //const LinkModel = Node.create({
 //  name: 'link-model',
