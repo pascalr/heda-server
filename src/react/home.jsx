@@ -100,6 +100,11 @@ export const Home = () => {
         <div className="ff-montserra mb-2">
           <h2>{t('About_HedaCuisine')}</h2>
           <p>{t('Home_14')}</p>
+          <h4>{t('Timeline')}</h4>
+          <ul>
+            <li>{t('Home_15')}</li>
+            <li>{t('Home_16')}</li>
+          </ul>
         </div>
       </div>
     </div>
