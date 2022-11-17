@@ -677,15 +677,12 @@ const ArticleToolbar = ({ editor }) => {
 export const ArticleExtensions = [
   Bold, Italic, Document, Paragraph, Strike, Text, ArticleHeading, History, // Subscript, Superscript,
 ]
-export const ArticleTiptap = ({model, json_field, url}) => {
+export const ArticleTiptap = ({model, json_field}) => {
   const editor = useEditor({
     extensions: ArticleExtensions,
     content: JSON.parse(model[json_field]),
   })
-  useEffect(() => {
-    let interval = registerEditorWithEffect(editor, model, json_field, url)
-    return () => clearInterval(interval);
-  }, [editor])
+  useSavingEditor(editor, model, json_field)
 
   return (
     <div className="article-editor">
@@ -722,11 +719,7 @@ export const RecipeTiptap = ({recipe, editable, ingredients}) => {
   // it really changes, not because the object refence id is not the same
   const dependencies = [recipe.id, JSON.stringify(ingredients)]
   const editor = useEditor(recipeEditor(content, editable), dependencies)
-
-  useEffect(() => {
-    let interval = registerEditorWithEffect(editor, recipe, 'json', 'html', null)
-    return () => clearInterval(interval);
-  }, [editor])
+  useSavingEditor(editor, recipe, 'json')
 
   return (
     <div>
@@ -738,7 +731,7 @@ export const RecipeTiptap = ({recipe, editable, ingredients}) => {
 }
 
 export const BubbleExtensions = [Bold, Italic, Strike, InlineDocument, History, Text]
-export const BubbleTiptap = ({content, model, json_field, url}) => {
+export const BubbleTiptap = ({content, model, json_field}) => {
 
   const width = 24
   const height = 24
@@ -747,11 +740,7 @@ export const BubbleTiptap = ({content, model, json_field, url}) => {
     extensions: BubbleExtensions,
     content: content,
   })
-
-  useEffect(() => {
-    let interval = registerEditorWithEffect(editor, model, json_field, url)
-    return () => clearInterval(interval);
-  }, [editor])
+  useSavingEditor(editor, model, json_field)
 
   return (
     <>
@@ -767,7 +756,7 @@ export const BubbleTiptap = ({content, model, json_field, url}) => {
 }
 
 export const DescriptionExtensions = [Bold, Italic, Strike, Document, Paragraph, History, Text]
-export const DescriptionTiptap = ({model, json_field, url, editable}) => {
+export const DescriptionTiptap = ({model, json_field, editable}) => {
 
   const width = 24
   const height = 24
@@ -777,11 +766,7 @@ export const DescriptionTiptap = ({model, json_field, url, editable}) => {
     content: model[json_field] ? JSON.parse(model[json_field]): null,
     editable,
   })
-
-  useEffect(() => {
-    let interval = registerEditorWithEffect(editor, model, json_field, url)
-    return () => clearInterval(interval);
-  }, [editor])
+  useSavingEditor(editor, model, json_field)
 
   return (
     <div>
@@ -796,23 +781,30 @@ export const DescriptionTiptap = ({model, json_field, url, editable}) => {
   )
 }
 
-// Returns the interval
-const registerEditorWithEffect = (editor, model, json_field, url) => {
-  if (!editor) {return null}
-  editor.on('update', ({ editor }) => {
-    editor.isDirty = true
-  })
-  return setInterval(function() {
-    if (!editor.isDirty) {return;}
-    editor.isDirty = false
-    let json = JSON.stringify(editor.getJSON())
-    if (json != model[json_field]) {
-      console.log('Saving changes for '+model.table_name+' '+json_field);
-      window.hcu.updateField(model, json_field, json)
-    }
-  }, 1*1000);
-}
+const useSavingEditor = (editor, model, json_field) => {
   
+  useEffect(() => {
+
+    if (editor) {
+      editor.on('update', ({ editor }) => {
+        editor.isDirty = true
+      })
+
+      let interval = setInterval(function() {
+        if (!editor.isDirty) {return;}
+        editor.isDirty = false
+        let json = JSON.stringify(editor.getJSON())
+        if (json != model[json_field]) {
+          console.log('Saving changes for '+model.table_name+' '+json_field);
+          window.hcu.updateField(model, json_field, json)
+        }
+      }, 1*1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [editor])
+}
+
 //preventLeavingWithoutModifications() {
 //  for (let editor in this.editors) {
 //    if (editor && JSON.stringify(editor.getJSON()) != editor.savedJSON) {
