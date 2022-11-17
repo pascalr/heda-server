@@ -226,7 +226,7 @@ const sqlDb = {
     })
   
     let query = 'UPDATE '+safe(table, getTableList(schema))+' SET '+fields.map(f => "'"+f+"' = ?").join(', ')+', updated_at = ? WHERE id = ?'
-    let args = [...fields.map(f => updates[f]), now(), id]
+    let args = [...fields.map(f => validAttr(schema, table, f, updates[f])), now(), id]
     
     return this.prepare(query).run(args)
   },

@@ -473,6 +473,13 @@ router.get('/fetch_search_data', function(req, res, next) {
   res.json({recipeKinds, publicUsers})
 });
 
+router.get('/fetch_image/:slug', function(req, res, next) {
+
+  let attrs = ['author', 'source', 'is_user_author', 'slug']
+  let image = db.fetchRecord('images', {slug: req.params.slug}, attrs)
+  res.json(image)
+});
+
 // TODO: Do all the modifications inside a single transaction, and rollback if there is an error.
 router.patch('/batch_modify', function(req, res, next) {
 

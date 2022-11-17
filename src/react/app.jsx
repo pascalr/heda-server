@@ -514,7 +514,7 @@ export const App = () => {
     {match: "/c", elem: () => <EditTags {...{tags}} />},
     {match: "/n", elem: () => <NewRecipe {...{recipeKinds}} />},
     {match: "/r/:id", elem: ({id}) =>
-      <ShowRecipe {...{recipeId: id, recipes, favoriteRecipes, recipeKinds, user, users}} />
+      <ShowRecipe {...{recipeId: id, recipes, favoriteRecipes, recipeKinds, user, users, images}} />
     },
     {match: "/k/:id", elem: ({id}) =>
       <ShowRecipeKind {...{recipeKindId: id, recipes, recipeKinds, locale, user, favoriteRecipes}} />

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 
 import { ajax, changeUrl } from "./utils"
 import { RecipeTiptap, BubbleTiptap } from './tiptap'
-import { Link, useOrFetchRecipe } from "./lib"
+import { Link, useOrFetchRecipe, useOrFetch } from "./lib"
 import { recipeIngredientsAndHeaders, quantityWithPreposition, prettyPreposition } from "../lib"
 import { RecipeMediumImage } from "./image"
 //import { EditTagsModal } from './modals/edit_tags'
@@ -90,12 +90,12 @@ export const FavoriteButton = ({recipe, user, favorite, width, ...props}) => {
   </button>
 }
   
-export const RecipeViewer = ({recipeId, page, favoriteRecipes, recipeKinds, user, users, recipes}) => {
+export const RecipeViewer = ({recipeId, page, favoriteRecipes, recipeKinds, user, users, recipes, images}) => {
 
   //const [showModal, setShowModal] = useState(false)
 
   const recipe = useOrFetchRecipe(recipes, recipeId)
-  console.log('recipe', recipe)
+  const image = useOrFetch('images', images, (i) => i.slug == recipe.image_slug, '/fetch_image/'+recipe.image_slug)
   if (!recipe) {return ''}
 
   const noteIds = recipe.notes ? Object.values(recipe.notes).sort((a,b) => a.item_nb - b.item_nb).map(ing => ing.id) : []
@@ -133,7 +133,7 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, recipeKinds, user
   return (<>
     <div className="recipe mt-3">
       <div className="d-block d-md-flex" style={{gap: '20px'}}>
-        <div><RecipeMediumImage {...{recipe, showCredit: true}} /></div>
+        <div><RecipeMediumImage {...{recipe, images: image ? [image] : null, showCredit: true}} /></div>
         <div style={{height: '20px', width: '0'}}></div>
         <div style={{width: '100%'}}>
           <RecipeAttributes {...{recipe, userName}} />

@@ -16,6 +16,7 @@ let invalid = {}
 let recipe = null
 let fetched = null
 let record = null
+let image = null
 let kind = null
 let recipeKind = null
 
@@ -87,3 +88,9 @@ header('Testing fetchRecordLocaleAttrs')
 recipeKind = db.createRecord('recipe_kinds', {name_fr: 'Pomme', name_en: 'Apple'}, admin)
 fetched = fetchRecordLocaleAttrs(db, 'recipe_kinds', {id: recipeKind.id}, [], ['name'], 'fr')
 assertEquals(recipeKind.name_fr, fetched.name)
+
+// Test update boolean
+image = db.createRecord('images', {slug: 'foosdfsdf.jpg'}, admin, {allow_write: ['slug']})
+db.findAndUpdateRecord('images', image, {is_user_author: true}, admin)
+fetched = db.fetchRecord('images', {id: image.id}, ['is_user_author'])
+assert(fetched.is_user_author, "Updating booleans should work.")

@@ -6,6 +6,7 @@ import {clearRecord, ImageSelector, TextField, ImageField, RadioField} from '../
 import { RecipeMediumImage } from "../image"
 import { image_path } from '../routes'
 import { isTrue } from "../utils"
+import { useOrFetch } from "../lib"
 import { t } from "../../translate"
 
 export const EditableImage = ({recipe, images}) => {
@@ -26,7 +27,9 @@ export const EditableImage = ({recipe, images}) => {
 
 export const EditRecipeImageModal = ({recipe, images, show, handleClose}) => {
 
-  const image = recipe.image_slug ? images.find(e => e.slug == recipe.image_slug) : null
+  const image = useOrFetch('images', images, (i) => i.slug == recipe.image_slug, '/fetch_image/'+recipe.image_slug)
+
+  //const image = recipe.image_slug ? images.find(e => e.slug == recipe.image_slug) : null
   const imagePath = recipe.image_slug ? image_path(recipe.image_slug, 'medium') : "/img/default_recipe_01.png"
 
   const removeImage = () => {
