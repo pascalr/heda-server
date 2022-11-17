@@ -168,40 +168,19 @@ export const useFetch = (url, args={}) => {
   return data;
 };
 
-// Deprecated use useOrFetch
-export const useOrFetchRecipe = (group, id) => {
-
-  const [record, setRecord] = useState(group.find(e => e.id == id))
-
-  useEffect(() => {
-    if (id) {
-      let r = group.find(e => e.id == id)
-      if (!r) {
-        ajax({url: '/fetch_recipe/'+id, type: 'GET', success: (fetched) => {
-          window.hcu.addRecord('recipes', fetched)
-          setRecord(fetched)
-        }, error: handleError(t('Error_fetching')) })
-      } else if (!record || record.id != id) {
-        setRecord(r)
-      }
-    } else {
-      setRecord(null)
-    }
-  }, [id])
-  
-  return record
-}
-
 /**
  * Yet another implement attempt.
  * Returns the first record from the group that matches the match function.
  * Otherwiser fetches the record at the record and sets it inside hcu.
  */
-export const useOrFetch = (table, group, match, url) => {
+export const useOrFetch = (table, group, match, url, dependency='none') => {
+
+  let disabled = !dependency
 
   const [record, setRecord] = useState(null)
 
   useEffect(() => {
+    if (disabled) {return}
     let r = group.find(e => match(e))
     if (r && r != record) {
       setRecord(r)

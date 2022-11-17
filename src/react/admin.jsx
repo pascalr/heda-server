@@ -4,7 +4,7 @@ import toastr from 'toastr'
 //import { createRoot } from 'react-dom/client';
 
 import { TextInput, TextField, CollectionSelect, RangeField } from "./form"
-import { Link, useOrFetchRecipe, getLocale } from "./lib"
+import { Link, useOrFetch, getLocale } from "./lib"
 import { localeAttr, findRecipeKindForRecipeName  } from "../lib"
 import { MainSearch } from './main_search'
 import { HomeTab, AppErrorBoundary } from './app'
@@ -481,7 +481,7 @@ const TranslateRecipePage = ({translations, recipes, locale}) => {
   const [translated, setTranslated] = useState(null)
   const [translationParts, setTranslationParts] = useState(null)
 
-  const recipe = useOrFetchRecipe(recipes, recipeId)
+  const recipe = useOrFetch('recipes', recipes, r => r.id == recipeId, '/fetch_recipe/'+recipeId, recipeId)
       
   let from = 1 // French FIXME
   let to = 4 // English FIXME

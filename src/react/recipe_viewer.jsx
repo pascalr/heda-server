@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 
 import { ajax, changeUrl } from "./utils"
 import { RecipeTiptap, BubbleTiptap } from './tiptap'
-import { Link, useOrFetchRecipe, useOrFetch } from "./lib"
+import { Link, useOrFetch } from "./lib"
 import { recipeIngredientsAndHeaders, quantityWithPreposition, prettyPreposition } from "../lib"
 import { RecipeMediumImage } from "./image"
 //import { EditTagsModal } from './modals/edit_tags'
@@ -94,8 +94,9 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, recipeKinds, user
 
   //const [showModal, setShowModal] = useState(false)
 
-  const recipe = useOrFetchRecipe(recipes, recipeId)
-  const image = useOrFetch('images', images, (i) => i.slug == recipe.image_slug, '/fetch_image/'+recipe.image_slug)
+  const recipe = useOrFetch('recipes', recipes, r => r.id == recipeId, '/fetch_recipe/'+recipeId)
+  const slug = recipe ? recipe.image_slug : null
+  const image = useOrFetch('images', images, (i) => i.slug == slug, '/fetch_image/'+slug, recipe)
   if (!recipe) {return ''}
 
   const noteIds = recipe.notes ? Object.values(recipe.notes).sort((a,b) => a.item_nb - b.item_nb).map(ing => ing.id) : []
