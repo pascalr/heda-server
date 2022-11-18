@@ -76,8 +76,8 @@ const UserViewer = ({user, userRecipes, favRecipes}) => {
 export const ShowUser = () => {
 
   const locale = getLocale()
-  const [userRecipes, ] = useState(gon.user_recipes)
-  const [favRecipes, ] = useState(gon.fav_recipes)
+  const [userRecipes, ] = useState(gon.userRecipes)
+  const [favRecipes, ] = useState(gon.favRecipes)
   const [user, ] = useState(gon.user)
   //const [favoriteRecipes, ] = useState(gon.favorite_recipes)
 

@@ -23,6 +23,22 @@ let IMAGE_FOLDER = path.join(VOLUME_FOLDER, 'images')
 
 const RECIPE_ATTRS = ['user_id', 'name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'ingredients', 'image_slug', 'servings_name', 'original_id', 'is_public', 'heda_instructions']
 
+function executeChain(req, res, next, chain) {
+  for (let i = 0; i < chain.length; i += 1) {
+    let nextCalled = false
+    if (i === chain.length-1) {
+      chain[i](req, res, next)
+    } else {
+      chain[i](req, res, (val) => {
+        if (val) {return next(val)} // An error has occured
+        nextCalled = true
+      })
+    }
+    if (!nextCalled) {return}
+  }
+}
+
+
 //const ensureLogIn = connectEnsureLogin.ensureLoggedIn;
 //const ensureLoggedIn = ensureLogIn();
 const router = express.Router();
@@ -379,6 +395,22 @@ router.patch('/update_field/:table/:id', ensureUser, function(req, res, next) {
   res.json({status: 'ok'})
 });
 
+function extractUser(id) {
+
+  let userId = parseInt(id)
+  let user = db.fetchRecord('users', {id: userId}, ['name'])
+  if (!user) {throw 'Unable to fetch user.'}
+  // OPTIMIZE: No need to extract all RECIPE_ATTRS....
+  let userRecipes = db.fetchTable('recipes', {user_id: userId, is_public: 1}, RECIPE_ATTRS)
+  let favs = db.fetchTable('favorite_recipes', {user_id: userId}, ['recipe_id'])
+  let fetchedIds = userRecipes.map(r => r.id)
+  let missingRecipeIds = favs.map(r=>r.recipe_id).filter(id => !fetchedIds.includes(id))
+  let favRecipes = db.fetchTable('recipes', {id: missingRecipeIds, is_public: 1}, RECIPE_ATTRS)
+  return {user, userRecipes, favRecipes}
+}
+
+router.get('/fetch_user/:id', (req, res, next) => res.json(extractUser(req.params.id)))
+
 router.get('/fetch_suggestions', function(req, res, next) {
 
   let answers = req.query.answers.split(',')
@@ -568,6 +600,11 @@ const renderApp = [ensureUser, function(req, res, next) {
   res.render('index', { account: req.user });
 }]
 
+function renderAppIfLoggedIn(req, res, next) {
+  if (req.user && req.user.user_id) { executeChain(req, res, next, renderApp) }
+  else {return next();}
+}
+
 router.get('/e/:id', renderApp)
 router.get('/c', renderApp)
 router.get('/g', renderApp)
@@ -582,9 +619,7 @@ router.get('/m/:id/l', renderApp)
 router.get('/m/:machineId/s/:id', renderApp)
 router.get('/m/:machineId/e/:id', renderApp)
 
-router.get('/r/:id', function(req, res, next) {
-
-  if (req.user && req.user.user_id) { return next(); }
+router.get('/r/:id', renderAppIfLoggedIn, function(req, res, next) {
 
   let recipeId = req.params.id
   let o = {}
@@ -616,11 +651,9 @@ router.get('/r/:id', function(req, res, next) {
   res.locals.descriptionRecipeIngredients = descriptionRecipeIngredients
   res.locals.gon = o
   res.render('show_recipe');
-}, renderApp);
+});
 
-router.get('/d/:id', function(req, res, next) {
-
-  if (req.user && req.user.user_id) { return next(); }
+router.get('/d/:id', renderAppIfLoggedIn, function(req, res, next) {
 
   let o = {}
   let id = parseInt(req.params.id)
@@ -636,11 +669,9 @@ router.get('/d/:id', function(req, res, next) {
   o.recipe_kinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {kind_id: id}, ['image_slug', 'kind_id'], ['name', 'recipe_count'], res.locals.locale)
   res.locals.gon = o
   res.render('show_kind');
-}, renderApp);
+});
 
-router.get('/k/:id', function(req, res, next) {
-
-  if (req.user && req.user.user_id) { return next(); }
+router.get('/k/:id', renderAppIfLoggedIn, function(req, res, next) {
 
   let o = {}
   o.recipe_kind = fetchRecordLocaleAttrs(db, 'recipe_kinds', {id: req.params.id}, ['image_slug', 'kind_id'], ['name', 'json', 'recipe_count'], res.locals.locale)
@@ -660,26 +691,13 @@ router.get('/k/:id', function(req, res, next) {
 
   res.locals.gon = o
   res.render('show_recipe_kind');
-}, renderApp);
+});
 
-router.get('/u/:id', function(req, res, next) {
+router.get('/u/:id', renderAppIfLoggedIn, function(req, res, next) {
 
-  if (req.user && req.user.user_id) { return next(); }
-
-  let o = {}
-  let userId = parseInt(req.params.id)
-  o.user = db.fetchRecord('users', {id: userId}, ['name'])
-  if (!o.user) {throw 'Unable to fetch user.'}
-  // OPTIMIZE: No need to extract all RECIPE_ATTRS....
-  o.user_recipes = db.fetchTable('recipes', {user_id: userId, is_public: 1}, RECIPE_ATTRS)
-  let favs = db.fetchTable('favorite_recipes', {user_id: userId}, ['recipe_id'])
-  let fetchedIds = o.user_recipes.map(r => r.id)
-  let missingRecipeIds = favs.map(r=>r.recipe_id).filter(id => !fetchedIds.includes(id))
-  o.fav_recipes = db.fetchTable('recipes', {id: missingRecipeIds, is_public: 1}, RECIPE_ATTRS)
-
-  res.locals.gon = o
+  res.locals.gon = extractUser(req.params.id)
   res.render('show_user');
-}, renderApp);
+});
 
 router.get('/error', function(req, res, next) {
   return res.render('error');
@@ -708,11 +726,10 @@ const renderHome = function(req, res, next) {
 router.get('/home', renderHome);
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  if (!req.user) { return renderHome(req, res, next) }
-  if (!req.user.user_id) { return res.redirect(localeHref('/choose_user', req.originalUrl)) }
-  next();
-}, renderApp)
+router.get('/', renderAppIfLoggedIn, function(req, res, next) {
+  if (req.user && !req.user.user_id) { return res.redirect(localeHref('/choose_user', req.originalUrl)) }
+  renderHome(req, res, next)
+})
 
 router.post('/duplicate_recipe/:id', function(req, res, next) {
 
