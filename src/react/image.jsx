@@ -5,9 +5,9 @@ import { isTrue } from "./utils"
 import {image_path, image_slug_variant_path } from './routes'
 import DefaultRecipeImage from '../../public/img/default_recipe_01.png'
 
-const ImageCredit = ({imageSlug, images}) => {
-  if (!images) {return ''}
-  const image = images.find(i => i.slug == imageSlug)
+const ImageCredit = ({imageSlug, image, images}) => {
+  if (!image && !images) {return ''}
+  image = image || images.find(i => i.slug == imageSlug)
   if (!image || !image.author || !image.source) {return ''}
   return <>
     <div className="text-center">
@@ -18,7 +18,7 @@ const ImageCredit = ({imageSlug, images}) => {
 }
 
 // Variant can be "thumb", "small", "medium"
-export const RecipeImage = ({recipe, images, showCredit, width, height, variant}) => {
+export const RecipeImage = ({recipe, image, images, showCredit, width, height, variant}) => {
   const imagePath = recipe.image_slug ? image_path(recipe.image_slug, variant) : DefaultRecipeImage
   let img = null
   if (window.disableLazyLoading) {
@@ -30,7 +30,7 @@ export const RecipeImage = ({recipe, images, showCredit, width, height, variant}
     <div style={{width: `${width}px`, height: `${height}px`, maxWidth: '100%', overflow: 'hidden', flexShrink: '0'}}>
       {img}
     </div>
-    {showCredit ? <ImageCredit {...{imageSlug: recipe.image_slug, images}} /> : ''}
+    {showCredit ? <ImageCredit {...{imageSlug: recipe.image_slug, images, image}} /> : ''}
   </>
 }
 

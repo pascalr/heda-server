@@ -9,11 +9,13 @@ import { image_slug_variant_path } from "./routes"
 import { t } from "../translate"
 import { RecipeTiptap } from './tiptap'
 import { RecipeMediumImage } from "./image"
-import { getLocale, Link } from "./lib"
+import { getLocale, Link, useFetch } from "./lib"
 import { RecipeAttributes, IngredientList } from "./recipe_viewer"
 import { ErrorBoundary } from './error_boundary'
 
-export const RecipeViewer = ({recipe, images, user, locale}) => {
+export const RecipeViewer = ({recipe, user, locale}) => {
+  
+  const image = useFetch('/fetch_image/'+recipe.image_slug)
 
   //<div className="d-flex" style={{gap: '5px', marginTop: '10px'}}>
   //  <a className="btn btn-outline-secondary" href="FIXME">
@@ -36,7 +38,7 @@ export const RecipeViewer = ({recipe, images, user, locale}) => {
     </nav>
     <div className="recipe">
       <div className="d-block d-md-flex" style={{gap: '20px'}}>
-        <div><RecipeMediumImage {...{recipe, images, showCredit: true}} /></div>
+        <div><RecipeMediumImage {...{recipe, image, showCredit: true}} /></div>
         <div style={{height: '20px', width: '0'}}></div>
         <div style={{width: '100%'}}>
           <RecipeAttributes {...{recipe, userName: user.name}} />
@@ -60,7 +62,6 @@ export const ShowRecipe = () => {
   const locale = getLocale()
   const [recipe, ] = useState(gon.recipe)
   const [translatedRecipe, ] = useState(gon.translated_recipe||{})
-  const [images, ] = useState(gon.images)
   const [user, ] = useState(gon.user)
 
   let shown = translatedRecipe ? {...recipe, ...translatedRecipe} : recipe
@@ -69,7 +70,7 @@ export const ShowRecipe = () => {
     <MainSearch {...{locale}} />
     <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0'}}>
       <ErrorBoundary>
-        <RecipeViewer {...{recipe: shown, images, user, locale}} />
+        <RecipeViewer {...{recipe: shown, user, locale}} />
       </ErrorBoundary>
     </div>
   </>

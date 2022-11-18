@@ -152,24 +152,24 @@ export const useWindowWidth = (args={}) => {
   return winWidth
 };
 
-export const useFetch = (url, args={}) => {
-  const {waitFor} = args
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    if (waitFor != false) {
-      async function fetchData() {
-        console.log(`Fetching data at ${url}`)
-        const response = await fetch(url);
-        const json = await response.json();
-        setData(json);
-      }
-      fetchData();
-    }
-  }, [url, waitFor]);
-
-  return data;
-};
+//export const useFetch = (url, args={}) => {
+//  const {waitFor} = args
+//  const [data, setData] = useState(null);
+//
+//  useEffect(() => {
+//    if (waitFor != false) {
+//      async function fetchData() {
+//        console.log(`Fetching data at ${url}`)
+//        const response = await fetch(url);
+//        const json = await response.json();
+//        setData(json);
+//      }
+//      fetchData();
+//    }
+//  }, [url, waitFor]);
+//
+//  return data;
+//};
 
 /**
  * Yet another implement attempt.
@@ -196,4 +196,20 @@ export const useOrFetch = (table, group, match, url, dependency='none') => {
   }, [match])
   
   return record
+}
+
+export const useFetch = (url, dependency='none') => {
+
+  let disabled = !dependency
+
+  const [data, setData] = useState(null)
+
+  useEffect(() => {
+    if (disabled) {return}
+    ajax({url, type: 'GET', success: (fetched) => {
+      setData(fetched)
+    }, error: handleError(t('Error_fetching')) })
+  }, [url, dependency])
+  
+  return data
 }

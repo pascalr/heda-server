@@ -604,11 +604,6 @@ router.get('/r/:id', function(req, res, next) {
   //  // FIXME: Create and use fetchRecord or findRecord, not fetchTable
   //  o.recipe_kind = db.fetchTable('recipe_kinds', {id: o.recipe.recipe_kind_id}, attrs)[0]
   //}
-
-  let slugs = [o.recipe.image_slug, o.recipe_kind ? o.recipe_kind.image_slug : null].filter(x=>x)
-  ids = slugs.map(s => s.split('.')[0])
-  attrs = ['author', 'source', 'filename', 'is_user_author', 'slug']
-  o.images = db.fetchTable('images', {id: ids}, attrs)
  
   res.locals.descriptionRecipeIngredients = descriptionRecipeIngredients
   res.locals.gon = o
