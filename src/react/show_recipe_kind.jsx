@@ -19,7 +19,6 @@ const RecipeAttribute = ({recipe, attr, label}) => {
 }
 
 const Recipe = ({recipe, recipeKind}) => {
-  foo.asdf = 10
   if (!recipe) {return null}
   return <>
     <div style={{border: '1px solid black'}}>
