@@ -105,6 +105,7 @@ export const Home = () => {
             <li>❌ {t('Home_25')}</li>
             <li>❌ {t('Home_26')}</li>
             <li>❌ {t('Home_28')}</li>
+            <li>❌ {t('Home_29')}</li>
           </ul>
         </div>
       </div>
