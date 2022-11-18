@@ -267,7 +267,7 @@ const AdminPage = ({stats, publicUsers, errors}) => {
       <button className="btn btn-primary m-2" type="button" onClick={translateRecipes}>Translate recipes</button>
       <button className="btn btn-primary m-2" type="button" onClick={matchRecipeKinds}>Match recipe kinds</button>
       <button className="btn btn-primary m-2" type="button" onClick={updateRecipesLocale}>Update recipes locale</button>
-      <button className="btn btn-primary m-2" type="button" onClick={updateKindsCount}>Update kinds count</button>
+      <button className="btn btn-primary m-2" type="button" onClick={updateKindsCount}>Update kinds count (update locale first)</button>
       <button className="btn btn-primary m-2" type="button" onClick={calcRecipeKinds}>Calc recipe kinds</button>
       <br/><br/><br/><h2>Output</h2>
       {missings ? <>
