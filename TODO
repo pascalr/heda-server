@@ -4,22 +4,13 @@ Une recette que j'ai fait* cette semaine.
 C'est vraiment bon et c'est super facile à faire!
 Je n'ai même pas eu le temps de finir ma bière sur le balcon que Céline avait fini de la préparer!
 
-Ajouter dans la page home une liste:
-Features:
-Avec les features présentement et les feature à ajouter plus tard.
-- Comments
-- Ratings
-- Download all recipes
-- Print recipe
-- Share on social media
-
-Clicking on recipe slider works like shit.
-
 Test simultaneous connections
 Check out lunch website like product hunt
 log errors when user not logged in too
 when there is an error, have a way that the user can still access it's recipes
 Use Link instead of localeHref when not inside app.
+
+Clicking on recipe slider works like shit.
 
 Email validation for logging.
 

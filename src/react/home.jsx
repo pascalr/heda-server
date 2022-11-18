@@ -8,9 +8,9 @@ import { ajax, preloadImage } from "./utils"
 import { t } from "../translate"
 import { Carrousel } from "./carrousel"
 import { initHcu, useHcuState } from '../hcu'
-import { localeHref, getUrlParams } from "../utils"
+import { getUrlParams, localeHref } from "../utils"
 import { MainSearch } from './main_search'
-import { getLocale } from "./lib"
+import { getLocale, Link } from "./lib"
 import { SuggestionsPage } from "./suggestions"
 
 export const Home = () => {
@@ -21,23 +21,8 @@ export const Home = () => {
 
   const locale = getLocale()
   const recipe = useHcuState([gon.recipe], {tableName: 'recipes'})[0]
-  //const [kinds,] = useState(gon.kinds||[])
 
   if (!window.hcu) {initHcu(); window.hcu.makeDummy() }
-
-  //<div className="trunk">
-  //  {kinds.map(k => {
-  //    return <div key={k.id}>
-  //      <h2><a href={localeHref('/d/'+k.id)} className='plain-link'>{k.name}</a></h2>
-  //      <Carrousel {...{items: k.recipeKinds||[]}}>{item => <>
-  //        <a href={localeHref("/k/"+item.id)} className="plain-link">
-  //          <RecipeSmallImage {...{recipe: item}} />
-  //          <div className="mt-1 mb-3" style={{lineHeight: 1}}>{item.name}</div>
-  //        </a>
-  //      </>}</Carrousel>
-  //    </div>
-  //  })}
-  //</div>
 
   const preloadItem = (i) => {if (i.image_slug) {preloadImage('/imgs/small/'+i.image_slug)}}
   return <>
@@ -49,7 +34,7 @@ export const Home = () => {
           <h1 className="fs-25">Heda cuisine</h1>
           <h5><i>{t('Home_2')}</i></h5>
           <p className="py-3 fs-095">{t('Home_1')}</p>
-          <a className="btn btn-primary" style={{padding: '0.5em 3em', margin: 'auto'}} href={localeHref("/login")}>{t('Sign_in')} ({t('beta')})</a>
+          <Link className="btn btn-primary" style={{padding: '0.5em 3em', margin: 'auto'}} path={"/login"}>{t('Sign_in')} ({t('beta')})</Link>
         </div>
         <div className='flex-grow-1' style={{height: '3em'}}></div>
         <div style={{width: '25em', maxWidth: '100%', margin: 'auto'}}>
