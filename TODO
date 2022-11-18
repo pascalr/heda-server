@@ -4,21 +4,32 @@ Une recette que j'ai fait* cette semaine.
 C'est vraiment bon et c'est super facile à faire!
 Je n'ai même pas eu le temps de finir ma bière sur le balcon que Céline avait fini de la préparer!
 
+Ajouter dans la page home une liste:
+Features:
+Avec les features présentement et les feature à ajouter plus tard.
+- Comments
+- Ratings
+- Download all recipes
+- Print recipe
+- Share on social media
+
+Test simultaneous connections
+Check out lunch website like product hunt
+log errors when user not logged in too
+when there is an error, have a way that the user can still access it's recipes
+Use Link instead of localeHref when not inside app.
+
 Email validation for logging.
 
 Check with smartphones all the new pages
 Check with different browsers all the pages
 
-Ajouter un bouton pour dupliquer la recette au lieu d'être dans le dropdown.
-
-/contact, when logged in, show app navbar
-
 Mettre Explore la page principale
+
+Un système de vérification orthographique?
 
 dump Kinds, RecipeKinds, Recipes, names, json and aspell it
 aspell translations
-
-«Ma liste» devrait être une autre colonne différent que «Mes favoris»??? Pas sure... demander à Céline...
 
 Image suggestions for recipes. When creating and when editing image.
 Strawberry pie should show all the images of pie because they contain pie in both.
@@ -31,7 +42,7 @@ og:description for recipe kinds
 <meta property="og:locale" content="fr_CA">
 Fix font glitch
 /u/5 show inside app too
-130 descriptions des RecipeKinds
+130 descriptions des RecipeKinds GPT-3 API?
 Bûche de noël, (2 oeuf) => (2 oeufs) !!!
 Une page My account
 Je pense que en anglais, il n'y a pas de «of» dans la liste des ingrédients, mais il devrait y en avoir dans le texte des instructions?
