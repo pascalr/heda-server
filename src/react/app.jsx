@@ -7,7 +7,7 @@ import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, Link, currentPath
 import { findRecipeKindForRecipeName } from "../lib"
 import { RecipeList, RecipeIndex } from './recipe_index'
 import { changeUrl, ajax, normalizeSearchText, join, bindSetter, capitalize, isTrue } from "./utils"
-import { localeHref2, getUrlParams, sortBy, sortByDate, shuffle } from "../utils"
+import { urlWithLocale, getUrlParams, sortBy, sortByDate, shuffle } from "../utils"
 import { icon_path, image_path, image_slug_variant_path } from './routes'
 import {TextField, CollectionSelect, ImageField, ImageSelector} from './form'
 import { DeleteConfirmButton } from './components/delete_confirm_button'
@@ -153,7 +153,7 @@ const HomeTabs = ({machines}) => {
 
 const UsersPage = ({}) => {
 
-  const data = useCacheOrFetch(localeHref2('/fetch_explore_users', locale))
+  const data = useCacheOrFetch(urlWithLocale('/fetch_explore_users', locale))
 
   if (!data) {return null}
 
@@ -172,7 +172,7 @@ const UsersPage = ({}) => {
 
 const ExplorePage = ({}) => {
 
-  const data = useCacheOrFetch(localeHref2('/fetch_explore', locale))
+  const data = useCacheOrFetch(urlWithLocale('/fetch_explore', locale))
   const [kinds, setKinds] = useState([])
 
   useEffect(() => {
@@ -199,7 +199,7 @@ const ShowKind = ({kindId, locale}) => {
   const [ancestors, setAncestors] = useState(null)
 
   useEffect(() => {
-    ajax({url: localeHref2('/fetch_kind/'+kindId, locale), type: 'GET', success: (result) => {
+    ajax({url: urlWithLocale('/fetch_kind/'+kindId, locale), type: 'GET', success: (result) => {
       setKind(result.kind)
       setKinds(result.kinds)
       setRecipeKinds(result.recipeKinds)
@@ -218,7 +218,7 @@ const ShowRecipeKind = ({user, favoriteRecipes, recipeKindId, ...props}) => {
   const [kindAncestors, setKindAncestors] = useState(null)
 
   useEffect(() => {
-    ajax({url: localeHref2('/fetch_recipe_kind/'+recipeKindId, props.locale), type: 'GET', success: (result) => {
+    ajax({url: urlWithLocale('/fetch_recipe_kind/'+recipeKindId, props.locale), type: 'GET', success: (result) => {
       setKindAncestors(result.kindAncestors)
       setRecipeKind(result.recipeKind)
       setKindRecipes(result.recipes)
