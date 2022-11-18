@@ -7,6 +7,7 @@ import { t } from "../translate"
 import { IngredientList } from "./recipe_viewer"
 import { DescriptionTiptap, RecipeTiptap } from "./tiptap"
 import { prettyMinutes } from "../lib"
+import { ErrorBoundary } from './error_boundary'
 
 const RecipeAttribute = ({recipe, attr, label}) => {
   if (!recipe[attr]) {return ''}
@@ -18,6 +19,7 @@ const RecipeAttribute = ({recipe, attr, label}) => {
 }
 
 const Recipe = ({recipe, recipeKind}) => {
+  foo.asdf = 10
   if (!recipe) {return null}
   return <>
     <div style={{border: '1px solid black'}}>
@@ -145,6 +147,8 @@ export const ShowRecipeKind = () => {
   //<div><RecipeMediumImage {...{recipe: recipeKind, images, showCredit: true}} /></div>
   return <>
     <MainSearch {...{locale}} />
-    <RecipeKindViewer {...{recipeKind, recipes, kindAncestors, locale}} />
+    <ErrorBoundary>
+      <RecipeKindViewer {...{recipeKind, recipes, kindAncestors, locale}} />
+    </ErrorBoundary>
   </>
 }

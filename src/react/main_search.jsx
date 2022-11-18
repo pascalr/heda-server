@@ -71,7 +71,7 @@ export const AppNavbar = ({locale, renderingHome, setIsSearching, otherProfiles,
         </div>
       </div>
     </div>
-    <div style={{margin: 'auto', width: 'fit-content', fontWeight: '500', fontSize: '1.5em', color: '#f9f9f9'}} className="clickable" onClick={() => changeUrl('/')}>HedaCuisine</div>
+    <a href="/" className='d-block plain-link' style={{margin: 'auto', width: 'fit-content', fontWeight: '500', fontSize: '1.5em', color: '#f9f9f9'}}>HedaCuisine</a>
   </>
 }
 

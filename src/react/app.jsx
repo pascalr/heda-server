@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 //import { createRoot } from 'react-dom/client';
 
-import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, Link, currentPathIs, currentPathIsRoot } from "./lib"
+import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, Link } from "./lib"
 import { findRecipeKindForRecipeName } from "../lib"
 import { RecipeList, RecipeIndex } from './recipe_index'
 import { changeUrl, ajax, normalizeSearchText, join, bindSetter, capitalize, isTrue } from "./utils"
@@ -22,7 +22,8 @@ import {EditMix, ShowMix} from './recipe_editor'
 import { AppSearch, useHiddenNavParam } from './main_search'
 import { useRouter } from "./router"
 import { SuggestionsPage } from "./suggestions"
-import { RecipeCarrousel } from './core'
+import { RecipeCarrousel, HomeTab } from './core'
+import { ErrorBoundary } from './error_boundary'
 
 const EditTag = ({tagId, tags}) => {
   const [name, setName] = useState('')
@@ -127,14 +128,6 @@ const TagButton = ({title, image, handleClick}) => {
   )
 }
 
-export const HomeTab = ({title, path}) => {
-  const isActive = currentPathIs(path)
-  return <>
-    <li className="nav-item">
-      <Link {...{path, className: 'nav-link', active: isActive}}>{title}</Link>
-    </li>
-  </>
-}
 const HomeTabs = ({machines}) => {
   //if (useHiddenNavParam()) {return ''}
       //<HomeTab {...{title: t('Tags'), path: '/c'}} />
@@ -446,37 +439,6 @@ const NewRecipe = ({recipeKinds}) => {
   </>
 }
 
-export class AppErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  // Update state so the next render will show the fallback UI.    
-  static getDerivedStateFromError(error) {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error, info) {
-    let url = window.location.pathname+(window.location.search||'')
-    let data = {error: error.toString(), info: info.componentStack, url}
-    ajax({url: '/log_error', type: 'POST', data, error: errors => console.error('ERROR AJAX...', errors)})
-  }
-  render() {
-    if (this.state.hasError) {
-      return <>
-        <div className="trunk text-center">
-          <br/><br/><br/>
-          <img src="/sorry.jpg" style={{height: '50vh', margin: 'auto'}}/>
-          <br/><br/><br/>
-          <h1 className="h003">{t('Sorry_error')}</h1>
-        </div>
-      </>
-    }
-    return this.props.children;
-  }
-}
-
 export const App = () => {
   
   const [isSearching, setIsSearching] = useState(false)
@@ -556,9 +518,9 @@ export const App = () => {
     <AppSearch {...{user, otherProfiles, _csrf, recipes, friendsRecipes, users, recipeKinds}} />
     <div className="trunk">
       <HomeTabs machines={machines} />
-      <AppErrorBoundary key={'err-boundary-'+idx}>
+      <ErrorBoundary key={'err-boundary-'+idx}>
         {elem}
-      </AppErrorBoundary>
+      </ErrorBoundary>
     </div>
   </>)
 }

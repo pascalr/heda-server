@@ -5,6 +5,7 @@ import { RecipeSmallImage } from "./image"
 import { MainSearch } from './main_search'
 import { getLocale, Link } from "./lib"
 import { t } from "../translate"
+import { ErrorBoundary } from './error_boundary'
 //import { IngredientList } from "./recipe_viewer"
 //import { DescriptionTiptap, RecipeTiptap } from "./tiptap"
 //import { prettyMinutes } from "../lib"
@@ -62,6 +63,8 @@ export const ShowKind = () => {
 
   return <>
     <MainSearch {...{locale}} />
-    <KindViewer {...{kind, ancestors, kinds, recipeKinds}} />
+    <ErrorBoundary>
+      <KindViewer {...{kind, ancestors, kinds, recipeKinds}} />
+    </ErrorBoundary>
   </>
 }

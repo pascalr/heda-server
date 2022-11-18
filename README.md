@@ -142,3 +142,8 @@ username: admin
 If I ever put ads.
 - Amazon cookware
 - Amazon recipe books
+
+## Load tests
+
+npm install -g loadtest
+loadtest http://localhost:3000/

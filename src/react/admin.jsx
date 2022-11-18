@@ -7,7 +7,7 @@ import { TextInput, TextField, CollectionSelect, RangeField } from "./form"
 import { Link, useOrFetch, getLocale } from "./lib"
 import { localeAttr, findRecipeKindForRecipeName  } from "../lib"
 import { MainSearch } from './main_search'
-import { HomeTab, AppErrorBoundary } from './app'
+import { ErrorBoundary } from './error_boundary'
 import { t } from "../translate"
 import { useRouter } from "./router"
 import { initHcu, useHcuState, handleError } from '../hcu'
@@ -18,6 +18,7 @@ import { RecipeThumbnailImage, RecipeMediumImage } from "./image"
 import { DescriptionTiptap } from "./tiptap"
 import {EditRecipeImageModal, EditableImage} from './modals/recipe_image'
 import schema from '../schema'
+import { HomeTab } from './core'
 
 const AdminTabs = ({machines}) => {
   return <>
@@ -636,9 +637,9 @@ export const Admin = () => {
     <MainSearch {...{locale}} />
     <div style={{padding: '0 0.5em'}}>
       <AdminTabs/>
-      <AppErrorBoundary key={idx}>
+      <ErrorBoundary key={idx}>
         {elem}
-      </AppErrorBoundary>
+      </ErrorBoundary>
     </div>
     <br/><br/><br/><br/><br/><br/><br/><br/>
   </>

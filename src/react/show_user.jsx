@@ -9,6 +9,7 @@ import { image_slug_variant_path } from "./routes"
 import { t } from "../translate"
 import { getLocale, Link } from "./lib"
 import { recipeIngredientsAndHeaders, extractFoodNameFromIngredient, prettyMinutes } from "../lib"
+import { ErrorBoundary } from './error_boundary'
 
 const RecipeAttribute = ({recipe, attr, label}) => {
   if (!recipe[attr]) {return ''}
@@ -71,15 +72,17 @@ export const ShowUser = () => {
 
   return <>
     <MainSearch {...{locale}} />
-    <div className="trunk">
-      <h3>{t('Recipes_by')} {user.name}</h3>
-      <ul className="recipe-list-2">
-        {userRecipes.map(r => <RecipeSmallItem key={r.id} {...{recipe: r}} />)}
-      </ul>
-      {favRecipes.length > 0 ? <h3 className="h001">{t('Favorites')}</h3> : ''}
-      <ul className="recipe-list-2">
-        {favRecipes.map(r => <RecipeSmallItem key={r.id} {...{recipe: r}} />)}
-      </ul>
-    </div>
+    <ErrorBoundary>
+      <div className="trunk">
+        <h3>{t('Recipes_by')} {user.name}</h3>
+        <ul className="recipe-list-2">
+          {userRecipes.map(r => <RecipeSmallItem key={r.id} {...{recipe: r}} />)}
+        </ul>
+        {favRecipes.length > 0 ? <h3 className="h001">{t('Favorites')}</h3> : ''}
+        <ul className="recipe-list-2">
+          {favRecipes.map(r => <RecipeSmallItem key={r.id} {...{recipe: r}} />)}
+        </ul>
+      </div>
+    </ErrorBoundary>
   </>
 }

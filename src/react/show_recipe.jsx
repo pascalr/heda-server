@@ -11,6 +11,7 @@ import { RecipeTiptap } from './tiptap'
 import { RecipeMediumImage } from "./image"
 import { getLocale, Link } from "./lib"
 import { RecipeAttributes, IngredientList } from "./recipe_viewer"
+import { ErrorBoundary } from './error_boundary'
 
 export const RecipeViewer = ({recipe, images, user, locale}) => {
 
@@ -67,7 +68,9 @@ export const ShowRecipe = () => {
   return <>
     <MainSearch {...{locale}} />
     <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0'}}>
-      <RecipeViewer {...{recipe: shown, images, user, locale}} />
+      <ErrorBoundary>
+        <RecipeViewer {...{recipe: shown, images, user, locale}} />
+      </ErrorBoundary>
     </div>
   </>
 }

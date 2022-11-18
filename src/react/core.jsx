@@ -3,9 +3,18 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Carrousel } from './carrousel'
 import { preloadImage } from "./utils"
 import { RecipeSmallImage } from "./image"
-import { Link } from "./lib"
+import { Link, currentPathIs } from "./lib"
 import { t } from "../translate"
 import { localeHref } from "../utils"
+
+export const HomeTab = ({title, path}) => {
+  const isActive = currentPathIs(path)
+  return <>
+    <li className="nav-item">
+      <Link {...{path, className: 'nav-link', active: isActive}}>{title}</Link>
+    </li>
+  </>
+}
 
 /**
  * This file contains small components that I don't want to create a file for them

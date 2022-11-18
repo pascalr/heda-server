@@ -2,11 +2,17 @@ import puppeteer from 'puppeteer';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import db from '../src/db.js';
+
+import lazyDb from "../src/lazy_db.js"
+import schema from '../src/schema.js';
 import { assertEquals, assertStartsWith } from "./tests_helpers.js"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+fs.copyFileSync("var/db/dev.db", "var/db/test.db")
+const db = new lazyDb("var/db/test.db", { verbose: console.log })
+db.setSchema(schema)
 
 let ACCOUNT_EMAIL = "AutomaticTest@hedacuisine.com"
 let ACCOUNT_PASSWORD = "12345678"
