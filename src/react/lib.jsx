@@ -74,7 +74,8 @@ export const currentPathIs = (p) => {
   return window.location.pathname === p
 }
 
-export const Link = ({className, children, active, path, onClick, ...props}) => {
+export const Link = ({href, className, children, active, path, onClick, ...props}) => {
+  if (href) {throw 'Error bad argument href for Link, expected path.'}
   const handleClick = (evt) => {
     if (window.preventLinksDefaultEvent) {
       evt.preventDefault()

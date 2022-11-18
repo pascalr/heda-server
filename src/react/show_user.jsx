@@ -7,8 +7,7 @@ import { RecipeThumbnailImage, RecipeSmallImage } from "./image"
 import { normalizeSearchText, join, capitalize } from "./utils"
 import { image_slug_variant_path } from "./routes"
 import { t } from "../translate"
-import { localeHref, getUrlParams } from "../utils"
-import { getLocale } from "./lib"
+import { getLocale, Link } from "./lib"
 import { recipeIngredientsAndHeaders, extractFoodNameFromIngredient, prettyMinutes } from "../lib"
 
 const RecipeAttribute = ({recipe, attr, label}) => {
@@ -25,7 +24,7 @@ const RecipeSmallItem = ({recipe}) => {
   let labels = mainIngredients.map(i => extractFoodNameFromIngredient(i.label)).join(', ')
   if (ingredients.length != mainIngredients.length) {labels += ', ...'}
   return (
-    <a href={localeHref("/r/"+recipe.id)} className="plain-link">
+    <Link path={"/r/"+recipe.id} className="plain-link">
       <li>
         <div className="d-block d-sm-flex">
           <RecipeSmallImage {...{recipe}} />
@@ -42,13 +41,13 @@ const RecipeSmallItem = ({recipe}) => {
           <div style={{marginTop: '4em'}}></div>
         </div>
       </li>
-    </a>
+    </Link>
   )
 }
 
 const RecipeThumbnailItem = ({recipe}) => {
   return (
-    <a href={localeHref("/r/"+recipe.id)} className="plain-link">
+    <Link path={"/r/"+recipe.id} className="plain-link">
       <li style={{fontSize: '1.1rem'}}>
         <div className="d-flex align-items-center">
           <RecipeThumbnailImage {...{recipe}} />
@@ -56,7 +55,7 @@ const RecipeThumbnailItem = ({recipe}) => {
           <span>{recipe.name}</span>
         </div>
       </li>
-    </a>
+    </Link>
   )
 }
 

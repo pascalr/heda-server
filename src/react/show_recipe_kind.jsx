@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
 
-import { localeHref } from "../utils"
 import { RecipeMediumImage, RecipeSmallImage } from "./image"
 import { MainSearch } from './main_search'
 import { getLocale, Link } from "./lib"
@@ -79,7 +78,7 @@ export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors, recipeButt
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb" style={{margin: '-0.15em 0 0.5em 0'}}>
             {(kindAncestors||[]).map(kind => {
-              return <li key={kind.id} className="breadcrumb-item"><a href={localeHref('/d/'+kind.id)}>{kind.name}</a></li>
+              return <li key={kind.id} className="breadcrumb-item"><Link path={'/d/'+kind.id}>{kind.name}</Link></li>
             })}
             <li className="breadcrumb-item active" aria-current="page">{recipeKind.name}</li>
           </ol>
@@ -128,7 +127,7 @@ export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors, recipeButt
         </> : <>
           <p>{t('There_are_no_recipe_in_this_category_yet')}.</p>
           <br/>
-          <Link path={localeHref('/n')} className='btn btn-primary'>{t('Create_new_recipe')}</Link>
+          <Link path={'/n'} className='btn btn-primary'>{t('Create_new_recipe')}</Link>
         </>}
       </div>
     </div>

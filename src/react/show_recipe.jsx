@@ -9,8 +9,7 @@ import { image_slug_variant_path } from "./routes"
 import { t } from "../translate"
 import { RecipeTiptap } from './tiptap'
 import { RecipeMediumImage } from "./image"
-import { localeHref } from "../utils"
-import { getLocale } from "./lib"
+import { getLocale, Link } from "./lib"
 import { RecipeAttributes, IngredientList } from "./recipe_viewer"
 
 export const RecipeViewer = ({recipe, images, user, locale}) => {
@@ -30,7 +29,7 @@ export const RecipeViewer = ({recipe, images, user, locale}) => {
   return (<>
     <nav aria-label="breadcrumb">
       <ol className="breadcrumb" style={{margin: '-0.5em 0 0.5em 0'}}>
-        <li className="breadcrumb-item"><a href={localeHref('/u/'+user.id)}>{user.name}</a></li>
+        <li className="breadcrumb-item"><Link path={'/u/'+user.id}>{user.name}</Link></li>
         <li className="breadcrumb-item active" aria-current="page">{recipe.name}</li>
       </ol>
     </nav>
