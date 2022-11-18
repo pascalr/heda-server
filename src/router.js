@@ -663,28 +663,23 @@ router.get('/k/:id', function(req, res, next) {
 }, renderApp);
 
 router.get('/u/:id', function(req, res, next) {
-  let userId = req.params.id
+
+  if (req.user && req.user.user_id) { return next(); }
+
+  let userId = parseInt(req.params.id)
+  o.user = db.fetchRecord('users', {id: userId}, ['name'])
+  if (!o.user) {throw 'Unable to fetch user.'}
   let o = {}
-  let ids = null
-  let attrs = null
-
-  let publicUsers = db.fetchTable('users', {}, ['name'])
-  let publicUsersIds = publicUsers.map(u => u.id)
-  o.user = publicUsers.find(u => u.id == userId)
-
-  if (!o.user) {throw 'Unable to fetch user. Not existent or not public.'}
-
   // OPTIMIZE: No need to extract all RECIPE_ATTRS....
-  o.recipes = db.fetchTable('recipes', {user_id: userId}, RECIPE_ATTRS)
-  o.favorite_recipes = db.fetchTable('favorite_recipes', {user_id: userId}, ['list_id', 'recipe_id'])
-  let recipeIds = o.recipes.map(r => r.id)
-  let missingRecipeIds = o.favorite_recipes.map(r=>r.recipe_id).filter(id => !recipeIds.includes(id))
-  let favRecipes = db.fetchTable('recipes', {id: missingRecipeIds}, RECIPE_ATTRS).filter(r => publicUsersIds.includes(r.user_id))
-  o.recipes = [...o.recipes, ...favRecipes]
+  o.user_recipes = db.fetchTable('recipes', {user_id: userId, is_public: 1}, RECIPE_ATTRS)
+  let favs = db.fetchTable('favorite_recipes', {user_id: userId}, ['recipe_id'])
+  let fetchedIds = o.userRecipes.map(r => r.id)
+  let missingRecipeIds = favs.map(r=>r.recipe_id).filter(id => !fetchedIds.includes(id))
+  o.fav_recipes = db.fetchTable('recipes', {id: missingRecipeIds, is_public: 1}, RECIPE_ATTRS)
 
   res.locals.gon = o
   res.render('show_user');
-});
+}, renderApp);
 
 router.get('/error', function(req, res, next) {
   return res.render('error');

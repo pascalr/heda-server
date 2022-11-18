@@ -204,6 +204,13 @@ const ShowKind = ({kindId, locale}) => {
   </>
 }
 
+const ShowUser = ({locale}) => {
+
+  return <>
+    <h1>TODO</h1>
+  </>
+}
+
 const ShowRecipeKind = ({user, favoriteRecipes, recipeKindId, ...props}) => {
 
   const [recipeKind, setRecipeKind] = useState(null)
@@ -475,6 +482,9 @@ export const App = () => {
     },
     {match: "/k/:id", elem: ({id}) =>
       <ShowRecipeKind {...{recipeKindId: id, recipes, recipeKinds, locale, user, favoriteRecipes}} />
+    },
+    {match: "/u/:id", elem: ({id}) =>
+      <ShowUser {...{locale}} />
     },
     {match: "/d/:id", elem: ({id}) =>
       <ShowKind {...{kindId: id, locale}} />
