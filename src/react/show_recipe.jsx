@@ -13,7 +13,7 @@ import { getLocale, Link, useFetch } from "./lib"
 import { RecipeAttributes, IngredientList } from "./recipe_viewer"
 import { ErrorBoundary } from './error_boundary'
 
-export const RecipeViewer = ({recipe, user, locale}) => {
+export const RecipeViewer = ({recipe, user, locale, recipeKind, kindAncestors}) => {
   
   const image = useFetch('/fetch_image/'+recipe.image_slug)
 
@@ -30,12 +30,17 @@ export const RecipeViewer = ({recipe, user, locale}) => {
   //</div>
 
   return (<>
-    <nav aria-label="breadcrumb">
-      <ol className="breadcrumb" style={{margin: '-0.5em 0 0.5em 0'}}>
-        <li className="breadcrumb-item"><Link path={'/u/'+user.id}>{user.name}</Link></li>
-        <li className="breadcrumb-item active" aria-current="page">{recipe.name}</li>
-      </ol>
-    </nav>
+    {!recipeKind ? null :
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb" style={{margin: '-0.15em 0 0.5em 0'}}>
+          {(kindAncestors||[]).map(kind => {
+            return <li key={kind.id} className="breadcrumb-item"><Link path={'/d/'+kind.id}>{kind.name}</Link></li>
+          })}
+          <li className="breadcrumb-item" aria-current="page"><Link path={'/k/'+recipeKind.id}>{recipeKind.name}</Link></li>
+          <li className="breadcrumb-item active" aria-current="page">{recipe.name}</li>
+        </ol>
+      </nav>
+    }
     <div className="recipe">
       <div className="d-block d-md-flex" style={{gap: '20px'}}>
         <div><RecipeMediumImage {...{recipe, image, showCredit: true}} /></div>
@@ -61,6 +66,8 @@ export const ShowRecipe = () => {
 
   const locale = getLocale()
   const [recipe, ] = useState(gon.recipe)
+  const [recipeKind, ] = useState(gon.recipe_kind)
+  const [kindAncestors, ] = useState(gon.kind_ancestors)
   const [translatedRecipe, ] = useState(gon.translated_recipe||{})
   const [user, ] = useState(gon.user)
 
@@ -70,7 +77,7 @@ export const ShowRecipe = () => {
     <MainSearch {...{locale}} />
     <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0'}}>
       <ErrorBoundary>
-        <RecipeViewer {...{recipe: shown, user, locale}} />
+        <RecipeViewer {...{recipe: shown, user, locale, recipeKind, kindAncestors}} />
       </ErrorBoundary>
     </div>
   </>

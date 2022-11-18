@@ -604,6 +604,14 @@ router.get('/r/:id', function(req, res, next) {
   //  // FIXME: Create and use fetchRecord or findRecord, not fetchTable
   //  o.recipe_kind = db.fetchTable('recipe_kinds', {id: o.recipe.recipe_kind_id}, attrs)[0]
   //}
+  if (o.recipe.recipe_kind_id) {
+    o.recipe_kind = fetchRecordLocaleAttrs(db, 'recipe_kinds', {id: o.recipe.recipe_kind_id}, ['kind_id'], ['name'], res.locals.locale)
+    if (o.recipe_kind.kind_id) {
+      o.kind_ancestors = fetchWithAncestors(o.recipe_kind.kind_id, 'kind_id', (id) => (
+        fetchRecordLocaleAttrs(db, 'kinds', {id}, ['kind_id'], ['name'], res.locals.locale)
+      ))
+    }
+  }
  
   res.locals.descriptionRecipeIngredients = descriptionRecipeIngredients
   res.locals.gon = o
