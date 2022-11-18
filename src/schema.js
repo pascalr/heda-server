@@ -96,7 +96,7 @@ const schema = {
     is_allowed: user => user.is_admin,
   },
   'errors' : {
-    security_attrs: ['user_id'],
+    is_allowed: user => user.is_admin || user.force,
   },
   'kinds' : {
     write_attrs: ['name_fr', 'name_en', 'kind_id'],

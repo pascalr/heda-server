@@ -76,9 +76,10 @@ router.get('/login', redirectHomeIfLoggedIn, function(req, res, next) {
 
 router.post('/log_error', function(req, res, next) {
 
-  let attrs = ['url', 'error', 'info']
-  let err = _.pick(req.body, attrs)
-  let error = db.createRecord('errors', err, req.user, {allow_write: attrs})
+  let err = _.pick(req.body, ['url', 'error', 'info'])
+  err.user_id = req.user.user_id
+  let opts = {allow_write: ['url', 'error', 'info', 'user_id']}
+  let error = db.createRecord('errors', err, {force: true}, opts)
   res.send('ok')
 });
 

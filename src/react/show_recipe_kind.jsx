@@ -22,9 +22,9 @@ const Recipe = ({recipe, recipeKind}) => {
   return <>
     <div style={{border: '1px solid black'}}>
       <div className="p-2 ps-3 white" style={{backgroundColor: '#212529'}}>
-        <div className="float-end">{t('by')} <a className="plain-link underline white" href={'/u/'+recipe.user_id}>{recipe.user_name}</a></div>
+        <div className="float-end">{t('by')} <Link className="plain-link underline white" path={'/u/'+recipe.user_id}>{recipe.user_name}</Link></div>
         <div className="fs-12 bold">
-          <a className="plain-link white" href={'/r/'+recipe.id}>{recipe.name}</a>
+          <Link className="plain-link white" path={'/r/'+recipe.id}>{recipe.name}</Link>
         </div>
       </div>
       <div className="recipe-body p-2">
