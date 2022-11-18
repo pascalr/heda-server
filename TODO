@@ -13,6 +13,8 @@ Avec les features présentement et les feature à ajouter plus tard.
 - Print recipe
 - Share on social media
 
+Clicking on recipe slider works like shit.
+
 Test simultaneous connections
 Check out lunch website like product hunt
 log errors when user not logged in too
@@ -78,6 +80,7 @@ Idéalement un input field que tu peux écrire dedans (avec un petit micro à c�
 - Un repas québécois => poutine, mieton, ...
 - Un dessert avec des pommes => tarte aux pommmes, gâteaux aux pommes, ...
 - Apporter à un potluck => ...
+Open source if I die
 
 Later (other users):
 Faire des tests.

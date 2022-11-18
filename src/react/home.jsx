@@ -105,6 +105,20 @@ export const Home = () => {
             <li>{t('Home_15')}</li>
             <li>{t('Home_16')}</li>
           </ul>
+          <h4>{t('Features')}</h4>
+          <ul>
+            <li>✅ {t('Home_17')}</li>
+            <li>✅ {t('Home_18')}</li>
+            <li>✅ {t('Home_27')}</li>
+            <li>❌ {t('Home_19')}</li>
+            <li>❌ {t('Home_20')}</li>
+            <li>❌ {t('Home_21')}</li>
+            <li>❌ {t('Home_22')}</li>
+            <li>❌ {t('Home_23')}</li>
+            <li>❌ {t('Home_24')}</li>
+            <li>❌ {t('Home_25')}</li>
+            <li>❌ {t('Home_26')}</li>
+          </ul>
         </div>
       </div>
     </div>
