@@ -2,7 +2,7 @@ import express from 'express';
 import createError from 'http-errors';
 
 import schema from './schema.js'
-import { getTableList, safeNoQuotes, getWriteAttributes } from './sql_db.js';
+import { getTableList, safeNoQuotes, getWriteAttributes } from './lazy_db.js';
 import { db } from './db.js';
 import analytics from './analytics.js'
 import { kindAncestorId, findRecipeKindForRecipeName } from "./lib.js"

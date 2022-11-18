@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import ipware from '@fullerstack/nax-ipware';
 
-import sqlDb from './sql_db.js';
+import lazyDb from './lazy_db.js';
 import {now, hashCode} from './utils.js';
 
 const schema = {
@@ -19,7 +19,7 @@ const schema = {
 // FIXME: DB_URL should be DB_PATH, it's not an URL (doesn't start with sqlite3://...)
 if (!process.env.VOLUME_PATH) {throw "Error VOLUME_PATH not set..."}
 let dbPath = path.join(process.env.VOLUME_PATH, 'analytics.db')
-export const db = new sqlDb(dbPath, { verbose: console.log })
+export const db = new lazyDb(dbPath, { verbose: console.log })
 db.setSchema(schema)
 console.log('Opening database successful!')
 

@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 import schema from './schema.js';
-import sqlDb from './sql_db.js';
+import lazyDb from './lazy_db.js';
 
 //import { findRecipeKindForRecipeName } from "./lib.js"
 import {now} from './utils.js';
@@ -16,7 +16,7 @@ if (fs.existsSync(dbPath)) {
 } else {
   console.log('no')
 }
-export const db = new sqlDb(dbPath, { verbose: console.log })
+export const db = new lazyDb(dbPath, { verbose: console.log })
 db.setSchema(schema)
 console.log('Opening database successful!')
 

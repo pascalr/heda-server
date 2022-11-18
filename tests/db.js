@@ -1,7 +1,7 @@
 import fs from 'fs'
 
 import { header, assertEquals, assertThrowsException, fail, pass, assert } from "./tests_helpers.js"
-import sqlDb from "../src/sql_db.js"
+import sqlDb from "../src/lazy_db.js"
 import { fetchRecordLocaleAttrs } from "../src/lib.js"
 import schema from '../src/schema.js';
 
