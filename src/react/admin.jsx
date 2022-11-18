@@ -6,7 +6,7 @@ import toastr from 'toastr'
 import { TextInput, TextField, CollectionSelect, RangeField } from "./form"
 import { Link, useOrFetch, getLocale } from "./lib"
 import { localeAttr, findRecipeKindForRecipeName  } from "../lib"
-import { MainSearch } from './main_search'
+import { AppSearch } from './main_search'
 import { ErrorBoundary } from './error_boundary'
 import { t } from "../translate"
 import { useRouter } from "./router"
@@ -612,6 +612,8 @@ export const Admin = () => {
   const recipes = useHcuState(gon.recipes||[], {tableName: 'recipes'})
   const kinds = useHcuState(gon.kinds, {tableName: 'kinds'})
   const images = useHcuState(gon.images||[], {tableName: 'images'})
+  const [user,] = useState(gon.user)
+  const [users,] = useState(gon.users)
   const errors = useHcuState(gon.errors||[], {tableName: 'errors'})
   const [publicUsers,] = useState(gon.public_users||[])
   const [stats,] = useState(gon.stats)
@@ -634,9 +636,9 @@ export const Admin = () => {
   const {elem,idx} = useRouter(routes, defaultElement)
   
   return <>
-    <MainSearch {...{locale}} />
+    <AppSearch {...{locale, recipes, recipeKinds, user, users}} />
     <div style={{padding: '0 0.5em'}}>
-      <AdminTabs/>
+      <AdminTabs />
       <ErrorBoundary key={idx}>
         {elem}
       </ErrorBoundary>

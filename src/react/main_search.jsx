@@ -113,7 +113,9 @@ export const useHiddenNavParam = () => {
   return hidden
 }
 
-export const AppSearch = ({user, otherProfiles, _csrf, recipes, friendsRecipes, users, recipeKinds}) => {
+export const AppSearch = ({user, _csrf, recipes, friendsRecipes, users, recipeKinds}) => {
+
+  let otherProfiles = users.filter(u => u.id != user.id)
   
   //if (useHiddenNavParam()) {return ''}
 
@@ -130,7 +132,7 @@ export const AppSearch = ({user, otherProfiles, _csrf, recipes, friendsRecipes, 
           <RecipeListItem key={item.id} {...{recipe: item, isSelected, users, user, selectedRef, setIsSearching}}/>
         ),
       })),
-      Same_account_recipes: friendsRecipes.map(recipe => ({
+      Same_account_recipes: (friendsRecipes||[]).map(recipe => ({
         ...recipe,
         //url: localeHref("/k/"+recipeKind.id),
         elem: ({isSelected, item, selectedRef, setIsSearching}) => (

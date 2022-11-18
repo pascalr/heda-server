@@ -459,8 +459,8 @@ export const App = () => {
   const machines = useHcuState(gon.machines, {tableName: 'machines'})
   const friendsRecipes = gon.friends_recipes//.filter(r => !recipeIds.includes(r.id))
   //const recipeSuggestions = gon.recipe_suggestions
-  const [users,] = useState(gon.users)
   const [user,] = useState(gon.user)
+  const [users,] = useState(gon.users)
   window.locale = user.locale
   const images = useHcuState([], {tableName: 'images'})
 
@@ -510,8 +510,6 @@ export const App = () => {
   useEffect(() => {
     setCsrf(document.querySelector('[name="csrf-token"]').content)
   }, [])
-
-  let otherProfiles = users.filter(u => u.id != user.id)
 
     //<div className={(!page.page || page.page === 1) ? "wide-trunk" : "trunk"}>
   return (<>
