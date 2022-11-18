@@ -666,14 +666,14 @@ router.get('/u/:id', function(req, res, next) {
 
   if (req.user && req.user.user_id) { return next(); }
 
+  let o = {}
   let userId = parseInt(req.params.id)
   o.user = db.fetchRecord('users', {id: userId}, ['name'])
   if (!o.user) {throw 'Unable to fetch user.'}
-  let o = {}
   // OPTIMIZE: No need to extract all RECIPE_ATTRS....
   o.user_recipes = db.fetchTable('recipes', {user_id: userId, is_public: 1}, RECIPE_ATTRS)
   let favs = db.fetchTable('favorite_recipes', {user_id: userId}, ['recipe_id'])
-  let fetchedIds = o.userRecipes.map(r => r.id)
+  let fetchedIds = o.user_recipes.map(r => r.id)
   let missingRecipeIds = favs.map(r=>r.recipe_id).filter(id => !fetchedIds.includes(id))
   o.fav_recipes = db.fetchTable('recipes', {id: missingRecipeIds, is_public: 1}, RECIPE_ATTRS)
 
