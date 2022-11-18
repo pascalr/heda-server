@@ -80,9 +80,7 @@ export const PublicNavbar = ({locale, renderingHome, setIsSearching}) => {
   let otherLocale = (locale.toLowerCase() == 'en') ? 'FR' : 'EN'
   return <>
     <div className="float-start fs-15 px-3">
-      <a href={localeHref(getPathFromUrl(window.location.href)+'?locale='+otherLocale)} className="nav-btn" rel="alternate" hrefLang={otherLocale.toLowerCase()}>
-        {otherLocale}
-      </a>
+      <Link path={window.location.pathname+'?locale='+otherLocale} className="nav-btn" rel="alternate" hrefLang={otherLocale.toLowerCase()}>{otherLocale}</Link>
     </div>
     <div className="float-end" style={{marginTop: '0.25em'}}>
       <img id="search-btn" className="clickable" src={SearchWhiteIcon} style={{marginRight: '1em', width: '1.4em'}} onClick={() => setIsSearching(true)}/>
@@ -91,14 +89,14 @@ export const PublicNavbar = ({locale, renderingHome, setIsSearching}) => {
           <img className="clickable" src={ListWhiteIcon} style={{width: '1.9em'}}/>
         </button>
         <div className="dropdown-menu" aria-labelledby="dropdownUserButton">
-          <a href={localeHref("/login")} className="dropdown-item">{t('Login', locale)} ({t('beta')})</a>
-          <a href={localeHref("/signup")} className="dropdown-item">{t('Create_account', locale)} ({t('beta')})</a>
-          <a href={localeHref("/contact")} className="dropdown-item">{t('Contact_us', locale)}</a>
+          <Link path="/login" className="dropdown-item">{t('Login', locale)} ({t('beta')})</Link>
+          <Link path="/signup" className="dropdown-item">{t('Create_account', locale)} ({t('beta')})</Link>
+          <Link path="/contact" className="dropdown-item">{t('Contact_us', locale)}</Link>
         </div>
       </div>
     </div>
     <div style={{margin: 'auto', width: 'fit-content', fontWeight: '500', fontSize: '1.5em', color: 'rgb(249, 249, 249)'}}>
-      { renderingHome ? 'HedaCuisine' : <a href={localeHref("/")} className="plain-link white">HedaCuisine</a>}
+      { renderingHome ? 'HedaCuisine' : <Link path="/" className="plain-link white">HedaCuisine</Link>}
     </div>
   </>
 }
@@ -213,13 +211,13 @@ export const MainSearch = ({locale, renderingHome}) => {
               //url: localeHref("/k/"+recipeKind.id),
               elem: ({isSelected, item, selectedRef}) => <>
                 <li key={item.id} ref={isSelected ? selectedRef : null}>
-                  <a href={localeHref('/k/'+item.id)} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
+                  <Link path={'/k/'+item.id} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
                     <div className="d-flex align-items-center">
                       <RecipeThumbnailImage {...{recipe: item}} />
                       <div style={{marginRight: '0.5em'}}></div>
                       <div>{item.name}</div>
                     </div>
-                  </a>
+                  </Link>
                 </li>
               </>
             })),
@@ -229,13 +227,13 @@ export const MainSearch = ({locale, renderingHome}) => {
               //url: localeHref("/u/"+publicUser.id),
               elem: ({isSelected, item, selectedRef}) => <>
                 <li key={item.id} className="list-group-item" ref={isSelected ? selectedRef : null}>
-                  <a href={localeHref(`/u/${item.id}`)} className={isSelected ? "selected" : undefined}>
+                  <Link path={`/u/${item.id}`} className={isSelected ? "selected" : undefined}>
                     <div className="d-flex align-items-center">
                       <UserThumbnailImage {...{user: item}} />
                       <div style={{marginRight: '0.5em'}}></div>
                       {item.name}
                     </div>
-                  </a>
+                  </Link>
                 </li>
               </>
             })),

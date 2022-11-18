@@ -91,8 +91,7 @@ export function localeHref2(href, locale) {
  * @param {String} currentUrl The current url to extract the locale from
  * @return {String} The url with the locale added if possible
  */
-// FIXME: This is weird and bad. Deprecate this. CurrentUrl is just ugly.
-// DEPRECATED: use localeHref2 instead
+// DEPRECATED: use localeHref2 or use Link directrly instead
 export function localeHref(href, currentUrl=null) {
 
   if (!currentUrl) {currentUrl = window.location.href}

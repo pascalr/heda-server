@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import toastr from 'toastr'
 
 import { ajax, omit, join, bindSetter, capitalize, changeUrl } from "./utils"
+import { localeHref } from "../utils"
 import { t } from '../translate'
 
 /**
@@ -81,6 +82,7 @@ export const Link = ({className, children, active, path, onClick, ...props}) => 
       changeUrl(path)
     }
   }
+  path = (window.preventLinksDefaultEvent) ? path : localeHref(path)
   return <a className={join(className, active ? 'active' : null)} href={path} onClick={handleClick} {...props}>{children}</a>
 }
 
