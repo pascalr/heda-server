@@ -11,9 +11,7 @@ Link to recipe kind somewhere inside show recipe...
 Est-ce que je peux utiliser Mastodon pour promouvoir mon site?
 Check out lunch website like product hunt
 
-log errors when user not logged in too
-when there is an error, have a way that the user can still access it's recipes
-Use Link instead of localeHref when not inside app.
+when there is an error, have a way that the user can still access it's recipes (This will be the app I guess...)
 
 Clicking on recipe slider works like shit.
 
