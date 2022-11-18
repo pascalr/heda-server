@@ -76,14 +76,12 @@ async function getPathname(page) {return await page.evaluate(() => document.loca
     await page.waitForSelector('#search-results a');
     await page.click('#search-results a');
     await page.waitForSelector('#root-u');
-    let pathname = await getPathname(page)
-    assertStartsWith("/u/", pathname)
+    assertStartsWith("/u/", await getPathname(page))
    
     // Click on the first link, it should be a recipe
     await page.waitForSelector('.trunk a');
     await page.click('.trunk a');
-    pathname = await getPathname(page)
-    assertStartsWith("/r/", pathname)
+    assertStartsWith("/r/", await getPathname(page))
 
     // Create an account
     url = 'http://localhost:3000/signup?locale='+locale
@@ -92,20 +90,19 @@ async function getPathname(page) {return await page.evaluate(() => document.loca
     await page.type('#email', ACCOUNT_EMAIL);
     await page.type('#new-password', ACCOUNT_PASSWORD);
     await page.click('#create');
-    pathname = await getPathname(page)
-    assertStartsWith("/choose_user", pathname)
+    await page.waitForSelector('#choose-user-form');
+    assertStartsWith("/choose_user", await getPathname(page))
 
     // Create a profile
     // The first link should be a button to create a profile
     await page.waitForSelector('body a');
     await page.click('body a');
-    pathname = await getPathname(page)
-    assertStartsWith("/new_user", pathname)
+    assertStartsWith("/new_user", await getPathname(page))
     await page.waitForSelector('#name');
     await page.type('#name', USER_NAME);
     await page.click('#create');
-    pathname = await getPathname(page)
-    assertEquals("/", pathname)
+    await page.waitForSelector('body');
+    assertEquals("/", await getPathname(page))
     
     // Edit the profile image
     url = 'http://localhost:3000/edit_profile'
