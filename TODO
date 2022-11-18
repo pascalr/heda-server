@@ -4,35 +4,16 @@ Une recette que j'ai fait* cette semaine.
 C'est vraiment bon et c'est super facile à faire!
 Je n'ai même pas eu le temps de finir ma bière sur le balcon que Céline avait fini de la préparer!
 
-Use AppSearch and not MainSearch inside Admin
-
-Link to recipe kind somewhere inside show recipe...
-
 Est-ce que je peux utiliser Mastodon pour promouvoir mon site?
 Check out lunch website like product hunt
-
-when there is an error, have a way that the user can still access it's recipes (This will be the app I guess...)
-
-Clicking on recipe slider works like shit.
 
 Email validation for logging.
 
 Check with smartphones all the new pages
 Check with different browsers all the pages
 
-Mettre Explore la page principale
-
-Un système de vérification orthographique?
-
 dump Kinds, RecipeKinds, Recipes, names, json and aspell it
 aspell translations
-
-Image suggestions for recipes. When creating and when editing image.
-Strawberry pie should show all the images of pie because they contain pie in both.
-Tag my images.
-
-Ask users that upload images if others can use it too.
-Put that setting inside user instead of for each image?
 
 og:description for recipe kinds
 <meta property="og:locale" content="fr_CA">
@@ -49,7 +30,15 @@ Ma recette de potage à la citrouille n'est comme pas fini on dirait...
 
 Ajouter Hedacuisine sur mon site de CV.
 
+Image suggestions for recipes. When creating and when editing image.
+Strawberry pie should show all the images of pie because they contain pie in both.
+Tag my images.
+
 Quand tu déplaces des ingrédients, modifier le json pour changer les numéros d'ingrédients.
+Clicking on recipe slider works like shit.
+when there is an error, have a way that the user can still access it's recipes (This will be the app I guess...)
+Un système de vérification orthographique?
+Mettre Explore la page principale
 
 Later:
 Est-ce que je peux utiliser TypeScript ne serait-ce que pour s'assurer que les variables ne sont pas nulls?

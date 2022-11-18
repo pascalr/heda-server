@@ -513,7 +513,7 @@ export const App = () => {
 
     //<div className={(!page.page || page.page === 1) ? "wide-trunk" : "trunk"}>
   return (<>
-    <AppSearch {...{user, otherProfiles, _csrf, recipes, friendsRecipes, users, recipeKinds}} />
+    <AppSearch {...{user, _csrf, recipes, friendsRecipes, users, recipeKinds}} />
     <div className="trunk">
       <HomeTabs machines={machines} />
       <ErrorBoundary key={'err-boundary-'+idx}>
