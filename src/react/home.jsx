@@ -21,6 +21,7 @@ export const Home = () => {
 
   const locale = getLocale()
   const recipe = useHcuState([gon.recipe], {tableName: 'recipes'})[0]
+  const images = useHcuState([], {tableName: 'images'})
 
   if (!window.hcu) {initHcu(); window.hcu.makeDummy() }
 
@@ -75,7 +76,7 @@ export const Home = () => {
           <p>{t('Home_10')}</p>
         </div>
         <div style={{border: "2px solid black", padding: '0.5em', borderRadius: '5px'}}>
-          <RecipeEditor recipe={recipe} images={[]} mixes={[]} foods={[]} locale={locale} editable={true} user={{id: recipe.user_id}} />
+          <RecipeEditor recipe={recipe} images={images} mixes={[]} foods={[]} locale={locale} editable={true} user={{id: recipe.user_id}} />
         </div>
       </div>
     </div>
