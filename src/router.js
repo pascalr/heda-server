@@ -412,7 +412,7 @@ function extractUser(id) {
 function extractRecipeKind(id, locale) {
 
   let recipeKind = fetchRecordLocaleAttrs(db, 'recipe_kinds', {id}, ['image_slug', 'kind_id'], ['name', 'json'], locale)
-  if (recipeKind) {throw 'Unable to extract recipe kind. Not existent.'}
+  if (!recipeKind) {throw 'Unable to extract recipe kind. Not existent.'}
   //let recipes = db.fetchTable('recipes', {is_public: 1, recipe_kind_id: recipeKind.id}, RECIPE_ATTRS)
   // FIXME: SELECT recipes.*
   let recipes = db.prepare("SELECT recipes.*, users.locale, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE recipes.is_public = 1 AND recipes.recipe_kind_id = ?;").all(recipeKind.id)
@@ -425,7 +425,23 @@ function extractRecipeKind(id, locale) {
   return {recipeKind, recipes}
 }
 
+function extractKind(id, locale) {
+
+  let ancestors = fetchWithAncestors(id, 'kind_id', (id) => (
+    fetchRecordLocaleAttrs(db, 'kinds', {id}, ['kind_id'], ['name'], locale)
+  ))
+  let kind = ancestors.pop(-1)
+  if (!kind) {throw 'Unable to fetch kind. Not existent.'}
+  let kinds = fetchTableLocaleAttrs(db, 'kinds', {kind_id: id}, ['kind_id'], ['name'], locale)
+  kinds.forEach(k => {
+    k.recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {kind_id: k.id}, ['image_slug', 'kind_id'], ['name', 'recipe_count'], locale, {limit: 10})
+  })
+  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {kind_id: id}, ['image_slug', 'kind_id'], ['name', 'recipe_count'], locale)
+  return {kind, ancestors, kinds, recipeKinds}
+}
+
 router.get('/fetch_user/:id', (req, res, next) => res.json(extractUser(req.params.id)))
+router.get('/fetch_kind/:id', (req, res, next) => res.json(extractKind(req.params.id, res.locals.locale)))
 router.get('/fetch_recipe_kind/:id', (req, res, next) => res.json(extractRecipeKind(req.params.id, res.locals.locale)))
 
 router.get('/fetch_suggestions', function(req, res, next) {
@@ -487,21 +503,6 @@ router.get('/fetch_recipe/:id', function(req, res, next) {
   res.json({...recipe, user_name: user.name})
 });
 
-router.get('/fetch_kind/:id', function(req, res, next) {
-
-  let id = parseInt(req.params.id)
-  let ancestors = fetchWithAncestors(id, 'kind_id', (id) => (
-    fetchRecordLocaleAttrs(db, 'kinds', {id}, ['kind_id'], ['name'], res.locals.locale)
-  ))
-  let kind = ancestors.pop(-1)
-  if (!kind) {throw 'Unable to fetch kind. Not existent.'}
-  let kinds = fetchTableLocaleAttrs(db, 'kinds', {kind_id: id}, ['kind_id'], ['name'], res.locals.locale)
-  kinds.forEach(k => {
-    k.recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {kind_id: k.id}, ['image_slug', 'kind_id'], ['name', 'recipe_count'], res.locals.locale, {limit: 10})
-  })
-  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {kind_id: id}, ['image_slug', 'kind_id'], ['name', 'recipe_count'], res.locals.locale)
-  res.json({kind, ancestors, kinds, recipeKinds})
-});
 router.get('/fetch_search_data', function(req, res, next) {
 
   let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug'], ['name'], res.locals.locale)
@@ -658,19 +659,7 @@ router.get('/r/:id', renderAppIfLoggedIn, function(req, res, next) {
 
 router.get('/d/:id', renderAppIfLoggedIn, function(req, res, next) {
 
-  let o = {}
-  let id = parseInt(req.params.id)
-  o.ancestors = fetchWithAncestors(id, 'kind_id', (id) => (
-    fetchRecordLocaleAttrs(db, 'kinds', {id}, ['kind_id'], ['name'], res.locals.locale)
-  ))
-  o.kind = o.ancestors.pop(-1)
-  if (!o.kind) {throw 'Unable to fetch kind. Not existent.'}
-  o.kinds = fetchTableLocaleAttrs(db, 'kinds', {kind_id: id}, ['kind_id'], ['name'], res.locals.locale)
-  o.kinds.forEach(k => {
-    k.recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {kind_id: k.id}, ['image_slug', 'kind_id'], ['name', 'recipe_count'], res.locals.locale, {limit: 10})
-  })
-  o.recipe_kinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {kind_id: id}, ['image_slug', 'kind_id'], ['name', 'recipe_count'], res.locals.locale)
-  res.locals.gon = o
+  res.locals.gon = extractKind(req.params.id, res.locals.locale)
   res.render('show_kind');
 });
 

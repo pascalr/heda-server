@@ -136,9 +136,9 @@ export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors, recipeButt
 export const ShowRecipeKind = () => {
 
   const locale = getLocale()
-  const [recipeKind, ] = useState(gon.recipe_kind)
+  const [recipeKind, ] = useState(gon.recipeKind)
   const [recipes, ] = useState(gon.recipes)
-  const [kindAncestors, ] = useState(gon.kind_ancestors||[])
+  const [kindAncestors, ] = useState(gon.kindAncestors||[])
 
   // TODO: Show credit
   //<div><RecipeMediumImage {...{recipe: recipeKind, images, showCredit: true}} /></div>

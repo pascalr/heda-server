@@ -58,7 +58,7 @@ export const ShowKind = () => {
   const locale = getLocale()
   const [kind, ] = useState(gon.kind)
   const [kinds, ] = useState(gon.kinds)
-  const [recipeKinds, ] = useState(gon.recipe_kinds)
+  const [recipeKinds, ] = useState(gon.recipeKinds)
   const [ancestors, ] = useState(gon.ancestors)
 
   return <>
