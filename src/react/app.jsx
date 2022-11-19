@@ -26,115 +26,13 @@ import { SuggestionsPage } from "./suggestions"
 import { RecipeCarrousel, HomeTab } from './core'
 import { ErrorBoundary } from './error_boundary'
 
-const EditTag = ({tagId, tags}) => {
-  const [name, setName] = useState('')
-  //const filter = page && page.filterId ? recipeFilters.find(f => f.id == page.filterId) : null
-  const tag = tagId ? tags.find(f => f.id == tagId) : null
-  if (!tag) {console.log("Can't edit tag, did not exist."); return '';}
-  
-  return (<>
-    <h2>{t('Modify_tag')}</h2>
-    <h3>{t('Name')}</h3>
-    <TextField model={tag} field="name" />
-    <br/><br/>
-    <Link path='/c' className="btn btn-primary">Ok</Link>
-  </>)
-}
-
-const EditTagButton = ({tag}) => {
-  return (
-    <div className="d-flex align-items-center" style={{padding: '5px 0'}}>
-      <img src='/icons/arrows-move.svg' width="20" height="20" />
-      <div className="me-3"/>
-      <Link path={'/t/'+tag.id}>
-        <b>{tag.name || t("No_name")}</b>
-      </Link>
-      <div className="me-3"/>
-      <DeleteConfirmButton id={`del-user-tag-${tag.id}`} onDeleteConfirm={() => window.hcu.destroyRecord(tag)} message="Je veux retirer cette étiquette?" />
-    </div>
-  )
-}
-const EditTags = ({tags}) => {
-
-  //userTags = sortBy(userTags, "position") Not necessary, done on server side
-  const [orderedTags, setOrderedTags] = useState(tags)
-
-  useEffect(() => {
-    setOrderedTags(sortBy(tags, 'position'))
-  }, [tags])
-
-  const tagsC= orderedTags.map((tag, index) => {
-    return <Draggable key={`drag-user-tag-${tag.id}`} draggableId={`drag-user-tag-${tag.id.toString()}`} index={index}>
-      {(provided) => (<>
-        <div className="item-container" ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
-          <EditTagButton {...{tag}} />
-        </div>
-      </>)}
-    </Draggable>
-  })
-
-  const handleDrop = ({source, destination, type, draggableId}) => {
-    if (!destination) return; // Ignore drop outside droppable container
-    
-    let userTagId = draggableId.substr(14) // removes "drag-user-tag-"
-    console.log('userTagId', userTagId)
-
-    var updatedList = [...orderedTags];
-    const [reorderedItem] = updatedList.splice(source.index, 1);
-    updatedList.splice(destination.index, 0, reorderedItem);
-
-    setOrderedTags(updatedList)
-
-    let mods = []
-    updatedList.forEach((item,i) => {
-      if (item.position != i) {
-        mods.push({method: 'UPDATE', tableName: item.table_name, id: item.id, field: "position", value: i})
-      }
-    })
-    window.hcu.batchModify(mods)
-  }
-
-  const createTag = () => {
-    window.hcu.createRecord('tags', {}, (tag) => {
-      changeUrl('/t/'+tag.id)
-    })
-  }
-
-  return (<>
-    <div className="d-flex gap-15 align-items-center">
-      <h2>{t('Tags')}</h2>
-      <button type="button" className="btn btn-outline-primary btn-sm" onClick={createTag}>{t('Create_tag')}</button>
-    </div>
-    <DragDropContext onDragEnd={handleDrop}>
-      <Droppable droppableId="user-tags-container">
-        {(provided) => (<>
-          <div className="user-tags-container" {...provided.droppableProps} ref={provided.innerRef}>
-            {tagsC}
-            {provided.placeholder}
-          </div>
-        </>)}
-      </Droppable>
-    </DragDropContext>
-  </>)
-}
-
-const TagButton = ({title, image, handleClick}) => {
-  return (
-    <div style={{width: '200px', padding: '25px', display: "inline-block"}}>
-      <button className="plain-btn d-flex flex-column align-items-center" onClick={handleClick}>
-        <img src={image} width="150" height="150" />
-        <b>{title}</b>
-      </button>
-    </div>
-  )
-}
-
-const HomeTabs = ({machines}) => {
+const HomeTabs = ({user, machines}) => {
   //if (useHiddenNavParam()) {return ''}
       //<HomeTab {...{title: t('Tags'), path: '/c'}} />
   return <>
     <ul className="nav nav-tabs mb-3">
       <HomeTab {...{title: t('My_recipes'), path: '/'}} />
+      <HomeTab {...{title: t('My_public_page'), path: '/u/'+user.id}} />
       <HomeTab {...{title: t('Users'), path: '/s'}} />
       <HomeTab {...{title: t('Explore'), path: '/x'}} />
       <HomeTab {...{title: t('Suggestions'), path: '/g'}} />
@@ -145,14 +43,15 @@ const HomeTabs = ({machines}) => {
   </>
 }
 
-const UsersPage = ({}) => {
+const UsersPage = ({user}) => {
 
   const data = useCacheOrFetch(urlWithLocale('/fetch_explore_users', locale))
-
   if (!data) {return null}
 
+  let users = (data.users||[]).filter(u => u.id != user.id)
+
   return <>
-    {(data.users||[]).map(user => {
+    {users.map(user => {
       return <div key={user.id}>
         <Link path={'/u/'+user.id} className='plain-link'>
           <div className='d-flex align-items-end'>
@@ -506,7 +405,7 @@ export const App = () => {
   return (<>
     <AppSearch {...{user, _csrf, recipes, friendsRecipes, users, recipeKinds}} />
     <div className="trunk">
-      <HomeTabs machines={machines} />
+      <HomeTabs {...{user, machines}} />
       <ErrorBoundary key={'err-boundary-'+idx}>
         {elem}
       </ErrorBoundary>
@@ -878,4 +777,108 @@ document.addEventListener('DOMContentLoaded', () => {
 //    <h2 className="fs-14 italic gray">{t('Suggestions_for_you')}</h2>
 //    <RecipeCarrousel {...{items: randomRecipes.slice(21,30), isRecipeKind: true}}/>
 //  </> 
+//}
+//
+//
+//const EditTag = ({tagId, tags}) => {
+//  const [name, setName] = useState('')
+//  //const filter = page && page.filterId ? recipeFilters.find(f => f.id == page.filterId) : null
+//  const tag = tagId ? tags.find(f => f.id == tagId) : null
+//  if (!tag) {console.log("Can't edit tag, did not exist."); return '';}
+//  
+//  return (<>
+//    <h2>{t('Modify_tag')}</h2>
+//    <h3>{t('Name')}</h3>
+//    <TextField model={tag} field="name" />
+//    <br/><br/>
+//    <Link path='/c' className="btn btn-primary">Ok</Link>
+//  </>)
+//}
+//
+//const EditTagButton = ({tag}) => {
+//  return (
+//    <div className="d-flex align-items-center" style={{padding: '5px 0'}}>
+//      <img src='/icons/arrows-move.svg' width="20" height="20" />
+//      <div className="me-3"/>
+//      <Link path={'/t/'+tag.id}>
+//        <b>{tag.name || t("No_name")}</b>
+//      </Link>
+//      <div className="me-3"/>
+//      <DeleteConfirmButton id={`del-user-tag-${tag.id}`} onDeleteConfirm={() => window.hcu.destroyRecord(tag)} message="Je veux retirer cette étiquette?" />
+//    </div>
+//  )
+//}
+//const EditTags = ({tags}) => {
+//
+//  //userTags = sortBy(userTags, "position") Not necessary, done on server side
+//  const [orderedTags, setOrderedTags] = useState(tags)
+//
+//  useEffect(() => {
+//    setOrderedTags(sortBy(tags, 'position'))
+//  }, [tags])
+//
+//  const tagsC= orderedTags.map((tag, index) => {
+//    return <Draggable key={`drag-user-tag-${tag.id}`} draggableId={`drag-user-tag-${tag.id.toString()}`} index={index}>
+//      {(provided) => (<>
+//        <div className="item-container" ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
+//          <EditTagButton {...{tag}} />
+//        </div>
+//      </>)}
+//    </Draggable>
+//  })
+//
+//  const handleDrop = ({source, destination, type, draggableId}) => {
+//    if (!destination) return; // Ignore drop outside droppable container
+//    
+//    let userTagId = draggableId.substr(14) // removes "drag-user-tag-"
+//    console.log('userTagId', userTagId)
+//
+//    var updatedList = [...orderedTags];
+//    const [reorderedItem] = updatedList.splice(source.index, 1);
+//    updatedList.splice(destination.index, 0, reorderedItem);
+//
+//    setOrderedTags(updatedList)
+//
+//    let mods = []
+//    updatedList.forEach((item,i) => {
+//      if (item.position != i) {
+//        mods.push({method: 'UPDATE', tableName: item.table_name, id: item.id, field: "position", value: i})
+//      }
+//    })
+//    window.hcu.batchModify(mods)
+//  }
+//
+//  const createTag = () => {
+//    window.hcu.createRecord('tags', {}, (tag) => {
+//      changeUrl('/t/'+tag.id)
+//    })
+//  }
+//
+//  return (<>
+//    <div className="d-flex gap-15 align-items-center">
+//      <h2>{t('Tags')}</h2>
+//      <button type="button" className="btn btn-outline-primary btn-sm" onClick={createTag}>{t('Create_tag')}</button>
+//    </div>
+//    <DragDropContext onDragEnd={handleDrop}>
+//      <Droppable droppableId="user-tags-container">
+//        {(provided) => (<>
+//          <div className="user-tags-container" {...provided.droppableProps} ref={provided.innerRef}>
+//            {tagsC}
+//            {provided.placeholder}
+//          </div>
+//        </>)}
+//      </Droppable>
+//    </DragDropContext>
+//  </>)
+//}
+//
+//const TagButton = ({title, image, handleClick}) => {
+//  return (
+//    <div style={{width: '200px', padding: '25px', display: "inline-block"}}>
+//      <button className="plain-btn d-flex flex-column align-items-center" onClick={handleClick}>
+//        <img src={image} width="150" height="150" />
+//        <b>{title}</b>
+//      </button>
+//    </div>
+//  )
 //}

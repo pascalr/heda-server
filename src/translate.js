@@ -242,6 +242,7 @@ export function tr(id, locale) {
     filtered: 'filtrées',
     Filter: 'Filtrer',
     Features: 'Fonctionnalités', 
+    My_public_page: 'Ma page publique',
   }
   if (locale == 'fr' || locale == 'FR') {
     if (!fr[id]) {console.log('Missing translation for '+id+' in '+locale)}

@@ -116,7 +116,32 @@ export const useCacheOrFetchHTML = (url, args={}) => {
   return data;
 };
 
-// FIXME: Badly implemented I believe...
+// FIXME: Badly implemented... Don't use window...
+// This is better with dependencies, but still bad
+export const useCacheOrFetch2 = (url, dependencies=[]) => {
+  const [data, setData] = useState(window[`fetched_${url}`]);
+
+  useEffect(() => {
+    let waiting = dependencies.find(d => d === null || d === undefined)
+    if (!window[`fetching_${url}`] && !waiting) {
+      async function fetchData() {
+        console.log(`Fetching data at ${url}`)
+        const response = await fetch(url);
+        const json = await response.json();
+        window[`fetched_${url}`] = json
+        setData(json);
+      }
+      window[`fetching_${url}`] = true
+      fetchData();
+    } else if (window[`fetched_${url}`]) {
+      setData(window[`fetched_${url}`])
+    }
+  }, [url, dependencies]);
+
+  return data;
+};
+
+// FIXME: Badly implemented... Don't use window...
 export const useCacheOrFetch = (url, args={}) => {
   const {waitFor, cache} = args
   const [data, setData] = useState(window[`fetched_${url}`]);
@@ -132,6 +157,8 @@ export const useCacheOrFetch = (url, args={}) => {
       }
       window[`fetching_${url}`] = true
       fetchData();
+    } else if (window[`fetched_${url}`]) {
+      setData(window[`fetched_${url}`])
     }
   }, [url, waitFor]);
 
