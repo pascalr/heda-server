@@ -412,6 +412,7 @@ function extractUser(id) {
 function extractRecipeKind(id, locale) {
 
   let recipeKind = fetchRecordLocaleAttrs(db, 'recipe_kinds', {id}, ['image_slug', 'kind_id'], ['name', 'json'], locale)
+  if (recipeKind) {throw 'Unable to extract recipe kind. Not existent.'}
   //let recipes = db.fetchTable('recipes', {is_public: 1, recipe_kind_id: recipeKind.id}, RECIPE_ATTRS)
   // FIXME: SELECT recipes.*
   let recipes = db.prepare("SELECT recipes.*, users.locale, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE recipes.is_public = 1 AND recipes.recipe_kind_id = ?;").all(recipeKind.id)
@@ -675,23 +676,7 @@ router.get('/d/:id', renderAppIfLoggedIn, function(req, res, next) {
 
 router.get('/k/:id', renderAppIfLoggedIn, function(req, res, next) {
 
-  let o = {}
-  o.recipe_kind = fetchRecordLocaleAttrs(db, 'recipe_kinds', {id: req.params.id}, ['image_slug', 'kind_id'], ['name', 'json', 'recipe_count'], res.locals.locale)
-  if (!o.recipe_kind) {throw 'Unable to fetch recipe kind. Not existent.'}
-
-  if (o.recipe_kind.kind_id) {
-    o.kind_ancestors = fetchWithAncestors(o.recipe_kind.kind_id, 'kind_id', (id) => (
-      fetchRecordLocaleAttrs(db, 'kinds', {id}, ['kind_id'], ['name'], res.locals.locale)
-    ))
-  }
-
-  // FIXME: recipes.*
-  //o.recipes = db.prepare("SELECT recipes.*, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.is_public = 1 AND recipes.recipe_kind_id = ?;").all(o.recipe_kind.id)
-  // Only fetch recipes in the current locale. Temporary
-  // Ideally, locale is a filter, it should be possible to see all. By default only the selected locale.
-  o.recipes = db.prepare("SELECT recipes.*, users.locale, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE recipes.is_public = 1 AND recipes.recipe_kind_id = ?;").all(o.recipe_kind.id)
-
-  res.locals.gon = o
+  res.locals.gon = extractRecipeKind(req.params.id, res.locals.locale)
   res.render('show_recipe_kind');
 });
 
