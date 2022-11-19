@@ -29,7 +29,7 @@ export const withSelector = (choices, args={}) => {
       return <option value={extract(opt, i)} key={opt}>{render(opt, i)}</option>
     })}
   </select>
-  return [val, elem]
+  return [val, elem, setVal]
 }
 
 export const withInputField = (args={}) => {

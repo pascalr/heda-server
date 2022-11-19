@@ -69,16 +69,31 @@ const QAPage = ({}) => {
   
   let pages = [
     '/k/51',
-    '/d/6'
+    '/d/6',
+    '/u/5',
   ]
 
-  const [page, pageSelector] = withSelector(pages)
+  const [page, pageSelector, setPage] = withSelector(pages)
+
+  const previous = () => {
+    let i = pages.indexOf(page)
+    setPage(i <= 0 ? pages[pages.length-1] : pages[i-1])
+  }
+  const next = () => {
+    let i = pages.indexOf(page)
+    setPage(i >= pages.length - 1 ? pages[0] : pages[i+1])
+  }
 
   return <>
+    <div className='py-1' style={{position: 'sticky', borderBottom: '1px solid black', top: '0', zIndex: '99999', backgroundColor: 'white'}}>
+      <div className='m-auto' style={{width: 'fit-content'}}>
+        <button type='button' className='btn btn-sm btn-primary mx-2' onClick={previous}>Previous</button>
+        <b>Page:</b> {pageSelector}
+        <button type='button' className='btn btn-sm btn-primary mx-2' onClick={next}>Next</button>
+      </div>
+    </div>
     <h1 className='text-center'>QA</h1>
     <div className='trunk'>
-      <b>Page:</b><br/>
-      {pageSelector}
       <br/><br/>
       <h4 className='text-center'>320px</h4>
       <div className="tablet d-none d-sm-block">
