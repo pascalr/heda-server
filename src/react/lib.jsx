@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import toastr from 'toastr'
 
 import { ajax, omit, join, bindSetter, capitalize, changeUrl } from "./utils"
@@ -172,6 +172,26 @@ export const useCacheOrFetch = (url, args={}) => {
   }, [url, waitFor]);
 
   return data;
+};
+
+export const useElemWidth = () => {
+
+  const ref = useRef(null)
+  const [width, setWidth] = useState(null)
+
+  useEffect(() => {
+    setWidth(ref.current.offsetWidth)
+    const f = () => {
+      let w = ref.current.offsetWidth
+      if (w != width) {setWidth(w)}
+    }
+    window.addEventListener('resize', f)
+    return () => {
+      window.removeEventListener('resize', f)
+    }
+  }, [ref])
+
+  return [width, ref]
 };
 
 export const useWindowWidth = (args={}) => {
