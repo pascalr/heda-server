@@ -60,7 +60,7 @@ const RecipeThumbnailItem = ({recipe}) => {
   )
 }
 
-const UserViewer = ({user, userRecipes, favRecipes}) => {
+export const UserViewer = ({user, userRecipes, favRecipes}) => {
   return <>
     <h3>{t('Recipes_by')} {user.name}</h3>
     <ul className="recipe-list-2">

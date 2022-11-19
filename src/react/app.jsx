@@ -14,6 +14,7 @@ import { DeleteConfirmButton } from './components/delete_confirm_button'
 import {RecipeEditor} from "./recipe_editor"
 import {RecipeViewer, FavoriteButton, AddToListButton, DuplicateButton} from "./recipe_viewer"
 import {RecipeKindViewer} from "./show_recipe_kind"
+import {UserViewer} from "./show_user"
 import {KindViewer} from "./show_kind"
 import { initHcu, useHcuState } from '../hcu'
 import { UserThumbnailImage, RecipeThumbnailImage, RecipeMediumImage } from "./image"
@@ -153,10 +154,12 @@ const UsersPage = ({}) => {
   return <>
     {(data.users||[]).map(user => {
       return <div key={user.id}>
-        <div className='d-flex align-items-end'>
-          <UserThumbnailImage {...{user}} />
-          <h2 className="fs-14 bold">{user.name}</h2>
-        </div>
+        <Link path={'/u/'+user.id} className='plain-link'>
+          <div className='d-flex align-items-end'>
+            <UserThumbnailImage {...{user}} />
+            <h2 className="fs-14 bold">{user.name}</h2>
+          </div>
+        </Link>
         <RecipeCarrousel {...{items: data.recipesByUserId[user.id]}}/>
       </div>
     })}
@@ -186,44 +189,22 @@ const ExplorePage = ({}) => {
 
 const ShowKind = ({kindId, locale}) => {
 
-  const [kind, setKind] = useState(null)
-  const [kinds, setKinds] = useState(null)
-  const [recipeKinds, setRecipeKinds] = useState(null)
-  const [ancestors, setAncestors] = useState(null)
-
-  useEffect(() => {
-    ajax({url: urlWithLocale('/fetch_kind/'+kindId, locale), type: 'GET', success: (result) => {
-      setKind(result.kind)
-      setKinds(result.kinds)
-      setRecipeKinds(result.recipeKinds)
-      setAncestors(result.ancestors)
-    }})
-  }, [kindId])
-  return <>
-    <KindViewer {...{kind, ancestors, kinds, recipeKinds}} />
-  </>
+  const data = useCacheOrFetch(urlWithLocale('/fetch_kind/'+kindId, locale))
+  if (!data) {return null}
+  return <KindViewer {...data} />
 }
 
-const ShowUser = ({locale}) => {
-
-  return <>
-    <h1>TODO</h1>
-  </>
+const ShowUser = ({userId, locale}) => {
+  
+  const data = useCacheOrFetch(urlWithLocale('/fetch_user/'+userId, locale))
+  if (!data) {return null}
+  return <UserViewer {...data} />
 }
 
 const ShowRecipeKind = ({user, favoriteRecipes, recipeKindId, ...props}) => {
 
-  const [recipeKind, setRecipeKind] = useState(null)
-  const [kindRecipes, setKindRecipes] = useState(null)
-  const [kindAncestors, setKindAncestors] = useState(null)
-
-  useEffect(() => {
-    ajax({url: urlWithLocale('/fetch_recipe_kind/'+recipeKindId, props.locale), type: 'GET', success: (result) => {
-      setKindAncestors(result.kindAncestors)
-      setRecipeKind(result.recipeKind)
-      setKindRecipes(result.recipes)
-    }})
-  }, [recipeKindId])
+  const data = useCacheOrFetch(urlWithLocale('/fetch_recipe_kind/'+recipeKindId, locale))
+  if (!data) {return null}
 
   const recipeButtons = (recipe) => {
     if (user.id == recipe.user_id) {return null}
@@ -242,7 +223,7 @@ const ShowRecipeKind = ({user, favoriteRecipes, recipeKindId, ...props}) => {
         //</div>
 
   return <>
-    <RecipeKindViewer {...{...props, recipeKind, recipes: kindRecipes, kindAncestors, recipeButtons}} />
+    <RecipeKindViewer {...{...props, ...data, recipeButtons}} />
   </>
 }
 
@@ -472,7 +453,7 @@ export const App = () => {
   const images = useHcuState([], {tableName: 'images'})
 
   const routes = [
-    {match: "/s", elem: () => <UsersPage />},
+    {match: "/s", elem: () => <UsersPage {...{user}} />},
     {match: "/g", elem: () => <SuggestionsPage {...{recipeKinds}} />},
     {match: "/x", elem: () => <ExplorePage />},
     {match: "/c", elem: () => <EditTags {...{tags}} />},
@@ -484,7 +465,7 @@ export const App = () => {
       <ShowRecipeKind {...{recipeKindId: id, recipes, recipeKinds, locale, user, favoriteRecipes}} />
     },
     {match: "/u/:id", elem: ({id}) =>
-      <ShowUser {...{locale}} />
+      <ShowUser {...{userId: id, locale}} />
     },
     {match: "/d/:id", elem: ({id}) =>
       <ShowKind {...{kindId: id, locale}} />
