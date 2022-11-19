@@ -409,7 +409,23 @@ function extractUser(id) {
   return {user, userRecipes, favRecipes}
 }
 
+function extractRecipeKind(id, locale) {
+
+  let recipeKind = fetchRecordLocaleAttrs(db, 'recipe_kinds', {id}, ['image_slug', 'kind_id'], ['name', 'json'], locale)
+  //let recipes = db.fetchTable('recipes', {is_public: 1, recipe_kind_id: recipeKind.id}, RECIPE_ATTRS)
+  // FIXME: SELECT recipes.*
+  let recipes = db.prepare("SELECT recipes.*, users.locale, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE recipes.is_public = 1 AND recipes.recipe_kind_id = ?;").all(recipeKind.id)
+  if (recipeKind.kind_id) {
+    let kindAncestors = fetchWithAncestors(recipeKind.kind_id, 'kind_id', (id) => (
+      fetchRecordLocaleAttrs(db, 'kinds', {id}, ['kind_id'], ['name'], locale)
+    ))
+    return {recipeKind, recipes, kindAncestors}
+  }
+  return {recipeKind, recipes}
+}
+
 router.get('/fetch_user/:id', (req, res, next) => res.json(extractUser(req.params.id)))
+router.get('/fetch_recipe_kind/:id', (req, res, next) => res.json(extractRecipeKind(req.params.id, res.locals.locale)))
 
 router.get('/fetch_suggestions', function(req, res, next) {
 
@@ -469,21 +485,7 @@ router.get('/fetch_recipe/:id', function(req, res, next) {
   }
   res.json({...recipe, user_name: user.name})
 });
-router.get('/fetch_recipe_kind/:id', function(req, res, next) {
 
-  let recipeKind = fetchRecordLocaleAttrs(db, 'recipe_kinds', {id: req.params.id}, ['image_slug', 'kind_id'], ['name', 'json'], res.locals.locale)
-  //let recipes = db.fetchTable('recipes', {is_public: 1, recipe_kind_id: recipeKind.id}, RECIPE_ATTRS)
-  // FIXME: SELECT recipes.*
-  let recipes = db.prepare("SELECT recipes.*, users.locale, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE recipes.is_public = 1 AND recipes.recipe_kind_id = ?;").all(recipeKind.id)
-  if (recipeKind.kind_id) {
-    let kindAncestors = fetchWithAncestors(recipeKind.kind_id, 'kind_id', (id) => (
-      fetchRecordLocaleAttrs(db, 'kinds', {id}, ['kind_id'], ['name'], res.locals.locale)
-    ))
-    res.json({recipeKind, recipes, kindAncestors})
-  } else {
-    res.json({recipeKind, recipes})
-  }
-});
 router.get('/fetch_kind/:id', function(req, res, next) {
 
   let id = parseInt(req.params.id)
