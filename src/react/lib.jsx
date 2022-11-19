@@ -2,8 +2,17 @@ import React, { useState, useEffect } from 'react';
 import toastr from 'toastr'
 
 import { ajax, omit, join, bindSetter, capitalize, changeUrl } from "./utils"
-import { localeHref } from "../utils"
+import { localeHref, shuffle } from "../utils"
 import { t } from '../translate'
+
+export function useShuffled(list) {
+  const [items, setItems] = useState(list)
+
+  useEffect(() => {
+    setItems(list ? shuffle(list) : list)
+  }, [list])
+  return items
+}
 
 /**
  * Extract the locale from the meta tag. Ex:

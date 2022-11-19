@@ -3,14 +3,13 @@ import ReactDOM from 'react-dom'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 //import { createRoot } from 'react-dom/client';
 
-import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, Link } from "./lib"
+import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, Link, useShuffled } from "./lib"
 import { findRecipeKindForRecipeName } from "../lib"
 import { RecipeList, RecipeIndex } from './recipe_index'
 import { changeUrl, ajax, normalizeSearchText, join, bindSetter, capitalize, isTrue } from "./utils"
-import { urlWithLocale, getUrlParams, sortBy, sortByDate, shuffle } from "../utils"
-import { icon_path, image_path, image_slug_variant_path } from './routes'
+import { urlWithLocale, getUrlParams, sortBy, sortByDate } from "../utils"
+import { image_path } from './routes'
 import {TextField, CollectionSelect, ImageField, ImageSelector} from './form'
-import { DeleteConfirmButton } from './components/delete_confirm_button'
 import {RecipeEditor} from "./recipe_editor"
 import {RecipeViewer, FavoriteButton, AddToListButton, DuplicateButton} from "./recipe_viewer"
 import {RecipeKindViewer} from "./show_recipe_kind"
@@ -68,13 +67,8 @@ const UsersPage = ({user}) => {
 const ExplorePage = ({}) => {
 
   const data = useCacheOrFetch(urlWithLocale('/fetch_explore', locale))
-  const [kinds, setKinds] = useState([])
-
-  useEffect(() => {
-    if (data) {setKinds(shuffle(data.kinds||[]))}
-  }, [data])
-
-  if (!data) {return null}
+  const kinds = useShuffled(data?.kinds)
+  if (!data || !kinds) {return null}
 
   return <>
     {kinds.map(kind => {
