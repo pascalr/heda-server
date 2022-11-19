@@ -71,6 +71,14 @@ const QAPage = ({}) => {
     '/k/51',
     '/d/6',
     '/u/5',
+    '/dontExists',
+    '/g',
+    '/x',
+    '/s',
+    '/l',
+    '/n',
+    '/r/1',
+    '/e/1',
   ]
 
   const [page, pageSelector, setPage] = withSelector(pages)

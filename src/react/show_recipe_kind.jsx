@@ -61,8 +61,6 @@ export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors, recipeButt
     if (localeFilter) {filtered = filtered || r.locale != localeFilter}
     return !filtered
   })
-  console.log('recipes', recipes)
-  console.log('filtered', filtered)
  
   let recipeButtonsV = recipeButtons && filtered && filtered.length > 0 && recipeButtons(filtered[recipeIdx])
   let recipeButtonsE = recipeButtonsV ?

@@ -5,12 +5,12 @@ import { isTrue } from "./utils"
 import {image_path, image_slug_variant_path } from './routes'
 import DefaultRecipeImage from '../../public/img/default_recipe_01.png'
 
-const ImageCredit = ({imageSlug, image, images}) => {
+const ImageCredit = ({imageSlug, image, images, width}) => {
   if (!image && !images) {return ''}
   image = image || images.find(i => i.slug == imageSlug)
   if (!image || !image.author || !image.source) {return ''}
   return <>
-    <div className="text-center">
+    <div className="text-center" style={{width: `${width}px`, maxWidth: '100%'}}>
       <i>Crédit photo: </i>
       <u><a style={{color: 'block', fontSize: '0.95em'}} href={image.source}>{image.author}</a></u>
     </div>
@@ -30,7 +30,7 @@ export const RecipeImage = ({recipe, image, images, showCredit, width, height, v
     <div style={{width: `${width}px`, height: `${height}px`, maxWidth: '100%', overflow: 'hidden', flexShrink: '0'}}>
       {img}
     </div>
-    {showCredit ? <ImageCredit {...{imageSlug: recipe.image_slug, images, image}} /> : ''}
+    {showCredit ? <ImageCredit {...{width, imageSlug: recipe.image_slug, images, image}} /> : ''}
   </>
 }
 
