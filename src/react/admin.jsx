@@ -80,17 +80,91 @@ const QAPage = ({}) => {
       <b>Page:</b><br/>
       {pageSelector}
       <br/><br/>
-      <div className="smartphone d-none d-sm-block">
-        <div className='content'>
+      <h4 className='text-center'>320px</h4>
+      <div className="tablet d-none d-sm-block">
+        <div className='content' style={{width: '320px', height: '640px'}}>
           <iframe src={page} style={{width: '100%', border: 'none', height: '100%'}}/>
         </div>
       </div>
+      <br/><br/><br/><br/><br/><br/>
+      <h4 className='text-center'>360px</h4>
       <div className="tablet d-none d-sm-block">
-        <div className='content'>
+          <div className='content' style={{width: '360px', height: '640px'}}>
+          <iframe src={page} style={{width: '100%', border: 'none', height: '100%'}}/>
+        </div>
+      </div>
+      <br/><br/><br/><br/><br/><br/>
+      <h4 className='text-center'>575px</h4>
+      <div className="tablet d-none d-sm-block">
+          <div className='content' style={{width: '575px', height: '760px'}}>
+          <iframe src={page} style={{width: '100%', border: 'none', height: '100%'}}/>
+        </div>
+      </div>
+      <br/><br/><br/><br/><br/><br/>
+      <h4 className='text-center'>577px</h4>
+      <div className="tablet d-none d-sm-block">
+          <div className='content' style={{width: '577px', height: '760px'}}>
+          <iframe src={page} style={{width: '100%', border: 'none', height: '100%'}}/>
+        </div>
+      </div>
+      <br/><br/><br/><br/><br/><br/>
+      <h4 className='text-center'>767px</h4>
+      <div className="tablet d-none d-sm-block">
+        <div className='content' style={{width: '767px'}}>
+          <iframe src={page} style={{width: '100%', border: 'none', height: '100%'}}/>
+        </div>
+      </div>
+      <br/><br/><br/><br/><br/><br/>
+      <h4 className='text-center'>769px</h4>
+      <div className="tablet d-none d-sm-block">
+        <div className='content' style={{width: '769px'}}>
           <iframe src={page} style={{width: '100%', border: 'none', height: '100%'}}/>
         </div>
       </div>
     </div>
+    <br/><br/><br/><br/><br/><br/>
+    <h4 className='text-center'>991px</h4>
+    <div className="laptop d-none d-sm-block">
+      <div className='content' style={{width: '991px'}}>
+        <iframe src={page} style={{width: '100%', border: 'none', height: '100%'}}/>
+      </div>
+    </div>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <h4 className='text-center'>993px</h4>
+    <div className="laptop d-none d-sm-block">
+      <div className='content' style={{width: '993px'}}>
+        <iframe src={page} style={{width: '100%', border: 'none', height: '100%'}}/>
+      </div>
+    </div>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <h4 className='text-center'>1199px</h4>
+    <div className="laptop d-none d-sm-block">
+      <div className='content' style={{width: '1199px'}}>
+        <iframe src={page} style={{width: '100%', border: 'none', height: '100%'}}/>
+      </div>
+    </div>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <h4 className='text-center'>1201px</h4>
+    <div className="laptop d-none d-sm-block">
+      <div className='content' style={{width: '1201px'}}>
+        <iframe src={page} style={{width: '100%', border: 'none', height: '100%'}}/>
+      </div>
+    </div>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <h4 className='text-center'>1399px</h4>
+    <div className="laptop d-none d-sm-block">
+      <div className='content' style={{width: '1399px'}}>
+        <iframe src={page} style={{width: '100%', border: 'none', height: '100%'}}/>
+      </div>
+    </div>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <h4 className='text-center'>1401px</h4>
+    <div className="laptop d-none d-sm-block">
+      <div className='content' style={{width: '1401px'}}>
+        <iframe src={page} style={{width: '100%', border: 'none', height: '100%'}}/>
+      </div>
+    </div>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
   </>
 }
 
