@@ -30,7 +30,7 @@ export const RecipeImage = ({recipe, image, images, showCredit, width, height, v
   let args = {src: imagePath, width, height, style: {transform: `translateY(calc(-50% + ${h/2}px))`}}
   let img = (window.disableLazyLoading) ? <img {...args} /> : <LazyLoadImage {...args} />
   return <>
-    <div ref={ref} style={{width: '100%'}}>
+    <div ref={ref} style={{width: width, maxWidth: '100%'}}>
       <div style={{width: `${w}px`, height: `${h}px`, overflow: 'hidden', flexShrink: '0'}}>
         {img}
       </div>
