@@ -9,7 +9,42 @@ import { image_slug_variant_path } from "./routes"
 import { t } from '../translate'
 
 /**
+ * @param {Array} choices The possible choices for the selector
+ * @param {Object} args Possible values are:
+ *   includeBlank: whether to add an empty choice or not
+ *   render: A mapping function to print the item
+ *   extract: A mapping function to extract the value from the item
+ */
+export const withSelector = (choices, args={}) => {
+
+  let render = args.render || (e => e)
+  let extract = args.extract || (e => e)
+  let includeBlank = args.includeBlank
+
+  const [val, setVal] = useState(includeBlank ? '' : extract(choices[0]))
+
+  let elem = <select value={val||''} onChange={(e) => setVal(e.target.value)}>
+    {args.includeBlank ? <option value="" label=" "></option> : null}
+    {choices.map((opt, i) => {
+      return <option value={extract(opt, i)} key={opt}>{render(opt, i)}</option>
+    })}
+  </select>
+  return [val, elem]
+}
+
+export const withInputField = (args={}) => {
+  const [value, setValue] = useState(null)
+
+  let elem = (
+    <input type="text" value={value||''} onChange={(e) => setValue(e.target.value)} {...args} />
+  )
+
+  return [value, elem]
+}
+
+/**
  * A simple text input field. Pass a onBlur fonction get feedback when the value changes.
+ * DEPRECATED: Use withInputField instead
  */
 export const TextInput = ({defaultValue, onBlur, ...props}) => {
   const [value, setValue] = useState(defaultValue)

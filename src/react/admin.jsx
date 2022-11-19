@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import toastr from 'toastr'
 //import { createRoot } from 'react-dom/client';
 
-import { TextInput, TextField, CollectionSelect, RangeField } from "./form"
+import { TextInput, TextField, CollectionSelect, RangeField, withSelector } from "./form"
 import { Link, useOrFetch, getLocale } from "./lib"
 import { localeAttr, findRecipeKindForRecipeName  } from "../lib"
 import { AppSearch } from './main_search'
@@ -25,6 +25,7 @@ const AdminTabs = ({machines}) => {
     <ul className="nav nav-tabs mb-3">
       <HomeTab {...{title: t('Admin'), path: '/admin'}} />
       <HomeTab {...{title: t('Errors'), path: '/admin/errors'}} />
+      <HomeTab {...{title: t('QA'), path: '/admin/qa'}} />
       <HomeTab {...{title: t('Kinds'), path: '/admin/di'}} />
       <HomeTab {...{title: t('RecipeKinds'), path: '/admin/ki'}} />
       <HomeTab {...{title: t('SQL'), path: '/admin/sql'}} />
@@ -61,6 +62,35 @@ const ErrorsPage = ({errors}) => {
         })}
       </tbody>
     </table>
+  </>
+}
+
+const QAPage = ({}) => {
+  
+  let pages = [
+    '/k/51',
+    '/d/6'
+  ]
+
+  const [page, pageSelector] = withSelector(pages)
+
+  return <>
+    <h1 className='text-center'>QA</h1>
+    <div className='trunk'>
+      <b>Page:</b><br/>
+      {pageSelector}
+      <br/><br/>
+      <div className="smartphone d-none d-sm-block">
+        <div className='content'>
+          <iframe src={page} style={{width: '100%', border: 'none', height: '100%'}}/>
+        </div>
+      </div>
+      <div className="tablet d-none d-sm-block">
+        <div className='content'>
+          <iframe src={page} style={{width: '100%', border: 'none', height: '100%'}}/>
+        </div>
+      </div>
+    </div>
   </>
 }
 
@@ -312,19 +342,6 @@ const TranslationsPage = ({translations}) => {
   </>
 }
 
-const withTableSelector = () => {
-  const [table, setTable] = useState(null)
-
-  let options = Object.keys(schema).sort()
-  let elem = <select value={table||''} onChange={(e) => setTable(e.target.value)}>
-    <option value="" label=" "></option>
-    {options.map((opt, i) => {
-      return <option value={opt} key={opt}>{opt}</option>
-    })}
-  </select>
-  return [table, elem]
-}
-
 const Console = () => {
   
   const [cmd, setCmd] = useState('')
@@ -396,7 +413,7 @@ const Console = () => {
 const SQLPage = () => {
 
   const [code, setCode] = useState('')
-  const [table, tableSelector] = withTableSelector()
+  const [table, tableSelector] = withSelector(Object.keys(schema).sort(), {includeBlank: true})
   const [column1, setColumn1] = useState('column_a')
   const [column2, setColumn2] = useState('column_b')
   const [addColumn, setAddColumn] = useState('name sum:real')
@@ -553,7 +570,7 @@ const TranslateRecipePage = ({translations, recipes, locale}) => {
 const DbPage = () => {
 
   //const [table, setTable] = useState('table_name')
-  const [table, tableSelector] = withTableSelector()
+  const [table, tableSelector] = withSelector(Object.keys(schema).sort(), {includeBlank: true})
   const [data, setData] = useState(null)
 
   useEffect(() => {
@@ -621,6 +638,7 @@ export const Admin = () => {
   const routes = [
     {match: "/admin/translations", elem: () => <TranslationsPage {...{translations}} />},
     {match: "/admin/sql", elem: () => <SQLPage />},
+    {match: "/admin/qa", elem: () => <QAPage />},
     {match: "/admin/errors", elem: () => <ErrorsPage {...{errors}} />},
     {match: "/admin/db", elem: () => <DbPage />},
     {match: "/admin/console", elem: () => <Console />},
