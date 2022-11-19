@@ -335,8 +335,6 @@ router.post('/reset', function (req, res, next) {
 
 router.get('/imgs/:variant/:slug', function(req, res, next) {
 
-  // TODO: Send only variants, not original
-  
   let ext = req.params.slug.substr(req.params.slug.lastIndexOf('.') + 1);
   if (!['jpg', 'jpeg', 'png'].includes(ext)) {
     return res.status(500).send("Image format not supported. Expected jpg, jpeg or png. Was " + ext);
@@ -357,8 +355,7 @@ router.get('/imgs/:variant/:slug', function(req, res, next) {
 
 router.post('/create_record/:table', function(req, res, next) {
  
-  let o = req.body.record
-  let record = db.createRecord(req.params.table, o, req.user)
+  let record = db.createRecord(req.params.table, req.body.record, req.user)
   res.json({...record})
 })
 
@@ -540,10 +537,6 @@ router.delete('/destroy_record/:table/:id', function(req, res, next) {
   res.json({status: 'ok'})
 });
 
-router.get('/demo', function(req, res, next) {
-  next()
-});
-
 const renderApp = [ensureUser, function(req, res, next) {
 
   let user = req.user
@@ -627,8 +620,6 @@ router.get('/r/:id', renderAppIfLoggedIn, function(req, res, next) {
 
   let recipeId = req.params.id
   let o = {}
-  let ids = null
-  let attrs = null
   o.recipe = db.fetchRecord('recipes', {id: recipeId, is_public: 1}, RECIPE_ATTRS)
   if (!o.recipe) {throw 'Unable to fetch recipe. Not existent or private.'}
   o.user = db.fetchRecord('users', {id: o.recipe.user_id}, ['name', 'locale'])

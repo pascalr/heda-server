@@ -15,6 +15,12 @@ Un autre lien intitulé «Suggestions»
   Something small enough to escape casual notice.
 </details>
 
+Pas pressant du tout:
+/src/router/db.js
+/src/router/user.js // Session and other stuff...
+/src/router/main.js
+/src/route/admin.js
+
 Do like ExtractUser inside route for RecipeKinds and Kinds and Recipes???
 
 Est-ce que je peux utiliser Mastodon pour promouvoir mon site?
