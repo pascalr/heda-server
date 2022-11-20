@@ -208,7 +208,7 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
   }
 
   const normalMode = <>
-    <div className='position-relative'>
+    <div className='position-relative' style={{backgroundColor: 'rgb(33, 37, 41)', zIndex: '10000'}}>
       <div className='position-absolute fs-15' style={{left: '50vw', transform: 'translateX(-50%)', fontWeight: '500', color: 'rgb(249, 249, 249)', top: '-0.1em'}}>
         { currentPathIsRoot() ? 'HedaCuisine' : <Link path="/" className="plain-link white">HedaCuisine</Link>}
       </div>
