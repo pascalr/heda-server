@@ -80,19 +80,22 @@ export const PublicNavbar2 = ({locale}) => {
   //const [foo] = withBaseNavbar({locale})
 
   let otherLocale = (locale.toLowerCase() == 'en') ? 'FR' : 'EN'
+  
+  let collapsableStartItems = [
+    <Link key='a1' path="/rs" className="nav-btn">{t('Recipes', locale)}</Link>,
+  ]
 
   let startItems = [
-    <Link key='1' path="/rs" className="nav-btn">{t('Recipes', locale)}</Link>,
-    <Link key='2' path={window.location.pathname+'?locale='+otherLocale} className="nav-btn fs-13" rel="alternate" hrefLang={otherLocale.toLowerCase()}>{otherLocale}</Link>
+    <Link key='b2' path={window.location.pathname+'?locale='+otherLocale} className="nav-btn fs-13" rel="alternate" hrefLang={otherLocale.toLowerCase()}>{otherLocale}</Link>,
   ]
 
   let endItems = [
-    <Link key='1' path="/login" className="nav-btn">{t('Login', locale)}</Link>,
-    <Link key='2' path="/signup" className="nav-btn">{t('Create_account', locale)}</Link>,
-    <Link key='3' path="/contact" className="nav-btn">{t('Contact', locale)}</Link>,
+    <Link key='c1' path="/login" className="nav-btn">{t('Login', locale)}</Link>,
+    <Link key='c2' path="/signup" className="nav-btn">{t('Create_account', locale)}</Link>,
+    <Link key='c3' path="/contact" className="nav-btn">{t('Contact', locale)}</Link>,
   ]
 
-  return <BaseNavbar {...{locale, startItems, endItems}} />
+  return <BaseNavbar {...{locale, startItems, endItems, collapsableStartItems}} />
 }
 
         //<input id="menu-toggle" type="checkbox" className='d-none'/>
@@ -103,7 +106,7 @@ export const PublicNavbar2 = ({locale}) => {
         //<div className="menu">
         //</div>
 
-const BaseNavbar = ({locale, startItems, endItems}) => {
+const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[], collapsableEndItems=[]}) => {
 
   // Le plus beau serait chacun des éléments qui grandit
 
@@ -119,8 +122,14 @@ const BaseNavbar = ({locale, startItems, endItems}) => {
             <img className="clickable mx-2" src={ListWhiteIcon} style={{width: '1.9em'}}/>
           </label>
         </div>
-        <div className='menu-toggled d-flex'>
+        <div className='d-lg-none'>
           {startItems}
+        </div>
+        <div className='menu-toggled d-flex'>
+          {collapsableStartItems}
+          <div className='d-lg-flex d-none'>
+            {startItems}
+          </div>
           <div className='flex-grow-1'/>
           {endItems}
         </div>

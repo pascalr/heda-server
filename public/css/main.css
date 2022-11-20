@@ -245,10 +245,13 @@ input[type="checkbox"] {
     flex-direction: column;
     max-width: 800px;
     margin: auto;
+  }
+  #menu-toggle:checked ~ .menu-toggled {
     padding-top: 52px;
   }
   #menu-toggle:not(:checked) ~ .menu-toggled a {
     height: 0;
+    overflow-y: hidden;
   }
   #menu-toggle:checked ~ .menu-toggled a {
     height: 1em;
