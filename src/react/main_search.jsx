@@ -141,7 +141,7 @@ export const PublicNavbar = ({locale}) => {
   let otherLocale = (locale.toLowerCase() == 'en') ? 'FR' : 'EN'
   
   let collapsableStartItems = [
-    <Link key='a1' path="/rs" className="nav-btn">{t('Recipes', locale)}</Link>,
+    <Link key='a1' path="/x" className="nav-btn">{t('Recipes', locale)}</Link>,
   ]
 
   let startItems = [

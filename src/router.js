@@ -392,6 +392,21 @@ router.patch('/update_field/:table/:id', ensureUser, function(req, res, next) {
   res.json({status: 'ok'})
 });
 
+function extractExplore(locale) {
+
+  let kinds = fetchTableLocaleAttrs(db, 'kinds', {}, ['kind_id'], ['name'], locale)
+  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug', 'kind_id'], ['name'], locale)
+  let recipeKindsByAncestorId = _.groupBy(recipeKinds, (k) => kindAncestorId(kinds, k))
+  delete recipeKindsByAncestorId.undefined
+  let kindIds = _.keys(recipeKindsByAncestorId).map(id => parseInt(id))
+  kindIds.forEach(kindId => {
+    // Randomize and limit to 10
+    recipeKindsByAncestorId[kindId] = shuffle(recipeKindsByAncestorId[kindId]).slice(0,10)
+  })
+  kinds = kinds.filter(k => kindIds.includes(k.id))
+  return {kinds, recipeKindsByAncestorId}
+}
+
 function extractUser(id) {
 
   let userId = parseInt(id)
@@ -438,6 +453,7 @@ function extractKind(id, locale) {
 }
 
 router.get('/fetch_user/:id', (req, res, next) => res.json(extractUser(req.params.id)))
+router.get('/fetch_explore', (req, res, next) => res.json(extractExplore(res.locals.locale)))
 router.get('/fetch_kind/:id', (req, res, next) => res.json(extractKind(req.params.id, res.locals.locale)))
 router.get('/fetch_recipe_kind/:id', (req, res, next) => res.json(extractRecipeKind(req.params.id, res.locals.locale)))
 
@@ -472,21 +488,6 @@ router.get('/fetch_explore_users', function(req, res, next) {
   })
   users = users.filter(u => userIds.includes(u.id))
   res.json({users, recipesByUserId})
-});
-
-router.get('/fetch_explore', function(req, res, next) {
-
-  let kinds = fetchTableLocaleAttrs(db, 'kinds', {}, ['kind_id'], ['name'], res.locals.locale)
-  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug', 'kind_id'], ['name'], res.locals.locale)
-  let recipeKindsByAncestorId = _.groupBy(recipeKinds, (k) => kindAncestorId(kinds, k))
-  delete recipeKindsByAncestorId.undefined
-  let kindIds = _.keys(recipeKindsByAncestorId).map(id => parseInt(id))
-  kindIds.forEach(kindId => {
-    // Randomize and limit to 10
-    recipeKindsByAncestorId[kindId] = shuffle(recipeKindsByAncestorId[kindId]).slice(0,10)
-  })
-  kinds = kinds.filter(k => kindIds.includes(k.id))
-  res.json({kinds, recipeKindsByAncestorId})
 });
 
 router.get('/fetch_recipe/:id', function(req, res, next) {
@@ -605,7 +606,6 @@ function renderAppIfLoggedIn(req, res, next) {
 router.get('/e/:id', renderApp)
 router.get('/c', renderApp)
 router.get('/g', renderApp)
-router.get('/x', renderApp)
 router.get('/s', renderApp)
 router.get('/t/:id', renderApp)
 router.get('/l', renderApp)
@@ -658,6 +658,12 @@ router.get('/k/:id', renderAppIfLoggedIn, function(req, res, next) {
 
   res.locals.gon = extractRecipeKind(req.params.id, res.locals.locale)
   res.render('show_recipe_kind');
+});
+
+router.get('/x', renderAppIfLoggedIn, function(req, res, next) {
+
+  res.locals.gon = extractExplore(res.locals.locale)
+  res.render('show_explore');
 });
 
 router.get('/u/:id', renderAppIfLoggedIn, function(req, res, next) {

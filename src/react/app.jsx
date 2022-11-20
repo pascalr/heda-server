@@ -15,6 +15,7 @@ import {RecipeViewer, FavoriteButton, AddToListButton, DuplicateButton} from "./
 import {RecipeKindViewer} from "./show_recipe_kind"
 import {UserViewer} from "./show_user"
 import {KindViewer} from "./show_kind"
+import {ExploreViewer} from "./show_explore"
 import { initHcu, useHcuState } from '../hcu'
 import { UserThumbnailImage, RecipeThumbnailImage, RecipeMediumImage } from "./image"
 import { t } from "../translate"
@@ -69,15 +70,7 @@ const ExplorePage = ({}) => {
   const data = useCacheOrFetch(urlWithLocale('/fetch_explore', locale))
   const kinds = useShuffled(data?.kinds)
   if (!data || !kinds) {return null}
-
-  return <>
-    {kinds.map(kind => {
-      return <div key={kind.id}>
-        <h2 className="fs-14 bold"><a href={'/d/'+kind.id} className="plain-link">{kind.name}</a></h2>
-        <RecipeCarrousel {...{items: data.recipeKindsByAncestorId[kind.id], isRecipeKind: true}}/>
-      </div>
-    })}
-  </> 
+  return <ExploreViewer {...{...data, kinds}} />
 }
 
 const ShowKind = ({kindId, locale}) => {

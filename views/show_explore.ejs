@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="<%- locale %>">
+  <head>
+    <%- include('partials/head') %>
+    <link rel="stylesheet" href="/build/prose_mirror.css">
+    <link rel="stylesheet" href="/build/imports.css">
+    <link rel="stylesheet" href="/build/toastr.min.css">
+    <meta property="og:url" content="<%= origin+'/x' %>">
+  </head>
+  <body>
+    <div class="root" id="root-x"></div>
+    <%- include('partials/footer') %>
+  </body>
+</html>
+
+<script>
+  window.gon = <%- JSON.stringify(gon) %>
+</script>
+<%- loadScript("/build/bundle") %>
