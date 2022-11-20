@@ -18,7 +18,12 @@ const ImageCredit = ({imageSlug, image, images, width}) => {
   </>
 }
 
-// Variant can be "thumb", "small", "medium"
+/**
+ * The image will measure the given width and height, but will
+ * shrink to fit 100% width of the parent container by keeping
+ * aspect ratio.
+ * Variant can be "thumb", "small", "medium"
+ */
 export const RecipeImage = ({recipe, image, images, showCredit, width, height, variant}) => {
 
   let [elemWidth, ref] = useElemWidth()
@@ -29,8 +34,8 @@ export const RecipeImage = ({recipe, image, images, showCredit, width, height, v
   let args = {src: imagePath, width, height, style: {transform: `translateY(calc(-50% + ${h/2}px))`}}
   let img = (window.disableLazyLoading) ? <img {...args} /> : <LazyLoadImage {...args} />
   return <>
-    <div ref={ref} style={{width: width, maxWidth: '100%'}}>
-      <div style={{width: `${w}px`, height: `${h}px`, overflow: 'hidden', flexShrink: '0'}}>
+    <div ref={ref} style={{width: width, maxWidth: '100%', flexShrink: '0'}}>
+      <div style={{width: `${w}px`, height: `${h}px`, overflow: 'hidden'}}>
         {img}
       </div>
       {showCredit ? <ImageCredit {...{width: w, imageSlug: recipe.image_slug, images, image}} /> : ''}
