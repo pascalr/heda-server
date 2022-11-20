@@ -86,16 +86,16 @@ export const PublicNavbar2 = ({locale}) => {
   ]
 
   let startItems = [
-    <Link key='b2' path={window.location.pathname+'?locale='+otherLocale} className="nav-btn" rel="alternate" hrefLang={otherLocale.toLowerCase()}>{otherLocale}</Link>,
+    <Link key='b2' path={window.location.pathname+'?locale='+otherLocale} className="nav-btn fs-14" rel="alternate" hrefLang={otherLocale.toLowerCase()}>{otherLocale}</Link>,
   ]
 
-  let endItems = [
+  let collapsableEndItems = [
     <Link key='c1' path="/login" className="nav-btn">{t('Login', locale)}</Link>,
     <Link key='c2' path="/signup" className="nav-btn">{t('Create_account', locale)}</Link>,
     <Link key='c3' path="/contact" className="nav-btn">{t('Contact', locale)}</Link>,
   ]
 
-  return <BaseNavbar {...{locale, startItems, endItems, collapsableStartItems}} />
+  return <BaseNavbar {...{locale, startItems, collapsableEndItems, collapsableStartItems}} />
 }
 
         //<input id="menu-toggle" type="checkbox" className='d-none'/>
@@ -111,9 +111,9 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
   // Le plus beau serait chacun des éléments qui grandit
 
   return <>
-    <nav style={{backgroundColor: 'rgb(33, 37, 41)', padding: '0.7em', marginBottom: '0.5em', borderBottom: '1px solid rgb(206, 226, 240)'}}>
+    <nav style={{backgroundColor: 'rgb(33, 37, 41)', paddingTop: '0.5em', paddingBottom: '0.7em', marginBottom: '0.5em', borderBottom: '1px solid rgb(206, 226, 240)'}}>
       <div className='position-relative'>
-        <div className='position-absolute fs-15' style={{left: '50vw', transform: 'translateX(-50%)', fontWeight: '500', color: 'rgb(249, 249, 249)', top: '-0.2em'}}>
+        <div className='position-absolute fs-15' style={{left: '50vw', transform: 'translateX(-50%)', fontWeight: '500', color: 'rgb(249, 249, 249)', top: '-0.1em'}}>
           { currentPathIsRoot() ? 'HedaCuisine' : <Link path="/" className="plain-link white">HedaCuisine</Link>}
         </div>
         <input id="menu-toggle" type="checkbox" className='d-none'/>
@@ -121,16 +121,16 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
           {startItems}
           <div className='flex-grow-1'/>
           <label className='menu-button-container' htmlFor="menu-toggle">
-            <img className="clickable mx-2" src={ListWhiteIcon} style={{width: '1.9em'}}/>
+            <img className="clickable mx-3" src={ListWhiteIcon} style={{width: '1.9em'}}/>
           </label>
         </div>
-        <div className='menu-toggled d-flex'>
+        <div className='menu-toggled d-flex align-items-center'>
           {collapsableStartItems}
           <div className='d-lg-flex d-none'>
             {startItems}
           </div>
           <div className='flex-grow-1'/>
-          {endItems}
+          {collapsableEndItems}
         </div>
       </div>
     </nav>
