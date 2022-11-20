@@ -9,7 +9,6 @@ import { t } from "../translate"
 import { Carrousel } from "./carrousel"
 import { initHcu, useHcuState } from '../hcu'
 import { getUrlParams, localeHref } from "../utils"
-import { PublicNavbar } from './main_search'
 import { getLocale, Link } from "./lib"
 import { SuggestionsPage } from "./suggestions"
 

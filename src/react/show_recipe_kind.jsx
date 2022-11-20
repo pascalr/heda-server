@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 
 import { RecipeMediumImage, RecipeSmallImage } from "./image"
-import { PublicNavbar } from './main_search'
 import { getLocale, Link } from "./lib"
 import { t } from "../translate"
 import { IngredientList } from "./recipe_viewer"

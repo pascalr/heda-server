@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 
 import { RecipeCarrousel } from "./core"
-import { PublicNavbar } from './main_search'
 import { getLocale, Link } from "./lib"
 import { t } from "../translate"
 
