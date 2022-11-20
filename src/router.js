@@ -662,6 +662,9 @@ router.get('/k/:id', renderAppIfLoggedIn, function(req, res, next) {
 
 router.get('/x', renderAppIfLoggedIn, function(req, res, next) {
 
+  // Whether or not to show an HTML cached version while the JS is loading.
+  res.locals.disablePreview = req.query.disablePreview
+
   res.locals.gon = extractExplore(res.locals.locale)
   res.render('show_explore');
 });

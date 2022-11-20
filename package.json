@@ -13,7 +13,7 @@
     "test:utils": "node -r dotenv/config tests/utils.js",
     "test:all": "npm run test:db && npm run test:utils",
     "images:pull": "rsync -v --recursive root@heda-server.internal:/mnt/heda_volume/images/ volume/images/",
-    "download_homepage": "node src/bin/download_homepage.js",
+    "ssr": "node src/bin/ssr.js",
     "db:open": "sqlitebrowser var/db/dev.db",
     "db:pull": "scp root@heda-server.internal:/mnt/heda_volume/prod.db var/db/dev.db",
     "olddev": "node --trace-uncaught -r dotenv/config ./src/server.js",

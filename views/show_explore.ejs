@@ -8,7 +8,9 @@
     <meta property="og:url" content="<%= origin+'/x' %>">
   </head>
   <body>
-    <div class="root" id="root-x"></div>
+    <div class="root" id="root-x">
+      <%- disablePreview ? '' : include('../public/ssr/'+locale.toLowerCase()+'/x.html') %>
+    </div>
     <%- include('partials/footer') %>
   </body>
 </html>
