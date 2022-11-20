@@ -86,7 +86,7 @@ export const PublicNavbar2 = ({locale}) => {
   ]
 
   let startItems = [
-    <Link key='b2' path={window.location.pathname+'?locale='+otherLocale} className="nav-btn fs-13" rel="alternate" hrefLang={otherLocale.toLowerCase()}>{otherLocale}</Link>,
+    <Link key='b2' path={window.location.pathname+'?locale='+otherLocale} className="nav-btn" rel="alternate" hrefLang={otherLocale.toLowerCase()}>{otherLocale}</Link>,
   ]
 
   let endItems = [
@@ -111,19 +111,18 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
   // Le plus beau serait chacun des éléments qui grandit
 
   return <>
-    <nav style={{backgroundColor: 'rgb(33, 37, 41)', marginBottom: '0.5em', borderBottom: '1px solid rgb(206, 226, 240)'}}>
-      <div className='position-relative' style={{minHeight: '52px'}}>
-        <div className='position-absolute fs-15' style={{left: '50vw', transform: 'translateX(-50%)', fontWeight: '500', color: 'rgb(249, 249, 249)'}}>
+    <nav style={{backgroundColor: 'rgb(33, 37, 41)', padding: '0.7em', marginBottom: '0.5em', borderBottom: '1px solid rgb(206, 226, 240)'}}>
+      <div className='position-relative'>
+        <div className='position-absolute fs-15' style={{left: '50vw', transform: 'translateX(-50%)', fontWeight: '500', color: 'rgb(249, 249, 249)', top: '-0.2em'}}>
           { currentPathIsRoot() ? 'HedaCuisine' : <Link path="/" className="plain-link white">HedaCuisine</Link>}
         </div>
         <input id="menu-toggle" type="checkbox" className='d-none'/>
-        <div className='float-end d-lg-none'>
+        <div className='d-flex d-lg-none'>
+          {startItems}
+          <div className='flex-grow-1'/>
           <label className='menu-button-container' htmlFor="menu-toggle">
             <img className="clickable mx-2" src={ListWhiteIcon} style={{width: '1.9em'}}/>
           </label>
-        </div>
-        <div className='d-lg-none'>
-          {startItems}
         </div>
         <div className='menu-toggled d-flex'>
           {collapsableStartItems}
