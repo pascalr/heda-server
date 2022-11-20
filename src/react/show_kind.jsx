@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 
 import { RecipeCarrousel } from "./core"
 import { RecipeSmallImage } from "./image"
-import { MainSearch } from './main_search'
+import { PublicNavbar } from './main_search'
 import { getLocale, Link } from "./lib"
 import { t } from "../translate"
 import { ErrorBoundary } from './error_boundary'
@@ -62,7 +62,7 @@ export const ShowKind = () => {
   const [ancestors, ] = useState(gon.ancestors)
 
   return <>
-    <MainSearch {...{locale}} />
+    <PublicNavbar {...{locale}} />
     <ErrorBoundary>
       <KindViewer {...{kind, ancestors, kinds, recipeKinds}} />
     </ErrorBoundary>

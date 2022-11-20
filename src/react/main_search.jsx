@@ -75,68 +75,68 @@ export const AppNavbar = ({locale, renderingHome, setIsSearching, otherProfiles,
   </>
 }
 
-export const PublicNavbar2 = ({locale}) => {
+function convertSearchData(fetched) {
+  return ({
+    Recipes: fetched.recipeKinds.map(recipeKind => ({
+      ...recipeKind,
+      list: 'rk',
+      //url: localeHref("/k/"+recipeKind.id),
+      elem: ({isSelected, item, selectedRef}) => <>
+        <li key={item.id} ref={isSelected ? selectedRef : null}>
+          <Link path={'/k/'+item.id} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
+            <div className="d-flex align-items-center">
+              <RecipeThumbnailImage {...{recipe: item}} />
+              <div style={{marginRight: '0.5em'}}></div>
+              <div>{item.name}</div>
+            </div>
+          </Link>
+        </li>
+      </>
+    })),
+    Public_members: fetched.publicUsers.map(publicUser => ({
+      ...publicUser,
+      list: 'u',
+      //url: localeHref("/u/"+publicUser.id),
+      elem: ({isSelected, item, selectedRef}) => <>
+        <li key={item.id} className="list-group-item" ref={isSelected ? selectedRef : null}>
+          <Link path={`/u/${item.id}`} className={isSelected ? "selected" : undefined}>
+            <div className="d-flex align-items-center">
+              <UserThumbnailImage {...{user: item}} />
+              <div style={{marginRight: '0.5em'}}></div>
+              {item.name}
+            </div>
+          </Link>
+        </li>
+      </>
+    })),
+  })
+}
 
-  //const [data, setData] = useState(undefined)
-  ////if (useHiddenNavParam()) {return ''}
+export const PublicNavbar = ({locale}) => {
 
-  //const config = {
+  const [data, setData] = useState(undefined)
+  //if (useHiddenNavParam()) {return ''}
 
-  //  data,
-  //  onItemChoosen(item, args) {
-  //    if (item.list === 'u') {
-  //      window.location.href = localeHref("/u/"+item.id)
-  //    } else {
-  //      window.location.href = localeHref("/k/"+item.id)
-  //    }
-  //  },
-  //  onTermChanged(term) {
-  //    if (term.length >= 1 && data === undefined) {
-  //      setData(null)
-  //      ajax({url: localeHref("/fetch_search_data"), type: 'GET', success: (fetched) => {
-  //        let d = {
-  //          Recipes: fetched.recipeKinds.map(recipeKind => ({
-  //            ...recipeKind,
-  //            list: 'rk',
-  //            //url: localeHref("/k/"+recipeKind.id),
-  //            elem: ({isSelected, item, selectedRef}) => <>
-  //              <li key={item.id} ref={isSelected ? selectedRef : null}>
-  //                <Link path={'/k/'+item.id} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
-  //                  <div className="d-flex align-items-center">
-  //                    <RecipeThumbnailImage {...{recipe: item}} />
-  //                    <div style={{marginRight: '0.5em'}}></div>
-  //                    <div>{item.name}</div>
-  //                  </div>
-  //                </Link>
-  //              </li>
-  //            </>
-  //          })),
-  //          Public_members: fetched.publicUsers.map(publicUser => ({
-  //            ...publicUser,
-  //            list: 'u',
-  //            //url: localeHref("/u/"+publicUser.id),
-  //            elem: ({isSelected, item, selectedRef}) => <>
-  //              <li key={item.id} className="list-group-item" ref={isSelected ? selectedRef : null}>
-  //                <Link path={`/u/${item.id}`} className={isSelected ? "selected" : undefined}>
-  //                  <div className="d-flex align-items-center">
-  //                    <UserThumbnailImage {...{user: item}} />
-  //                    <div style={{marginRight: '0.5em'}}></div>
-  //                    {item.name}
-  //                  </div>
-  //                </Link>
-  //              </li>
-  //            </>
-  //          })),
-  //        }
-  //        setData(d)
-  //      }, error: (errors) => {
-  //        console.error('Fetch search results error...', errors.responseText)
-  //      }})
-  //    }
-  //  },
-  //}
-
-  //const [foo] = withBaseNavbar({locale})
+  const config = {
+    data,
+    onItemChoosen(item, args) {
+      if (item.list === 'u') {
+        window.location.href = localeHref("/u/"+item.id)
+      } else {
+        window.location.href = localeHref("/k/"+item.id)
+      }
+    },
+    onTermChanged(term) {
+      if (term.length >= 1 && data === undefined) {
+        setData(null)
+        ajax({url: localeHref("/fetch_search_data"), type: 'GET', success: (fetched) => {
+          setData(convertSearchData(fetched))
+        }, error: (errors) => {
+          console.error('Fetch search results error...', errors.responseText)
+        }})
+      }
+    },
+  }
 
   let otherLocale = (locale.toLowerCase() == 'en') ? 'FR' : 'EN'
   
@@ -154,10 +154,10 @@ export const PublicNavbar2 = ({locale}) => {
     <Link key='c3' path="/contact" className="nav-btn">{t('Contact', locale)}</Link>,
   ]
 
-  return <BaseNavbar {...{locale, startItems, collapsableEndItems, collapsableStartItems}} />
+  return <BaseNavbar {...{locale, startItems, collapsableEndItems, collapsableStartItems, ...config}} />
 }
 
-const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[], collapsableEndItems=[]}) => {
+const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[], collapsableEndItems=[], onTermChanged, onItemChoosen, data}) => {
 
   // Search is the text shown in the input field
   // Term is the term currently used to filter the search
@@ -175,13 +175,13 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
     setSelected(-1)
   }
 
-  //const filtered = {}
-  //Object.keys(data||{}).forEach(key => {filtered[key] = filterItems(data[key], term)})
-  const allMatching = []//new ArrayCombination(Object.values(filtered))
+  const filtered = {}
+  Object.keys(data||{}).forEach(key => {filtered[key] = filterItems(data[key], term)})
+  const allMatching = new ArrayCombination(Object.values(filtered))
 
-  //useEffect(() => {
-  //  if (onTermChanged) { onTermChanged(term) }
-  //}, [term])
+  useEffect(() => {
+    if (onTermChanged) { onTermChanged(term) }
+  }, [term])
 
   useEffect(() => {
     if (isSearching) { inputField.current.focus() }
@@ -268,7 +268,7 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
   </>
 }
 
-export const PublicNavbar = ({locale, renderingHome, setIsSearching}) => {
+export const OldPublicNavbar = ({locale, renderingHome, setIsSearching}) => {
 
   let otherLocale = (locale.toLowerCase() == 'en') ? 'FR' : 'EN'
   return <>
@@ -377,73 +377,6 @@ export const AppSearch = ({user, _csrf, recipes, friendsRecipes, users, recipeKi
       setIsSearching(false)
     },
   }
-  return <BaseSearch {...{locale, renderingHome, ...config}} />
-}
-
-export const MainSearch = ({locale, renderingHome}) => {
-
-  const [data, setData] = useState(undefined) // New way of doing this
-  //if (useHiddenNavParam()) {return ''}
-
-  const config = {
-
-    data,
-    onItemChoosen(item, args) {
-      if (item.list === 'u') {
-        window.location.href = localeHref("/u/"+item.id)
-      } else {
-        window.location.href = localeHref("/k/"+item.id)
-      }
-    },
-    onTermChanged(term) {
-      if (term.length >= 1 && data === undefined) {
-        setData(null)
-        ajax({url: localeHref("/fetch_search_data"), type: 'GET', success: (fetched) => {
-          let d = {
-            Recipes: fetched.recipeKinds.map(recipeKind => ({
-              ...recipeKind,
-              list: 'rk',
-              //url: localeHref("/k/"+recipeKind.id),
-              elem: ({isSelected, item, selectedRef}) => <>
-                <li key={item.id} ref={isSelected ? selectedRef : null}>
-                  <Link path={'/k/'+item.id} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
-                    <div className="d-flex align-items-center">
-                      <RecipeThumbnailImage {...{recipe: item}} />
-                      <div style={{marginRight: '0.5em'}}></div>
-                      <div>{item.name}</div>
-                    </div>
-                  </Link>
-                </li>
-              </>
-            })),
-            Public_members: fetched.publicUsers.map(publicUser => ({
-              ...publicUser,
-              list: 'u',
-              //url: localeHref("/u/"+publicUser.id),
-              elem: ({isSelected, item, selectedRef}) => <>
-                <li key={item.id} className="list-group-item" ref={isSelected ? selectedRef : null}>
-                  <Link path={`/u/${item.id}`} className={isSelected ? "selected" : undefined}>
-                    <div className="d-flex align-items-center">
-                      <UserThumbnailImage {...{user: item}} />
-                      <div style={{marginRight: '0.5em'}}></div>
-                      {item.name}
-                    </div>
-                  </Link>
-                </li>
-              </>
-            })),
-          }
-          setData(d)
-        }, error: (errors) => {
-          console.error('Fetch search results error...', errors.responseText)
-        }})
-      }
-    },
-    printNavbar({setIsSearching}) {
-      return <PublicNavbar {...{locale, renderingHome, setIsSearching}}/>
-    },
-  }
-
   return <BaseSearch {...{locale, renderingHome, ...config}} />
 }
 

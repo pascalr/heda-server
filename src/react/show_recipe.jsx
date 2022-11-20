@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
-import { MainSearch } from './main_search'
+import { PublicNavbar } from './main_search'
 import { recipeIngredientsAndHeaders, prettyPreposition } from "../lib"
 import { normalizeSearchText, join, capitalize } from "./utils"
 import { image_slug_variant_path } from "./routes"
@@ -74,7 +74,7 @@ export const ShowRecipe = () => {
   let shown = translatedRecipe ? {...recipe, ...translatedRecipe} : recipe
 
   return <>
-    <MainSearch {...{locale}} />
+    <PublicNavbar {...{locale}} />
     <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0'}}>
       <ErrorBoundary>
         <RecipeViewer {...{recipe: shown, user, locale, recipeKind, kindAncestors}} />

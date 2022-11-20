@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
-import { MainSearch } from './main_search'
+import { PublicNavbar } from './main_search'
 import { RecipeThumbnailImage, RecipeSmallImage } from "./image"
 import { normalizeSearchText, join, capitalize } from "./utils"
 import { image_slug_variant_path } from "./routes"
@@ -82,7 +82,7 @@ export const ShowUser = () => {
   //const [favoriteRecipes, ] = useState(gon.favorite_recipes)
 
   return <>
-    <MainSearch {...{locale}} />
+    <PublicNavbar {...{locale}} />
     <ErrorBoundary>
       <div className="trunk">
         <UserViewer {...{user, userRecipes, favRecipes}} />

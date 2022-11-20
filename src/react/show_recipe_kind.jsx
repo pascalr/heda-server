@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 
 import { RecipeMediumImage, RecipeSmallImage } from "./image"
-import { MainSearch } from './main_search'
+import { PublicNavbar } from './main_search'
 import { getLocale, Link } from "./lib"
 import { t } from "../translate"
 import { IngredientList } from "./recipe_viewer"
@@ -143,7 +143,7 @@ export const ShowRecipeKind = () => {
   // TODO: Show credit
   //<div><RecipeMediumImage {...{recipe: recipeKind, images, showCredit: true}} /></div>
   return <>
-    <MainSearch {...{locale}} />
+    <PublicNavbar {...{locale}} />
     <ErrorBoundary>
       <RecipeKindViewer {...{recipeKind, recipes, kindAncestors, locale}} />
     </ErrorBoundary>
