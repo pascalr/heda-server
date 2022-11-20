@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 
 import { RecipeCarrousel } from "./core"
 import { getLocale, Link } from "./lib"
+import { getUrlParams } from "../utils"
 import { t } from "../translate"
 
 export const ExploreViewer = ({kinds, recipeKindsByAncestorId}) => {
@@ -23,6 +24,8 @@ export const ShowExplore = () => {
   const locale = getLocale()
   const [kinds, ] = useState(gon.kinds)
   const [recipeKindsByAncestorId, ] = useState(gon.recipeKindsByAncestorId)
+  
+  window.disableLazyLoading = getUrlParams().disableLazyLoading
 
   return <ExploreViewer {...{kinds, recipeKindsByAncestorId}} />
 }
