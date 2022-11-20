@@ -82,11 +82,8 @@ export const ShowUser = () => {
   //const [favoriteRecipes, ] = useState(gon.favorite_recipes)
 
   return <>
-    <PublicNavbar {...{locale}} />
-    <ErrorBoundary>
-      <div className="trunk">
-        <UserViewer {...{user, userRecipes, favRecipes}} />
-      </div>
-    </ErrorBoundary>
+    <div className="trunk">
+      <UserViewer {...{user, userRecipes, favRecipes}} />
+    </div>
   </>
 }

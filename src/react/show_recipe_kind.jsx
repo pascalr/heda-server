@@ -7,7 +7,6 @@ import { t } from "../translate"
 import { IngredientList } from "./recipe_viewer"
 import { DescriptionTiptap, RecipeTiptap } from "./tiptap"
 import { prettyMinutes } from "../lib"
-import { ErrorBoundary } from './error_boundary'
 
 const RecipeAttribute = ({recipe, attr, label}) => {
   if (!recipe[attr]) {return ''}
@@ -142,10 +141,5 @@ export const ShowRecipeKind = () => {
 
   // TODO: Show credit
   //<div><RecipeMediumImage {...{recipe: recipeKind, images, showCredit: true}} /></div>
-  return <>
-    <PublicNavbar {...{locale}} />
-    <ErrorBoundary>
-      <RecipeKindViewer {...{recipeKind, recipes, kindAncestors, locale}} />
-    </ErrorBoundary>
-  </>
+  return <RecipeKindViewer {...{recipeKind, recipes, kindAncestors, locale}} />
 }

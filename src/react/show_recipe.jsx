@@ -11,7 +11,6 @@ import { RecipeTiptap } from './tiptap'
 import { RecipeMediumImage } from "./image"
 import { getLocale, Link, useFetch } from "./lib"
 import { RecipeAttributes, IngredientList } from "./recipe_viewer"
-import { ErrorBoundary } from './error_boundary'
 
 export const RecipeViewer = ({recipe, user, locale, recipeKind, kindAncestors}) => {
   
@@ -74,11 +73,8 @@ export const ShowRecipe = () => {
   let shown = translatedRecipe ? {...recipe, ...translatedRecipe} : recipe
 
   return <>
-    <PublicNavbar {...{locale}} />
-    <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0'}}>
-      <ErrorBoundary>
-        <RecipeViewer {...{recipe: shown, user, locale, recipeKind, kindAncestors}} />
-      </ErrorBoundary>
+    <div className='trunk'>
+      <RecipeViewer {...{recipe: shown, user, locale, recipeKind, kindAncestors}} />
     </div>
   </>
 }

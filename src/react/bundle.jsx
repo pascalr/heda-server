@@ -12,15 +12,7 @@ import { ShowKind } from "./show_kind"
 import { ShowExplore } from "./show_explore"
 import { getUrlParams } from "../utils"
 import { getLocale } from "./lib"
-
-export const SearchRoot = () => {
-
-  const locale = getLocale()
-
-  return <>
-    <PublicNavbar {...{locale}} />
-  </>
-}
+import { ErrorBoundary } from './error_boundary'
 
 export const AppSearchRoot = () => {
 
@@ -36,29 +28,33 @@ export const AppSearchRoot = () => {
 
 window.locale = getUrlParams(window.location.href).locale
 
-let root = document.getElementById('root-search')
-if (root) {ReactDOM.render(<SearchRoot />, root)}
+let roots = {
+  'root-search': <></>,
+  'root-home': <Home/>,
+  'root-r': <ShowRecipe/>,
+  'root-x': <ShowExplore/>,
+  'root-k': <ShowRecipeKind/>,
+  'root-d': <ShowKind/>,
+  'root-u': <ShowUser/>,
+}
+
+const PublicPage = ({children}) => {
+  const locale = getLocale()
+  return <>
+    <PublicNavbar {...{locale}} />
+    <ErrorBoundary>
+      {children}
+    </ErrorBoundary>
+  </>
+}
 
 root = document.getElementById('root-app-search')
 if (root) {ReactDOM.render(<AppSearchRoot />, root)}
 
-root = document.getElementById('root-home')
-if (root) { ReactDOM.render(<Home />, root) }
-
 root = document.getElementById('root')
 if (root) {ReactDOM.render(<App/>, root)}
   
-root = document.getElementById('root-r')
-if (root) {ReactDOM.render(<ShowRecipe />, root)}
-
-root = document.getElementById('root-x')
-if (root) {ReactDOM.render(<ShowExplore />, root)}
-  
-root = document.getElementById('root-d')
-if (root) {ReactDOM.render(<ShowKind />, root)}
-  
-root = document.getElementById('root-u')
-if (root) {ReactDOM.render(<ShowUser />, root)}
-
-root = document.getElementById('root-k')
-if (root) {ReactDOM.render(<ShowRecipeKind />, root)}
+Object.keys(roots).forEach(r => {
+  root = document.getElementById(r)
+  if (root) {ReactDOM.render(<PublicPage>{roots[r]}</PublicPage>, root)}
+})

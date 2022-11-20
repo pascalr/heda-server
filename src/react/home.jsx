@@ -27,7 +27,6 @@ export const Home = () => {
 
   const preloadItem = (i) => {if (i.image_slug) {preloadImage('/imgs/small/'+i.image_slug)}}
   return <>
-    <PublicNavbar {...{locale}} />
     <div style={{padding: '4em 0.3em 8em 0.3em', maxWidth: '70em', margin: 'auto'}}>
       <div className="d-block d-md-flex">
         <div className='flex-grow-1'></div>

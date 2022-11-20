@@ -4,7 +4,6 @@ import { RecipeCarrousel } from "./core"
 import { PublicNavbar } from './main_search'
 import { getLocale, Link } from "./lib"
 import { t } from "../translate"
-import { ErrorBoundary } from './error_boundary'
 
 export const ExploreViewer = ({kinds, recipeKindsByAncestorId}) => {
 
@@ -26,10 +25,5 @@ export const ShowExplore = () => {
   const [kinds, ] = useState(gon.kinds)
   const [recipeKindsByAncestorId, ] = useState(gon.recipeKindsByAncestorId)
 
-  return <>
-    <PublicNavbar {...{locale}} />
-    <ErrorBoundary>
-      <ExploreViewer {...{kinds, recipeKindsByAncestorId}} />
-    </ErrorBoundary>
-  </>
+  return <ExploreViewer {...{kinds, recipeKindsByAncestorId}} />
 }

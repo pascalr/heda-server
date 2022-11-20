@@ -5,10 +5,6 @@ import { RecipeSmallImage } from "./image"
 import { PublicNavbar } from './main_search'
 import { getLocale, Link } from "./lib"
 import { t } from "../translate"
-import { ErrorBoundary } from './error_boundary'
-//import { IngredientList } from "./recipe_viewer"
-//import { DescriptionTiptap, RecipeTiptap } from "./tiptap"
-//import { prettyMinutes } from "../lib"
 
 export const KindViewer = ({kind, ancestors, kinds, recipeKinds}) => {
 
@@ -61,10 +57,5 @@ export const ShowKind = () => {
   const [recipeKinds, ] = useState(gon.recipeKinds)
   const [ancestors, ] = useState(gon.ancestors)
 
-  return <>
-    <PublicNavbar {...{locale}} />
-    <ErrorBoundary>
-      <KindViewer {...{kind, ancestors, kinds, recipeKinds}} />
-    </ErrorBoundary>
-  </>
+  return <KindViewer {...{kind, ancestors, kinds, recipeKinds}} />
 }
