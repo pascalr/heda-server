@@ -696,7 +696,7 @@ const renderHome = function(req, res, next) {
   res.locals.gon = o
   res.render('home');
 }
-router.get('/home', renderHome);
+router.get('/h', renderHome);
 
 /* GET home page. */
 router.get('/', renderAppIfLoggedIn, function(req, res, next) {

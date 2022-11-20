@@ -141,8 +141,8 @@ export const PublicNavbar = ({locale}) => {
   let otherLocale = (locale.toLowerCase() == 'en') ? 'FR' : 'EN'
   
   let collapsableStartItems = [
-    <Link key='a1' path="/" className="nav-btn">{t('Home', locale)}</Link>,
-    <Link key='a2' path="/x" className="nav-btn">{t('Recipes', locale)}</Link>,
+    <Link key='a1' path="/" className="nav-btn" active={currentPathIsRoot()}>{t('Home', locale)}</Link>,
+    <Link key='a2' path="/x" className="nav-btn" checkIfActive={true}>{t('Recipes', locale)}</Link>,
   ]
 
   let startItems = [
@@ -152,7 +152,7 @@ export const PublicNavbar = ({locale}) => {
   let collapsableEndItems = [
     <Link key='c1' path="/login" className="nav-btn">{t('Login', locale)}</Link>,
     <Link key='c2' path="/signup" className="nav-btn">{t('Create_account', locale)}</Link>,
-    <Link key='c3' path="/contact" className="nav-btn">{t('Contact', locale)}</Link>,
+    <Link key='c3' path="/contact" className="nav-btn" checkIfActive={true}>{t('Contact', locale)}</Link>,
   ]
 
   return <BaseNavbar {...{locale, startItems, collapsableEndItems, collapsableStartItems, ...config}} />

@@ -76,14 +76,14 @@ export function parseIngredientsOldFormat(text) {
 
 export const currentPathIsRoot = () => {
   let url = window.location.pathname
-  return url === '' || url === '/'
+  return url === '' || url === '/' || url === '/h'
 }
 
 export const currentPathIs = (p) => {
   return window.location.pathname === p
 }
 
-export const Link = ({href, className, children, active, path, onClick, ...props}) => {
+export const Link = ({href, className, children, active, checkIfActive, path, onClick, ...props}) => {
   if (href) {throw 'Error bad argument href for Link, expected path.'}
   const handleClick = (evt) => {
     if (window.preventLinksDefaultEvent) {
@@ -92,6 +92,7 @@ export const Link = ({href, className, children, active, path, onClick, ...props
       changeUrl(path)
     }
   }
+  active = active || (checkIfActive && currentPathIs(path))
   path = (window.preventLinksDefaultEvent) ? path : localeHref(path)
   return <a className={join(className, active ? 'active' : null)} href={path} onClick={handleClick} {...props}>{children}</a>
 }
