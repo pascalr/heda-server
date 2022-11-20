@@ -22,7 +22,6 @@ const ImageCredit = ({imageSlug, image, images, width}) => {
 export const RecipeImage = ({recipe, image, images, showCredit, width, height, variant}) => {
 
   let [elemWidth, ref] = useElemWidth()
-  console.log('elemWidth', elemWidth)
   let w = Math.min(width, elemWidth)
   let h = height * w / width
 

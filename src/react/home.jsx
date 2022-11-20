@@ -9,7 +9,7 @@ import { t } from "../translate"
 import { Carrousel } from "./carrousel"
 import { initHcu, useHcuState } from '../hcu'
 import { getUrlParams, localeHref } from "../utils"
-import { MainSearch } from './main_search'
+import { MainSearch, PublicNavbar2 } from './main_search'
 import { getLocale, Link } from "./lib"
 import { SuggestionsPage } from "./suggestions"
 
@@ -27,7 +27,7 @@ export const Home = () => {
 
   const preloadItem = (i) => {if (i.image_slug) {preloadImage('/imgs/small/'+i.image_slug)}}
   return <>
-    <MainSearch {...{locale, renderingHome: true}} />
+    <PublicNavbar2 {...{locale}} />
     <div style={{padding: '4em 0.3em 8em 0.3em', maxWidth: '70em', margin: 'auto'}}>
       <div className="d-block d-md-flex">
         <div className='flex-grow-1'></div>

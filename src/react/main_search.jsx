@@ -75,6 +75,60 @@ export const AppNavbar = ({locale, renderingHome, setIsSearching, otherProfiles,
   </>
 }
 
+export const PublicNavbar2 = ({locale}) => {
+
+  //const [foo] = withBaseNavbar({locale})
+
+  let otherLocale = (locale.toLowerCase() == 'en') ? 'FR' : 'EN'
+
+  let startItems = [
+    <Link key='1' path="/rs" className="nav-btn">{t('Recipes', locale)}</Link>,
+    <Link key='2' path={window.location.pathname+'?locale='+otherLocale} className="nav-btn fs-13" rel="alternate" hrefLang={otherLocale.toLowerCase()}>{otherLocale}</Link>
+  ]
+
+  let endItems = [
+    <Link key='1' path="/login" className="nav-btn">{t('Login', locale)}</Link>,
+    <Link key='2' path="/signup" className="nav-btn">{t('Create_account', locale)}</Link>,
+    <Link key='3' path="/contact" className="nav-btn">{t('Contact', locale)}</Link>,
+  ]
+
+  return <BaseNavbar {...{locale, startItems, endItems}} />
+}
+
+        //<input id="menu-toggle" type="checkbox" className='d-none'/>
+        //  <img id="search-btn" className="clickable" src={SearchWhiteIcon} style={{marginRight: '1em', width: '1.4em'}} onClick={() => setIsSearching(true)}/>
+        //  <label className='menu-button-container' for="menu-toggle">
+        //    <img className="clickable" src={ListWhiteIcon} style={{width: '1.9em'}}/>
+        //  </label>
+        //<div className="menu">
+        //</div>
+
+const BaseNavbar = ({locale, startItems, endItems}) => {
+
+  // Le plus beau serait chacun des éléments qui grandit
+
+  return <>
+    <nav style={{backgroundColor: 'rgb(33, 37, 41)', marginBottom: '0.5em', borderBottom: '1px solid rgb(206, 226, 240)'}}>
+      <div className='position-relative' style={{minHeight: '52px'}}>
+        <div className='position-absolute fs-15' style={{left: '50vw', transform: 'translateX(-50%)', fontWeight: '500', color: 'rgb(249, 249, 249)'}}>
+          { currentPathIsRoot() ? 'HedaCuisine' : <Link path="/" className="plain-link white">HedaCuisine</Link>}
+        </div>
+        <input id="menu-toggle" type="checkbox" className='d-none'/>
+        <div className='float-end d-lg-none'>
+          <label className='menu-button-container' htmlFor="menu-toggle">
+            <img className="clickable mx-2" src={ListWhiteIcon} style={{width: '1.9em'}}/>
+          </label>
+        </div>
+        <div className='menu-toggled d-flex'>
+          {startItems}
+          <div className='flex-grow-1'/>
+          {endItems}
+        </div>
+      </div>
+    </nav>
+  </>
+}
+
 export const PublicNavbar = ({locale, renderingHome, setIsSearching}) => {
 
   let otherLocale = (locale.toLowerCase() == 'en') ? 'FR' : 'EN'

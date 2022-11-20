@@ -151,3 +151,5 @@ img {
   color: gray;
   pointer-events: none;
 }
+
+.w-fit-content {width: fit-content;}
