@@ -6,7 +6,7 @@ import toastr from 'toastr'
 import { TextInput, TextField, CollectionSelect, RangeField, withSelector } from "./form"
 import { Link, useOrFetch, getLocale } from "./lib"
 import { localeAttr, findRecipeKindForRecipeName  } from "../lib"
-import { AppSearch } from './main_search'
+import { AppSearch } from './navbar'
 import { ErrorBoundary } from './error_boundary'
 import { t } from "../translate"
 import { useRouter } from "./router"

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
-import { PublicNavbar, AppSearch } from './main_search'
+import { PublicNavbar, AppSearch } from './navbar'
 import { Home } from "./home"
 import { App } from "./app"
 import { ShowRecipe } from "./show_recipe"

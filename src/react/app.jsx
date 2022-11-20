@@ -20,7 +20,7 @@ import { initHcu, useHcuState } from '../hcu'
 import { UserThumbnailImage, RecipeThumbnailImage, RecipeMediumImage } from "./image"
 import { t } from "../translate"
 import {EditMix, ShowMix} from './recipe_editor'
-import { AppSearch, useHiddenNavParam } from './main_search'
+import { AppSearch, useHiddenNavParam } from './navbar'
 import { useRouter } from "./router"
 import { SuggestionsPage } from "./suggestions"
 import { RecipeCarrousel, HomeTab } from './core'
