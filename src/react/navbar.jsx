@@ -283,7 +283,7 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
         : null}
       </div>
       <div className='menu-toggled d-flex'>
-        {collapsableStartItems}
+        {collapsableStartItems.map((e,i) => <div key={i}>{e}</div>)}
         <div className='d-lg-flex d-none'>
           {startItems}
         </div>
@@ -291,7 +291,7 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
         <div className='d-lg-flex d-none'>
           {endItems}
         </div>
-        {collapsableEndItems}
+        {collapsableEndItems.map((e,i) => <div key={i}>{e}</div>)}
       </div>
     </div>
   </>

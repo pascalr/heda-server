@@ -249,19 +249,21 @@ input[type="checkbox"] {
     max-width: 800px;
     margin: auto;
   }
-  #menu-toggle:not(:checked) ~ .menu-toggled a {
+  #menu-toggle:not(:checked) ~ .menu-toggled > * {
     height: 0;
-    padding: 0;
-    font-size: 0;
+    line-height: 0;
     overflow-y: hidden;
   }
-  #menu-toggle:checked ~ .menu-toggled a {
-    height: 1em;
-    margin-bottom: 0.4em;
-    font-size: 1.4em;
+  #menu-toggle:checked ~ .menu-toggled > * {
+    height: 1.5em;
+    line-height: 1.5em;
+    font-size: 1.25em;
   }
-  .menu-toggled a {
-    transition: height 0.4s linear, margin 0.4s linear, font-size 0.4s linear;
+  #menu-toggle:checked ~ .menu-toggled > div.flex-grow-1 {
+    display: none;
+  }
+  .menu-toggled > * {
+    transition: height 0.4s linear, line-height 0.4s linear;
   }
 }
 
