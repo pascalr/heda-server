@@ -27,45 +27,6 @@ const RecipeListItem = ({recipe, isSelected, users, user, selectedRef, setIsSear
   )
 }
 
-export const OldAppNavbar = ({locale, renderingHome, setIsSearching, otherProfiles, _csrf}) => {
-  return <>
-    <div className="float-start" style={{margin: '0.3em 0 0 0.5em'}}>
-      <img className="clickable" src={"/icons/arrow-left-square-white.svg"} style={{paddingLeft: "0.5em", width: '2em'}} onClick={() => window.history.back()} />
-    </div>
-    <div className="float-end" style={{marginTop: '0.25em'}}>
-      <img id="search-btn" className="clickable" src={"/icons/search.svg"} onClick={() => {setIsSearching(true)}} style={{marginRight: '1em', width: '1.5em'}} />
-      <div className="dropdown d-inline-block">
-        <button className="plain-btn dropdown-toggle" type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style={{marginRight: '1em', color: 'white'}}>
-          <img className="clickable" src={"/icons/person-fill-white.svg"} style={{width: '1.8em'}}/>
-        </button>
-        <div className="dropdown-menu" aria-labelledby="dropdownUserButton">
-          <a href="/edit_profile" className="dropdown-item">{t('My_profile')}</a>
-          <a href="/edit_account" className="dropdown-item">{t('My_account')}</a>
-          <form action={locale ? "/logout?locale="+locale : "/logout"} method="post">
-            <button className="dropdown-item" type="submit">{t('Logout')}</button>
-            <input type="hidden" name="_csrf" value={_csrf}/>
-          </form>
-          <a href="/new_user" className="dropdown-item">{t('New_profile')}</a>
-          { otherProfiles.length == 0 ? '' : <>
-            <hr className="dropdown-divider"/>
-            <h6 className="dropdown-header">{t('Switch_user')}</h6>
-            { otherProfiles.map(usr => { 
-              return <form key={usr.id} action="/change_user" method="post">
-                <button className="dropdown-item" type="submit">{ usr.name }</button>
-                <input type="hidden" name="user_id" value={usr.id}/>
-                <input type="hidden" name="_csrf" value={_csrf}/>
-              </form>
-            })}
-          </>}
-          <hr className="dropdown-divider"/>
-          <a href={localeHref("/contact")} className="dropdown-item">{t('Contact_us', locale)}</a>
-        </div>
-      </div>
-    </div>
-    <a href="/" className='d-block plain-link' style={{margin: 'auto', width: 'fit-content', fontWeight: '500', fontSize: '1.5em', color: '#f9f9f9'}}>HedaCuisine</a>
-  </>
-}
-
 export const AppNavbar = ({user, _csrf, recipes, friendsRecipes, users, recipeKinds}) => {
 
   let otherProfiles = users.filter(u => u.id != user.id)
