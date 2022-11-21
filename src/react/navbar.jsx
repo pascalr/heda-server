@@ -5,7 +5,7 @@ import { ajax, changeUrl } from "./utils"
 import { t } from "../translate"
 import { localeHref, getPathFromUrl, ArrayCombination, getUrlParams } from "../utils"
 import { useTransition, Link, currentPathIsRoot } from "./lib"
-import { SearchWhiteIcon, PersonFillWhiteIcon, XLgWhiteIcon, ListWhiteIcon } from '../server/image.js'
+import { ArrowLeftSquareWhiteIcon, SearchWhiteIcon, PersonFillWhiteIcon, XLgWhiteIcon, ListWhiteIcon } from '../server/image.js'
 import { normalizeSearchText } from "./utils"
 
 const RecipeListItem = ({recipe, isSelected, users, user, selectedRef, setIsSearching}) => {
@@ -82,16 +82,16 @@ export const AppNavbar = ({user, _csrf, recipes, friendsRecipes, users, recipeKi
   }
 
   let startItems = [
-    <img key='s1' className="clickable" src={"/icons/arrow-left-square-white.svg"} style={{paddingLeft: "0.5em", width: '2em'}} onClick={() => window.history.back()} />,
+    <img key='s1' className="clickable" src={ArrowLeftSquareWhiteIcon} style={{paddingLeft: "0.5em", width: '2em'}} onClick={() => window.history.back()} />,
   ]
 
   let endItems = [
     <div key='e1'>
       <div className="dropdown d-inline-block">
         <button className="plain-btn dropdown-toggle" type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style={{marginRight: '1em', color: 'white'}}>
-          <img className="clickable" src={"/icons/person-fill-white.svg"} style={{width: '1.8em'}}/>
+          <img src={PersonFillWhiteIcon} style={{width: '1.8em'}}/>
         </button>
-        <div className="dropdown-menu" aria-labelledby="dropdownUserButton">
+        <div className="dropdown-menu" aria-labelledby="dropdownUserButton" style={{lineHeight: '1.5em'}}>
           <a href="/edit_profile" className="dropdown-item">{t('My_profile')}</a>
           <a href="/edit_account" className="dropdown-item">{t('My_account')}</a>
           <form action={locale ? "/logout?locale="+locale : "/logout"} method="post">
