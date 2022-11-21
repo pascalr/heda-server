@@ -681,7 +681,8 @@ const CssPage = () => {
     <div style={{fontSize: '20px', width: '200px'}}>f-s 20px; width 200px</div>
 
     <br/><br/>
-    <p>Use em everywhere. Don't set the font-size of body. Let the device set it. This way it is always readable.</p>
+    <p>Use em a lot. Don't set the font-size of body. Let the device set it. This way it is always readable.</p>
+    <p>Use rem to set margins and paddings, because they change based on element font size. When you write fontSize: 2em, then padding 1em will actually be 2em...</p>
 
     <p>
       em: Relative to font height<br/>

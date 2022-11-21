@@ -191,7 +191,7 @@ export const PublicNavbar = ({locale}) => {
   ]
 
   let startItems = [
-    <Link key='b2' path={window.location.pathname+'?locale='+otherLocale} className="nav-btn fs-14" rel="alternate" hrefLang={otherLocale.toLowerCase()}>{otherLocale}</Link>,
+    <Link key='b2' path={window.location.pathname+'?locale='+otherLocale} className="nav-btn fs-14" rel="alternate" hrefLang={otherLocale.toLowerCase()} style={{lineHeight: '3.25rem'}}>{otherLocale}</Link>,
   ]
 
   let collapsableEndItems = [
@@ -265,11 +265,13 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
 
   const normalMode = <>
     <div className='position-relative m-auto' style={{backgroundColor: 'rgb(33, 37, 41)', zIndex: '10000', maxWidth}}>
-      <div className='position-absolute fs-15' style={{left: '50%', transform: 'translateX(-50%)', fontWeight: '500', color: 'rgb(249, 249, 249)', top: '-0.1em'}}>
+      <div className='position-absolute fs-15' style={{left: '50%', transform: 'translateX(-50%)', fontWeight: '500', color: 'rgb(249, 249, 249)', top: '0.5rem'}}>
         { currentPathIsRoot() ? 'HedaCuisine' : <Link path="/" className="plain-link white">HedaCuisine</Link>}
       </div>
-      <div className='position-absolute' style={{left: 'calc(50% + 5.5em)', top: '0.2em'}}>
-        <img id="search-btn" className="clickable" src={SearchWhiteIcon} style={{marginRight: '1em', width: '1.4em'}} onClick={() => setIsSearching(true)}/>
+      <div className='position-absolute' style={{left: 'calc(50% + 5.5em)', top: '0.825em'}}>
+        <button id="search-btn" type='button' className='plain-btn' onClick={() => setIsSearching(true)}>
+          <img src={SearchWhiteIcon} style={{width: '1.6em'}}/>
+        </button>
       </div>
       <input id="menu-toggle" type="checkbox" className='d-none'/>
       <div className='d-flex d-lg-none'>
@@ -277,8 +279,8 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
         <div className='flex-grow-1'/>
         {endItems}
         {hasCollapsable ?
-          <label className='menu-button-container' htmlFor="menu-toggle">
-            <img className="clickable mx-3" src={ListWhiteIcon} style={{width: '1.9em'}}/>
+          <label className='menu-button-container clickable' htmlFor="menu-toggle">
+            <img className="mx-3" src={ListWhiteIcon} style={{width: '2em', paddingTop: '0.625em'}}/>
           </label>
         : null}
       </div>
@@ -325,7 +327,7 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
   </>
 
   return <>
-    <nav style={{backgroundColor: 'rgb(33, 37, 41)', height: '3.25em', marginBottom: '0.5em', borderBottom: '1px solid rgb(206, 226, 240)'}}>
+    <nav style={{backgroundColor: 'rgb(33, 37, 41)', height: '3.25em', marginBottom: '0.5em'}}>
       {isSearching ? searchMode : normalMode}
     </nav>
   </>
