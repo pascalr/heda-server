@@ -270,3 +270,11 @@ export const useFetch = (url, dependency='none') => {
   
   return data
 }
+
+export const useCsrf = () => {
+  const [_csrf, setCsrf] = useState('')
+  useEffect(() => {
+    setCsrf(document.querySelector('[name="csrf-token"]').content)
+  }, [])
+  return _csrf
+}

@@ -4,7 +4,7 @@ import toastr from 'toastr'
 //import { createRoot } from 'react-dom/client';
 
 import { TextInput, TextField, CollectionSelect, RangeField, withSelector } from "./form"
-import { Link, useOrFetch, getLocale } from "./lib"
+import { Link, useOrFetch, getLocale, useCsrf } from "./lib"
 import { localeAttr, findRecipeKindForRecipeName  } from "../lib"
 import { AppNavbar } from './navbar'
 import { ErrorBoundary } from './error_boundary'
@@ -780,9 +780,10 @@ export const Admin = () => {
   const defaultElement = (params) => <TranslationsPage />
   
   const {elem,idx} = useRouter(routes, defaultElement)
+  const _csrf = useCsrf()
   
   return <>
-    <AppNavbar {...{locale, recipes, recipeKinds, user, users}} />
+    <AppNavbar {...{locale, _csrf, recipes, recipeKinds, user, users}} />
     <div style={{padding: '0 0.5em'}}>
       <AdminTabs />
       <ErrorBoundary key={idx}>

@@ -4,6 +4,9 @@
   body {
     font-size: 0.9rem;
   }
+  #search-btn-ctn {
+    left: calc(50% + 5em) !important;
+  }
 }
 @media screen and (max-width: 380px) {
   .nav-tabs .nav-link {

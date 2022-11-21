@@ -86,33 +86,31 @@ export const AppNavbar = ({user, _csrf, recipes, friendsRecipes, users, recipeKi
   ]
 
   let endItems = [
-    <div key='e1'>
-      <div className="dropdown d-inline-block">
-        <button className="plain-btn dropdown-toggle" type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style={{marginRight: '1em', color: 'white'}}>
-          <img src={PersonFillWhiteIcon} style={{width: '1.8em'}}/>
-        </button>
-        <div className="dropdown-menu" aria-labelledby="dropdownUserButton" style={{lineHeight: '1.5em'}}>
-          <a href="/edit_profile" className="dropdown-item">{t('My_profile')}</a>
-          <a href="/edit_account" className="dropdown-item">{t('My_account')}</a>
-          <form action={locale ? "/logout?locale="+locale : "/logout"} method="post">
-            <button className="dropdown-item" type="submit">{t('Logout')}</button>
-            <input type="hidden" name="_csrf" value={_csrf}/>
-          </form>
-          <a href="/new_user" className="dropdown-item">{t('New_profile')}</a>
-          { otherProfiles.length == 0 ? '' : <>
-            <hr className="dropdown-divider"/>
-            <h6 className="dropdown-header">{t('Switch_user')}</h6>
-            { otherProfiles.map(usr => { 
-              return <form key={usr.id} action="/change_user" method="post">
-                <button className="dropdown-item" type="submit">{ usr.name }</button>
-                <input type="hidden" name="user_id" value={usr.id}/>
-                <input type="hidden" name="_csrf" value={_csrf}/>
-              </form>
-            })}
-          </>}
+    <div key='e1' className="dropdown">
+      <button className="plain-btn dropdown-toggle" type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style={{marginRight: '1em', color: 'white'}}>
+        <img src={PersonFillWhiteIcon} style={{width: '2em', marginTop: '-0.3em'}}/>
+      </button>
+      <div className="dropdown-menu" aria-labelledby="dropdownUserButton" style={{lineHeight: '1.5em'}}>
+        <a href="/edit_profile" className="dropdown-item">{t('My_profile')}</a>
+        <a href="/edit_account" className="dropdown-item">{t('My_account')}</a>
+        <form action={locale ? "/logout?locale="+locale : "/logout"} method="post">
+          <button className="dropdown-item" type="submit">{t('Logout')}</button>
+          <input type="hidden" name="_csrf" value={_csrf}/>
+        </form>
+        <a href="/new_user" className="dropdown-item">{t('New_profile')}</a>
+        { otherProfiles.length == 0 ? '' : <>
           <hr className="dropdown-divider"/>
-          <a href={localeHref("/contact")} className="dropdown-item">{t('Contact_us', locale)}</a>
-        </div>
+          <h6 className="dropdown-header">{t('Switch_user')}</h6>
+          { otherProfiles.map(usr => { 
+            return <form key={usr.id} action="/change_user" method="post">
+              <button className="dropdown-item" type="submit">{ usr.name }</button>
+              <input type="hidden" name="user_id" value={usr.id}/>
+              <input type="hidden" name="_csrf" value={_csrf}/>
+            </form>
+          })}
+        </>}
+        <hr className="dropdown-divider"/>
+        <a href={localeHref("/contact")} className="dropdown-item">{t('Contact_us', locale)}</a>
       </div>
     </div>,
   ]
@@ -265,9 +263,9 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
 
   const normalMode = <>
     <div className='position-relative m-auto' style={{backgroundColor: 'rgb(33, 37, 41)', zIndex: '10000', maxWidth}}>
-      <div className='position-absolute' style={{left: 'calc(50% + 5.5em)'}}>
+      <div id='search-btn-ctn' className='position-absolute' style={{left: 'calc(50% + 5.5em)'}}>
         <button id="search-btn" type='button' className='plain-btn' onClick={() => setIsSearching(true)}>
-          <img src={SearchWhiteIcon} style={{width: '1.6em'}}/>
+          <img src={SearchWhiteIcon} style={{width: '1.6em', marginTop: '-0.2em'}}/>
         </button>
       </div>
       <div className='position-absolute fs-15' style={{left: '50%', transform: 'translateX(-50%)', fontWeight: '500', color: 'rgb(249, 249, 249)'}}>
@@ -280,11 +278,11 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
         {endItems}
         {hasCollapsable ?
           <label className='menu-button-container clickable' htmlFor="menu-toggle">
-            <img className="mx-3" src={ListWhiteIcon} style={{width: '2em', paddingTop: '0.625em'}}/>
+            <img className="mx-3" src={ListWhiteIcon} style={{width: '2em', marginTop: '-0.2em'}}/>
           </label>
         : null}
       </div>
-      <div className='menu-toggled d-flex align-items-center'>
+      <div className='menu-toggled d-flex'>
         {collapsableStartItems}
         <div className='d-lg-flex d-none'>
           {startItems}

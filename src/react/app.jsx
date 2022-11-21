@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 //import { createRoot } from 'react-dom/client';
 
-import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, Link, useShuffled } from "./lib"
+import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, Link, useShuffled, useCsrf } from "./lib"
 import { findRecipeKindForRecipeName } from "../lib"
 import { RecipeList, RecipeIndex } from './recipe_index'
 import { changeUrl, ajax, normalizeSearchText, join, bindSetter, capitalize, isTrue } from "./utils"
@@ -382,11 +382,7 @@ export const App = () => {
   const defaultElement = (params) => <MyRecipes {...{recipes, favoriteRecipes, recipeKinds, user}} />
 
   const {elem,idx} = useRouter(routes, defaultElement)
-
-  const [_csrf, setCsrf] = useState('')
-  useEffect(() => {
-    setCsrf(document.querySelector('[name="csrf-token"]').content)
-  }, [])
+  const _csrf = useCsrf()
 
     //<div className={(!page.page || page.page === 1) ? "wide-trunk" : "trunk"}>
   return (<>

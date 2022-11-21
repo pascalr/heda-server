@@ -6,6 +6,8 @@ Je n'ai même pas eu le temps de finir ma bière sur le balcon que Céline avait
 
 Paniers à bocaux pour faire l'épicerie.
 
+Use <meta name="viewport" content="width='320px', initial-scale=1"> ???
+
 Fix center images on navbar.
 
 <noscript><div className='warning'>Afficher une message d'avertissement.</div></noscript>
