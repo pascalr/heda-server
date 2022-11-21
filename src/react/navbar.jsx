@@ -265,7 +265,7 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
   const keyedEndItems = endItems.map((e,i) => <div key={'c'+i}>{e}</div>)
 
   const normalMode = <>
-    <div className='position-relative m-auto' style={{backgroundColor: 'rgb(33, 37, 41)', zIndex: '10000', maxWidth}}>
+    <div className='position-relative m-auto' style={{backgroundColor: 'rgb(33, 37, 41)', zIndex: '10000', maxWidth, lineHeight: '3.25rem'}}>
       <div id='search-btn-ctn' className='position-absolute' style={{left: 'calc(50% + 5.5em)'}}>
         <button id="search-btn" type='button' className='plain-btn' onClick={() => setIsSearching(true)}>
           <img src={SearchWhiteIcon} style={{width: '1.6em', marginTop: '-0.2em'}}/>
@@ -301,13 +301,13 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
 
   let current = -1
   const searchMode = <>
-    <div style={{position: 'relative', margin: 'auto', padding: '0.5em 1em 0 1em', maxWidth: '800px'}}>
+    <div style={{position: 'relative', margin: 'auto', padding: '0.8em 1em 0 1em', maxWidth: '800px'}}>
       <div className="d-flex justify-content-end">
         <input id="search-input" ref={inputField} type="search" placeholder={`${t('Search')}...`} onChange={(e) => {setTerm(e.target.value); setSearch(e.target.value)}} autoComplete="off" className="plain-input white ps-1" style={{borderBottom: '2px solid white', width: searchTransition ? "100%" : "10px", transition: 'width 1s'}} onKeyDown={onKeyDown} value={search}/>
         <img className="clickable ps-2" src={XLgWhiteIcon} width="36" onClick={() => setIsSearching(false)}/>
       </div>
       {allMatching.length <= 0 ? '' : <>
-        <div id="search-results" style={{position: 'absolute', zIndex: '200', backgroundColor: 'white', border: '1px solid black', width: '100%', padding: '0.5em', maxHeight: 'calc(100vh - 80px)', overflowY: 'scroll'}}>
+        <div id="search-results" style={{position: 'absolute', zIndex: '200', backgroundColor: 'white', border: '1px solid black', width: '90%', padding: '0.5em', maxHeight: 'calc(100vh - 80px)', overflowY: 'scroll'}}>
           {Object.keys(filtered).map(key => {
             if (filtered[key].length <= 0) {return ''}
             return <div key={key}>
@@ -328,7 +328,7 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
   </>
 
   return <>
-    <nav style={{backgroundColor: 'rgb(33, 37, 41)', height: '3.25em', lineHeight: '3.25rem', marginBottom: '0.5em'}}>
+    <nav style={{backgroundColor: 'rgb(33, 37, 41)', height: '3.25em', marginBottom: '0.5em'}}>
       {isSearching ? searchMode : normalMode}
     </nav>
   </>
