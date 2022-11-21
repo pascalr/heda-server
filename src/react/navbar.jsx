@@ -82,11 +82,11 @@ export const AppNavbar = ({user, _csrf, recipes, friendsRecipes, users, recipeKi
   }
 
   let startItems = [
-    <img key='s1' className="clickable" src={ArrowLeftSquareWhiteIcon} style={{paddingLeft: "0.5em", width: '2em'}} onClick={() => window.history.back()} />,
+    <img className="clickable" src={ArrowLeftSquareWhiteIcon} style={{paddingLeft: "0.5em", width: '2em'}} onClick={() => window.history.back()} />,
   ]
 
   let endItems = [
-    <div key='e1' className="dropdown">
+    <div className="dropdown">
       <button className="plain-btn dropdown-toggle" type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style={{marginRight: '1em', color: 'white'}}>
         <img src={PersonFillWhiteIcon} style={{width: '2em', marginTop: '-0.3em'}}/>
       </button>
@@ -184,18 +184,18 @@ export const PublicNavbar = ({locale}) => {
   let otherLocale = (locale.toLowerCase() == 'en') ? 'FR' : 'EN'
   
   let collapsableStartItems = [
-    <Link key='a1' path="/" className="nav-btn" active={currentPathIsRoot()}>{t('Home', locale)}</Link>,
-    <Link key='a2' path="/x" className="nav-btn" checkIfActive={true}>{t('Recipes', locale)}</Link>,
+    <Link path="/" className="nav-btn" active={currentPathIsRoot()}>{t('Home', locale)}</Link>,
+    <Link path="/x" className="nav-btn" checkIfActive={true}>{t('Recipes', locale)}</Link>,
   ]
 
   let startItems = [
-    <Link key='b2' path={window.location.pathname+'?locale='+otherLocale} className="nav-btn fs-14" rel="alternate" hrefLang={otherLocale.toLowerCase()}>{otherLocale}</Link>,
+    <Link path={window.location.pathname+'?locale='+otherLocale} className="nav-btn fs-14" rel="alternate" hrefLang={otherLocale.toLowerCase()}>{otherLocale}</Link>,
   ]
 
   let collapsableEndItems = [
-    <Link key='c1' path="/login" className="nav-btn">{t('Login', locale)}</Link>,
-    <Link key='c2' path="/signup" className="nav-btn">{t('Create_account', locale)}</Link>,
-    <Link key='c3' path="/contact" className="nav-btn" checkIfActive={true}>{t('Contact', locale)}</Link>,
+    <Link path="/login" className="nav-btn">{t('Login', locale)}</Link>,
+    <Link path="/signup" className="nav-btn">{t('Create_account', locale)}</Link>,
+    <Link path="/contact" className="nav-btn" checkIfActive={true}>{t('Contact', locale)}</Link>,
   ]
 
   return <BaseNavbar {...{locale, startItems, collapsableEndItems, collapsableStartItems, ...config}} />
@@ -260,6 +260,9 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
   }
 
   const hasCollapsable = collapsableStartItems.length && collapsableEndItems.length
+        
+  const keyedStartItems = startItems.map((e,i) => <div key={'a'+i}>{e}</div>)
+  const keyedEndItems = endItems.map((e,i) => <div key={'c'+i}>{e}</div>)
 
   const normalMode = <>
     <div className='position-relative m-auto' style={{backgroundColor: 'rgb(33, 37, 41)', zIndex: '10000', maxWidth}}>
@@ -273,9 +276,9 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
       </div>
       <input id="menu-toggle" type="checkbox" className='d-none'/>
       <div className='d-flex d-lg-none'>
-        {startItems}
+        {keyedStartItems}
         <div className='flex-grow-1'/>
-        {endItems}
+        {keyedEndItems}
         {hasCollapsable ?
           <label className='menu-button-container clickable' htmlFor="menu-toggle">
             <img className="mx-3" src={ListWhiteIcon} style={{width: '2em', marginTop: '-0.2em'}}/>
@@ -283,15 +286,15 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
         : null}
       </div>
       <div className='menu-toggled d-flex'>
-        {collapsableStartItems.map((e,i) => <div key={i}>{e}</div>)}
+        {collapsableStartItems.map((e,i) => <div key={'b'+i}>{e}</div>)}
         <div className='d-lg-flex d-none'>
-          {startItems}
+          {keyedStartItems}
         </div>
         <div className='flex-grow-1'/>
         <div className='d-lg-flex d-none'>
-          {endItems}
+          {keyedEndItems}
         </div>
-        {collapsableEndItems.map((e,i) => <div key={i}>{e}</div>)}
+        {collapsableEndItems.map((e,i) => <div key={'d'+i}>{e}</div>)}
       </div>
     </div>
   </>
