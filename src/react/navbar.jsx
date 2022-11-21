@@ -268,7 +268,7 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
     <div className='position-relative m-auto' style={{backgroundColor: 'rgb(33, 37, 41)', zIndex: '10000', maxWidth, lineHeight: '3.25rem'}}>
       <div id='search-btn-ctn' className='position-absolute' style={{left: 'calc(50% + 5.5em)'}}>
         <button id="search-btn" type='button' className='plain-btn' onClick={() => setIsSearching(true)}>
-          <img src={SearchWhiteIcon} style={{width: '1.6em', marginTop: '-0.2em'}}/>
+          <img src={SearchWhiteIcon} style={{width: '1.4em', marginTop: '-0.1em'}}/>
         </button>
       </div>
       <div className='position-absolute fs-15' style={{left: '50%', transform: 'translateX(-50%)', fontWeight: '500', color: 'rgb(249, 249, 249)'}}>
