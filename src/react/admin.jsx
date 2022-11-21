@@ -674,6 +674,8 @@ const CssPage = () => {
     <h4>H4</h4>
     <h5>H5</h5>
     <h6>H6</h6>
+    <p>Text p</p>
+    <h1>Line height</h1>
     <div><b>Bootstrap default line height is 1.5em</b></div>
     <div style={{fontSize: '1em', width: '10em'}}>f-s 1em; width 10em</div>
     <div style={{fontSize: '1em', lineHeight: '1em'}}>f-s 1em; line-height 1em</div>

@@ -191,7 +191,7 @@ export const PublicNavbar = ({locale}) => {
   ]
 
   let startItems = [
-    <Link key='b2' path={window.location.pathname+'?locale='+otherLocale} className="nav-btn fs-14" rel="alternate" hrefLang={otherLocale.toLowerCase()} style={{lineHeight: '3.25rem'}}>{otherLocale}</Link>,
+    <Link key='b2' path={window.location.pathname+'?locale='+otherLocale} className="nav-btn fs-14" rel="alternate" hrefLang={otherLocale.toLowerCase()}>{otherLocale}</Link>,
   ]
 
   let collapsableEndItems = [
@@ -265,13 +265,13 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
 
   const normalMode = <>
     <div className='position-relative m-auto' style={{backgroundColor: 'rgb(33, 37, 41)', zIndex: '10000', maxWidth}}>
-      <div className='position-absolute fs-15' style={{left: '50%', transform: 'translateX(-50%)', fontWeight: '500', color: 'rgb(249, 249, 249)', top: '0.5rem'}}>
-        { currentPathIsRoot() ? 'HedaCuisine' : <Link path="/" className="plain-link white">HedaCuisine</Link>}
-      </div>
-      <div className='position-absolute' style={{left: 'calc(50% + 5.5em)', top: '0.825em'}}>
+      <div className='position-absolute' style={{left: 'calc(50% + 5.5em)'}}>
         <button id="search-btn" type='button' className='plain-btn' onClick={() => setIsSearching(true)}>
           <img src={SearchWhiteIcon} style={{width: '1.6em'}}/>
         </button>
+      </div>
+      <div className='position-absolute fs-15' style={{left: '50%', transform: 'translateX(-50%)', fontWeight: '500', color: 'rgb(249, 249, 249)'}}>
+        { currentPathIsRoot() ? 'HedaCuisine' : <Link path="/" className="plain-link white">HedaCuisine</Link>}
       </div>
       <input id="menu-toggle" type="checkbox" className='d-none'/>
       <div className='d-flex d-lg-none'>
@@ -327,7 +327,7 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
   </>
 
   return <>
-    <nav style={{backgroundColor: 'rgb(33, 37, 41)', height: '3.25em', marginBottom: '0.5em'}}>
+    <nav style={{backgroundColor: 'rgb(33, 37, 41)', height: '3.25em', lineHeight: '3.25rem', marginBottom: '0.5em'}}>
       {isSearching ? searchMode : normalMode}
     </nav>
   </>
