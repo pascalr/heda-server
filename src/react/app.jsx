@@ -20,7 +20,7 @@ import { initHcu, useHcuState } from '../hcu'
 import { UserThumbnailImage, RecipeThumbnailImage, RecipeMediumImage } from "./image"
 import { t } from "../translate"
 import {EditMix, ShowMix} from './recipe_editor'
-import { AppSearch, useHiddenNavParam } from './navbar'
+import { AppNavbar, useHiddenNavParam } from './navbar'
 import { useRouter } from "./router"
 import { SuggestionsPage } from "./suggestions"
 import { RecipeCarrousel, HomeTab } from './core'
@@ -390,7 +390,7 @@ export const App = () => {
 
     //<div className={(!page.page || page.page === 1) ? "wide-trunk" : "trunk"}>
   return (<>
-    <AppSearch {...{user, _csrf, recipes, friendsRecipes, users, recipeKinds}} />
+    <AppNavbar {...{user, _csrf, recipes, friendsRecipes, users, recipeKinds}} />
     <div className="trunk">
       <HomeTabs {...{user, machines}} />
       <ErrorBoundary key={'err-boundary-'+idx}>

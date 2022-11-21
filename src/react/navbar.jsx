@@ -36,7 +36,7 @@ const RecipeListItem = ({recipe, isSelected, users, user, selectedRef, setIsSear
   )
 }
 
-export const AppNavbar = ({locale, renderingHome, setIsSearching, otherProfiles, _csrf}) => {
+export const OldAppNavbar = ({locale, renderingHome, setIsSearching, otherProfiles, _csrf}) => {
   return <>
     <div className="float-start" style={{margin: '0.3em 0 0 0.5em'}}>
       <img className="clickable" src={"/icons/arrow-left-square-white.svg"} style={{paddingLeft: "0.5em", width: '2em'}} onClick={() => window.history.back()} />
@@ -73,6 +73,99 @@ export const AppNavbar = ({locale, renderingHome, setIsSearching, otherProfiles,
     </div>
     <a href="/" className='d-block plain-link' style={{margin: 'auto', width: 'fit-content', fontWeight: '500', fontSize: '1.5em', color: '#f9f9f9'}}>HedaCuisine</a>
   </>
+}
+
+export const AppNavbar = ({user, _csrf, recipes, friendsRecipes, users, recipeKinds}) => {
+
+  let otherProfiles = users.filter(u => u.id != user.id)
+  
+  //if (useHiddenNavParam()) {return ''}
+
+  let locale = user.locale
+  let renderingHome = currentPathIsRoot()
+
+  const config = {
+
+    data: {
+      My_recipes: recipes.map(recipe => ({
+        ...recipe,
+        //url: localeHref("/k/"+recipeKind.id),
+        elem: ({isSelected, item, selectedRef, setIsSearching}) => (
+          <RecipeListItem key={item.id} {...{recipe: item, isSelected, users, user, selectedRef, setIsSearching}}/>
+        ),
+      })),
+      Same_account_recipes: (friendsRecipes||[]).map(recipe => ({
+        ...recipe,
+        //url: localeHref("/k/"+recipeKind.id),
+        elem: ({isSelected, item, selectedRef, setIsSearching}) => (
+          <RecipeListItem key={item.id} {...{recipe: item, isSelected, users, user, selectedRef, setIsSearching}}/>
+        ),
+      })),
+      Suggestions: recipeKinds.map(recipeKind => ({
+        ...recipeKind,
+        list: 'rk',
+        //url: localeHref("/k/"+recipeKind.id),
+        elem: ({isSelected, item, selectedRef}) => <>
+          <li key={item.id} ref={isSelected ? selectedRef : null}>
+            <a href={localeHref('/k/'+item.id)} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
+              <div className="d-flex align-items-center">
+                <RecipeThumbnailImage {...{recipe: item}} />
+                <div style={{marginRight: '0.5em'}}></div>
+                <div>{item.name}</div>
+              </div>
+            </a>
+          </li>
+        </>
+      })),
+    },
+    onItemChoosen(item, {setIsSearching}) {
+      if (item.list === 'rk') {
+        changeUrl("/k/"+item.id)
+      } else {
+        changeUrl("/r/"+item.id)
+      }
+      setIsSearching(false)
+    },
+    maxWidth: '800px',
+  }
+
+  let startItems = [
+    <img key='s1' className="clickable" src={"/icons/arrow-left-square-white.svg"} style={{paddingLeft: "0.5em", width: '2em'}} onClick={() => window.history.back()} />,
+  ]
+
+  let endItems = [
+    <div key='e1'>
+      <div className="dropdown d-inline-block">
+        <button className="plain-btn dropdown-toggle" type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style={{marginRight: '1em', color: 'white'}}>
+          <img className="clickable" src={"/icons/person-fill-white.svg"} style={{width: '1.8em'}}/>
+        </button>
+        <div className="dropdown-menu" aria-labelledby="dropdownUserButton">
+          <a href="/edit_profile" className="dropdown-item">{t('My_profile')}</a>
+          <a href="/edit_account" className="dropdown-item">{t('My_account')}</a>
+          <form action={locale ? "/logout?locale="+locale : "/logout"} method="post">
+            <button className="dropdown-item" type="submit">{t('Logout')}</button>
+            <input type="hidden" name="_csrf" value={_csrf}/>
+          </form>
+          <a href="/new_user" className="dropdown-item">{t('New_profile')}</a>
+          { otherProfiles.length == 0 ? '' : <>
+            <hr className="dropdown-divider"/>
+            <h6 className="dropdown-header">{t('Switch_user')}</h6>
+            { otherProfiles.map(usr => { 
+              return <form key={usr.id} action="/change_user" method="post">
+                <button className="dropdown-item" type="submit">{ usr.name }</button>
+                <input type="hidden" name="user_id" value={usr.id}/>
+                <input type="hidden" name="_csrf" value={_csrf}/>
+              </form>
+            })}
+          </>}
+          <hr className="dropdown-divider"/>
+          <a href={localeHref("/contact")} className="dropdown-item">{t('Contact_us', locale)}</a>
+        </div>
+      </div>
+    </div>,
+  ]
+
+  return <BaseNavbar {...{locale, startItems, endItems, ...config}} />
 }
 
 function convertSearchData(fetched) {
@@ -158,7 +251,7 @@ export const PublicNavbar = ({locale}) => {
   return <BaseNavbar {...{locale, startItems, collapsableEndItems, collapsableStartItems, ...config}} />
 }
 
-const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[], collapsableEndItems=[], onTermChanged, onItemChoosen, data}) => {
+const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[], collapsableEndItems=[], onTermChanged, onItemChoosen, data, maxWidth='100%'}) => {
 
   // Search is the text shown in the input field
   // Term is the term currently used to filter the search
@@ -207,21 +300,26 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
     }
   }
 
+  const hasCollapsable = collapsableStartItems.length && collapsableEndItems.length
+
   const normalMode = <>
-    <div className='position-relative' style={{backgroundColor: 'rgb(33, 37, 41)', zIndex: '10000'}}>
-      <div className='position-absolute fs-15' style={{left: '50vw', transform: 'translateX(-50%)', fontWeight: '500', color: 'rgb(249, 249, 249)', top: '-0.1em'}}>
+    <div className='position-relative m-auto' style={{backgroundColor: 'rgb(33, 37, 41)', zIndex: '10000', maxWidth}}>
+      <div className='position-absolute fs-15' style={{left: '50%', transform: 'translateX(-50%)', fontWeight: '500', color: 'rgb(249, 249, 249)', top: '-0.1em'}}>
         { currentPathIsRoot() ? 'HedaCuisine' : <Link path="/" className="plain-link white">HedaCuisine</Link>}
       </div>
-      <div className='position-absolute' style={{left: 'calc(50vw + 5.5em)', top: '0.2em'}}>
+      <div className='position-absolute' style={{left: 'calc(50% + 5.5em)', top: '0.2em'}}>
         <img id="search-btn" className="clickable" src={SearchWhiteIcon} style={{marginRight: '1em', width: '1.4em'}} onClick={() => setIsSearching(true)}/>
       </div>
       <input id="menu-toggle" type="checkbox" className='d-none'/>
       <div className='d-flex d-lg-none'>
         {startItems}
         <div className='flex-grow-1'/>
-        <label className='menu-button-container' htmlFor="menu-toggle">
-          <img className="clickable mx-3" src={ListWhiteIcon} style={{width: '1.9em'}}/>
-        </label>
+        {endItems}
+        {hasCollapsable ?
+          <label className='menu-button-container' htmlFor="menu-toggle">
+            <img className="clickable mx-3" src={ListWhiteIcon} style={{width: '1.9em'}}/>
+          </label>
+        : null}
       </div>
       <div className='menu-toggled d-flex align-items-center'>
         {collapsableStartItems}
@@ -229,6 +327,9 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
           {startItems}
         </div>
         <div className='flex-grow-1'/>
+        <div className='d-lg-flex d-none'>
+          {endItems}
+        </div>
         {collapsableEndItems}
       </div>
     </div>
@@ -367,7 +468,7 @@ export const AppSearch = ({user, _csrf, recipes, friendsRecipes, users, recipeKi
       </>
     },
     printNavbar({setIsSearching}) {
-      return <AppNavbar {...{locale, renderingHome, setIsSearching, otherProfiles, _csrf}}/>
+      return <OldAppNavbar {...{locale, renderingHome, setIsSearching, otherProfiles, _csrf}}/>
     },
     onItemChoosen(item, {setIsSearching}) {
       if (item.list === 'rk') {

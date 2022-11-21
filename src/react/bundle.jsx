@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
-import { PublicNavbar, AppSearch } from './navbar'
+import { PublicNavbar, AppNavbar } from './navbar'
 import { Home } from "./home"
 import { App } from "./app"
 import { ShowRecipe } from "./show_recipe"
@@ -18,7 +18,7 @@ export const AppSearchRoot = () => {
 
   // TODO: Show app search for /error
   return <>
-    <AppSearch {...{user, otherProfiles, _csrf, recipes, friendsRecipes, users, recipeKinds}} />
+    <AppNavbar {...{user, otherProfiles, _csrf, recipes, friendsRecipes, users, recipeKinds}} />
   </>
 }
 

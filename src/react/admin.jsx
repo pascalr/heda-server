@@ -6,7 +6,7 @@ import toastr from 'toastr'
 import { TextInput, TextField, CollectionSelect, RangeField, withSelector } from "./form"
 import { Link, useOrFetch, getLocale } from "./lib"
 import { localeAttr, findRecipeKindForRecipeName  } from "../lib"
-import { AppSearch } from './navbar'
+import { AppNavbar } from './navbar'
 import { ErrorBoundary } from './error_boundary'
 import { t } from "../translate"
 import { useRouter } from "./router"
@@ -33,6 +33,7 @@ const AdminTabs = ({machines}) => {
       <HomeTab {...{title: t('Console'), path: '/admin/console'}} />
       <HomeTab {...{title: t('Translations'), path: '/admin/translations'}} />
       <HomeTab {...{title: t('Translate Recipe'), path: '/admin/translate_recipe'}} />
+      <HomeTab {...{title: t('CSS'), path: '/admin/css'}} />
     </ul>
   </>
 }
@@ -664,6 +665,32 @@ const TranslateRecipePage = ({translations, recipes, locale}) => {
   </>
 }
 
+const CssPage = () => {
+  return <div className='trunk'>
+    <h1>Sizes</h1>
+    <h1>H1</h1>
+    <h2>H2</h2>
+    <h3>H3</h3>
+    <h4>H4</h4>
+    <h5>H5</h5>
+    <h6>H6</h6>
+    <div><b>Bootstrap default line height is 1.5em</b></div>
+    <div style={{fontSize: '1em', width: '10em'}}>f-s 1em; width 10em</div>
+    <div style={{fontSize: '1em', lineHeight: '1em'}}>f-s 1em; line-height 1em</div>
+    <div style={{fontSize: '1em', lineHeight: '2em'}}>f-s 1em; line-height 2em</div>
+    <div style={{fontSize: '20px', width: '200px'}}>f-s 20px; width 200px</div>
+
+    <br/><br/>
+    <p>Use em everywhere. Don't set the font-size of body. Let the device set it. This way it is always readable.</p>
+
+    <p>
+      em: Relative to font height<br/>
+      ex: Relative to font height of lowercase «x»<br/>
+      px: 1 px is a sharp line (use for border only?)<br/>
+    </p>
+  </div>
+}
+
 const DbPage = () => {
 
   //const [table, setTable] = useState('table_name')
@@ -738,6 +765,7 @@ export const Admin = () => {
     {match: "/admin/qa", elem: () => <QAPage />},
     {match: "/admin/errors", elem: () => <ErrorsPage {...{errors}} />},
     {match: "/admin/db", elem: () => <DbPage />},
+    {match: "/admin/css", elem: () => <CssPage />},
     {match: "/admin/console", elem: () => <Console />},
     {match: "/admin/ki", elem: () => <RecipeKindsIndex {...{recipeKinds, recipes, publicUsers, locale, kinds}} />},
     {match: "/admin/di", elem: () => <KindsIndex {...{kinds, recipeKinds, locale}} />},
@@ -751,7 +779,7 @@ export const Admin = () => {
   const {elem,idx} = useRouter(routes, defaultElement)
   
   return <>
-    <AppSearch {...{locale, recipes, recipeKinds, user, users}} />
+    <AppNavbar {...{locale, recipes, recipeKinds, user, users}} />
     <div style={{padding: '0 0.5em'}}>
       <AdminTabs />
       <ErrorBoundary key={idx}>
