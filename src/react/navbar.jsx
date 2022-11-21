@@ -8,15 +8,6 @@ import { useTransition, Link, currentPathIsRoot } from "./lib"
 import { SearchWhiteIcon, PersonFillWhiteIcon, XLgWhiteIcon, ListWhiteIcon } from '../server/image.js'
 import { normalizeSearchText } from "./utils"
 
-const minChars = 3
-const filterItems = (items, term) => {
-  if (!term || term.length < minChars || !items) {return []}
-  const normalized = normalizeSearchText(term)
-  return items.filter(r => (
-    r.name && ~normalizeSearchText(r.name).indexOf(normalized)
-  ))
-}
-
 const RecipeListItem = ({recipe, isSelected, users, user, selectedRef, setIsSearching}) => {
   let userName = null
   if (user.id != recipe.user_id) {
@@ -251,6 +242,15 @@ export const PublicNavbar = ({locale}) => {
   return <BaseNavbar {...{locale, startItems, collapsableEndItems, collapsableStartItems, ...config}} />
 }
 
+const minChars = 3
+const filterItems = (items, term) => {
+  if (!term || term.length < minChars || !items) {return []}
+  const normalized = normalizeSearchText(term)
+  return items.filter(r => (
+    r.name && ~normalizeSearchText(r.name).indexOf(normalized)
+  ))
+}
+
 const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[], collapsableEndItems=[], onTermChanged, onItemChoosen, data, maxWidth='100%'}) => {
 
   // Search is the text shown in the input field
@@ -364,35 +364,9 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
   </>
 
   return <>
-    <nav style={{backgroundColor: 'rgb(33, 37, 41)', height: '52px', paddingTop: '0.5em', marginBottom: '0.5em', borderBottom: '1px solid rgb(206, 226, 240)'}}>
+    <nav style={{backgroundColor: 'rgb(33, 37, 41)', height: '3.25em', marginBottom: '0.5em', borderBottom: '1px solid rgb(206, 226, 240)'}}>
       {isSearching ? searchMode : normalMode}
     </nav>
-  </>
-}
-
-export const OldPublicNavbar = ({locale, renderingHome, setIsSearching}) => {
-
-  let otherLocale = (locale.toLowerCase() == 'en') ? 'FR' : 'EN'
-  return <>
-    <div className="float-start fs-15 px-3">
-      <Link path={window.location.pathname+'?locale='+otherLocale} className="nav-btn" rel="alternate" hrefLang={otherLocale.toLowerCase()}>{otherLocale}</Link>
-    </div>
-    <div className="float-end" style={{marginTop: '0.25em'}}>
-      <img id="search-btn" className="clickable" src={SearchWhiteIcon} style={{marginRight: '1em', width: '1.4em'}} onClick={() => setIsSearching(true)}/>
-      <div className="dropdown d-inline-block">
-        <button className="plain-btn" type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style={{marginRight: '1em', color: 'white'}}>
-          <img className="clickable" src={ListWhiteIcon} style={{width: '1.9em'}}/>
-        </button>
-        <div className="dropdown-menu" aria-labelledby="dropdownUserButton">
-          <Link path="/login" className="dropdown-item">{t('Login', locale)} ({t('beta')})</Link>
-          <Link path="/signup" className="dropdown-item">{t('Create_account', locale)} ({t('beta')})</Link>
-          <Link path="/contact" className="dropdown-item">{t('Contact_us', locale)}</Link>
-        </div>
-      </div>
-    </div>
-    <div style={{margin: 'auto', width: 'fit-content', fontWeight: '500', fontSize: '1.5em', color: 'rgb(249, 249, 249)'}}>
-      { renderingHome ? 'HedaCuisine' : <Link path="/" className="plain-link white">HedaCuisine</Link>}
-    </div>
   </>
 }
 
@@ -406,166 +380,4 @@ export const useHiddenNavParam = () => {
     if (getUrlParams(window.location.href).noNav) {setHidden(true)}
   }, [])
   return hidden
-}
-
-export const AppSearch = ({user, _csrf, recipes, friendsRecipes, users, recipeKinds}) => {
-
-  let otherProfiles = users.filter(u => u.id != user.id)
-  
-  //if (useHiddenNavParam()) {return ''}
-
-  let locale = user.locale
-  let renderingHome = currentPathIsRoot()
-
-  const config = {
-
-    data: {
-      My_recipes: recipes.map(recipe => ({
-        ...recipe,
-        //url: localeHref("/k/"+recipeKind.id),
-        elem: ({isSelected, item, selectedRef, setIsSearching}) => (
-          <RecipeListItem key={item.id} {...{recipe: item, isSelected, users, user, selectedRef, setIsSearching}}/>
-        ),
-      })),
-      Same_account_recipes: (friendsRecipes||[]).map(recipe => ({
-        ...recipe,
-        //url: localeHref("/k/"+recipeKind.id),
-        elem: ({isSelected, item, selectedRef, setIsSearching}) => (
-          <RecipeListItem key={item.id} {...{recipe: item, isSelected, users, user, selectedRef, setIsSearching}}/>
-        ),
-      })),
-      Suggestions: recipeKinds.map(recipeKind => ({
-        ...recipeKind,
-        list: 'rk',
-        //url: localeHref("/k/"+recipeKind.id),
-        elem: ({isSelected, item, selectedRef}) => <>
-          <li key={item.id} ref={isSelected ? selectedRef : null}>
-            <a href={localeHref('/k/'+item.id)} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
-              <div className="d-flex align-items-center">
-                <RecipeThumbnailImage {...{recipe: item}} />
-                <div style={{marginRight: '0.5em'}}></div>
-                <div>{item.name}</div>
-              </div>
-            </a>
-          </li>
-        </>
-      })),
-    },
-    printResults({selected, selectedRef, setIsSearching}) {
-      return <>
-        {matchingUserRecipes.length >= 1 ? <h2 className="h001">{t('My_recipes')}</h2> : ''}
-        <ul className="recipe-list">
-          {matchingUserRecipes.map((recipe, current) => (
-            <RecipeListItem key={recipe.id} {...{recipe, current, selected, users, user, selectedRef, setIsSearching}}/>
-          ))}
-        </ul>
-        {matchingFriendsRecipes.length >= 1 ? <h2 className="h001">{t('Same_account_recipes')}</h2> : ''}
-        <ul className="recipe-list">
-          {matchingFriendsRecipes.map((recipe, current) => (
-            <RecipeListItem key={recipe.id} {...{recipe, current: current+matchingUserRecipes.length, selected, users, user, selectedRef, setIsSearching}}/>
-          ))}
-        </ul>
-      </>
-    },
-    printNavbar({setIsSearching}) {
-      return <OldAppNavbar {...{locale, renderingHome, setIsSearching, otherProfiles, _csrf}}/>
-    },
-    onItemChoosen(item, {setIsSearching}) {
-      if (item.list === 'rk') {
-        changeUrl("/k/"+item.id)
-      } else {
-        changeUrl("/r/"+item.id)
-      }
-      setIsSearching(false)
-    },
-  }
-  return <BaseSearch {...{locale, renderingHome, ...config}} />
-}
-
-export const BaseSearch = ({locale, renderingHome, data, onItemChoosen, onTermChanged, printNavbar}) => {
-
-  // Search is the text shown in the input field
-  // Term is the term currently used to filter the search
-  const [search, setSearch] = useState('')
-  const [term, setTerm] = useState('')
-  const [selected, setSelected] = useState(-1)
-  const [isSearching, setIsSearching] = useState(false)
-  const inputField = useRef(null)
-  const selectedRef = useRef(null)
-  const searchTransition = useTransition(isSearching)
-
-  const reset = () => {
-    setTerm('')
-    setSearch('')
-    setSelected(-1)
-  }
-
-  //const allMatching = data ? filterItems([].concat(...Object.values(data)), term) : []
-  const filtered = {}
-  Object.keys(data||{}).forEach(key => {filtered[key] = filterItems(data[key], term)})
-  const allMatching = new ArrayCombination(Object.values(filtered))
-
-  useEffect(() => {
-    if (onTermChanged) { onTermChanged(term) }
-  }, [term])
-
-  useEffect(() => {
-    if (isSearching) { inputField.current.focus() }
-  }, [isSearching])
-  
-  useEffect(() => {
-    //displayRef.current.scrollTop = 56.2*(selected||0)
-    if (selectedRef.current) { selectedRef.current.scrollIntoView(false) }
-  }, [selected])
-
-  let select = (pos) => {
-    setSelected(pos)
-    setSearch(pos == -1 ? '' : allMatching[pos].name)
-  }
-
-  let onKeyDown = ({key}) => {
-    if (key == "ArrowDown") {select(selected >= allMatching.length-1 ? -1 : selected+1)}
-    else if (key == "ArrowUp") {select(selected < 0 ? allMatching.length-1 : selected-1)}
-    else if (key == "Enter") {if (onItemChoosen) {reset(); onItemChoosen(allMatching[selected], {setIsSearching})}}
-    else if (key == "Escape") {
-      if (!term || term == '') { setIsSearching(false) }
-      else { reset() }
-    }
-  }
-
-  let current = -1
-  const searchMode = <>
-    <div style={{position: 'relative', margin: '0.5em 1em 0 1em'}}>
-      <div className="d-flex justify-content-end">
-        <input id="search-input" ref={inputField} type="search" placeholder={`${t('Search')}...`} onChange={(e) => {setTerm(e.target.value); setSearch(e.target.value)}} autoComplete="off" className="plain-input white ps-1" style={{borderBottom: '2px solid white', width: searchTransition ? "100%" : "10px", transition: 'width 1s'}} onKeyDown={onKeyDown} value={search}/>
-        <img className="clickable ps-2" src={XLgWhiteIcon} width="36" onClick={() => setIsSearching(false)}/>
-      </div>
-      {allMatching.length <= 0 ? '' : <>
-        <div id="search-results" style={{position: 'absolute', zIndex: '200', backgroundColor: 'white', border: '1px solid black', width: '100%', padding: '0.5em', maxHeight: 'calc(100vh - 80px)', overflowY: 'scroll'}}>
-          {Object.keys(filtered).map(key => {
-            if (filtered[key].length <= 0) {return ''}
-            return <div key={key}>
-              <h2 className="h001">{t(key)}</h2>
-              <ul className="recipe-list">
-                {filtered[key].map(e => {
-                  current += 1
-                  return <div key={key+e.id}>
-                    {e.elem({item: allMatching[current], selectedRef, isSelected: selected===current, setIsSearching})}
-                  </div>
-                })}
-              </ul>
-            </div>
-          })}
-        </div>
-      </>}
-    </div>
-  </>
-
-  return (<>
-    <nav style={{backgroundColor: 'rgb(33, 37, 41)', marginBottom: '0.5em', borderBottom: '1px solid rgb(206, 226, 240)'}}>
-      <div style={{maxWidth: '800px', margin: 'auto', padding: '0.5em 0', height: '52px'}}>
-        {isSearching ? searchMode : printNavbar({setIsSearching})}
-      </div>
-    </nav>
-  </>)
 }
