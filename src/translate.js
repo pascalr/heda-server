@@ -129,6 +129,8 @@ export function tr(id, locale) {
     Username: "Nom d'utilisateur",
     Password: "Mot de passe",
     Who_cooking: "Qui cuisine?",
+    Home: 'Acceuil',
+    Contact: 'Contact',
     Home_1: "Découvrez de nouvelles recettes et personnalisez-les à votre goût. Partagez avec tout le monde si vous le voulez. Recevez des suggestions de recettes.",
     Home_2: "Des recettes personnalisées",
     Home_3: "Suggestions pour vous",
