@@ -210,39 +210,38 @@ const filterItems = (items, term) => {
   ))
 }
 
-const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[], collapsableEndItems=[], onTermChanged, onItemChoosen, data, maxWidth='100%'}) => {
-
+const SearchBar = ({data, setIsSearching, onTermChanged, onItemChoosen}) => {
+  
   // Search is the text shown in the input field
   // Term is the term currently used to filter the search
   const [search, setSearch] = useState('')
   const [term, setTerm] = useState('')
   const [selected, setSelected] = useState(-1)
-  const [isSearching, setIsSearching] = useState(false)
-  const inputField = useRef(null)
   const selectedRef = useRef(null)
-  const searchTransition = useTransition(isSearching)
+  const searchTransition = useTransition(true)
+  const inputField = useRef(null)
+
+  useEffect(() => {
+    inputField.current.focus()
+  }, [])
+
+  useEffect(() => {
+    if (onTermChanged) { onTermChanged(term) }
+  }, [term])
+  
+  useEffect(() => {
+    if (selectedRef.current) { selectedRef.current.scrollIntoView(false) }
+  }, [selected])
+
+  const filtered = {}
+  Object.keys(data||{}).forEach(key => {filtered[key] = filterItems(data[key], term)})
+  const allMatching = new ArrayCombination(Object.values(filtered))
 
   const reset = () => {
     setTerm('')
     setSearch('')
     setSelected(-1)
   }
-
-  const filtered = {}
-  Object.keys(data||{}).forEach(key => {filtered[key] = filterItems(data[key], term)})
-  const allMatching = new ArrayCombination(Object.values(filtered))
-
-  useEffect(() => {
-    if (onTermChanged) { onTermChanged(term) }
-  }, [term])
-
-  useEffect(() => {
-    if (isSearching) { inputField.current.focus() }
-  }, [isSearching])
-  
-  useEffect(() => {
-    if (selectedRef.current) { selectedRef.current.scrollIntoView(false) }
-  }, [selected])
 
   let select = (pos) => {
     setSelected(pos)
@@ -258,6 +257,39 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
       else { reset() }
     }
   }
+
+  let current = -1
+  return <>
+    <div style={{position: 'relative', margin: 'auto', padding: '0.8em 1em 0 1em', maxWidth: '800px'}}>
+      <div className="d-flex justify-content-end">
+        <input id="search-input" ref={inputField} type="search" placeholder={`${t('Search')}...`} onChange={(e) => {setTerm(e.target.value); setSearch(e.target.value)}} autoComplete="off" className="plain-input white ps-1" style={{borderBottom: '2px solid white', width: searchTransition ? "100%" : "10px", transition: 'width 1s'}} onKeyDown={onKeyDown} value={search}/>
+        <img className="clickable ps-2" src={XLgWhiteIcon} width="36" onClick={() => setIsSearching(false)}/>
+      </div>
+      {allMatching.length <= 0 ? '' : <>
+        <div id="search-results" style={{position: 'absolute', zIndex: '200', backgroundColor: 'white', border: '1px solid black', width: '90%', padding: '0.5em', maxHeight: 'calc(100vh - 80px)', overflowY: 'scroll'}}>
+          {Object.keys(filtered).map(key => {
+            if (filtered[key].length <= 0) {return ''}
+            return <div key={key}>
+              <h2 className="h001">{t(key)}</h2>
+              <ul className="recipe-list">
+                {filtered[key].map(e => {
+                  current += 1
+                  return <div key={key+e.id}>
+                    {e.elem({item: allMatching[current], selectedRef, isSelected: selected===current, setIsSearching})}
+                  </div>
+                })}
+              </ul>
+            </div>
+          })}
+        </div>
+      </>}
+    </div>
+  </>
+}
+
+const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[], collapsableEndItems=[], onTermChanged, onItemChoosen, data, maxWidth='100%'}) => {
+
+  const [isSearching, setIsSearching] = useState(false)
 
   const hasCollapsable = collapsableStartItems.length && collapsableEndItems.length
         
@@ -299,33 +331,7 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
     </div>
   </>
 
-  let current = -1
-  const searchMode = <>
-    <div style={{position: 'relative', margin: 'auto', padding: '0.8em 1em 0 1em', maxWidth: '800px'}}>
-      <div className="d-flex justify-content-end">
-        <input id="search-input" ref={inputField} type="search" placeholder={`${t('Search')}...`} onChange={(e) => {setTerm(e.target.value); setSearch(e.target.value)}} autoComplete="off" className="plain-input white ps-1" style={{borderBottom: '2px solid white', width: searchTransition ? "100%" : "10px", transition: 'width 1s'}} onKeyDown={onKeyDown} value={search}/>
-        <img className="clickable ps-2" src={XLgWhiteIcon} width="36" onClick={() => setIsSearching(false)}/>
-      </div>
-      {allMatching.length <= 0 ? '' : <>
-        <div id="search-results" style={{position: 'absolute', zIndex: '200', backgroundColor: 'white', border: '1px solid black', width: '90%', padding: '0.5em', maxHeight: 'calc(100vh - 80px)', overflowY: 'scroll'}}>
-          {Object.keys(filtered).map(key => {
-            if (filtered[key].length <= 0) {return ''}
-            return <div key={key}>
-              <h2 className="h001">{t(key)}</h2>
-              <ul className="recipe-list">
-                {filtered[key].map(e => {
-                  current += 1
-                  return <div key={key+e.id}>
-                    {e.elem({item: allMatching[current], selectedRef, isSelected: selected===current, setIsSearching})}
-                  </div>
-                })}
-              </ul>
-            </div>
-          })}
-        </div>
-      </>}
-    </div>
-  </>
+  const searchMode = <SearchBar {...{data, setIsSearching, onTermChanged, onItemChoosen}} />
 
   return <>
     <nav style={{backgroundColor: 'rgb(33, 37, 41)', height: '3.25em', marginBottom: '0.5em'}}>
