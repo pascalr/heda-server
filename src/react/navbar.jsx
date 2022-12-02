@@ -16,7 +16,7 @@ const RecipeListItem = ({recipe, isSelected, users, user, selectedRef, setIsSear
   }
   return (
     <li key={recipe.id} ref={isSelected ? selectedRef : null}>
-      <Link path={"/r/"+recipe.id} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined} onClick={() => setIsSearching(false)}>
+      <Link id={'r-'+recipe.id} path={"/r/"+recipe.id} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined} onClick={() => setIsSearching(false)}>
         <div className="d-flex align-items-center">
           <RecipeThumbnailImage {...{recipe}} />
           <div style={{marginRight: '0.5em'}}></div>
@@ -40,43 +40,34 @@ export const AppNavbar = ({user, _csrf, recipes, friendsRecipes, users, recipeKi
 
     data: {
       My_recipes: recipes.map(recipe => ({
-        ...recipe,
+        ...recipe, list: 'r',
         //url: localeHref("/k/"+recipeKind.id),
         elem: ({isSelected, item, selectedRef, setIsSearching}) => (
           <RecipeListItem key={item.id} {...{recipe: item, isSelected, users, user, selectedRef, setIsSearching}}/>
         ),
       })),
       Same_account_recipes: (friendsRecipes||[]).map(recipe => ({
-        ...recipe,
+        ...recipe, list: 'r',
         //url: localeHref("/k/"+recipeKind.id),
         elem: ({isSelected, item, selectedRef, setIsSearching}) => (
           <RecipeListItem key={item.id} {...{recipe: item, isSelected, users, user, selectedRef, setIsSearching}}/>
         ),
       })),
       Suggestions: recipeKinds.map(recipeKind => ({
-        ...recipeKind,
-        list: 'rk',
+        ...recipeKind, list: 'rk',
         //url: localeHref("/k/"+recipeKind.id),
         elem: ({isSelected, item, selectedRef}) => <>
           <li key={item.id} ref={isSelected ? selectedRef : null}>
-            <a href={localeHref('/k/'+item.id)} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
+            <Link id={'rk-'+item.id} path={localeHref('/k/'+item.id)} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
               <div className="d-flex align-items-center">
                 <RecipeThumbnailImage {...{recipe: item}} />
                 <div style={{marginRight: '0.5em'}}></div>
                 <div>{item.name}</div>
               </div>
-            </a>
+            </Link>
           </li>
         </>
       })),
-    },
-    onItemChoosen(item, {setIsSearching}) {
-      if (item.list === 'rk') {
-        changeUrl("/k/"+item.id)
-      } else {
-        changeUrl("/r/"+item.id)
-      }
-      setIsSearching(false)
     },
     maxWidth: '800px',
   }
@@ -126,7 +117,7 @@ function convertSearchData(fetched) {
       //url: localeHref("/k/"+recipeKind.id),
       elem: ({isSelected, item, selectedRef}) => <>
         <li key={item.id} ref={isSelected ? selectedRef : null}>
-          <Link path={'/k/'+item.id} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
+          <Link id={'rk-'+item.id} path={'/k/'+item.id} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
             <div className="d-flex align-items-center">
               <RecipeThumbnailImage {...{recipe: item}} />
               <div style={{marginRight: '0.5em'}}></div>
@@ -142,7 +133,7 @@ function convertSearchData(fetched) {
       //url: localeHref("/u/"+publicUser.id),
       elem: ({isSelected, item, selectedRef}) => <>
         <li key={item.id} className="list-group-item" ref={isSelected ? selectedRef : null}>
-          <Link path={`/u/${item.id}`} className={isSelected ? "selected" : undefined}>
+          <Link id={'u-'+item.id} path={`/u/${item.id}`} className={isSelected ? "selected" : undefined}>
             <div className="d-flex align-items-center">
               <UserThumbnailImage {...{user: item}} />
               <div style={{marginRight: '0.5em'}}></div>
@@ -162,13 +153,6 @@ export const PublicNavbar = ({locale}) => {
 
   const config = {
     data,
-    onItemChoosen(item, args) {
-      if (item.list === 'u') {
-        window.location.href = localeHref("/u/"+item.id)
-      } else {
-        window.location.href = localeHref("/k/"+item.id)
-      }
-    },
     onTermChanged(term) {
       if (term.length >= 1 && data === undefined) {
         setData(null)
@@ -210,7 +194,7 @@ const filterItems = (items, term) => {
   ))
 }
 
-const SearchBar = ({data, setIsSearching, onTermChanged, onItemChoosen}) => {
+const SearchBar = ({data, setIsSearching, onTermChanged}) => {
   
   // Search is the text shown in the input field
   // Term is the term currently used to filter the search
@@ -251,8 +235,17 @@ const SearchBar = ({data, setIsSearching, onTermChanged, onItemChoosen}) => {
   let onKeyDown = ({key}) => {
     if (key == "ArrowDown") {select(selected >= allMatching.length-1 ? -1 : selected+1)}
     else if (key == "ArrowUp") {select(selected < 0 ? allMatching.length-1 : selected-1)}
-    else if (key == "Enter") {if (onItemChoosen) {reset(); onItemChoosen(allMatching[selected], {setIsSearching})}}
-    else if (key == "Escape") {
+    else if (key == "Enter") {
+      reset()
+      setIsSearching(false)
+      let match = allMatching[selected]
+      if (match) {
+        document.getElementById(match.list+'-'+match.id).click()
+      }
+      //console.log('selected', selected)
+      //console.log('matchi', allMatching[selected])
+
+    } else if (key == "Escape") {
       if (!term || term == '') { setIsSearching(false) }
       else { reset() }
     }
@@ -287,7 +280,7 @@ const SearchBar = ({data, setIsSearching, onTermChanged, onItemChoosen}) => {
   </>
 }
 
-const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[], collapsableEndItems=[], onTermChanged, onItemChoosen, data, maxWidth='100%'}) => {
+const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[], collapsableEndItems=[], onTermChanged, data, maxWidth='100%'}) => {
 
   const [isSearching, setIsSearching] = useState(false)
 
@@ -331,7 +324,7 @@ const BaseNavbar = ({locale, startItems=[], endItems=[], collapsableStartItems=[
     </div>
   </>
 
-  const searchMode = <SearchBar {...{data, setIsSearching, onTermChanged, onItemChoosen}} />
+  const searchMode = <SearchBar {...{data, setIsSearching, onTermChanged}} />
 
   return <>
     <nav style={{backgroundColor: 'rgb(33, 37, 41)', height: '3.25em', marginBottom: '0.5em'}}>
