@@ -752,6 +752,8 @@ const DbPage = () => {
   </>
 }
 
+const Redirect = ({url}) => {useEffect(() => {window.location.href = url}); return null}
+
 export const Admin = () => {
   
   if (!window.hcu) {initHcu()}
@@ -782,6 +784,7 @@ export const Admin = () => {
     {match: "/admin/ed/:id", elem: ({id}) => <EditKind {...{id, kinds}} />},
     {match: "/admin/translate_recipe", elem: () => <TranslateRecipePage {...{recipes, locale, translations}} />},
     {match: "/admin", elem: () => <AdminPage {...{stats, publicUsers, errors}} />},
+    {match: "/", elem: () => <Redirect url='/' />},
   ]
   const defaultElement = (params) => <TranslationsPage />
   
