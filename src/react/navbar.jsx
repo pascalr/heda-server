@@ -302,7 +302,7 @@ const CssNavbar = ({startItems=[], endItems=[], collapsableStartItems=[], collap
         { currentPathIsRoot() ? 'HedaCuisine' : <Link path="/" className="plain-link white">HedaCuisine</Link>}
       </div>
       <input id="menu-toggle" type="checkbox" className='d-none'/>
-      <div className='d-flex d-lg-none'>
+      <div className='d-flex d-lg-none' style={{height: '100%'}}>
         {keyedStartItems}
         <div className='flex-grow-1'/>
         {keyedEndItems}
@@ -312,7 +312,7 @@ const CssNavbar = ({startItems=[], endItems=[], collapsableStartItems=[], collap
           </label>
         : null}
       </div>
-      <div className='menu-toggled d-flex'>
+      <div className='menu-toggled d-flex' style={{backgroundColor: 'rgb(33, 37, 41)'}}>
         {collapsableStartItems.map((e,i) => <div key={'b'+i}>{e}</div>)}
         <div className='d-lg-flex d-none'>
           {keyedStartItems}
