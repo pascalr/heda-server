@@ -6,6 +6,8 @@ Je n'ai même pas eu le temps de finir ma bière sur le balcon que Céline avait
 
 Un wikipedia, mais sans le texte. Juste les références. Ça serait un peu un mixte entre google et wikipedia.
 
+Une encyclopédie basé sur Stable Diffusion et ChatGPT. Un peu comme Urban Dictionary. Le monde vote pour la meilleur définition.
+
 VS CODE: Ctrl+Space => Trigger suggest
 
 Blog pour trucs de css et js. Pour moi principalement. Par exemple, comment aligner une image avec du texte.
@@ -19,11 +21,10 @@ Faire une page de vente pour chacune de mes idées!
 Paniers à bocaux pour faire l'épicerie au bulk barn.
 
 SVELTE!!!
-Faire une mini application de desktop virtuel en Svelte???
+
+Remplacé mon addresse courrielle et mettre admin@hedacuisine.com. Rediriger les courriels vers mon addresse personel?
 
 <noscript><div className='warning'>Afficher une message d'avertissement.</div></noscript>
-
-Convertir main search in app too
 
 Faire une animation pour le hamburger menu? https://alvarotrigo.com/blog/hamburger-menu-css/
 
@@ -57,8 +58,6 @@ Un message de bienvenue quand un utilisateur se crée un compte pour la premièr
 
 Ma recette de potage à la citrouille n'est comme pas fini on dirait...
 
-Ajouter Hedacuisine sur mon site de CV.
-
 Image suggestions for recipes. When creating and when editing image.
 Strawberry pie should show all the images of pie because they contain pie in both.
 Tag my images.
@@ -68,6 +67,8 @@ Clicking on recipe slider works like shit.
 when there is an error, have a way that the user can still access it's recipes (This will be the app I guess...)
 Un système de vérification orthographique?
 Mettre Explore la page principale
+
+Un bouton dans l'éditeur pour la chaleur. 350C ... Un bouton pour ajouter degré Celcius et un bouton en degré Fareingheight.
 
 Later:
 Log what people are searching so I know what recipe kinds to add

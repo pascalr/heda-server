@@ -1,12 +1,12 @@
 import express from 'express';
 import createError from 'http-errors';
-
-import schema from './schema.js'
-import { getTableList, safeNoQuotes, getWriteAttributes } from './lazy_db.js';
-import { db } from './db.js';
-import analytics from './analytics.js'
-import { kindAncestorId, findRecipeKindForRecipeName } from "./lib.js"
 import _ from 'lodash';
+
+import schema from '../schema.js'
+import { getTableList, safeNoQuotes, getWriteAttributes } from '../lazy_db.js';
+import { db } from '../db.js';
+import analytics from '../analytics.js'
+import { kindAncestorId, findRecipeKindForRecipeName } from "../lib.js"
 
 const router = express.Router();
 

@@ -26,8 +26,8 @@ import analytics from './analytics.js'
 import SQLiteStoreModule from 'connect-sqlite3'
 const SQLiteStore = SQLiteStoreModule(session);
 
-import router from './router.js';
-import adminRouter from './admin_router.js';
+import router from './router/main.js';
+import adminRouter from './router/admin.js';
 import { getUrlParams, localeHref, getPathFromUrl } from './utils.js';
 
 const __filename = fileURLToPath(import.meta.url);

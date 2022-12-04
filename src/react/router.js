@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
-import { queryToParams } from "../utils"
 import { match } from "path-to-regexp"
+
+import { queryToParams } from "../utils"
 
 export const useRouter = (routes, defaultElement) => {
   
