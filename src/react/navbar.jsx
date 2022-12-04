@@ -173,7 +173,7 @@ export const PublicNavbar = ({locale}) => {
   ]
 
   let startItems = [
-    <Link path={window.location.pathname+'?locale='+otherLocale} className="nav-btn fs-14" rel="alternate" hrefLang={otherLocale.toLowerCase()}>{otherLocale}</Link>,
+    <Link path={window.location.pathname+'?locale='+otherLocale} className="nav-btn" rel="alternate" hrefLang={otherLocale.toLowerCase()}>{otherLocale}</Link>,
   ]
 
   let collapsableEndItems = [
