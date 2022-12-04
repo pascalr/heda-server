@@ -246,25 +246,23 @@ input[type="checkbox"] {
     flex-direction: column;
     max-width: 800px;
     margin: auto;
-   }
-   #menu-toggle:not(:checked) ~ .menu-toggled > * {
-     height: 0;
-     line-height: 0;
-     overflow-y: hidden;
-   }
-   #menu-toggle:checked ~ .menu-toggled > * {
-     height: 1.5em;
-     line-height: 1.5em;
-     font-size: 1.25em;
-   }
-   #menu-toggle:checked ~ .menu-toggled > div.flex-grow-1 {
-     display: none;
-   }
-   .menu-toggled > * {
-     transition: height 0.4s linear, line-height 0.4s linear;
-   }
- }
-
+  }
+  #menu-toggle:not(:checked) ~ .menu-toggled > * {
+    height: 0;
+    line-height: 0;
+    overflow-y: hidden;
+  }
+  #menu-toggle:checked ~ .menu-toggled > * {
+    height: 1.5em;
+    line-height: 1.5em;
+    font-size: 1.25em;
+  }
+  #menu-toggle:checked ~ .menu-toggled > div.flex-grow-1 {
+    display: none;
+  }
+  .menu-toggled > * {
+    transition: height 0.4s linear, line-height 0.4s linear;
+  }
 }
 
 .active {

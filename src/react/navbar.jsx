@@ -292,7 +292,7 @@ const CssNavbar = ({startItems=[], endItems=[], collapsableStartItems=[], collap
   const keyedEndItems = endItems.map((e,i) => <div key={'c'+i}>{e}</div>)
 
   return <>
-    <div className='position-relative m-auto' style={{backgroundColor: 'rgb(33, 37, 41)', zIndex: '10000', lineHeight: '3.25rem', height: '100%'}}>
+    <div className='position-relative m-auto' style={{backgroundColor: 'rgb(33, 37, 41)', zIndex: '10000', lineHeight: '3.25em', height: '100%'}}>
       <div id='search-btn-ctn' className='position-absolute' style={{left: 'calc(50% + 5.5em)'}}>
         <button id="search-btn" type='button' className='plain-btn' onClick={() => setIsSearching(true)}>
           <img src={SearchWhiteIcon} style={{width: '1.4em', marginTop: '-0.1em'}}/>
@@ -302,7 +302,7 @@ const CssNavbar = ({startItems=[], endItems=[], collapsableStartItems=[], collap
         { currentPathIsRoot() ? 'HedaCuisine' : <Link path="/" className="plain-link white">HedaCuisine</Link>}
       </div>
       <input id="menu-toggle" type="checkbox" className='d-none'/>
-      <div className='d-flex d-lg-none' style={{height: '100%'}}>
+      <div className='d-flex d-lg-none align-items-center' style={{height: '100%'}}>
         {keyedStartItems}
         <div className='flex-grow-1'/>
         {keyedEndItems}
