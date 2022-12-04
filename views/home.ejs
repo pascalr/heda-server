@@ -8,9 +8,10 @@
     <link rel="stylesheet" href="/auto-complete.css">
   </head>
   <body>
-    <div class="root" id="root-home">
+    <noscript>
       <%- disablePreview ? '' : include('../public/ssr/'+locale.toLowerCase()+'/h.html') %>
-    </div>
+    </noscript>
+    <div class="root" id="root-home"></div>
     <%- include('partials/footer') %>
   </body>
 </html>

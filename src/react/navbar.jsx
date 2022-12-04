@@ -183,7 +183,9 @@ export const PublicNavbar = ({locale}) => {
   ]
 
   return <SearchNavbar {...{data, isSearching, setIsSearching, onTermChanged}}>
-    <CssNavbar {...{startItems, setIsSearching, collapsableEndItems, collapsableStartItems}} />
+    <div className='mx-3' style={{height: '100%'}}>
+      <CssNavbar {...{startItems, setIsSearching, collapsableEndItems, collapsableStartItems}} />
+    </div>
   </SearchNavbar>
 }
 
@@ -290,7 +292,7 @@ const CssNavbar = ({startItems=[], endItems=[], collapsableStartItems=[], collap
   const keyedEndItems = endItems.map((e,i) => <div key={'c'+i}>{e}</div>)
 
   return <>
-    <div className='position-relative m-auto' style={{backgroundColor: 'rgb(33, 37, 41)', zIndex: '10000', lineHeight: '3.25rem'}}>
+    <div className='position-relative m-auto' style={{backgroundColor: 'rgb(33, 37, 41)', zIndex: '10000', lineHeight: '3.25rem', height: '100%'}}>
       <div id='search-btn-ctn' className='position-absolute' style={{left: 'calc(50% + 5.5em)'}}>
         <button id="search-btn" type='button' className='plain-btn' onClick={() => setIsSearching(true)}>
           <img src={SearchWhiteIcon} style={{width: '1.4em', marginTop: '-0.1em'}}/>
