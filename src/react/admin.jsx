@@ -310,7 +310,7 @@ const RecipeKindsIndex = ({recipes, recipeKinds, publicUsers, locale, kinds}) =>
     }
   }
 
-  const latestFirst = sortByDate(recipeKinds, 'updated_at')
+  const latestFirst = sortByDate(recipeKinds, 'updated_at').slice().reverse()
 
   return <>
     <div className='trunk'>

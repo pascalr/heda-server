@@ -166,13 +166,14 @@ const sqlDb = {
     //obj = schemaHelper.beforeCreate(table, obj)
  
     let comma = (fields.length <= 0 ? '' : ',')
+    let time = now()
     let query = 'INSERT INTO '+safeTable+' (created_at,updated_at'+comma+fields.map(f => "'"+f+"'").join(',')+') '
     query += 'VALUES (?,?'+comma+fields.map(f=>'?').join(',')+')'
-    let args = [now(), now(), ...fields.map(f => validAttr(schema, table, f, obj[f]))]
+    let args = [time, time, ...fields.map(f => validAttr(schema, table, f, obj[f]))]
     
     let info = this.prepare(query).run(...args)
     if (info.changes != 1) {throw "Error creating record from in "+table+"."}
-    return {...obj, id: info.lastInsertRowid}
+    return {...obj, created_at: time, updated_at: time, id: info.lastInsertRowid}
   },
   
   findAndDestroyRecords(table, key, value, manual) {
