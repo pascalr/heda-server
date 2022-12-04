@@ -26,7 +26,7 @@ const schema = {
     security_attrs: ['original_id'],
   },
   'recipes': {
-    write_attrs: ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'ingredients', 'recipe_kind_id', 'image_slug', 'servings_name', 'is_public', 'heda_instructions'],
+    write_attrs: ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'ingredients', 'recipe_kind_id', 'image_slug', 'servings_name', 'is_public', 'heda_instructions', 'raw_servings'],
     attrs_types: {is_public: 'bool'},
     dependant_destroy: {recipe_id: ['favorite_recipes', 'meals', 'mixes', 'recipe_comments', 'recipe_notes', 'recipe_ratings', 'recipe_tools', 'references', 'suggestions']},
     security_attrs: ['user_id'],

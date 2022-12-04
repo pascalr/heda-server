@@ -27,6 +27,7 @@ import SQLiteStoreModule from 'connect-sqlite3'
 const SQLiteStore = SQLiteStoreModule(session);
 
 import router from './router/main.js';
+import loginRouter from './router/login.js';
 import adminRouter from './router/admin.js';
 import { getUrlParams, localeHref, getPathFromUrl } from './utils.js';
 
@@ -132,6 +133,8 @@ app.use(function(req, res, next) {
 });
 
 app.use('/', router);
+app.use('/', loginRouter);
+//app.use('/admin', adminRouter); TODO: DO THIS, BUT CHANGE ALL ROUTES DO THERE ARE RELATIVE TO /ADMIN inside adminRouter
 app.use('/', adminRouter);
 
 // catch 404 and forward to error handler

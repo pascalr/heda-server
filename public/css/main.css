@@ -27,19 +27,19 @@
   min-width: 230px;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 0.3em;
+  padding: 0 1em;
 }
 .trunk {
   min-width: 230px;
   max-width: 800px;
   margin: 0 auto;
-  padding: 0 0.3em;
+  padding: 0 1em;
 }
 #trunk { /* DEPRECATED, use .trunk instead */
   min-width: 230px;
   max-width: 800px;
   margin: 0 auto;
-  padding: 0 0.3em;
+  padding: 0 1em;
 }
 
 .recipe-list {
@@ -247,18 +247,25 @@ input[type="checkbox"] {
     flex-direction: column;
     max-width: 800px;
     margin: auto;
-    transition: height 2s linear;
-  }
-  #menu-toggle:checked ~ .menu-toggled {
-    height: 10em;
-  }
-  #menu-toggle:not(:checked) ~ .menu-toggled {
-    height: 0;
-    overflow: hidden;
-  }
-  #menu-toggle:checked ~ .menu-toggled > div.flex-grow-1 {
-    display: none;
-  }
+   }
+   #menu-toggle:not(:checked) ~ .menu-toggled > * {
+     height: 0;
+     line-height: 0;
+     overflow-y: hidden;
+   }
+   #menu-toggle:checked ~ .menu-toggled > * {
+     height: 1.5em;
+     line-height: 1.5em;
+     font-size: 1.25em;
+   }
+   #menu-toggle:checked ~ .menu-toggled > div.flex-grow-1 {
+     display: none;
+   }
+   .menu-toggled > * {
+     transition: height 0.4s linear, line-height 0.4s linear;
+   }
+ }
+
 }
 
 .active {

@@ -7,7 +7,7 @@ import path from 'path';
 import _ from 'lodash';
 
 import { db } from '../db.js';
-import passport from '../passport.js';
+import { ensureUser, setProfile } from './login.js';
 import { localeHref, now, ensureIsArray, shuffle } from '../utils.js';
 import { tr } from '../translate.js'
 import { translateRecipes } from '../../tasks/translate_recipes.js'
@@ -21,7 +21,7 @@ let p = process.env.VOLUME_PATH
 let VOLUME_FOLDER = p[0] == '.' ? path.join(__dirname, '..', p) : p
 let IMAGE_FOLDER = path.join(VOLUME_FOLDER, 'images')
 
-const RECIPE_ATTRS = ['user_id', 'name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'ingredients', 'image_slug', 'servings_name', 'original_id', 'is_public', 'heda_instructions']
+const RECIPE_ATTRS = ['user_id', 'name', 'recipe_kind_id', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'ingredients', 'image_slug', 'original_id', 'is_public', 'heda_instructions', 'raw_servings']
 
 function executeChain(req, res, next, chain) {
   for (let i = 0; i < chain.length; i += 1) {
@@ -43,53 +43,6 @@ function executeChain(req, res, next, chain) {
 //const ensureLoggedIn = ensureLogIn();
 const router = express.Router();
 
-const ensureLoggedIn = function(req, res, next) {
-  if (req.user && req.user.account_id) {return next()}
-  res.redirect('/')
-  //next("Error the account is not logged in...")
-}
-const ensureUser = function(req, res, next) {
-  if (req.user && req.user.user_id) {return next()}
-  res.redirect('/login')
-  //next("Error the account is not logged in or the user is not selected...")
-}
-
-function initGon(req, res, next) {
-  res.locals.gon = {}; next()
-}
-
-function fetchAccountUsers(req, res, next) {
-  let attrs = ['name', 'gender', 'image_slug', 'locale']
-  res.locals.users = db.fetchTable('users', {account_id: req.user.account_id}, attrs)
-  if (res.locals.gon) {res.locals.gon.users = res.locals.users}
-  next()
-}
-
-// DEPRECATED
-//router.get('/search', function(req, res, next) {
-//  let query = req.query.q
-//  let tokens = query.replace(' ', '%')
-//
-//  // TODO: Create another field for recipes called name_search, where it is in lowercase and where there are no accents
-//  let recipes = db.prepare("SELECT recipes.id, recipes.name, recipes.image_slug, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE users.locale = ? AND users.is_public = 1 AND recipes.name LIKE '%"+tokens+"%' COLLATE NOCASE LIMIT 30;").all(res.locals.locale)
-//
-//  let users = db.prepare("SELECT id, name, image_slug FROM users WHERE is_public = 1 AND name LIKE '%"+tokens+"%' COLLATE NOCASE LIMIT 30;").all()
-//
-//  res.json({query, results: {recipes, users}})
-//});
-
-function redirectHomeIfLoggedIn(req, res, next) {
-  if (req.user && req.user.user_id) {
-    res.redirect('/');
-  } else {
-    next()
-  }
-}
-
-router.get('/login', redirectHomeIfLoggedIn, function(req, res, next) {
-  res.render('login');
-});
-
 router.post('/log_error', function(req, res, next) {
 
   let err = _.pick(req.body, ['url', 'error', 'info'])
@@ -97,15 +50,6 @@ router.post('/log_error', function(req, res, next) {
   let opts = {allow_write: ['url', 'error', 'info', 'user_id']}
   let error = db.createRecord('errors', err, {force: true}, opts)
   res.send('ok')
-});
-
-router.get('/choose_user', redirectHomeIfLoggedIn, fetchAccountUsers, function(req, res, next) {
-  res.render('choose_user');
-});
-
-router.get('/new_user', function(req, res, next) {
-  if (req.query.err) {res.locals.error = tr(req.query.err, res.locals.locale)}
-  res.render('new_profile');
 });
 
 router.post('/upload_image', function(req, res, next) {
@@ -166,171 +110,6 @@ router.post('/upload_image', function(req, res, next) {
       });
   })()
 
-});
-
-router.post('/create_user', function(req, res, next) {
-  if (!req.user || !req.user.account_id) {return next('Must be logged in to create profile')}
-  try {
-    let info = db.prepare('INSERT INTO users (name, locale, account_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?)').run(req.body.name, req.body.locale, req.user.account_id, now(), now())
-    req.user.user_id = info.lastInsertRowid;
-    res.redirect('/');
-  } catch (err) {
-    res.redirect(localeHref('/new_user?err=Name_already_used', req.originalUrl));
-  }
-});
-
-router.delete('/destroy_profile/:id', function(req, res, next) {
-
-  if (!req.user.account_id) {return next('Must be logged in to destroy profile')}
-  let id = req.params.id
-
-  let query = 'DELETE FROM users WHERE id = ? AND account_id = ?'
-  db.prepare(query).run(id, req.user.account_id)
-  req.user.user_id = null
-  res.json({status: 'ok'})
-});
-
-router.post('/choose_user', function(req, res, next) {
-  req.user.user_id = req.body.user_id
-  res.redirect('/');
-});
-
-router.post('/change_user', function(req, res, next) {
-  req.user.user_id = req.body.user_id
-  res.redirect('/');
-});
-
-router.post('/login/password', function(req, res, next) {
-  passport.authenticate('local', {
-    successReturnToOrRedirect: localeHref('/choose_user', req.originalUrl),
-    failureRedirect: '/login',
-    failureMessage: true
-  })(req, res, next);
-});
-
-//router.post('/login/password', passport.authenticate('local', {
-//  successReturnToOrRedirect: '/choose_user',
-//  failureRedirect: '/login',
-//  failureMessage: true
-//}));
-
-router.post('/logout', function(req, res, next) {
-  req.logout(function(err) {
-    if (err) { return next(err); }
-    res.redirect(localeHref('/', req.originalUrl));
-  });
-});
-
-function setProfile(req, res, next) {
-  if (!res.locals.gon?.users) next('Error set profile must be called after fetching profiles')
-  let user = res.locals.gon.users.find(u => u.id == req.user.user_id)
-  if (!user) {req.user.user_id = null; next('Error current profile not found in database. Database changed? Logging out of profile...')}
-  res.locals.gon.user = {...user, is_admin: req.user.is_admin}
-  res.locals.user = user
-  next()
-}
-
-router.get('/edit_profile', initGon, fetchAccountUsers, setProfile, function(req, res, next) {
-  res.render('edit_profile');
-});
-
-router.get('/edit_account', initGon, fetchAccountUsers, setProfile, function(req, res, next) {
-  res.locals.gon.account = db.fetchRecord('accounts', {id: req.user.account_id}, ['email'])
-  res.render('edit_account');
-});
-
-router.get('/signup', function(req, res, next) {
-  if (req.query.err) {res.locals.error = tr(req.query.err, res.locals.locale)}
-  res.render('signup');
-});
-
-/* POST /signup
- *
- * This route creates a new user account.
- *
- * A desired username and password are submitted to this route via an HTML form,
- * which was rendered by the `GET /signup` route.  The password is hashed and
- * then a new user record is inserted into the database.  If the record is
- * successfully created, the user is logged in.
- */
-router.post('/signup', function(req, res, next) {
-  var salt = crypto.randomBytes(16);
-  crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', function(err, hashedPassword) {
-    if (err) { return next(err); }
-    try {
-      const info = db.prepare('INSERT INTO accounts (email, encrypted_password, salt, created_at, updated_at) VALUES (?, ?, ?, ?, ?)').run(req.body.email, hashedPassword, salt, now(), now())
-      var user = {
-        account_id: info.lastInsertRowid,
-        email: req.body.email
-      };
-      req.login(user, function(err) {
-        if (err) { return next(err); }
-        res.redirect(localeHref('/', req.originalUrl));
-      });
-    } catch (err) {
-      if (err.code && err.code === "SQLITE_CONSTRAINT_UNIQUE") { // SqliteError
-        res.redirect(localeHref('/signup?err=Account_already_associated', req.originalUrl));
-      } else {
-        res.redirect(localeHref('/signup?err=Error_creating', req.originalUrl));
-      }
-    }
-  });
-});
-
-// https://stackoverflow.com/questions/20277020/how-to-reset-change-password-in-node-js-with-passport-js
-router.get('/forgot', function (req, res, next) {
-  if (req.isAuthenticated()) { return res.redirect('/'); /* user is alreay logged in */ }
-  res.render('forgot');
-});
-
-// https://stackoverflow.com/questions/20277020/how-to-reset-change-password-in-node-js-with-passport-js
-router.post('/forgot', function (req, res, next) {
-  if (req.isAuthenticated()) { return res.redirect('/'); /* user is alreay logged in */ }
-  users.forgot(req, res, function (err) {
-    if (err) {
-      req.flash('error', err);
-    }
-    else {
-      req.flash('success', 'Please check your email for further instructions.');
-    }
-    res.redirect('/');
-  });
-});
-
-// https://stackoverflow.com/questions/20277020/how-to-reset-change-password-in-node-js-with-passport-js
-router.get('/reset/:token', function (req, res, next) {
-  if (req.isAuthenticated()) { return res.redirect('/'); /* user is alreay logged in */ }
-
-  var token = req.params.token;
-  res.locals.token = token;
-  //users.checkReset(token, req, res, function (err, data) {
-  //  if (err)
-  //    req.flash('error', err);
-
-  //  //show the UI with new password entry
-  //  res.render('reset');
-  //});
-  res.render('reset');
-});
-
-// https://stackoverflow.com/questions/20277020/how-to-reset-change-password-in-node-js-with-passport-js
-router.post('/reset', function (req, res, next) {
-  if (req.isAuthenticated() || !req.body.token) { return res.redirect('/'); /* user is alreay logged in */ }
-  
-  var salt = crypto.randomBytes(16);
-  crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', function(err, hashedPassword) {
-    if (err) { return next(err); }
-    let info = db.prepare('UPDATE accounts SET encrypted_password = ?, salt = ?, updated_at = ? WHERE reset_password_token = ?').run(hashedPassword, salt, now(), req.body.token)
-    var user = {
-      id: this.lastInsertRowid,
-      username: req.body.username
-    };
-    req.login(user, function(err) {
-      if (err) { return next(err); }
-      res.redirect('/');
-    });
-    
-  });
 });
 
 router.get('/imgs/:variant/:slug', function(req, res, next) {
@@ -718,22 +497,3 @@ router.post('/duplicate_recipe/:id', function(req, res, next) {
 });
 
 export default router;
-//module.exports = router;
-//
-//
-
-//// WARNING: All users have access to these
-//const ALLOWED_COLUMNS_GET = {
-//  'recipes': RECIPE_ATTRS
-//}
-//router.get('/fetch_record/:table/:id', function(req, res, next) {
-//
-//  let id = req.params.id
-//  let table = req.params.table
-//  if (Object.keys(ALLOWED_COLUMNS_GET).includes(table)) {
-//    const record = db.fetchRecord(table, {id: id}, ALLOWED_COLUMNS_GET[table])
-//    res.json({...record})
-//  } else {
-//    throw new Error("FetchRecord not allowed")
-//  }
-//});
