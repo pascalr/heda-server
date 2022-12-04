@@ -19,6 +19,7 @@ import { DescriptionTiptap } from "./tiptap"
 import {EditRecipeImageModal, EditableImage} from './modals/recipe_image'
 import schema from '../schema'
 import { HomeTab } from './core'
+import { sortByDate } from '../utils'
 
 const AdminTabs = ({machines}) => {
   return <>
@@ -300,7 +301,7 @@ const RecipeKindsIndex = ({recipes, recipeKinds, publicUsers, locale, kinds}) =>
 
   const missings = recipes.filter(r => !r.recipe_kind_id && !findRecipeKindForRecipeName(r.name, recipeKinds))
 
-  const createRecipeKind = (recipe) => {
+  const createRecipeKind = (recipe={}) => {
     window.hcu.createRecord('recipe_kinds', {name_fr: recipe.name, image_slug: recipe.image_slug})
   }
   const destroyRecipeKind = (recipeKind) => {
@@ -309,10 +310,15 @@ const RecipeKindsIndex = ({recipes, recipeKinds, publicUsers, locale, kinds}) =>
     }
   }
 
+  const latestFirst = sortByDate(recipeKinds, 'updated_at')
+
   return <>
     <div className='trunk'>
-      <h1>Recipe kinds</h1>
-      {recipeKinds.map(recipeKind => {
+      <div className="d-flex gap-15 align-items-center">
+        <h1>Recipe Kinds</h1>
+        <button type="button" className="btn btn-outline-primary btn-sm" onClick={createRecipeKind}>Create recipe kind</button>
+      </div>
+      {latestFirst.map(recipeKind => {
         let name = recipeKind[localeAttr('name', locale)]
         return <div key={recipeKind.id} className='d-flex align-items-center'>
           <CollectionSelect model={recipeKind} field="kind_id" options={kinds.map(k => k.id)} showOption={(id) => kinds.find(k => k.id == id)[localeAttr('name', locale)]} includeBlank="true" />

@@ -32,7 +32,7 @@ export const Home = () => {
         <div style={{width: '25em', maxWidth: '100%', margin: 'auto', fontFamily: 'Montserra'}}>
           <h1 className="fs-25">Heda cuisine</h1>
           <h5><i>{t('Home_2')}</i></h5>
-          <p className="py-3 fs-095">{t('Home_1')}</p>
+          <p className="py-3">{t('Home_1')}</p>
           <Link className="btn btn-primary" style={{padding: '0.5em 3em', margin: 'auto'}} path={"/login"}>{t('Sign_in')} ({t('beta')})</Link>
         </div>
         <div className='flex-grow-1' style={{height: '3em'}}></div>
