@@ -173,7 +173,7 @@ export const PublicNavbar = ({locale}) => {
   ]
 
   let startItems = [
-    <Link path={window.location.pathname+'?locale='+otherLocale} className="nav-btn" rel="alternate" hrefLang={otherLocale.toLowerCase()}>{otherLocale}</Link>,
+    <Link path={window.location.pathname+'?locale='+otherLocale} className="nav-btn fs-lg-14" rel="alternate" hrefLang={otherLocale.toLowerCase()}>{otherLocale}</Link>,
   ]
 
   let collapsableEndItems = [
@@ -183,7 +183,7 @@ export const PublicNavbar = ({locale}) => {
   ]
 
   return <SearchNavbar {...{data, isSearching, setIsSearching, onTermChanged}}>
-    <div className='mx-3' style={{height: '100%'}}>
+    <div className='mx-lg-3' style={{height: '100%'}}>
       <CssNavbar {...{startItems, setIsSearching, collapsableEndItems, collapsableStartItems}} />
     </div>
   </SearchNavbar>

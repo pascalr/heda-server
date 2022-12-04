@@ -242,6 +242,10 @@ input[type="checkbox"] {
 
 @media screen and (max-width: 992px) {
 
+  .fs-lg-14 {
+    font-size: 1.4em;
+  }
+
   #menu-toggle ~ .menu-toggled {
     flex-direction: column;
     max-width: 800px;
