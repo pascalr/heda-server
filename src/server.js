@@ -15,6 +15,7 @@ import fs from 'fs';
 const debug = debugModule('todos:server');
 import fileUpload from 'express-fileupload';
 import _ from 'lodash';
+import flash from 'connect-flash';
 
 import { tr } from './translate.js'
 import { enableLiveReload } from './livereload.js'
@@ -97,6 +98,7 @@ app.use(fileUpload());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
 // FIXME: This is bad because it serves all files. Only route for the specific css files required.
 app.use(express.static(path.join(__dirname, '../node_modules/bootstrap/dist/')));
 app.use(express.static(path.join(__dirname, '../node_modules/@popperjs/core/dist/')));
@@ -112,6 +114,7 @@ app.use(session({
   saveUninitialized: false, // don't create session until something stored
   store: new SQLiteStore({ db: 'sessions.db', dir: process.env.VOLUME_PATH })
 }));
+app.use(flash());
 app.use(csrf());
 app.use(passport.authenticate('session'));
 // Server-side analytics

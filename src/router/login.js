@@ -125,12 +125,6 @@ router.get('/edit_account', initGon, fetchAccountUsers, setProfile, function(req
   res.render('edit_account');
 });
 
-router.get('/signup', function(req, res, next) {
-  if (req.query.err) {res.locals.error = tr(req.query.err, res.locals.locale)}
-  res.render('signup');
-});
-
-
 // https://stackoverflow.com/questions/20277020/how-to-reset-change-password-in-node-js-with-passport-js
 router.get('/forgot', function (req, res, next) {
   if (req.isAuthenticated()) { return res.redirect('/'); /* user is alreay logged in */ }
@@ -203,6 +197,10 @@ router.get('/confirm_signup', function(req, res, next) {
   }
 })
 
+router.get('/signup', function(req, res, next) {
+  res.render('signup', {errors: req.flash('error')});
+});
+
 /**
  * Create a user with the given email. Store salt and encrypted password. Store token for email validation.
  * 
@@ -236,13 +234,14 @@ router.post('/signup', function(req, res, next) {
       } catch (err) {
         console.log('CREATE USER ERROR:', err)
         if (err.code && err.code === "SQLITE_CONSTRAINT_UNIQUE") { // SqliteError
-          res.redirect(localeHref('/signup?err=Account_already_associated', req.originalUrl));
-        } else {
-          res.redirect(localeHref('/signup?err=Error_creating', req.originalUrl));
+          req.flash('error', tr('Account_already_associated', res.locals.locale))
+          res.redirect(localeHref('/signup', req.originalUrl));
         }
       }
     })
   }
+  req.flash('error', tr('Error_creating', res.locals.locale))
+  res.redirect(localeHref('/signup', req.originalUrl));
 });
 
 export default router;

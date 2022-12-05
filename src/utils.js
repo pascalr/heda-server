@@ -1,11 +1,21 @@
-import { normalizeSearchText } from "./react/utils"; // FIXME: Move this here
-
 /**
 * Convert the integer given to a string at least two characters long.
 * Source: https://stackoverflow.com/questions/5914020/javascript-date-to-string
 */
 export function padStr(i) {
   return (i < 10) ? "0" + i : "" + i;
+}
+
+// https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
+/**
+ * Remove the accents and make all characters lowercase.
+ * @param String text 
+ * @returns 
+ */
+export function normalizeSearchText(text) {
+  if (text == null) {return null}
+  if (text == '') {return ''}
+  return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
 }
 
 /**

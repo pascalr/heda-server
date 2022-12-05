@@ -1,4 +1,4 @@
-import { normalizeSearchText } from "./react/utils.js"
+import { normalizeSearchText } from "./utils.js"
 import Quantity from './quantity.js'
 import { t, tr } from './translate.js'
 import { ensureIsArray } from './utils.js';

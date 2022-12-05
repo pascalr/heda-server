@@ -24,7 +24,13 @@ SVELTE!!! Mais pas pour HedaCuisine...
 ******************************************
 ******************************************
 
+/favicon.ico
+
+Est-ce que ça me prend toastr pour les logins???
+
 Validate signup client side.
+POST /username_available/
+Username is available in green
 
 Une erreur flash au lieu de celà.
 http://localhost:3000/signup?locale=FR&err=Error_creating

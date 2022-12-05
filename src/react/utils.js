@@ -160,6 +160,9 @@ export function ajax(params) {
 }
 
 // https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
+/**
+ * @deprecated MOVED TO src/utils
+ */
 export function normalizeSearchText(text) {
   if (text == null) {return null}
   if (text == '') {return ''}
