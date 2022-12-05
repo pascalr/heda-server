@@ -5,7 +5,7 @@ import sendgrid from '@sendgrid/mail';
 import connectEnsureLogin from 'connect-ensure-login'
 
 import passport from '../passport.js';
-import { isValidEmail, isValidPassword, localeHref, now } from '../utils.js';
+import { isValidEmail, isValidPassword, isValidUsername, localeHref, now } from '../utils.js';
 import { db } from '../db.js';
 import { tr } from '../translate.js'
 
@@ -210,15 +210,19 @@ router.get('/confirm_signup', function(req, res, next) {
  */
 router.post('/signup', function(req, res, next) {
 
-  let {email, password} = req.body
-  if (isValidEmail(email) && isValidPassword(password)) {
+  let {email, username, password} = req.body
+
+  let allUsers = db.fetchTable('users', {}, ['name'])
+
+  if (isValidEmail(email) && isValidUsername(username, allUsers) && isValidPassword(password)) {
 
     var salt = crypto.randomBytes(16);
     crypto.pbkdf2(password, salt, 310000, 32, 'sha256', function(err, hashedPassword) {
       if (err) { return next(err); }
       try {
         var token = crypto.randomUUID();
-        db.prepare('INSERT INTO users (email, confirm_email_token, encrypted_password, salt, created_at, updated_at) VALUES (?, ?, ?, ?, ?)').run(email, token, hashedPassword, salt, now(), now())
+        let q = 'INSERT INTO users (email, name, confirm_email_token, encrypted_password, salt, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
+        db.prepare(q).run(email, username, token, hashedPassword, salt, now(), now())
         var link = res.locals.origin+'/confirm_signup?token=' + token;
         var msg = {
           to: email,
@@ -230,6 +234,7 @@ router.post('/signup', function(req, res, next) {
         sendgrid.send(msg);
         res.redirect('/waiting_confirm')
       } catch (err) {
+        console.log('CREATE USER ERROR:', err)
         if (err.code && err.code === "SQLITE_CONSTRAINT_UNIQUE") { // SqliteError
           res.redirect(localeHref('/signup?err=Account_already_associated', req.originalUrl));
         } else {

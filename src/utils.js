@@ -1,3 +1,5 @@
+import { normalizeSearchText } from "./react/utils"; // FIXME: Move this here
+
 /**
 * Convert the integer given to a string at least two characters long.
 * Source: https://stackoverflow.com/questions/5914020/javascript-date-to-string
@@ -171,6 +173,16 @@ export function isValidEmail(email) {
  */
 export function isValidPassword(password) {
   return password.length >= 6
+}
+
+/**
+ * Check if the given username is valid. Must be unique and at least 3 characters long.
+ * @param String username 
+ */
+export function isValidUsername(username, allUsers) {
+  let n = normalizeSearchText(username)
+  let sameName = allUsers.map(u => normalizeSearchText(u.name) == n)
+  return !sameName && n.length >= 3
 }
 
 /**

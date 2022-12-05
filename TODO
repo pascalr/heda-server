@@ -20,6 +20,15 @@ Paniers à bocaux pour faire l'épicerie au bulk barn.
 
 SVELTE!!! Mais pas pour HedaCuisine...
 
+******************************************
+******************************************
+******************************************
+
+Validate signup client side.
+
+Une erreur flash au lieu de celà.
+http://localhost:3000/signup?locale=FR&err=Error_creating
+
 Add message to user that it the user has been validated. They can now log in.
 
 J'ai commenté les users dans schéma parce qu'ils ne sont plus dépendant des accounts maintenant... Pouvoir modifier les valeurs des users.

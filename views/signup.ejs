@@ -13,6 +13,11 @@
       <% } %>
       <form action="<%- localeHref(req, '/signup') %>" method="post">
         <div>
+          <label for="username"><%- tr('Username', locale) %> (public)</label>
+          <input id="username" name="username" class="form-control" type="text" autocomplete="email" required>
+        </div>
+        <br/>
+        <div>
           <label for="email"><%- tr('Email', locale) %></label>
           <input id="email" name="email" class="form-control" type="text" autocomplete="email" required>
         </div>
