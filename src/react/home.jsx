@@ -26,7 +26,7 @@ export const Home = () => {
 
   const preloadItem = (i) => {if (i.image_slug) {preloadImage('/imgs/small/'+i.image_slug)}}
   return <>
-    <div style={{padding: '4em 0.3em 8em 0.3em', maxWidth: '70em', margin: 'auto'}}>
+    <div style={{padding: '4em 0.5em 8em 0.5em', maxWidth: '70em', margin: 'auto'}}>
       <div className="d-block d-md-flex">
         <div className='flex-grow-1'></div>
         <div style={{width: '25em', maxWidth: '100%', margin: 'auto', fontFamily: 'Montserra'}}>
@@ -43,23 +43,23 @@ export const Home = () => {
       </div>
     </div>
     <hr style={{border: '1px solid black', width: '70%', margin: 'auto'}} />
-    <div style={{padding: '5em 0.3em', backgroundColor: '#fafbfc'}}>
-      <div className='d-flex align-items-center' style={{maxWidth: '50em', margin: 'auto'}}>
-        <div className="smartphone d-none d-sm-block">
-          <div className='content'>
-            <iframe src={localeHref("/k/51")} style={{width: '100%', border: 'none', height: '100%'}}/>
-          </div>
-        </div>
-        <div style={{width: '2em', flexShrink: '0'}}/>
-        <div className="ff-montserra">
+    <div style={{padding: '5em 0.5em', backgroundColor: '#fafbfc'}}>
+      <div className='d-block d-md-flex align-items-center' style={{maxWidth: '50em', margin: 'auto'}}>
+        <div className="ff-montserra" style={{order: '3'}}>
           <h2>{t('Home_11')}</h2>
           <p>{t('Home_12')}</p>
           <p>{t('Home_13')}</p>
         </div>
+        <div style={{width: '2em', height: '2em', flexShrink: '0', order: '2'}}/>
+        <div className="smartphone" style={{width: '360px', height: '600px', maxWidth: '80vw', flexShrink: '0', order: '1'}}>
+          <div className='content' style={{width: '100%', height: '100%'}}>
+            <iframe src={localeHref("/k/51")} style={{width: '100%', border: 'none', height: '100%'}}/>
+          </div>
+        </div>
       </div>
     </div>
     <hr style={{border: '1px solid black', width: '70%', margin: 'auto'}} />
-    <div className='trunk'style={{padding: '5em 0.3em'}}>
+    <div className='trunk'style={{padding: '5em 0.5em'}}>
       <div className="ff-montserra" style={{maxWidth: '40em', margin: 'auto'}}>
         <h2>{t('Home_3')}</h2>
         <p>{t('Home_4')}</p>
@@ -67,7 +67,7 @@ export const Home = () => {
       <SuggestionsPage />
     </div>
     <hr style={{border: '1px solid black', width: '70%', margin: 'auto'}} />
-    <div style={{padding: '5em 0.3em', backgroundColor: '#fafbfc'}}>
+    <div style={{padding: '5em 0.5em', backgroundColor: '#fafbfc'}}>
       <div className="trunk">
         <div className="ff-montserra mb-2">
           <h2>{t('Home_9')}</h2>
@@ -79,7 +79,7 @@ export const Home = () => {
       </div>
     </div>
     <hr style={{border: '1px solid black', width: '70%', margin: 'auto'}} />
-    <div style={{padding: '5em 0.3em'}}>
+    <div style={{padding: '5em 0.5em'}}>
       <div className="trunk">
         <div className="ff-montserra mb-2">
           <h2>{t('About_HedaCuisine')}</h2>
