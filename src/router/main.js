@@ -1,6 +1,4 @@
 import express from 'express';
-import crypto from 'crypto';
-import connectEnsureLogin from 'connect-ensure-login'
 import { fileURLToPath } from 'url';
 import sharp from 'sharp'
 import path from 'path';
@@ -8,10 +6,9 @@ import _ from 'lodash';
 
 import { db } from '../db.js';
 import { ensureUser, setProfile } from './login.js';
-import { localeHref, now, ensureIsArray, shuffle } from '../utils.js';
+import { localeHref, now, shuffle } from '../utils.js';
 import { tr } from '../translate.js'
-import { translateRecipes } from '../../tasks/translate_recipes.js'
-import Translator, { TranslationsCacheStrategy, LogStrategy } from '../translator.js'
+import schema from '../schema.js'
 import { fetchWithAncestors, fetchTableLocaleAttrs, fetchRecordLocaleAttrs, descriptionRecipeIngredients, kindAncestorId } from "../lib.js"
 
 const __filename = fileURLToPath(import.meta.url);
@@ -241,7 +238,7 @@ router.get('/fetch_suggestions', function(req, res, next) {
   let answers = req.query.answers.split(',')
   console.log('answers', answers)
   
-  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug', 'is_meal', 'is_appetizer', 'is_dessert', 'is_simple', 'is_normal', 'is_gourmet', 'is_other', 'is_very_fast', 'is_fast', 'is_small_qty', 'is_big_qty', 'is_medium_qty'], ['name', 'recipe_count'], res.locals.locale)
+  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug', ...schema.recipe_kinds.data.data_attrs], ['name', 'recipe_count'], res.locals.locale)
   let suggestions = _.sortBy(recipeKinds, k => {
     let score = Math.random()*0.001
     answers.forEach(answer => {

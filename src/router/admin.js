@@ -7,10 +7,10 @@ import { getTableList, safeNoQuotes, getWriteAttributes } from '../lazy_db.js';
 import { db } from '../db.js';
 import analytics from '../analytics.js'
 import { kindAncestorId, findRecipeKindForRecipeName } from "../lib.js"
+import { translateRecipes } from '../../tasks/translate_recipes.js'
+import Translator, { TranslationsCacheStrategy } from '../translator.js'
 
 const router = express.Router();
-
-const RECIPE_KIND_DATA_ATTRS = ['is_meal', 'is_appetizer', 'is_dessert', 'is_simple', 'is_normal', 'is_gourmet', 'is_other', 'is_very_fast', 'is_fast', 'is_small_qty', 'is_big_qty', 'is_medium_qty']
 
 // All the routes here are only available to users that are admin.
 // Respond with 404 if the user is not an admin.
@@ -21,7 +21,7 @@ router.use((req, res, next) => {
 
 const renderAdmin = (req, res, next) => {
 
-  let recipe_kinds = db.fetchTable('recipe_kinds', {}, ['name_fr', 'json_fr', 'name_en', 'json_en', 'kind_id', 'image_slug', 'recipe_count_fr', 'recipe_count_en', 'updated_at', ...RECIPE_KIND_DATA_ATTRS])
+  let recipe_kinds = db.fetchTable('recipe_kinds', {}, ['name_fr', 'json_fr', 'name_en', 'json_en', 'kind_id', 'image_slug', 'recipe_count_fr', 'recipe_count_en', 'updated_at', ...schema.recipe_kinds.data.data_attrs])
   let users = db.fetchTable('users', {account_id: req.user.account_id}, ['name', 'image_slug', 'locale'])
 
   res.locals.gon = {

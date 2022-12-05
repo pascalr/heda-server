@@ -126,7 +126,8 @@ app.use(function(req, res, next) {
 app.use(function(req, res, next) {
   res.locals.csrfToken = req.csrfToken();
   res.locals.href = req.url;
-  res.locals.locale = (req.query.locale || 'en').toLowerCase();
+  console.log('user for locale', req.user)
+  res.locals.locale = (req.user?.locale || req.query.locale || 'en').toLowerCase();
   res.locals.req = req;
   res.locals.origin = req.protocol+'://'+req.get('host');
   next();
