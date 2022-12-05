@@ -155,6 +155,25 @@ export function sortByDate(list, attr) {
 }
 
 /**
+ * Check if the given email is valid.
+ * @param String email 
+ * @returns True if the given email is valid.
+ */
+export function isValidEmail(email) {
+  const res = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return res.test(String(email).toLowerCase());
+}
+
+/**
+ * Check if the given password is valid. Must be at least 6 characters long.
+ * @param String password 
+ * @returns True if the given password is valid.
+ */
+export function isValidPassword(password) {
+  return password.length >= 6
+}
+
+/**
  * Returns an empty array if the obj is null.
  * Returns the object if it already is an array.
  * Returns an array with a single element otherwise.

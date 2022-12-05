@@ -18,7 +18,25 @@ Faire une page de vente pour chacune de mes idées!
 
 Paniers à bocaux pour faire l'épicerie au bulk barn.
 
-SVELTE!!!
+SVELTE!!! Mais pas pour HedaCuisine...
+
+Add message to user that it the user has been validated. They can now log in.
+
+J'ai commenté les users dans schéma parce qu'ils ne sont plus dépendant des accounts maintenant... Pouvoir modifier les valeurs des users.
+
+Only allow email validated users to log in.
+
+Faire un petit captcha custom:
+Dans un gâteau tu met:
+1 c. à thé de sel, 1 c. à table, 1 t de sel?
+Dans une tarte aux pommes, tu mets?
+Des fraises, des cerires ou des pommes?
+Bouton JE NE SUIS PAS UN ROBOT
+
+Typescript la database pour que l'autocomplete puisse me suggérer des noms function. db.create... => ...........
+(Ou bien c'est parce que c'est bizare ce que j'ai fait. Créer une classe?)
+
+Email en français aussi.
 
 Quand je change un truc de sélection de suggestions. Remettre le carrousel au départ
 

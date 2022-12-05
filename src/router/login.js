@@ -1,14 +1,17 @@
 
 import express from 'express';
 import crypto from 'crypto';
+import sendgrid from '@sendgrid/mail';
 import connectEnsureLogin from 'connect-ensure-login'
 
 import passport from '../passport.js';
-import { localeHref, now } from '../utils.js';
+import { isValidEmail, isValidPassword, localeHref, now } from '../utils.js';
 import { db } from '../db.js';
-
+import { tr } from '../translate.js'
 
 const router = express.Router();
+
+sendgrid.setApiKey(process.env['SENDGRID_API_KEY']);
 
 export const ensureLoggedIn = function(req, res, next) {
   if (req.user && req.user.account_id) {return next()}
@@ -41,6 +44,7 @@ function redirectHomeIfLoggedIn(req, res, next) {
 }
 
 router.get('/login', redirectHomeIfLoggedIn, function(req, res, next) {
+  res.locals.email_just_validated = req.query.email_just_validated
   res.render('login');
 });
 
@@ -183,38 +187,57 @@ router.post('/reset', function (req, res, next) {
   });
 });
 
+router.get('/waiting_confirm', redirectHomeIfLoggedIn, function(req, res, next) {
+  res.render('waiting_confirm')
+})
 
-/* POST /signup
- *
- * This route creates a new user account.
- *
- * A desired username and password are submitted to this route via an HTML form,
- * which was rendered by the `GET /signup` route.  The password is hashed and
- * then a new user record is inserted into the database.  If the record is
- * successfully created, the user is logged in.
+router.get('/confirm_signup', function(req, res, next) {
+  const user = db.fetchRecord('users', {email_confirmation_token: req.query.token}, ['email', 'email_validated'])
+  if (user) {
+    if (!user.email_validated) {
+      user.findAndUpdateRecord('users', user, {email_validated: 1}, req.user)
+    }
+    res.redirect('/login?msg=email_just_validated=1') // TODO: Add messages. Add message to user that it the user has been validated. They can now log in.
+  } else {
+    res.redirect('/signup') // TODO: Add error message
+  }
+})
+
+/**
+ * Create a user with the given email. Store salt and encrypted password. Store token for email validation.
+ * 
+ * Send an email in order to validate the user. Don't log the user in yet.
  */
 router.post('/signup', function(req, res, next) {
-  var salt = crypto.randomBytes(16);
-  crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', function(err, hashedPassword) {
-    if (err) { return next(err); }
-    try {
-      const info = db.prepare('INSERT INTO accounts (email, encrypted_password, salt, created_at, updated_at) VALUES (?, ?, ?, ?, ?)').run(req.body.email, hashedPassword, salt, now(), now())
-      var user = {
-        account_id: info.lastInsertRowid,
-        email: req.body.email
-      };
-      req.login(user, function(err) {
-        if (err) { return next(err); }
-        res.redirect(localeHref('/', req.originalUrl));
-      });
-    } catch (err) {
-      if (err.code && err.code === "SQLITE_CONSTRAINT_UNIQUE") { // SqliteError
-        res.redirect(localeHref('/signup?err=Account_already_associated', req.originalUrl));
-      } else {
-        res.redirect(localeHref('/signup?err=Error_creating', req.originalUrl));
+
+  let {email, password} = req.body
+  if (isValidEmail(email) && isValidPassword(password)) {
+
+    var salt = crypto.randomBytes(16);
+    crypto.pbkdf2(password, salt, 310000, 32, 'sha256', function(err, hashedPassword) {
+      if (err) { return next(err); }
+      try {
+        var token = crypto.randomUUID();
+        db.prepare('INSERT INTO users (email, confirm_email_token, encrypted_password, salt, created_at, updated_at) VALUES (?, ?, ?, ?, ?)').run(email, token, hashedPassword, salt, now(), now())
+        var link = res.locals.origin+'/confirm_signup?token=' + token;
+        var msg = {
+          to: email,
+          from: 'admin@hedacuisine.com',
+          subject: 'Sign in to HedaCuisine',
+          text: 'Hello! Click the link below to finish signing in to HedaCuisine.\r\n\r\n' + link,
+          html: '<h3>Hello!</h3><p>Click the link below to finish signing in to HedaCuisine.</p><p><a href="' + link + '">Sign in</a></p>',
+        };
+        sendgrid.send(msg);
+        res.redirect('/waiting_confirm')
+      } catch (err) {
+        if (err.code && err.code === "SQLITE_CONSTRAINT_UNIQUE") { // SqliteError
+          res.redirect(localeHref('/signup?err=Account_already_associated', req.originalUrl));
+        } else {
+          res.redirect(localeHref('/signup?err=Error_creating', req.originalUrl));
+        }
       }
-    }
-  });
+    })
+  }
 });
 
 export default router;

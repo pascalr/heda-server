@@ -40,7 +40,7 @@ const schema = {
     //write_attrs: ['name', 'gender', 'image_slug', 'locale', 'is_public'],
     write_attrs: ['name', 'gender', 'image_slug', 'locale'],
     //attrs_types: {is_public: 'bool'},
-    security_attrs: ['account_id'],
+    security_attrs: ['id'],
   },
   'favorite_recipes': {
     write_attrs: ['list_id', 'recipe_id'],
