@@ -4,7 +4,7 @@ import { UserThumbnailImage, RecipeThumbnailImage } from "./image"
 import { ajax, changeUrl } from "./utils"
 import { t } from "../translate"
 import { localeHref, getPathFromUrl, ArrayCombination, getUrlParams } from "../utils"
-import { useTransition, Link, currentPathIsRoot } from "./lib"
+import { useFalseOnce, Link, currentPathIsRoot } from "./lib"
 import { ArrowLeftSquareWhiteIcon, SearchWhiteIcon, PersonFillWhiteIcon, XLgWhiteIcon, ListWhiteIcon } from '../server/image.js'
 import { normalizeSearchText } from "./utils"
 
@@ -151,7 +151,7 @@ function convertSearchData(fetched) {
 
 const SearchButton = ({setIsSearching}) => {
   return <>
-    <button id="search-btn" type='button' className='plain-btn' onClick={() => setIsSearching(true)}>
+    <button id="search-btn" type='button' className='plain-btn mx-2' onClick={() => setIsSearching(true)}>
       <img src={SearchWhiteIcon} style={{width: '1.4em', marginTop: '-0.1em'}}/>
     </button>
   </>
@@ -197,7 +197,7 @@ export const PublicNavbar = ({locale}) => {
 
   return <SearchNavbar {...{data, isSearching, setIsSearching, onTermChanged}}>
     <div className='mx-lg-3' style={{height: '100%'}}>
-      <CssNavbar {...{endItems, setIsSearching, collapsableEndItems, collapsableStartItems}} />
+      <CssNavbar {...{startItems, endItems, setIsSearching, collapsableEndItems, collapsableStartItems}} />
     </div>
   </SearchNavbar>
 }
@@ -219,8 +219,11 @@ const SearchBar = ({data, isSearching, setIsSearching, onTermChanged}) => {
   const [term, setTerm] = useState('')
   const [selected, setSelected] = useState(-1)
   const selectedRef = useRef(null)
-  const searchTransition = useTransition(true)
+  const searchTransition = useFalseOnce()
   const inputField = useRef(null)
+
+  console.log('searchTransition', searchTransition)
+  console.log('isSearching', isSearching)
 
   useEffect(() => {
     inputField.current.focus()
@@ -316,7 +319,7 @@ const CssNavbar = ({startItems=[], endItems=[], collapsableStartItems=[], collap
         {keyedEndItems}
         {hasCollapsable ?
           <label className='menu-button-container clickable' htmlFor="menu-toggle">
-            <img className="mx-3" src={ListWhiteIcon} style={{width: '2em', marginTop: '-0.2em'}}/>
+            <img className="me-3 ms-1" src={ListWhiteIcon} style={{width: '2em', marginTop: '-0.2em'}}/>
           </label>
         : null}
       </div>

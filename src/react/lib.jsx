@@ -36,6 +36,8 @@ export function recipeOrTranslation(originalRecipe, translatedRecipes, locale) {
 /**
  * Delay for a single render frame. This way the initial element is rendered, then
  * the transition can take place.
+ * 
+ * FIXME: Is this usefull? How about only using useFalseOnce???
  *
  * Usage:
  * const [bool, setBool] = useState(false)
@@ -47,6 +49,12 @@ export const useTransition = (variable) => {
   useEffect(() => {
     setV(variable)
   }, [variable])
+  return v
+}
+
+export const useFalseOnce = () => {
+  const [v, setV] = useState(false) 
+  useEffect(() => {setV(true)}, [])
   return v
 }
 
