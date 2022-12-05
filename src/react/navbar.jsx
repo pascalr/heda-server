@@ -75,6 +75,7 @@ export const AppNavbar = ({user, _csrf, recipes, friendsRecipes, users, recipeKi
   ]
 
   let endItems = [
+    <SearchButton {...{setIsSearching}} />,
     <div className="dropdown">
       <button className="plain-btn dropdown-toggle" type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style={{marginRight: '1em', color: 'white'}}>
         <img src={PersonFillWhiteIcon} style={{width: '2em', marginTop: '-0.3em'}}/>
@@ -106,7 +107,7 @@ export const AppNavbar = ({user, _csrf, recipes, friendsRecipes, users, recipeKi
 
   return <SearchNavbar {...{isSearching, setIsSearching, data}}>
     <div style={{maxWidth: '800px', margin: 'auto'}}>
-      <CssNavbar {...{startItems, setIsSearching, endItems}} />
+      <CssNavbar {...{startItems, endItems}} />
     </div>
   </SearchNavbar>
 }
@@ -148,6 +149,14 @@ function convertSearchData(fetched) {
   })
 }
 
+const SearchButton = ({setIsSearching}) => {
+  return <>
+    <button id="search-btn" type='button' className='plain-btn' onClick={() => setIsSearching(true)}>
+      <img src={SearchWhiteIcon} style={{width: '1.4em', marginTop: '-0.1em'}}/>
+    </button>
+  </>
+}
+
 export const PublicNavbar = ({locale}) => {
 
   const [data, setData] = useState(undefined)
@@ -182,9 +191,13 @@ export const PublicNavbar = ({locale}) => {
     <Link path="/contact" className="nav-btn" checkIfActive={true}>{t('Contact', locale)}</Link>,
   ]
 
+  let endItems = [
+    <SearchButton {...{setIsSearching}} />,
+  ]
+
   return <SearchNavbar {...{data, isSearching, setIsSearching, onTermChanged}}>
     <div className='mx-lg-3' style={{height: '100%'}}>
-      <CssNavbar {...{startItems, setIsSearching, collapsableEndItems, collapsableStartItems}} />
+      <CssNavbar {...{endItems, setIsSearching, collapsableEndItems, collapsableStartItems}} />
     </div>
   </SearchNavbar>
 }
@@ -198,7 +211,7 @@ const filterItems = (items, term) => {
   ))
 }
 
-const SearchBar = ({data, setIsSearching, onTermChanged}) => {
+const SearchBar = ({data, isSearching, setIsSearching, onTermChanged}) => {
   
   // Search is the text shown in the input field
   // Term is the term currently used to filter the search
@@ -284,7 +297,7 @@ const SearchBar = ({data, setIsSearching, onTermChanged}) => {
   </>
 }
 
-const CssNavbar = ({startItems=[], endItems=[], collapsableStartItems=[], collapsableEndItems=[], setIsSearching}) => {
+const CssNavbar = ({startItems=[], endItems=[], collapsableStartItems=[], collapsableEndItems=[]}) => {
 
   const hasCollapsable = collapsableStartItems.length && collapsableEndItems.length
         
@@ -293,11 +306,6 @@ const CssNavbar = ({startItems=[], endItems=[], collapsableStartItems=[], collap
 
   return <>
     <div className='position-relative m-auto' style={{backgroundColor: 'rgb(33, 37, 41)', zIndex: '10000', lineHeight: '3.25em', height: '100%'}}>
-      <div id='search-btn-ctn' className='position-absolute' style={{left: 'calc(50% + 5.5em)'}}>
-        <button id="search-btn" type='button' className='plain-btn' onClick={() => setIsSearching(true)}>
-          <img src={SearchWhiteIcon} style={{width: '1.4em', marginTop: '-0.1em'}}/>
-        </button>
-      </div>
       <div className='position-absolute fs-15' style={{left: '50%', transform: 'translateX(-50%)', fontWeight: '500', color: 'rgb(249, 249, 249)'}}>
         { currentPathIsRoot() ? 'HedaCuisine' : <Link path="/" className="plain-link white">HedaCuisine</Link>}
       </div>
@@ -329,7 +337,7 @@ const CssNavbar = ({startItems=[], endItems=[], collapsableStartItems=[], collap
 
 const SearchNavbar = ({onTermChanged, isSearching, setIsSearching, data, children}) => {
 
-  const searchMode = <SearchBar {...{data, setIsSearching, onTermChanged}} />
+  const searchMode = <SearchBar {...{data, isSearching, setIsSearching, onTermChanged}} />
 
   return <>
     <nav style={{backgroundColor: 'rgb(33, 37, 41)', height: '3.25em', marginBottom: '0.5em'}}>
