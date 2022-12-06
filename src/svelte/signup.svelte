@@ -3,7 +3,7 @@
   <h1>{t('Sign_up')}</h1>
   {#if errors?.length}
     {#each errors as error}
-      <div class="error">{error}</div><br/>
+      <div class="inform-error">{error}</div><br/>
     {/each}
   {/if}
   <form action={urlWithLocale('/signup', locale)} method="post">
