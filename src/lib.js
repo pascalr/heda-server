@@ -1,4 +1,4 @@
-import { normalizeSearchText } from "./utils.js"
+import { normalizeSearchText, isValidEmail } from "./utils.js"
 import Quantity from './quantity.js'
 import { t, tr } from './translate.js'
 import { ensureIsArray } from './utils.js';
@@ -190,3 +190,29 @@ export function recipeIngredientsAndHeaders(recipe) {
   return [...parseIngredientsAndHeaders(recipe.ingredients), ...parseHedaInstructionsIngredients(recipe.heda_instructions)]
 }
 
+/**
+ * Check if the given email is valid.
+ * @param String name 
+ * @returns A string with an error message if the email is invalid, nullish otherwiser.
+ */
+ export function validateEmail(email) {
+  return isValidEmail(email) ? '' : 'Invalid_email'
+}
+
+/**
+ * Check if the given password is valid. Must be at least 6 characters long.
+ * @param String name 
+ * @returns A string with an error message if the password is invalid, nullish otherwiser.
+ */
+export function validatePassword(password) {
+  return password?.length >= 6 ? null : 'Invalid_password_length'
+}
+
+/**
+ * Check if the given username is valid. Must be at least 3 characters long.
+ * @param String name 
+ * @returns A string with an error message if the username is invalid, nullish otherwiser.
+ */
+export function validateUsername(name) {
+  return name?.length >= 3 ? null : 'Invalid_username_length'
+}

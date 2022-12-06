@@ -60,6 +60,9 @@ export function tr(id, locale) {
     Account_already_associated: 'An account is already associated with this email address.',
     Next_f: 'Next',
     Previous_f: 'Previous',
+    Invalid_email: 'Please enter a valid email address.',
+    Invalid_password_length: 'Password must be at least 6 characters long.',
+    Invalid_username_length: 'Username must be at least 3 characters long.',
   }
   let fr = {
     What_to_eat: 'Quoi cuisiner',

@@ -8,7 +8,8 @@ export function buildSvelte() {
     entryPoints: ["src/svelte/navbar.js", "src/svelte/signup.js"],
     mainFields: ["svelte", "browser", "module", "main"],
     bundle: true,
-    minify: true,
+    minify: false,
+    sourcemap: true,
     outdir: "./public/build",
     plugins: [
       esbuildSvelte({

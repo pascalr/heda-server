@@ -1,5 +1,5 @@
 <div>
-  <label for="username">{label} (public)</label>
+  <label for="username">{label}</label>
   <input name={field} class="form-control" type="text" {autocomplete} on:blur={validateInput} bind:value={value} bind:this={ref}>
 </div>
 <br/>

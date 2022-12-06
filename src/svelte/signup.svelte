@@ -7,7 +7,7 @@
     {/each}
   {/if}
   <form action={urlWithLocale('/signup', locale)} method="post" on:submit={submitForm}>
-    <LoginFormInput field="username" label={t('Username')} autocomplete="username" validate={validateUsername} bind:validateInput={validateUsernameInput} />
+    <LoginFormInput field="username" label={t('Username')+' (public)'} autocomplete="username" validate={validateUsername} bind:validateInput={validateUsernameInput} />
     <LoginFormInput field="email" label={t('Email')} autocomplete="email" validate={validateEmail} bind:validateInput={validateEmailInput} />
     <LoginFormInput field="password" label={t('Password')} autocomplete="new-password" validate={validatePassword} bind:validateInput={validatePasswordInput} />
     <input type="hidden" name="_csrf" value={csrf}>
@@ -21,10 +21,10 @@
 </div>
 
 <script>
-  import { validateEmail, validatePassword, validateUsername, urlWithLocale } from '../utils'
+  import { urlWithLocale } from '../utils'
   import { translate } from '../translate'
   import LoginFormInput from './partials/LoginFormInput.svelte'
-  import { getLocale, getCsrf } from '../lib'
+  import { validateEmail, validatePassword, validateUsername, getLocale, getCsrf } from '../lib'
 
   let locale = getLocale()
   let csrf = getCsrf()
@@ -33,6 +33,7 @@
   let validateEmailInput, validatePasswordInput, validateUsernameInput;
 
   function submitForm(e) {
+    e.preventDefault()
     let valid = [validateEmailInput(), validatePasswordInput(), validateUsernameInput()].every(f => f)
     if (!valid) {
       e.preventDefault()

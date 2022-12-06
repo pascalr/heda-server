@@ -5,8 +5,9 @@ import sendgrid from '@sendgrid/mail';
 import connectEnsureLogin from 'connect-ensure-login'
 
 import passport from '../passport.js';
-import { validateEmail, validatePassword, validateUsername, localeHref, now } from '../utils.js';
+import { normalizeSearchText, localeHref, now } from '../utils.js';
 import { db } from '../db.js';
+import { validateEmail, validatePassword, validateUsername } from '../lib.js'
 import { tr } from '../translate.js'
 
 const router = express.Router();
