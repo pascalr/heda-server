@@ -20,6 +20,7 @@ import flash from 'connect-flash';
 import { tr } from './translate.js'
 import { enableLiveReload } from './livereload.js'
 import { SearchWhiteIcon, PersonFillWhiteIcon } from './build/image.js'
+import { buildSvelte } from './build_svelte.js'
 import analytics from './analytics.js'
 
 // pass the session to the connect sqlite3 module
@@ -34,6 +35,8 @@ import { getUrlParams, localeHref, getPathFromUrl } from './utils.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+ buildSvelte()
 
 // Backup database every day
 //setInterval(() => {

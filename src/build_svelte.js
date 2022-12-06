@@ -2,11 +2,13 @@ import esbuild from "esbuild";
 import esbuildSvelte from "esbuild-svelte";
 import sveltePreprocess from "svelte-preprocess";
 
-esbuild
-  .build({
+export function buildSvelte() {
+  
+  esbuild.build({
     entryPoints: ["src/svelte/navbar.js", "src/svelte/signup.js"],
     mainFields: ["svelte", "browser", "module", "main"],
     bundle: true,
+    minify: true,
     outdir: "./public/build",
     plugins: [
       esbuildSvelte({
@@ -15,3 +17,4 @@ esbuild
     ],
   })
   .catch(() => process.exit(1));
+}
