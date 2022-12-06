@@ -18,6 +18,7 @@ export function useShuffled(list) {
  * Extract the locale from the meta tag. Ex:
  * <meta name="locale" content="fr" /> => "fr"
  * FIXME: Maybe extract from <html lang="fr"> instead...
+ * @deprecated Moved to src/lib
  */
 export function getLocale(val) {
   return document.querySelector('[name="locale"]')?.content
@@ -26,6 +27,7 @@ export function getLocale(val) {
 /**
  * Extract the csrf from the meta tag. Ex:
  * <meta name="csrf-token" content="..." />
+ * @deprecated Moved to src/lib
  */
 export const getCsrf = () => {
   return document.querySelector('[name="csrf-token"]')?.content

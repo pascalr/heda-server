@@ -14,7 +14,7 @@
     <br/>
     <div>
       <label for="email">{t('Email')}</label>
-      <input id="email" name="email" class="form-control" type="text" autocomplete="email" required>
+      <input id="email" name="email" class="form-control" type="text" autocomplete="email" on:blur={validateEmail} required>
     </div>
     <br/>
     <div>
@@ -35,22 +35,26 @@
 <script>
   import { isValidEmail, urlWithLocale } from '../utils'
   import { translate } from '../translate'
-  import { getLocale, getCsrf } from '../react/lib'
+  import { getLocale, getCsrf } from '../lib'
 
   let locale = getLocale()
   let csrf = getCsrf()
   let errors = window.errors
   let t = translate(locale)
 
-  function validateEmail(input) {
-    if (isValidEmail(input)) {
-      input.classList.remove('invalid')
+  function validateEmail() {
+    if (isValidEmail(this.value)) {
+      this.classList.remove('invalid')
     } else {
-      input.classList.add('invalid')
+      this.classList.add('invalid')
     }
   }
 </script>
 
 <style>
   h2 a { text-decoration: none;}
+
+  :global(.invalid) {
+    border: 2px solid red;
+  }
 </style>
