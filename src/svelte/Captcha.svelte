@@ -1,4 +1,4 @@
-<input type='checkbox' name='not-a-robot' bind:value={notARobot} /> <label for='not-a-robot'>{t('I_am_not_a_robot')}</label><br/><br/>
+<input type='checkbox' name='not-a-robot' bind:checked={notARobot} /> <label for='not-a-robot'>{t('I_am_not_a_robot')}</label><br/><br/>
 <input type='hidden' name='captcha' value={selected?.id} />
 {#if notARobot}
   <p>{@html question}</p>
@@ -11,7 +11,7 @@
     <p class='mt-2'><i>
       {t('Are_you_having_difficulty')}?
       <br/>
-      {#if attempts < 3}
+      {#if attempts < maxAttempts}
         <button type='button' class='btn btn-outline-primary btn-sm' on:click={fetchCaptcha}>{t('New_images')}</button>
       {:else}
         <p style='color: red'>{t('Maximum_limit_reached')}.</p>
@@ -32,6 +32,7 @@
   let notARobot = false;
   let selectedRef, selected;
   let attempts = 0;
+  let maxAttempts = 5;
 
   $: if (notARobot && !fetchedData) {
     fetchedData = true
@@ -47,7 +48,7 @@
     if (selectedRef) {
       selectedRef.classList.remove('selected')
     }
-    if (attempts < 3) {
+    if (attempts < maxAttempts) {
       attempts += 1
       const res = await fetch(`/fetch_captcha`);
       const json = await res.json();

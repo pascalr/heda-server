@@ -199,9 +199,9 @@ router.get('/confirm_signup', function(req, res, next) {
 })
 
 router.get('/fetch_captcha', function(req, res, next) {
-  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug'], ['name'], res.locals.locale).filter(k => k.image_slug)
+  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug'], ['name'], res.locals.locale).filter(k => k.image_slug && k.name)
   let choices = shuffle(recipeKinds).slice(0, 9)
-  let correctIdx = randomInt(10)
+  let correctIdx = randomInt(9)
   req.session.captcha = choices[correctIdx]
   let question = tr('Which_image_represents', res.locals.locale)+': <b>'+choices[correctIdx].name+'</b>?'
   res.json({choices, question});
