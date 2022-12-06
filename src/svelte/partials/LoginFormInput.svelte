@@ -1,0 +1,39 @@
+<div>
+  <label for="username">{label} (public)</label>
+  <input name={field} class="form-control" type="text" {autocomplete} on:blur={validateInput} bind:value={value} bind:this={ref}>
+</div>
+<br/>
+{#if error}
+  <div class="inform-error">{error}</div><br/>
+{/if}
+
+<script>
+  export let validate;
+  export let field;
+  export let autocomplete;
+  export let label;
+  export let value;
+  let ref;
+  let error = ''
+
+  export function validateInput() {
+    error = validate(value)
+    if (error) {
+      ref.classList.add('invalid')
+    } else {
+      ref.classList.remove('invalid')
+    }
+    return !error
+  }
+
+</script>
+
+<style>
+  :global(.invalid) {
+    border: 2px solid red;
+  }
+  .inform-error {
+    color: red;
+    font-style: italic;
+  }
+</style>

@@ -7,27 +7,9 @@
     {/each}
   {/if}
   <form action={urlWithLocale('/signup', locale)} method="post" on:submit={submitForm}>
-    <div>
-      <label for="username">{t('Username')} (public)</label>
-      <input id="username" name="username" class="form-control" type="text" autocomplete="email">
-    </div>
-    <br/>
-    <div>
-      <label for="email">{t('Email')}</label>
-      <input id="email" name="email" class="form-control" type="text" autocomplete="email" on:blur="{validateEmail}" bind:value={email} bind:this={emailInput}>
-    </div>
-    <br/>
-    {#if emailError}
-      <div class="inform-error">{emailError}</div><br/>
-    {/if}
-    <div>
-      <label for="new-password">{t('Password')}</label>
-      <input id="new-password" name="password" class="form-control" type="password" autocomplete="new-password" on:blur={validatePassword} bind:value={password} bind:this={passwordInput}>
-    </div>
-    <br/>
-    {#if passwordError}
-      <div class="inform-error">{passwordError}</div><br/>
-    {/if}
+    <LoginFormInput field="username" label={t('Username')} autocomplete="username" validate={validateUsername} bind:validateInput={validateUsernameInput} />
+    <LoginFormInput field="email" label={t('Email')} autocomplete="email" validate={validateEmail} bind:validateInput={validateEmailInput} />
+    <LoginFormInput field="password" label={t('Password')} autocomplete="new-password" validate={validatePassword} bind:validateInput={validatePasswordInput} />
     <input type="hidden" name="_csrf" value={csrf}>
     <button id="create" class="btn btn-primary form-control" type="submit">{t('Sign_up')}</button>
   </form>
@@ -39,43 +21,20 @@
 </div>
 
 <script>
-  import { isValidEmail, isValidPassword, urlWithLocale } from '../utils'
+  import { validateEmail, validatePassword, validateUsername, urlWithLocale } from '../utils'
   import { translate } from '../translate'
+  import LoginFormInput from './partials/LoginFormInput.svelte'
   import { getLocale, getCsrf } from '../lib'
 
   let locale = getLocale()
   let csrf = getCsrf()
   let errors = window.errors
   let t = translate(locale)
-  let email = '', password = ''
-  let emailInput, passwordInput
-
-  let emailError = ''
-  let passwordError = ''
-
-  function validateEmail() {
-    if (isValidEmail(email)) {
-      emailInput.classList.remove('invalid')
-      emailError = ''
-    } else {
-      emailInput.classList.add('invalid')
-      emailError = 'Please enter a valid email address.'
-    }
-  }
-
-  function validatePassword() {
-    if (isValidPassword(password)) {
-      passwordInput.classList.remove('invalid')
-      passwordError = ''
-    } else {
-      passwordInput.classList.add('invalid')
-      passwordError = 'Password must be at least 6 characters long.'
-    }
-  }
+  let validateEmailInput, validatePasswordInput, validateUsernameInput;
 
   function submitForm(e) {
-    console.log('this', this)
-    if (!isValidEmail() || !isValidPassword()) {
+    let valid = [validateEmailInput(), validatePasswordInput(), validateUsernameInput()].every(f => f)
+    if (!valid) {
       e.preventDefault()
       return false
     }
@@ -84,13 +43,4 @@
 
 <style>
   h2 a { text-decoration: none;}
-
-  :global(.invalid) {
-    border: 2px solid red;
-  }
-
-  .inform-error {
-    color: red;
-    font-style: italic;
-  }
 </style>

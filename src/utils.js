@@ -178,22 +178,38 @@ export function isValidEmail(email) {
 }
 
 /**
- * Check if the given password is valid. Must be at least 6 characters long.
- * @param String password 
- * @returns True if the given password is valid.
+ * Check if the given email is valid.
+ * @param String name 
+ * @returns A string with an error message if the email is invalid, nullish otherwiser.
  */
-export function isValidPassword(password) {
-  return password.length >= 6
+export function validateEmail(email) {
+  return isValidEmail(email) ? '' : 'Please enter a valid email address.'
 }
 
 /**
- * Check if the given username is valid. Must be unique and at least 3 characters long.
+ * Check if the given password is valid. Must be at least 6 characters long.
+ * @param String name 
+ * @returns A string with an error message if the password is invalid, nullish otherwiser.
+ */
+export function validatePassword(password) {
+  return password?.length >= 6 ? null : 'Password must be at least 6 characters long.'
+}
+
+/**
+ * Check if the given username is valid. Must be at least 3 characters long.
+ * @param String name 
+ * @returns A string with an error message if the username is invalid, nullish otherwiser.
+ */
+export function validateUsername(name) {
+  return name?.length >= 3 ? null : 'Username must be at least 3 characters long.'
+}
+
+/**
+ * Check if the given username is valid. Must be at least 3 characters long.
  * @param String username 
  */
-export function isValidUsername(username, allUsers) {
-  let n = normalizeSearchText(username)
-  let sameName = allUsers.map(u => normalizeSearchText(u.name) == n)
-  return !sameName && n.length >= 3
+export function isValidUsername(username) {
+  return username?.length >= 3
 }
 
 /**

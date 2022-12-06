@@ -5,7 +5,7 @@ import sendgrid from '@sendgrid/mail';
 import connectEnsureLogin from 'connect-ensure-login'
 
 import passport from '../passport.js';
-import { isValidEmail, isValidPassword, isValidUsername, localeHref, now } from '../utils.js';
+import { validateEmail, validatePassword, validateUsername, localeHref, now } from '../utils.js';
 import { db } from '../db.js';
 import { tr } from '../translate.js'
 
@@ -198,7 +198,7 @@ router.get('/confirm_signup', function(req, res, next) {
 })
 
 router.get('/signup', function(req, res, next) {
-  res.render('signup', {errors: req.flash('error'), isValidEmail, isValidPassword});
+  res.render('signup', {errors: req.flash('error')});
 });
 
 /**
@@ -212,7 +212,11 @@ router.post('/signup', function(req, res, next) {
 
   let allUsers = db.fetchTable('users', {}, ['name'])
 
-  if (isValidEmail(email) && isValidUsername(username, allUsers) && isValidPassword(password)) {
+  let n = normalizeSearchText(username)
+  let usernameUnique = !allUsers.find(u => normalizeSearchText(u.name) == n)
+
+  let errors = [validateEmail(email), validateUsername(username), validatePassword(password)].filter(f => f)
+  if (errors.length === 0) {
 
     var salt = crypto.randomBytes(16);
     crypto.pbkdf2(password, salt, 310000, 32, 'sha256', function(err, hashedPassword) {
