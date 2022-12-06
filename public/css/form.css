@@ -23,10 +23,3 @@ body {
   font-size: 0.9em;
   text-align: center;
 }
-
-.error {
-  background-color: #ff9494;
-  border: 2px solid red;
-  border-radius: 5px;
-  padding: 5px;
-}
