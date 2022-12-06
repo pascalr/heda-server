@@ -22,10 +22,13 @@
     {/if}
     <div>
       <label for="new-password">{t('Password')}</label>
-      <input id="new-password" name="password" class="form-control" type="password" autocomplete="new-password" required>
+      <input id="new-password" name="password" class="form-control" type="password" autocomplete="new-password" on:blur={validatePassword} required>
     </div>
-    <input type="hidden" name="_csrf" value={csrf}>
     <br/>
+    {#if passwordError}
+      <div class="inform-error">{passwordError}</div><br/>
+    {/if}
+    <input type="hidden" name="_csrf" value={csrf}>
     <button id="create" class="btn btn-primary form-control" type="submit">{t('Sign_up')}</button>
   </form>
   <hr>
@@ -36,7 +39,7 @@
 </div>
 
 <script>
-  import { isValidEmail, urlWithLocale } from '../utils'
+  import { isValidEmail, isValidPassword, urlWithLocale } from '../utils'
   import { translate } from '../translate'
   import { getLocale, getCsrf } from '../lib'
 
@@ -46,6 +49,7 @@
   let t = translate(locale)
 
   let emailError = ''
+  let passwordError = ''
 
   function validateEmail() {
     if (isValidEmail(this.value)) {
@@ -54,6 +58,16 @@
     } else {
       this.classList.add('invalid')
       emailError = 'Please enter a valid email address.'
+    }
+  }
+
+  function validatePassword() {
+    if (isValidPassword(this.value)) {
+      this.classList.remove('invalid')
+      passwordError = ''
+    } else {
+      this.classList.add('invalid')
+      passwordError = 'Password must be at least 6 characters long.'
     }
   }
 </script>
