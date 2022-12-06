@@ -66,6 +66,7 @@ export function tr(id, locale) {
     Invalid_username_length: 'Username must be at least 3 characters long.',
   }
   let fr = {
+    Are_you_having_difficulty: 'Avez-vous de la difficulté',
     Which_image_represents: 'Quelle image représente',
     I_am_not_a_robot: 'Je ne suis pas un robot',
     What_to_eat: 'Quoi cuisiner',
@@ -94,6 +95,7 @@ export function tr(id, locale) {
     minute: 'minute',
     hours: 'heures',
     hour: 'heure',
+    Maximum_limit_reached: "Nombre maximal atteint",
     Suggestions_for_you: 'Suggestions pour vous',
     Account_already_associated: 'Un compte est déjà associé avec cette adresse courriel.',
     Name_already_used: "Nom d'utilisateur déjà utilisé",
@@ -201,6 +203,7 @@ export function tr(id, locale) {
     Switch_user: "Changer d'utilisateur",
     My_recipes: 'Mes recettes',
     New_recipe: 'Nouvelle recette',
+    New_images: 'Nouvelles images',
     To_cook_soon: 'À cuisiner prochainement',
     To_cook: 'À cuisiner',
     To_try: 'À essayer',
