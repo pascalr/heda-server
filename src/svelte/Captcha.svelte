@@ -8,18 +8,53 @@
         <img src={'/imgs/small/'+choice.image_slug} alt='FIXME DOES NOT WORK FOR BLIND PEOPLE' />
       </button>
     {/each}
-    <br/><br/>
+    <p class='mt-2'><i>
+      {t('Are_you_having_difficulty')}?
+      <br/>
+      {#if attempts < 3}
+        <button type='button' class='btn btn-outline-primary btn-sm' on:click={fetchCaptcha}>{t('New_images')}</button>
+      {:else}
+        <p style='color: red'>{t('Maximum_limit_reached')}.</p>
+      {/if}
+    </i></p>
+    <br/>
   </div>
 {/if}
 
 <script>
   import { getLocale } from "../lib";
   import { translate } from "../translate";
+	import { onMount } from 'svelte';
 
-  export let choices;
-  export let question;
+  let choices = [];
+  let question = '';
+  let fetchedData = false
   let notARobot = false;
   let selectedRef, selected;
+  let attempts = 0;
+
+  $: if (notARobot && !fetchedData) {
+    fetchedData = true
+    fetchCaptcha()
+  }
+
+  function removePreviousSelection() {
+
+  }
+  
+  async function fetchCaptcha() {
+    selected = null
+    if (selectedRef) {
+      selectedRef.classList.remove('selected')
+    }
+    if (attempts < 3) {
+      attempts += 1
+      const res = await fetch(`/fetch_captcha`);
+      const json = await res.json();
+      question = json.question
+      choices = json.choices
+    }
+  }
 
   function imageClicked(e, choice) {
     if (selectedRef && selectedRef != e.target) {

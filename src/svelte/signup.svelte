@@ -10,7 +10,7 @@
     <LoginFormInput field="username" label={t('Username')+' (public)'} autocomplete="username" validate={validateUsername} bind:validateInput={validateUsernameInput} {t} />
     <LoginFormInput field="email" label={t('Email')} autocomplete="email" validate={validateEmail} bind:validateInput={validateEmailInput} {t} />
     <LoginFormInput field="password" label={t('Password')} autocomplete="new-password" validate={validatePassword} bind:validateInput={validatePasswordInput} {t} />
-    <Captcha {choices} {question} />
+    <Captcha />
     <input type="hidden" name="_csrf" value={csrf}>
     <button id="create" class="btn btn-primary form-control" type="submit">{t('Sign_up')}</button>
   </form>
@@ -31,7 +31,7 @@
   let locale = getLocale()
   console.log('locale', locale)
   let csrf = getCsrf()
-  let {errors, choices, question} = window.gon
+  let {errors} = window.gon
   let t = translate(locale)
   let validateEmailInput, validatePasswordInput, validateUsernameInput;
 
