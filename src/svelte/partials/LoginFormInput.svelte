@@ -13,11 +13,12 @@
   export let autocomplete;
   export let label;
   export let value;
+  export let t;
   let ref;
   let error = ''
 
   export function validateInput() {
-    error = validate(value)
+    error = t(validate(value))
     if (error) {
       ref.classList.add('invalid')
     } else {

@@ -1,6 +1,7 @@
-export const translate = (locale) => (id) => tr(id)
+export const translate = (locale) => (id) => tr(id, locale)
 
 export function tr(id, locale) {
+  if (!id) {return id}
   let en = {
     by_2: 'by',
     Confirm_delete: 'Are you sure you want to remove this item?',
@@ -65,6 +66,8 @@ export function tr(id, locale) {
     Invalid_username_length: 'Username must be at least 3 characters long.',
   }
   let fr = {
+    Which_image_represents: 'Quelle image représente',
+    I_am_not_a_robot: 'Je ne suis pas un robot',
     What_to_eat: 'Quoi cuisiner',
     What_quantity: 'Quelle quantité',
     Difficulty: 'Difficulté',
@@ -250,6 +253,9 @@ export function tr(id, locale) {
     Filter: 'Filtrer',
     Features: 'Fonctionnalités', 
     My_public_page: 'Ma page publique',
+    Invalid_email: 'Veuillez entrer une adresse courriel valide.',
+    Invalid_password_length: 'Le mot de passe doit avoir au minimum 6 caractères.',
+    Invalid_username_length: "Le nom d'utilisateur doit avoir au minimum 3 caractères.",
   }
   if (locale == 'fr' || locale == 'FR') {
     if (!fr[id]) {console.log('Missing translation for '+id+' in '+locale)}

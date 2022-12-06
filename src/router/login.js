@@ -1,13 +1,13 @@
 
 import express from 'express';
-import crypto from 'crypto';
+import crypto, { randomInt } from 'crypto';
 import sendgrid from '@sendgrid/mail';
 import connectEnsureLogin from 'connect-ensure-login'
 
 import passport from '../passport.js';
-import { normalizeSearchText, localeHref, now } from '../utils.js';
+import { normalizeSearchText, localeHref, now, shuffle } from '../utils.js';
 import { db } from '../db.js';
-import { validateEmail, validatePassword, validateUsername } from '../lib.js'
+import { validateEmail, validatePassword, validateUsername, fetchTableLocaleAttrs } from '../lib.js'
 import { tr } from '../translate.js'
 
 const router = express.Router();
@@ -199,7 +199,12 @@ router.get('/confirm_signup', function(req, res, next) {
 })
 
 router.get('/signup', function(req, res, next) {
-  res.render('signup', {errors: req.flash('error')});
+  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug'], ['name'], res.locals.locale).filter(k => k.image_slug)
+  let choices = shuffle(recipeKinds).slice(0, 9)
+  let correctIdx = randomInt(10)
+  req.session.captcha = choices[correctIdx]
+  let question = tr('Which_image_represents', res.locals.locale)+': <b>'+choices[correctIdx].name+'</b>?'
+  res.render('signup', {gon: {errors: req.flash('error'), choices, question}});
 });
 
 /**

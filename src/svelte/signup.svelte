@@ -7,9 +7,19 @@
     {/each}
   {/if}
   <form action={urlWithLocale('/signup', locale)} method="post" on:submit={submitForm}>
-    <LoginFormInput field="username" label={t('Username')+' (public)'} autocomplete="username" validate={validateUsername} bind:validateInput={validateUsernameInput} />
-    <LoginFormInput field="email" label={t('Email')} autocomplete="email" validate={validateEmail} bind:validateInput={validateEmailInput} />
-    <LoginFormInput field="password" label={t('Password')} autocomplete="new-password" validate={validatePassword} bind:validateInput={validatePasswordInput} />
+    <LoginFormInput field="username" label={t('Username')+' (public)'} autocomplete="username" validate={validateUsername} bind:validateInput={validateUsernameInput} {t} />
+    <LoginFormInput field="email" label={t('Email')} autocomplete="email" validate={validateEmail} bind:validateInput={validateEmailInput} {t} />
+    <LoginFormInput field="password" label={t('Password')} autocomplete="new-password" validate={validatePassword} bind:validateInput={validatePasswordInput} {t} />
+    <input type='checkbox' name='not-a-robot' bind:value={notARobot} /> <label for='not-a-robot'>{t('I_am_not_a_robot')}</label><br/><br/>
+    {#if notARobot}
+      <p>{@html question}</p>
+      <div class='captcha'>
+        {#each choices as choice}
+          <img src={'/imgs/small/'+choice.image_slug} alt='FIXME DOES NOT WORK FOR BLIND PEOPLE' />
+        {/each}
+        <br/><br/>
+      </div>
+    {/if}
     <input type="hidden" name="_csrf" value={csrf}>
     <button id="create" class="btn btn-primary form-control" type="submit">{t('Sign_up')}</button>
   </form>
@@ -27,9 +37,11 @@
   import { validateEmail, validatePassword, validateUsername, getLocale, getCsrf } from '../lib'
 
   let locale = getLocale()
+  console.log('locale', locale)
   let csrf = getCsrf()
-  let errors = window.errors
+  let {errors, choices, question} = window.gon
   let t = translate(locale)
+  let notARobot = false
   let validateEmailInput, validatePasswordInput, validateUsernameInput;
 
   function submitForm(e) {
@@ -44,4 +56,9 @@
 
 <style>
   h2 a { text-decoration: none;}
+
+  .captcha img {
+    width: 130px;
+    border: 3px solid white;
+  }
 </style>
