@@ -19,6 +19,7 @@
     "olddev": "node --trace-uncaught -r dotenv/config ./src/server.js",
     "dev": "npm run build:server && nodemon -e js,ejs -w views --trace-uncaught -r dotenv/config ./src/server.js",
     "build": "npm run build:css && node src/build_prod.js",
+    "build:svelte": "node build_svelte.js",
     "build:css": "sass src/style/prose_mirror.scss:public/build/prose_mirror.css src/style/imports.scss:public/build/imports.css",
     "build:server": "node src/build_server.js"
   },
@@ -48,6 +49,7 @@
     "dotenv": "^16.0.2",
     "ejs": "~3.1.8",
     "esbuild": "^0.15.8",
+    "esbuild-svelte": "^0.7.3",
     "express": "~4.16.1",
     "express-fileupload": "^1.4.0",
     "express-session": "^1.17.2",
@@ -75,6 +77,7 @@
     "react-lazy-load-image-component": "^1.5.5",
     "sass": "^1.54.9",
     "sharp": "^0.31.1",
+    "svelte-preprocess": "^4.10.7",
     "swiper": "^8.4.4",
     "toastr": "^2.1.4",
     "watch": "~0.13.0"

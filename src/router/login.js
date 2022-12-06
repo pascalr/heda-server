@@ -198,7 +198,7 @@ router.get('/confirm_signup', function(req, res, next) {
 })
 
 router.get('/signup', function(req, res, next) {
-  res.render('signup', {errors: req.flash('error')});
+  res.render('signup', {errors: req.flash('error'), isValidEmail, isValidPassword});
 });
 
 /**

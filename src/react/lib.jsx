@@ -20,7 +20,15 @@ export function useShuffled(list) {
  * FIXME: Maybe extract from <html lang="fr"> instead...
  */
 export function getLocale(val) {
-  return (document.querySelector('[name="locale"]')||{}).content
+  return document.querySelector('[name="locale"]')?.content
+}
+
+/**
+ * Extract the csrf from the meta tag. Ex:
+ * <meta name="csrf-token" content="..." />
+ */
+export const getCsrf = () => {
+  return document.querySelector('[name="csrf-token"]')?.content
 }
 
 // DEPRECATED since I changed the way translation are done?

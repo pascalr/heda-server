@@ -102,6 +102,7 @@ export function urlWithLocale(href, locale) {
  * @param {String} href The url to add the locale to
  * @param {String} currentUrl The current url to extract the locale from
  * @return {String} The url with the locale added if possible
+ * @deprecated use urlWithLocale or use Link directrly instead
  */
 // DEPRECATED: use urlWithLocale or use Link directrly instead
 export function localeHref(href, currentUrl=null) {

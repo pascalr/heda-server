@@ -2,40 +2,14 @@
 <html lang="<%- locale %>">
   <head>
     <%- include('partials/login_head') %>
+    <link rel="stylesheet" href="/build/signup.css">
   </head>
   <body>
-    <div class="form-container">
-      <h2><a href="<%- localeHref(req, '/') %>" style="text-decoration: none;">HedaCuisine (<%- tr('beta', locale) %>)</a></h2>
-      <h1><%- tr('Sign_up', locale) %></h1>
-      <% if (errors?.length) { %>
-        <% errors.forEach(error => { %>
-          <div class="error"><%- error %></div><br/>
-        <% }) %>
-      <% } %>
-      <form action="<%- localeHref(req, '/signup') %>" method="post">
-        <div>
-          <label for="username"><%- tr('Username', locale) %> (public)</label>
-          <input id="username" name="username" class="form-control" type="text" autocomplete="email" required>
-        </div>
-        <br/>
-        <div>
-          <label for="email"><%- tr('Email', locale) %></label>
-          <input id="email" name="email" class="form-control" type="text" autocomplete="email" required>
-        </div>
-        <br/>
-        <div>
-          <label for="new-password"><%- tr('Password', locale) %></label>
-          <input id="new-password" name="password" class="form-control" type="password" autocomplete="new-password" required>
-        </div>
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-        <br/>
-        <button id="create" class="btn btn-primary form-control" type="submit"><%- tr('Sign_up', locale) %></button>
-      </form>
-      <hr>
-      <p class="help">
-        <%- tr('Help_login', locale) %>
-        <%- linkTo(req, tr('Login', locale), "/login") %>
-      </p>
-    </div>
+    <div id="signup-page"></div>
   </body>
 </html>
+
+<script>
+  window.errors = <%- JSON.stringify(errors) %>
+</script>
+<script src="/build/signup.js" type="text/javascript"/></script>

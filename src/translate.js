@@ -1,3 +1,5 @@
+export const translate = (locale) => (id) => tr(id)
+
 export function tr(id, locale) {
   let en = {
     by_2: 'by',

@@ -4,7 +4,7 @@ import sveltePreprocess from "svelte-preprocess";
 
 esbuild
   .build({
-    entryPoints: ["src/svelte/navbar.js"],
+    entryPoints: ["src/svelte/navbar.js", "src/svelte/signup.js"],
     mainFields: ["svelte", "browser", "module", "main"],
     bundle: true,
     outdir: "./public/build",
