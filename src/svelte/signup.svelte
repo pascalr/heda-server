@@ -17,6 +17,9 @@
       <input id="email" name="email" class="form-control" type="text" autocomplete="email" on:blur={validateEmail} required>
     </div>
     <br/>
+    {#if emailError}
+      <div class="inform-error">{emailError}</div><br/>
+    {/if}
     <div>
       <label for="new-password">{t('Password')}</label>
       <input id="new-password" name="password" class="form-control" type="password" autocomplete="new-password" required>
@@ -42,11 +45,15 @@
   let errors = window.errors
   let t = translate(locale)
 
+  let emailError = ''
+
   function validateEmail() {
     if (isValidEmail(this.value)) {
       this.classList.remove('invalid')
+      emailError = ''
     } else {
       this.classList.add('invalid')
+      emailError = 'Please enter a valid email address.'
     }
   }
 </script>
@@ -56,5 +63,10 @@
 
   :global(.invalid) {
     border: 2px solid red;
+  }
+
+  .inform-error {
+    color: red;
+    font-style: italic;
   }
 </style>
