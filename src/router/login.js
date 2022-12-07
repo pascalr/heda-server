@@ -8,7 +8,7 @@ import passport from '../passport.js';
 import { normalizeSearchText, localeHref, now, shuffle } from '../utils.js';
 import { db } from '../db.js';
 import { validateEmail, validatePassword, validateUsername, fetchTableLocaleAttrs } from '../lib.js'
-import { tr } from '../translate.js'
+import { tr, translate } from '../translate.js'
 
 const router = express.Router();
 
@@ -255,6 +255,7 @@ router.get('/signup', function(req, res, next) {
 router.post('/signup', function(req, res, next) {
 
   let {email, username, password} = req.body
+  let t = translate(res.locals.locale)
 
   let allUsers = db.fetchTable('users', {}, ['name', 'email'])
 
@@ -264,7 +265,7 @@ router.post('/signup', function(req, res, next) {
   }
 
   if (!req.session.captchaValidatedAt || (Date.now() - req.session.captchaValidatedAt >= 5*60*1000)) {
-    req.flash('error', tr('Invalid_captcha', res.locals.locale))
+    req.flash('error', t('Invalid_captcha'))
     return res.redirect(localeHref('/signup', req.originalUrl));
   }
 
@@ -284,32 +285,28 @@ router.post('/signup', function(req, res, next) {
       try {
         var token = crypto.randomUUID();
         let q = 'INSERT INTO users (email, name, confirm_email_token, encrypted_password, salt, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
-        // let info = db.prepare(q).run(email, username, token, hashedPassword, salt, now(), now())
-        // if (info.changes != 1) {throw "Error creating user in database."}
+        let info = db.prepare(q).run(email, username, token, hashedPassword, salt, now(), now())
+        if (info.changes != 1) {throw "Error creating user in database."}
         var link = res.locals.origin+'/confirm_signup?token=' + token;
         var msg = {
           to: email,
           from: 'admin@hedacuisine.com',
           subject: 'Sign in to HedaCuisine',
-          text: 'Hello! Click the link below to finish signing in to HedaCuisine.\r\n\r\n' + link,
-          html: '<h3>Hello!</h3><p>Click the link below to finish signing in to HedaCuisine.</p><p><a href="' + link + '">Sign in</a></p>',
+          text: t('Hello')+'! '+t('Sign_in_email')+'.\r\n\r\n' + link,
+          html: '<h3>'+t('Hello')+'!</h3><p>'+t('Sign_in_email')+'.</p><p><a href="' + link + '">'+t('Sign_in')+'</a></p>',
         };
-        console.log('User created!')
-        console.log('User created!')
-        console.log('User created!')
-        res.send('ok')
-        // sendgrid.send(msg);
-        // res.redirect('/waiting_confirm')
+        sendgrid.send(msg);
+        res.redirect(localeHref('/waiting_confirm', req.originalUrl))
       } catch (err) {
         console.log('CREATE USER ERROR:', err)
         if (err.code && err.code === "SQLITE_CONSTRAINT_UNIQUE") { // SqliteError
-          req.flash('error', tr('Account_already_associated', res.locals.locale))
+          req.flash('error', t('Account_already_associated'))
           res.redirect(localeHref('/signup', req.originalUrl));
         }
       }
     })
   } else {
-    req.flash('error', errors.map(e => tr(e, res.locals.locale)).join('. '))
+    req.flash('error', errors.map(e => t(e)).join('. '))
     res.redirect(localeHref('/signup', req.originalUrl));
   }
 });

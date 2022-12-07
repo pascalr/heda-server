@@ -67,8 +67,14 @@ export function tr(id, locale) {
     Wrong_answer: 'Wrong answer. Please try again',
     Username_not_unique: "This username is already taken",
     Email_not_unique: "This email address is already used",
+    Sign_in_email: "Click the link below to finish signing in to HedaCuisine",
+    Waiting_confirm: "An email has been sent. Please check your inbox and validate the email address",
   }
   let fr = {
+    Forgot_password: 'Mot de passe oublié',
+    Waiting_confirm: "Un email vous a été envoyé. S'il vous plaît regarder votre boîte de réception et valider l'adresse courriel",
+    Hello: 'Bonjour',
+    Sign_in_email: "Cliquer sur le lien ci-bas pour se connecter à HedaCuisine",
     Username_not_unique: "Ce nom d'utilisateur est déjà utilisé",
     Email_not_unique: "Cette adresse courriel est déjà utilisée",
     Wrong_answer: 'Mauvaise réponse. Veuillez réessayer',
