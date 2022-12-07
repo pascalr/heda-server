@@ -1,6 +1,6 @@
 <div>
   <label for="username">{label}</label>
-  <input name={field} class="form-control" use:setType {autocomplete} on:blur={validateInput} bind:value bind:this={ref}>
+  <input id={'form-'+field} name={field} class="form-control" use:setType {autocomplete} on:blur={validateInput} bind:value bind:this={ref}>
 </div>
 <br/>
 {#if error}

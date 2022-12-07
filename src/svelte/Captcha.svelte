@@ -1,25 +1,27 @@
-<button type='button' class='plain-btn' on:click={showCaptcha}>
-  <img class='icon' src={captchaValidated ? '/icons/check-square-green.svg' : '/icons/square.svg'} alt='Captcha checkbox' /> {t('I_am_not_a_robot')}<br/><br/>
-</button>
-{#if captchaShowned && !captchaValidated}
-  <div class='captcha pt-2'>
-    {#if captchaError}
-      <p class='inform-error'>{captchaError}.</p>
-    {/if}
-    {#if !serverError}
-      <p>{@html question || ''}</p>
-      {#each choices || [] as choice}
-        <button type='button' class='plain-btn' on:click={(e) => imageClicked(e, choice)}>
-          <img src={'/imgs/small/'+choice.image_slug} alt='FIXME DOES NOT WORK FOR BLIND PEOPLE' />
-        </button>
-      {/each}
-      <p class='mt-2'><i>
-        <button type='button' class='btn btn-outline-primary btn' on:click={validateCaptcha}>{t('Validate')}</button>
-        <button type='button' class='btn btn-outline-secondary btn' on:click={fetchCaptcha}>{t('Other_question')}</button>
-      </i></p>
-    {/if}
-  </div>
-  <br/>
+{#if !window.gon.captchaAlreadyValidated}
+  <button type='button' class='plain-btn' on:click={showCaptcha}>
+    <img class='icon' src={captchaValidated ? '/icons/check-square-green.svg' : '/icons/square.svg'} alt='Captcha checkbox' /> {t('I_am_not_a_robot')}<br/><br/>
+  </button>
+  {#if captchaShowned && !captchaValidated}
+    <div class='captcha pt-2'>
+      {#if captchaError}
+        <p class='inform-error'>{captchaError}.</p>
+      {/if}
+      {#if !serverError}
+        <p>{@html question || ''}</p>
+        {#each choices || [] as choice}
+          <button type='button' class='plain-btn' on:click={(e) => imageClicked(e, choice)}>
+            <img src={'/imgs/small/'+choice.image_slug} alt='FIXME DOES NOT WORK FOR BLIND PEOPLE' />
+          </button>
+        {/each}
+        <p class='mt-2'><i>
+          <button type='button' class='btn btn-outline-primary btn' on:click={validateCaptcha}>{t('Validate')}</button>
+          <button type='button' class='btn btn-outline-secondary btn' on:click={fetchCaptcha}>{t('Other_question')}</button>
+        </i></p>
+      {/if}
+    </div>
+    <br/>
+  {/if}
 {/if}
 
 <script>
