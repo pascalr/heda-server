@@ -1,8 +1,8 @@
 <input type='checkbox' name='not-a-robot' bind:checked={notARobot} /> <label for='not-a-robot'>{t('I_am_not_a_robot')}</label><br/><br/>
 <input type='hidden' name='captcha' value={selected?.id} />
 {#if notARobot}
-  <p>{@html question}</p>
-  <div class='captcha'>
+  <div class='captcha pt-2'>
+    <p>{@html question}</p>
     {#each choices as choice}
       <button type='button' class='plain-btn' on:click={(e) => imageClicked(e, choice)}>
         <img src={'/imgs/small/'+choice.image_slug} alt='FIXME DOES NOT WORK FOR BLIND PEOPLE' />
@@ -17,14 +17,14 @@
         <p style='color: red'>{t('Maximum_limit_reached')}.</p>
       {/if}
     </i></p>
-    <br/>
   </div>
+  <br/>
 {/if}
 
 <script>
   import { getLocale } from "../lib";
   import { translate } from "../translate";
-	import { onMount } from 'svelte';
+  import { localeHref } from "../utils";
 
   let choices = [];
   let question = '';
@@ -39,10 +39,6 @@
     fetchCaptcha()
   }
 
-  function removePreviousSelection() {
-
-  }
-  
   async function fetchCaptcha() {
     selected = null
     if (selectedRef) {
@@ -50,7 +46,7 @@
     }
     if (attempts < maxAttempts) {
       attempts += 1
-      const res = await fetch(`/fetch_captcha`);
+      const res = await fetch(localeHref(`/fetch_captcha`));
       const json = await res.json();
       question = json.question
       choices = json.choices
@@ -78,5 +74,10 @@
   }
   :global(img.selected) {
     border: 3px solid blue;
+  }
+  .captcha {
+    border: 2px solid black;
+    border-radius: 0.5em;
+    padding: 0.2em;
   }
 </style>

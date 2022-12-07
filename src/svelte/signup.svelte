@@ -9,7 +9,7 @@
   <form action={urlWithLocale('/signup', locale)} method="post" on:submit={submitForm}>
     <LoginFormInput field="username" label={t('Username')+' (public)'} autocomplete="username" validate={validateUsername} bind:validateInput={validateUsernameInput} {t} />
     <LoginFormInput field="email" label={t('Email')} autocomplete="email" validate={validateEmail} bind:validateInput={validateEmailInput} {t} />
-    <LoginFormInput field="password" label={t('Password')} autocomplete="new-password" validate={validatePassword} bind:validateInput={validatePasswordInput} {t} />
+    <LoginFormInput type="password" field="password" label={t('Password')} autocomplete="new-password" validate={validatePassword} bind:validateInput={validatePasswordInput} {t} />
     <Captcha />
     <input type="hidden" name="_csrf" value={csrf}>
     <button id="create" class="btn btn-primary form-control" type="submit">{t('Sign_up')}</button>
@@ -36,11 +36,16 @@
   let validateEmailInput, validatePasswordInput, validateUsernameInput;
 
   function submitForm(e) {
-    e.preventDefault()
-    let valid = [validateEmailInput(), validatePasswordInput(), validateUsernameInput()].every(f => f)
-    if (!valid) {
+    
+    try {
+      let valid = [validateEmailInput(), validatePasswordInput(), validateUsernameInput()].every(f => f)
+      if (!valid) {
+        e.preventDefault()
+        return false
+      }
+    } catch (err) {
+      console.log('error', err)
       e.preventDefault()
-      return false
     }
   }
 </script>

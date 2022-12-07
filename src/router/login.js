@@ -203,7 +203,8 @@ router.get('/fetch_captcha', function(req, res, next) {
   let choices = shuffle(recipeKinds).slice(0, 9)
   let correctIdx = randomInt(9)
   req.session.captcha = choices[correctIdx]
-  let question = tr('Which_image_represents', res.locals.locale)+': <b>'+choices[correctIdx].name+'</b>?'
+  console.log('locale', res.locals.locale)
+  let question = tr('Please_select', res.locals.locale)+': <b>'+choices[correctIdx].name+'</b>?'
   res.json({choices, question});
 })
 
@@ -225,6 +226,11 @@ router.post('/signup', function(req, res, next) {
   let n = normalizeSearchText(username)
   let usernameUnique = !allUsers.find(u => normalizeSearchText(u.name) == n)
 
+  if (req.body.captcha != req.session.captcha) {
+    req.flash('error', tr('Wrong_captcha', res.locals.locale))
+    res.redirect(localeHref('/signup', req.originalUrl));
+  }
+
   let errors = [validateEmail(email), validateUsername(username), validatePassword(password)].filter(f => f)
   if (errors.length === 0) {
 
@@ -234,7 +240,8 @@ router.post('/signup', function(req, res, next) {
       try {
         var token = crypto.randomUUID();
         let q = 'INSERT INTO users (email, name, confirm_email_token, encrypted_password, salt, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
-        db.prepare(q).run(email, username, token, hashedPassword, salt, now(), now())
+        // let info = db.prepare(q).run(email, username, token, hashedPassword, salt, now(), now())
+        // if (info.changes != 1) {throw "Error creating user in database."}
         var link = res.locals.origin+'/confirm_signup?token=' + token;
         var msg = {
           to: email,
@@ -243,8 +250,12 @@ router.post('/signup', function(req, res, next) {
           text: 'Hello! Click the link below to finish signing in to HedaCuisine.\r\n\r\n' + link,
           html: '<h3>Hello!</h3><p>Click the link below to finish signing in to HedaCuisine.</p><p><a href="' + link + '">Sign in</a></p>',
         };
-        sendgrid.send(msg);
-        res.redirect('/waiting_confirm')
+        console.log('User created!')
+        console.log('User created!')
+        console.log('User created!')
+        res.send('ok')
+        // sendgrid.send(msg);
+        // res.redirect('/waiting_confirm')
       } catch (err) {
         console.log('CREATE USER ERROR:', err)
         if (err.code && err.code === "SQLITE_CONSTRAINT_UNIQUE") { // SqliteError
@@ -253,9 +264,10 @@ router.post('/signup', function(req, res, next) {
         }
       }
     })
+  } else {
+    req.flash('error', tr('Error_creating', res.locals.locale))
+    res.redirect(localeHref('/signup', req.originalUrl));
   }
-  req.flash('error', tr('Error_creating', res.locals.locale))
-  res.redirect(localeHref('/signup', req.originalUrl));
 });
 
 export default router;

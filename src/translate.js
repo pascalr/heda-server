@@ -67,7 +67,7 @@ export function tr(id, locale) {
   }
   let fr = {
     Are_you_having_difficulty: 'Avez-vous de la difficulté',
-    Which_image_represents: 'Quelle image représente',
+    Please_select: 'Veuillez sélectionner',
     I_am_not_a_robot: 'Je ne suis pas un robot',
     What_to_eat: 'Quoi cuisiner',
     What_quantity: 'Quelle quantité',

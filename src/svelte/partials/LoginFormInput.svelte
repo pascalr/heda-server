@@ -1,6 +1,6 @@
 <div>
   <label for="username">{label}</label>
-  <input name={field} class="form-control" type="text" {autocomplete} on:blur={validateInput} bind:value={value} bind:this={ref}>
+  <input name={field} class="form-control" use:setType {autocomplete} on:blur={validateInput} bind:value bind:this={ref}>
 </div>
 <br/>
 {#if error}
@@ -14,8 +14,11 @@
   export let label;
   export let value;
   export let t;
+  export let type = 'text';
   let ref;
   let error = ''
+
+  function setType(node) {node.type = type}
 
   export function validateInput() {
     error = t(validate(value))
@@ -33,7 +36,7 @@
   :global(.invalid) {
     border: 2px solid red;
   }
-  .inform-error {
+  :global(.inform-error) {
     color: red;
     font-style: italic;
   }
