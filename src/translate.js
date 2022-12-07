@@ -66,6 +66,8 @@ export function tr(id, locale) {
     Invalid_username_length: 'Username must be at least 3 characters long.',
   }
   let fr = {
+    Validate: 'Valider',
+    Other_question: 'Autre question',
     Are_you_having_difficulty: 'Avez-vous de la difficulté',
     Please_select: 'Veuillez sélectionner',
     I_am_not_a_robot: 'Je ne suis pas un robot',

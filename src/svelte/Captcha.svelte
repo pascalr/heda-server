@@ -9,10 +9,9 @@
       </button>
     {/each}
     <p class='mt-2'><i>
-      {t('Are_you_having_difficulty')}?
-      <br/>
       {#if attempts < maxAttempts}
-        <button type='button' class='btn btn-outline-primary btn-sm' on:click={fetchCaptcha}>{t('New_images')}</button>
+        <button type='button' class='btn btn-outline-primary btn'>{t('Validate')}</button>
+        <button type='button' class='btn btn-outline-secondary btn' on:click={fetchCaptcha}>{t('Other_question')}</button>
       {:else}
         <p style='color: red'>{t('Maximum_limit_reached')}.</p>
       {/if}
@@ -76,8 +75,9 @@
     border: 3px solid blue;
   }
   .captcha {
+    margin: 0 -1em;
     border: 2px solid black;
     border-radius: 0.5em;
-    padding: 0.2em;
+    padding: 0.5em;
   }
 </style>
