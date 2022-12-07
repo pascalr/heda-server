@@ -92,6 +92,7 @@ function convertFormDataValue(val) {
  * data: the data to send either as an object or a FormData
  * sucess: success callback function
  * error: error callback function
+ * @deprecated Moved to src/lib
 **/
 export function ajax(params) {
 

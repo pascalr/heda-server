@@ -198,18 +198,53 @@ router.get('/confirm_signup', function(req, res, next) {
   }
 })
 
-router.get('/fetch_captcha', function(req, res, next) {
-  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug'], ['name'], res.locals.locale).filter(k => k.image_slug && k.name)
+function captchaQuestion(req, locale) {
+  if (!req.session.captchaAttempts) {
+    req.session.captchaAttempts = 1
+  } else if (req.session.captchaAttempts >= 5) {
+    if (req.session.captchaBanDate) {
+      // Reset attempts after 5 minutes
+      if (Date.now() - req.session.captchaBanDate >= 5*60*1000) {
+        req.session.captchaAttempts = 1
+        req.session.captchaBanDate = null
+      } else {
+        return {error: tr('Maximum_limit_reached', locale)+'. '+tr('Please_try_again_later', locale)}
+      }
+    } else {
+      req.session.captchaBanDate = Date.now()
+      return {error: tr('Maximum_limit_reached', locale)+'. '+tr('Please_try_again_later', locale)}
+    }
+  } else {
+    req.session.captchaAttempts += 1
+  }
+  console.log('Captcha attempt: ', req.session.captchaAttempts)
+  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug'], ['name'], locale).filter(k => k.image_slug && k.name)
   let choices = shuffle(recipeKinds).slice(0, 9)
   let correctIdx = randomInt(9)
-  req.session.captcha = choices[correctIdx]
-  console.log('locale', res.locals.locale)
-  let question = tr('Please_select', res.locals.locale)+': <b>'+choices[correctIdx].name+'</b>?'
-  res.json({choices, question});
+  req.session.captcha = choices[correctIdx].id
+  let question = tr('Please_select', locale)+': <b>'+choices[correctIdx].name+'</b>?'
+  return {choices, question}
+}
+router.get('/fetch_captcha', function(req, res, next) {
+  res.json(captchaQuestion(req, res.locals.locale));
+})
+router.post('/validate_captcha', function(req, res, next) {
+
+  let validated = req.body.captcha == req.session.captcha
+  if (validated) {
+    console.log('Captcha validated!')
+    req.session.captchaValidatedAt = Date.now()
+  }
+  res.json(validated ? {validated} : captchaQuestion(req, res.locals.locale))
 })
 
 router.get('/signup', function(req, res, next) {
-  res.render('signup', {gon: {errors: req.flash('error')}});
+  let gon = {errors: req.flash('error')}
+  console.log('captchaValidatedAt', req.session.captchaValidatedAt)
+  if (req.session.captchaValidatedAt && (Date.now() - req.session.captchaValidatedAt < 3*60*1000)) {
+    gon.captchaAlreadyValidated = true
+  }
+  res.render('signup', {gon});
 });
 
 /**
@@ -226,11 +261,10 @@ router.post('/signup', function(req, res, next) {
   let n = normalizeSearchText(username)
   let usernameUnique = !allUsers.find(u => normalizeSearchText(u.name) == n)
 
-  if (req.body.captcha != req.session.captcha) {
-    req.flash('error', tr('Wrong_captcha', res.locals.locale))
-    res.redirect(localeHref('/signup', req.originalUrl));
+  if (!req.session.captchaValidatedAt || (Date.now() - req.session.captchaValidatedAt >= 5*60*1000)) {
+    req.flash('error', tr('Invalid_captcha', res.locals.locale))
+    return res.redirect(localeHref('/signup', req.originalUrl));
   }
-
   let errors = [validateEmail(email), validateUsername(username), validatePassword(password)].filter(f => f)
   if (errors.length === 0) {
 

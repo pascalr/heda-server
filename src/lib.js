@@ -216,3 +216,80 @@ export function validatePassword(password) {
 export function validateUsername(name) {
   return name?.length >= 3 ? null : 'Invalid_username_length'
 }
+
+/**
+ * Parameters
+ * url
+ * contentType: default is "application/json"
+ * method: "GET", "PATCH" or "POST" AKA type (old)
+ * data: the data to send either as an object or a FormData
+ * sucess: success callback function
+ * error: error callback function
+**/
+export function ajax(params) {
+
+  if (!params.url) {throw "ajax missing params url"}
+
+  let method = params.method || params.type
+
+  let headers = {}
+
+  let _csrf = null
+  if (method !== 'GET') {
+    let _csrfContainer = document.querySelector('[name="csrf-token"]')
+    if (!_csrfContainer) {console.log("Can't modify state missing csrf token.")}
+    _csrf = _csrfContainer.content
+  }
+
+  let url = params.url
+  let body = null
+  if (method == "GET") {
+    //if (params.data) {throw "Error ajax GET request cannnot have data, use query params instead."}
+    if (params.data) {
+      url += '?' + new URLSearchParams(params.data).toString()
+    }
+  } else if (params.data instanceof FormData) {
+
+    body = new FormData()
+    for (let [k, v] of params.data) {
+      let v1 = convertFormDataValue(v)
+      body.append(k, convertFormDataValue(v))
+    }
+    body.append('_csrf', _csrf)
+
+  } else {
+    body = {...params.data}
+    body._csrf = _csrf
+    body = JSON.stringify(body),
+
+    headers = {'Content-Type': 'application/json'}
+  }
+  
+  const handleResponse = (ok, data) => {
+    if (ok) {
+      if (params.success) { params.success(data) }
+    } else {
+      if (params.error) { params.error(data) }
+    }
+  }
+  
+  console.log('ajax '+url, params)
+
+  fetch(url, {
+    method,
+    mode: 'cors', // no-cors, *cors, same-origin
+    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: 'same-origin', // include, *same-origin, omit
+    redirect: 'follow', // manual, *follow, error
+    referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    body, headers
+  }).then(response => {
+    response.text().then((text) => {
+      try {
+        handleResponse(response.ok, JSON.parse(text))
+      } catch(err) {
+        handleResponse(response.ok, text)
+      }
+    })
+  })
+}

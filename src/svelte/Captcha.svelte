@@ -1,55 +1,82 @@
-<input type='checkbox' name='not-a-robot' bind:checked={notARobot} /> <label for='not-a-robot'>{t('I_am_not_a_robot')}</label><br/><br/>
-<input type='hidden' name='captcha' value={selected?.id} />
-{#if notARobot}
+<button type='button' class='plain-btn' on:click={showCaptcha}>
+  <img class='icon' src={captchaValidated ? '/icons/check-square-green.svg' : '/icons/square.svg'} alt='Captcha checkbox' /> {t('I_am_not_a_robot')}<br/><br/>
+</button>
+{#if captchaShowned && !captchaValidated}
   <div class='captcha pt-2'>
-    <p>{@html question}</p>
-    {#each choices as choice}
-      <button type='button' class='plain-btn' on:click={(e) => imageClicked(e, choice)}>
-        <img src={'/imgs/small/'+choice.image_slug} alt='FIXME DOES NOT WORK FOR BLIND PEOPLE' />
-      </button>
-    {/each}
-    <p class='mt-2'><i>
-      {#if attempts < maxAttempts}
-        <button type='button' class='btn btn-outline-primary btn'>{t('Validate')}</button>
+    {#if captchaError}
+      <p class='inform-error'>{captchaError}.</p>
+    {/if}
+    {#if !serverError}
+      <p>{@html question || ''}</p>
+      {#each choices || [] as choice}
+        <button type='button' class='plain-btn' on:click={(e) => imageClicked(e, choice)}>
+          <img src={'/imgs/small/'+choice.image_slug} alt='FIXME DOES NOT WORK FOR BLIND PEOPLE' />
+        </button>
+      {/each}
+      <p class='mt-2'><i>
+        <button type='button' class='btn btn-outline-primary btn' on:click={validateCaptcha}>{t('Validate')}</button>
         <button type='button' class='btn btn-outline-secondary btn' on:click={fetchCaptcha}>{t('Other_question')}</button>
-      {:else}
-        <p style='color: red'>{t('Maximum_limit_reached')}.</p>
-      {/if}
-    </i></p>
+      </i></p>
+    {/if}
   </div>
   <br/>
 {/if}
 
 <script>
-  import { getLocale } from "../lib";
+  import { getLocale, ajax } from "../lib";
   import { translate } from "../translate";
   import { localeHref } from "../utils";
 
   let choices = [];
   let question = '';
   let fetchedData = false
-  let notARobot = false;
+  let captchaShowned = false;
   let selectedRef, selected;
-  let attempts = 0;
-  let maxAttempts = 5;
+  let captchaValidated = gon.captchaAlreadyValidated || false;
+  let captchaError = ''
+  let serverError = false
 
-  $: if (notARobot && !fetchedData) {
-    fetchedData = true
-    fetchCaptcha()
+  function showCaptcha() {
+    captchaShowned = true
+    if (!captchaValidated && !fetchedData) {
+      fetchedData = true
+      fetchCaptcha()
+    }
   }
 
-  async function fetchCaptcha() {
+  function deselect() {
     selected = null
     if (selectedRef) {
       selectedRef.classList.remove('selected')
     }
-    if (attempts < maxAttempts) {
-      attempts += 1
-      const res = await fetch(localeHref(`/fetch_captcha`));
-      const json = await res.json();
-      question = json.question
-      choices = json.choices
+  }
+
+  async function validateCaptcha() {
+    
+    if (selected) {
+      ajax({url: localeHref('/validate_captcha'), method: 'POST', data: {captcha: selected.id}, success: (res) => {
+        handleResponse(res, t('Wrong_answer'))
+      }})
     }
+  }
+
+  function handleResponse(res, error) {
+    if (res.validated) {
+      captchaValidated = true
+    } else {
+      deselect()
+      serverError = !!res.error
+      captchaError = res.error || error
+      question = res.question
+      choices = res.choices
+    }
+  }
+
+  async function fetchCaptcha() {
+    deselect()
+    const res = await fetch(localeHref(`/fetch_captcha`));
+    const json = await res.json();
+    handleResponse(json)
   }
 
   function imageClicked(e, choice) {
@@ -68,7 +95,7 @@
 
 <style>
   img {
-    width: 130px;
+    width: 138px;
     border: 3px solid white;
   }
   :global(img.selected) {
@@ -79,5 +106,8 @@
     border: 2px solid black;
     border-radius: 0.5em;
     padding: 0.5em;
+  }
+  .icon {
+    width: 2em;
   }
 </style>

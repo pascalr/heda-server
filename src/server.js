@@ -152,7 +152,8 @@ app.use(function(req, res, next) {
 // error handler
 app.use(function(err, req, res, next) {
 
-  //if (req.app.get('env') === 'development') {
+  console.log('Error handler', err)
+
   if (process.env.NODE_ENV == "development") {
 
     if (typeof err === 'string') {
@@ -168,7 +169,6 @@ app.use(function(err, req, res, next) {
     res.render('error_dev');
 
   } else {
-    console.log('ERROR', err)
     res.redirect('/error');
   }
 });

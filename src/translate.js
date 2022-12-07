@@ -64,12 +64,16 @@ export function tr(id, locale) {
     Invalid_email: 'Please enter a valid email address.',
     Invalid_password_length: 'Password must be at least 6 characters long.',
     Invalid_username_length: 'Username must be at least 3 characters long.',
+    Wrong_answer: 'Wrong answer. Please try again',
   }
   let fr = {
+    Wrong_answer: 'Mauvaise réponse. Veuillez réessayer',
     Validate: 'Valider',
     Other_question: 'Autre question',
     Are_you_having_difficulty: 'Avez-vous de la difficulté',
     Please_select: 'Veuillez sélectionner',
+    Please_try_again_later: 'Veuillez réessayer plus tard.',
+    Invalid_captcha: 'Mauvais captcha',
     I_am_not_a_robot: 'Je ne suis pas un robot',
     What_to_eat: 'Quoi cuisiner',
     What_quantity: 'Quelle quantité',
