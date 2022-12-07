@@ -65,8 +65,12 @@ export function tr(id, locale) {
     Invalid_password_length: 'Password must be at least 6 characters long.',
     Invalid_username_length: 'Username must be at least 3 characters long.',
     Wrong_answer: 'Wrong answer. Please try again',
+    Username_not_unique: "This username is already taken",
+    Email_not_unique: "This email address is already used",
   }
   let fr = {
+    Username_not_unique: "Ce nom d'utilisateur est déjà utilisé",
+    Email_not_unique: "Cette adresse courriel est déjà utilisée",
     Wrong_answer: 'Mauvaise réponse. Veuillez réessayer',
     Validate: 'Valider',
     Other_question: 'Autre question',

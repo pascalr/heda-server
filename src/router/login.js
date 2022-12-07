@@ -256,16 +256,26 @@ router.post('/signup', function(req, res, next) {
 
   let {email, username, password} = req.body
 
-  let allUsers = db.fetchTable('users', {}, ['name'])
+  let allUsers = db.fetchTable('users', {}, ['name', 'email'])
 
-  let n = normalizeSearchText(username)
-  let usernameUnique = !allUsers.find(u => normalizeSearchText(u.name) == n)
+  function validateUnique(value, values, error) {
+    let val = normalizeSearchText(value)
+    return values.find(v => normalizeSearchText(v) == val) ? error : ''
+  }
 
   if (!req.session.captchaValidatedAt || (Date.now() - req.session.captchaValidatedAt >= 5*60*1000)) {
     req.flash('error', tr('Invalid_captcha', res.locals.locale))
     return res.redirect(localeHref('/signup', req.originalUrl));
   }
-  let errors = [validateEmail(email), validateUsername(username), validatePassword(password)].filter(f => f)
+
+  let errors = [
+    validateEmail(email),
+    validateUsername(username),
+    validatePassword(password),
+    validateUnique(email, allUsers.map(u=>u.email), 'Email_not_unique'),
+    validateUnique(username, allUsers.map(u=>u.name), 'Username_not_unique')
+  ].filter(f => f)
+
   if (errors.length === 0) {
 
     var salt = crypto.randomBytes(16);
@@ -299,7 +309,7 @@ router.post('/signup', function(req, res, next) {
       }
     })
   } else {
-    req.flash('error', tr('Error_creating', res.locals.locale))
+    req.flash('error', errors.map(e => tr(e, res.locals.locale)).join('. '))
     res.redirect(localeHref('/signup', req.originalUrl));
   }
 });
