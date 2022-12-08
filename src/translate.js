@@ -69,10 +69,16 @@ export function tr(id, locale) {
     Email_not_unique: "This email address is already used",
     Sign_in_email: "Click the link below to finish signing in to HedaCuisine",
     Waiting_confirm: "An email has been sent. Please check your inbox and validate the email address",
+    Waiting_reset: "An email has been sent. Please check your inbox to change your password",
+    Reset_password_message: "Someone asked for the HedaCuisine account linked to this email to be reinitialized. Click on the link bellow to modify it",
   }
   let fr = {
+    Reset: "Réinitialiser",
+    Reset_password_message: "Nous avons reçu une demande de réintialisation du mot de passe de votre compte HedaCuisine. Cliquer sur le lien ci-bas pour le modifier",
+    Invalid_email_address: 'Mauvaise adresse courriel',
     Send_email: 'Envoyer un email',
     Forgot_password: 'Mot de passe oublié',
+    Waiting_reset: "Un email vous a été envoyé. S'il vous plaît regarder votre boîte de réception pour changer votre mot de passe",
     Waiting_confirm: "Un email vous a été envoyé. S'il vous plaît regarder votre boîte de réception et valider l'adresse courriel",
     Hello: 'Bonjour',
     Sign_in_email: "Cliquer sur le lien ci-bas pour se connecter à HedaCuisine",

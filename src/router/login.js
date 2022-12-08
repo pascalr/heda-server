@@ -30,7 +30,7 @@ function initGon(req, res, next) {
 }
 
 function fetchAccountUsers(req, res, next) {
-  let attrs = ['name', 'gender', 'image_slug', 'locale']
+  let attrs = ['name', 'image_slug', 'locale']
   res.locals.users = db.fetchTable('users', {account_id: req.user.account_id}, attrs)
   if (res.locals.gon) {res.locals.gon.users = res.locals.users}
   next()
@@ -126,24 +126,30 @@ router.get('/edit_account', initGon, fetchAccountUsers, setProfile, function(req
   res.render('edit_account');
 });
 
-// https://stackoverflow.com/questions/20277020/how-to-reset-change-password-in-node-js-with-passport-js
-router.get('/forgot', function (req, res, next) {
-  if (req.isAuthenticated()) { return res.redirect('/'); /* user is alreay logged in */ }
+router.get('/forgot', redirectHomeIfLoggedIn, function (req, res, next) {
   res.render('forgot');
 });
 
-// https://stackoverflow.com/questions/20277020/how-to-reset-change-password-in-node-js-with-passport-js
-router.post('/forgot', function (req, res, next) {
-  if (req.isAuthenticated()) { return res.redirect('/'); /* user is alreay logged in */ }
-  users.forgot(req, res, function (err) {
-    if (err) {
-      req.flash('error', err);
-    }
-    else {
-      req.flash('success', 'Please check your email for further instructions.');
-    }
-    res.redirect('/');
-  });
+router.post('/forgot', redirectHomeIfLoggedIn, function (req, res, next) {
+  let u = db.fetchRecord('users', {email: req.body.email, email_validated: 1}, ['email'])
+  if (!u) {
+    req.flash('error', t('Invalid_email_address'))
+    return res.render('forgot')
+  }
+
+  var token = crypto.randomUUID();
+
+  var link = res.locals.origin+'/reset/' + token;
+  var msg = {
+    to: email,
+    from: 'admin@hedacuisine.com',
+    subject: 'HedaCuisine - Reset password',
+    text: t('Reset_password_message')+'.\r\n\r\n' + link,
+    html: '<h3>'+t('Reset_password_message')+'.</p><p><a href="' + link + '">'+t('Reset')+'</a></p>',
+  };
+  sendgrid.send(msg);
+  res.redirect(localeHref('/waiting_reset', req.originalUrl))
+
 });
 
 // https://stackoverflow.com/questions/20277020/how-to-reset-change-password-in-node-js-with-passport-js
@@ -184,6 +190,10 @@ router.post('/reset', function (req, res, next) {
 
 router.get('/waiting_confirm', redirectHomeIfLoggedIn, function(req, res, next) {
   res.render('waiting_confirm')
+})
+
+router.get('/waiting_reset', redirectHomeIfLoggedIn, function(req, res, next) {
+  res.render('waiting_reset')
 })
 
 router.get('/confirm_signup', function(req, res, next) {

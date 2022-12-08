@@ -7,10 +7,10 @@
     <div class="form-container">
       <h2><a href="<%- localeHref(req, '/') %>" style="text-decoration: none;">HedaCuisine (<%- t('beta') %>)</a></h2>
       <h1><%- t('Forgot_password') %></h1>
-      <form action="/todo" method="post">
+      <form action="/forgot" method="post">
         <div>
-          <label for="username"><%- t('Email') %></label><br/>
-          <input id="username" name="username" class="form-control" type="text" autocomplete="username" required autofocus>
+          <label for="email"><%- t('Email') %></label><br/>
+          <input id="email" name="email" class="form-control" type="text" autocomplete="email" required autofocus>
         </div>
         <br/>
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
