@@ -7,11 +7,7 @@
     <div class="form-container">
       <h2><a href="<%- localeHref(req, '/') %>" style="text-decoration: none;">HedaCuisine (<%- t('beta') %>)</a></h2>
       <h1><%- t('Sign_in') %></h1>
-      <% if (hasMessages) { %>
-        <% messages.forEach(function(message) { %>
-        <p><%= message %></p>
-        <% }); %>
-      <% } %>
+      <%- include('partials/flash') %>
       <form action="<%- localeHref(req, '/login/password') %>" method="post">
         <div>
           <label for="username"><%- t('Username_or_Email') %></label><br/>

@@ -71,8 +71,15 @@ export function tr(id, locale) {
     Waiting_confirm: "An email has been sent. Please check your inbox and validate the email address",
     Waiting_reset: "An email has been sent. Please check your inbox to change your password",
     Reset_password_message: "Someone asked for the HedaCuisine account linked to this email to be reinitialized. Click on the link bellow to modify it",
+    Invalid_username_is_email: "Invalid username. Username can't be an email",
+    Invalid_login: "Incorrect username, email or password",
+    Internal_error: "Internal error. Please try again later",
   }
   let fr = {
+    Invalid_email_address_or_username: "Mauvais nom d'utilisateur ou d'adresse courriel",
+    Internal_error: "Erreur du serveur. Veuillez réessayer plus tard",
+    Invalid_login: "Nom d'utilisateur, mot de passe ou adresse courriel invalide",
+    Invalid_username_is_email: "Nom d'utilisateur invalide. Le nom d'utilisateur ne peut pas être une adresse courriel",
     Reset: "Réinitialiser",
     Reset_password_message: "Nous avons reçu une demande de réintialisation du mot de passe de votre compte HedaCuisine. Cliquer sur le lien ci-bas pour le modifier",
     Invalid_email_address: 'Mauvaise adresse courriel',

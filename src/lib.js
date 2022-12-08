@@ -209,12 +209,14 @@ export function validatePassword(password) {
 }
 
 /**
- * Check if the given username is valid. Must be at least 3 characters long.
+ * Check if the given username is valid. Must be at least 3 characters long. Must not be an email
  * @param String name 
  * @returns A string with an error message if the username is invalid, nullish otherwiser.
  */
 export function validateUsername(name) {
-  return name?.length >= 3 ? null : 'Invalid_username_length'
+  if (!name || name.length < 3) {return 'Invalid_username_length'}
+  if (isValidEmail(name)) {return 'Invalid_username_is_email'}
+  return null
 }
 
 /**

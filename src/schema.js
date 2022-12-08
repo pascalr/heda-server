@@ -38,7 +38,7 @@ const schema = {
   },
   'users': {
     //write_attrs: ['name', 'gender', 'image_slug', 'locale', 'is_public'],
-    write_attrs: ['name', 'gender', 'image_slug', 'locale'],
+    write_attrs: ['image_slug', 'locale'],
     //attrs_types: {is_public: 'bool'},
     security_attrs: ['id'],
   },

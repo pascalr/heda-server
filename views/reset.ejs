@@ -5,11 +5,7 @@
   </head>
   <body>
     <h1>Reset password</h1>
-    <% if (hasMessages) { %>
-      <% messages.forEach(function(message) { %>
-      <p><%= message %></p>
-      <% }); %>
-    <% } %>
+    <%- include('partials/flash') %>
     <form action="/reset" method="post">
       <div>
         <label for="new-password">New password</label>

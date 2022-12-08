@@ -36,8 +36,4 @@
   :global(.invalid) {
     border: 2px solid red;
   }
-  :global(.inform-error) {
-    color: red;
-    font-style: italic;
-  }
 </style>

@@ -123,10 +123,11 @@ app.use(passport.authenticate('session'));
 // Server-side analytics
 app.use(analytics.checkVisit)
 app.use(function(req, res, next) {
-  var msgs = req.session.messages || [];
-  res.locals.messages = msgs;
-  res.locals.hasMessages = !! msgs.length;
-  req.session.messages = [];
+  // Passport adds a message when there is a login issue to req.session.messages.
+  if (req.session.messages?.length) {
+    req.flash('error', req.session.messages.join('. '))
+    req.session.messages = []
+  }
   next();
 });
 app.use(function(req, res, next) {
@@ -137,6 +138,10 @@ app.use(function(req, res, next) {
   res.locals.t = translate(res.locals.locale)
   res.locals.req = req;
   res.locals.origin = req.protocol+'://'+req.get('host');
+  if (req.user) {
+    res.locals.user = {name: req.user.name, locale: req.user.locale}
+    res.locals.gon = {user: res.locals.user}
+  }
   next();
 });
 

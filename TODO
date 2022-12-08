@@ -24,6 +24,18 @@ SVELTE!!! Mais pas pour HedaCuisine...
 ******************************************
 ******************************************
 
+PAR POUR TOUT DE SUITE...
+OK pour les commentaires. Par contre les ratings je trouve c'est un peu n'importe quoi.
+Le best serait de faire une IA pour te générer des recettes personalisées.
+Je ne sais pas ce serait quoi le niveau de difficulté.
+Utiliser ChatGPT ou similaire.
+
+Inside /confirm_signup => Show a req.flash('info', t('Welcome_message'))
+
+Add unique username constraint... CREATE UNIQUE INDEX your_unique_index ON your_table(column_name);
+
+Être capable de se logged in avec le nom d'utilisateur case insensitive. Ça va prendre une autre field dans la db pas le choix...
+
 Ajouter une image au kinds et les rajouter dans la barre de recherche.
 
 Remember password
@@ -42,13 +54,6 @@ Add message to user that it the user has been validated. They can now log in.
 J'ai commenté les users dans schéma parce qu'ils ne sont plus dépendant des accounts maintenant... Pouvoir modifier les valeurs des users.
 
 Only allow email validated users to log in.
-
-Faire un petit captcha custom:
-Dans un gâteau tu met:
-1 c. à thé de sel, 1 c. à table, 1 t de sel?
-Dans une tarte aux pommes, tu mets?
-Des fraises, des cerires ou des pommes?
-Bouton JE NE SUIS PAS UN ROBOT
 
 Typescript la database pour que l'autocomplete puisse me suggérer des noms function. db.create... => ...........
 (Ou bien c'est parce que c'est bizare ce que j'ai fait. Créer une classe?)

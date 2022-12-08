@@ -5,7 +5,7 @@ import path from 'path';
 import _ from 'lodash';
 
 import { db } from '../db.js';
-import { ensureUser, setProfile } from './login.js';
+import { ensureUser } from './login.js';
 import { localeHref, now, shuffle } from '../utils.js';
 import { tr } from '../translate.js'
 import schema from '../schema.js'
@@ -368,9 +368,9 @@ const renderApp = [ensureUser, function(req, res, next) {
   ids = o.users.map(u => u.id).filter(id => id != user.user_id)
   o.friends_recipes = db.fetchTable('recipes', {user_id: ids}, ['name', 'user_id', 'image_slug', 'recipe_kind_id'])
   
-  res.locals.gon = o
+  res.locals.gon = {...res.locals.gon, ...o}
   next()
-}, setProfile, function(req, res, next) {
+}, function(req, res, next) {
   res.render('index', { account: req.user });
 }]
 

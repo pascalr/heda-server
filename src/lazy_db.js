@@ -111,14 +111,14 @@ const sqlDb = {
   },
   getSchema() {return this.___schema},
 
-  fetchTable(tableName, conditions, attributes, options={}) {
+  fetchTable(tableName, conditions, attributes=[], options={}) {
     let o = fetchStatement(this.getSchema(), tableName, conditions, attributes, options)
     if (!o) return []
     let [s, a] = o
     return this.prepare(s).all(...a)
   },
 
-  fetchRecord(tableName, conditions, attributes, options={}) {
+  fetchRecord(tableName, conditions, attributes=[], options={}) {
     let o = fetchStatement(this.getSchema(), tableName, conditions, attributes, options)
     if (!o) return null
     let [s, a] = o

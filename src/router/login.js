@@ -2,10 +2,11 @@
 import express from 'express';
 import crypto, { randomInt } from 'crypto';
 import sendgrid from '@sendgrid/mail';
-import connectEnsureLogin from 'connect-ensure-login'
+// import connectEnsureLogin from 'connect-ensure-login'
+import _ from 'lodash'
 
-import passport from '../passport.js';
-import { normalizeSearchText, localeHref, now, shuffle } from '../utils.js';
+// import passport from '../passport.js';
+import { normalizeSearchText, localeHref, now, shuffle, isValidEmail } from '../utils.js';
 import { db } from '../db.js';
 import { validateEmail, validatePassword, validateUsername, fetchTableLocaleAttrs } from '../lib.js'
 import { tr, translate } from '../translate.js'
@@ -25,17 +26,6 @@ export const ensureUser = function(req, res, next) {
   //next("Error the account is not logged in or the user is not selected...")
 }
 
-function initGon(req, res, next) {
-  res.locals.gon = {}; next()
-}
-
-function fetchAccountUsers(req, res, next) {
-  let attrs = ['name', 'image_slug', 'locale']
-  res.locals.users = db.fetchTable('users', {account_id: req.user.account_id}, attrs)
-  if (res.locals.gon) {res.locals.gon.users = res.locals.users}
-  next()
-}
-
 function redirectHomeIfLoggedIn(req, res, next) {
   if (req.user && req.user.user_id) {
     res.redirect('/');
@@ -49,18 +39,43 @@ router.get('/login', redirectHomeIfLoggedIn, function(req, res, next) {
   res.render('login');
 });
 
+function loginUser(user) {
+  if (!user.name || user.admin === null || user.admin === undefined || !user.id) {
+    throw "Cant log user in. Missing attributes."
+  }
+  req.session.user = _.pick(user, ['name', 'id', 'admin'])
+  req.session.user.user_id = user.id
+  req.session.user.is_admin = user.admin
+}
 
-router.post('/change_user', function(req, res, next) {
-  req.user.user_id = req.body.user_id
-  res.redirect('/');
-});
+function findUserByNameOrEmail(nameOrEmail, attrs) {
+  let cond = isValidEmail(nameOrEmail) ? {username: nameOrEmail} : {email: nameOrEmail}
+  return db.fetchRecord('users', cond, attrs)
+}
 
 router.post('/login/password', function(req, res, next) {
-  passport.authenticate('local', {
-    successReturnToOrRedirect: localeHref('/choose_user', req.originalUrl),
-    failureRedirect: '/login',
-    failureMessage: true
-  })(req, res, next);
+
+  let {username, password} = req.body
+  const user = findUserByNameOrEmail(username, ['name', 'salt', 'encrypted_password', 'admin'])
+
+  function invalidLogin() {
+    req.flash('error', tr('Invalid_login', res.locals.locale))
+    res.redirect('/login')
+  }
+  if (!user) {return invalidLogin()}
+  
+  crypto.pbkdf2(password, user.salt, 310000, 32, 'sha256', function(err, hashedPassword) {
+    if (err) { return next(err); }
+    if (!crypto.timingSafeEqual(user.encrypted_password, hashedPassword)) {
+      return invalidLogin()
+    }
+    loginUser(user)
+  });
+  // passport.authenticate('local', {
+  //   successReturnToOrRedirect: localeHref('/choose_user', req.originalUrl),
+  //   failureRedirect: '/login',
+  //   failureMessage: true
+  // })(req, res, next);
 });
 
 router.post('/logout', function(req, res, next) {
@@ -70,74 +85,84 @@ router.post('/logout', function(req, res, next) {
   });
 });
 
+// ALL THESE ROUTES WHERE BECAUSE I WAS DOING A LOGIN LIKE NETFLIX.
+// YOU ENTER AN EMAIL, THEN SELECT A PROFILE.
+// BUT I AM NOT DOING THAT ANYMORE.
+// function fetchAccountUsers(req, res, next) {
+//   let attrs = ['name', 'image_slug', 'locale']
+//   res.locals.users = db.fetchTable('users', {account_id: req.user.account_id}, attrs)
+//   if (res.locals.gon) {res.locals.gon.users = res.locals.users}
+//   next()
+// }
+// router.post('/change_user', function(req, res, next) {
+//   req.user.user_id = req.body.user_id
+//   res.redirect('/');
+// });
+// router.get('/choose_user', redirectHomeIfLoggedIn, fetchAccountUsers, function(req, res, next) {
+//   res.render('choose_user');
+// });
+// router.get('/new_user', function(req, res, next) {
+//   if (req.query.err) {res.locals.error = tr(req.query.err, res.locals.locale)}
+//   res.render('new_profile');
+// });
+// router.post('/create_user', function(req, res, next) {
+//   if (!req.user || !req.user.account_id) {return next('Must be logged in to create profile')}
+//   try {
+//     let info = db.prepare('INSERT INTO users (name, locale, account_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?)').run(req.body.name, req.body.locale, req.user.account_id, now(), now())
+//     req.user.user_id = info.lastInsertRowid;
+//     res.redirect('/');
+//   } catch (err) {
+//     res.redirect(localeHref('/new_user?err=Name_already_used', req.originalUrl));
+//   }
+// });
+// router.delete('/destroy_profile/:id', function(req, res, next) {
 
-router.get('/choose_user', redirectHomeIfLoggedIn, fetchAccountUsers, function(req, res, next) {
-  res.render('choose_user');
-});
+//   if (!req.user.account_id) {return next('Must be logged in to destroy profile')}
+//   let id = req.params.id
 
-router.get('/new_user', function(req, res, next) {
-  if (req.query.err) {res.locals.error = tr(req.query.err, res.locals.locale)}
-  res.render('new_profile');
-});
-
-
-router.post('/create_user', function(req, res, next) {
-  if (!req.user || !req.user.account_id) {return next('Must be logged in to create profile')}
-  try {
-    let info = db.prepare('INSERT INTO users (name, locale, account_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?)').run(req.body.name, req.body.locale, req.user.account_id, now(), now())
-    req.user.user_id = info.lastInsertRowid;
-    res.redirect('/');
-  } catch (err) {
-    res.redirect(localeHref('/new_user?err=Name_already_used', req.originalUrl));
-  }
-});
-
-router.delete('/destroy_profile/:id', function(req, res, next) {
-
-  if (!req.user.account_id) {return next('Must be logged in to destroy profile')}
-  let id = req.params.id
-
-  let query = 'DELETE FROM users WHERE id = ? AND account_id = ?'
-  db.prepare(query).run(id, req.user.account_id)
-  req.user.user_id = null
-  res.json({status: 'ok'})
-});
-
-router.post('/choose_user', function(req, res, next) {
-  req.user.user_id = req.body.user_id
-  res.redirect('/');
-});
-
-export function setProfile(req, res, next) {
-  if (!res.locals.gon?.users) next('Error set profile must be called after fetching profiles')
-  let user = res.locals.gon.users.find(u => u.id == req.user.user_id)
-  if (!user) {req.user.user_id = null; next('Error current profile not found in database. Database changed? Logging out of profile...')}
-  res.locals.gon.user = {...user, is_admin: req.user.is_admin}
-  res.locals.user = user
-  next()
-}
-
-router.get('/edit_profile', initGon, fetchAccountUsers, setProfile, function(req, res, next) {
-  res.render('edit_profile');
-});
-
-router.get('/edit_account', initGon, fetchAccountUsers, setProfile, function(req, res, next) {
-  res.locals.gon.account = db.fetchRecord('accounts', {id: req.user.account_id}, ['email'])
-  res.render('edit_account');
-});
+//   let query = 'DELETE FROM users WHERE id = ? AND account_id = ?'
+//   db.prepare(query).run(id, req.user.account_id)
+//   req.user.user_id = null
+//   res.json({status: 'ok'})
+// });
+// router.post('/choose_user', function(req, res, next) {
+//   req.user.user_id = req.body.user_id
+//   res.redirect('/');
+// });
+// export function setProfile(req, res, next) {
+//   if (!res.locals.gon?.users) next('Error set profile must be called after fetching profiles')
+//   let user = res.locals.gon.users.find(u => u.id == req.user.user_id)
+//   if (!user) {req.user.user_id = null; next('Error current profile not found in database. Database changed? Logging out of profile...')}
+//   res.locals.gon.user = {...user, is_admin: req.user.is_admin}
+//   res.locals.user = user
+//   next()
+// }
+// router.get('/edit_profile', fetchAccountUsers, function(req, res, next) {
+//   res.render('edit_profile');
+// });
+// router.get('/edit_account', fetchAccountUsers, function(req, res, next) {
+//   res.locals.gon.account = db.fetchRecord('accounts', {id: req.user.account_id}, ['email'])
+//   res.render('edit_account');
+// });
 
 router.get('/forgot', redirectHomeIfLoggedIn, function (req, res, next) {
   res.render('forgot');
 });
 
 router.post('/forgot', redirectHomeIfLoggedIn, function (req, res, next) {
-  let u = db.fetchRecord('users', {email: req.body.email, email_validated: 1}, ['email'])
+
+  const u = findUserByNameOrEmail(req.body.email, ['email'])
   if (!u) {
-    req.flash('error', t('Invalid_email_address'))
+    req.flash('error', t('Invalid_email_address_or_username'))
     return res.render('forgot')
   }
 
   var token = crypto.randomUUID();
+  let info = db.prepare('UPDATE users SET forgot_password_token = ? WHERE id = ?', token, u.id).run()
+  if (info.changes != 1) {
+    req.flash('error', t('Internal_error'))
+    return res.render('forgot')
+  }
 
   var link = res.locals.origin+'/reset/' + token;
   var msg = {
@@ -152,39 +177,27 @@ router.post('/forgot', redirectHomeIfLoggedIn, function (req, res, next) {
 
 });
 
-// https://stackoverflow.com/questions/20277020/how-to-reset-change-password-in-node-js-with-passport-js
-router.get('/reset/:token', function (req, res, next) {
-  if (req.isAuthenticated()) { return res.redirect('/'); /* user is alreay logged in */ }
-
-  var token = req.params.token;
-  res.locals.token = token;
-  //users.checkReset(token, req, res, function (err, data) {
-  //  if (err)
-  //    req.flash('error', err);
-
-  //  //show the UI with new password entry
-  //  res.render('reset');
-  //});
-  res.render('reset');
+router.get('/reset/:token', redirectHomeIfLoggedIn, function (req, res, next) {
+  res.render('reset', {token: req.params.token});
 });
 
-// https://stackoverflow.com/questions/20277020/how-to-reset-change-password-in-node-js-with-passport-js
-router.post('/reset', function (req, res, next) {
-  if (req.isAuthenticated() || !req.body.token) { return res.redirect('/'); /* user is alreay logged in */ }
+router.post('/reset', redirectHomeIfLoggedIn, function (req, res, next) {
   
   var salt = crypto.randomBytes(16);
   crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', function(err, hashedPassword) {
     if (err) { return next(err); }
-    let info = db.prepare('UPDATE accounts SET encrypted_password = ?, salt = ?, updated_at = ? WHERE reset_password_token = ?').run(hashedPassword, salt, now(), req.body.token)
-    var user = {
-      id: this.lastInsertRowid,
-      username: req.body.username
-    };
-    req.login(user, function(err) {
-      if (err) { return next(err); }
-      res.redirect('/');
-    });
-    
+    let u = db.fetchRecord('users', {reset_password_token: req.body.token}, ['name', 'admin'])
+    if (!u) {
+      req.flash('error', t('Internal_error'))
+      return res.redirect('/reset/'+req.body.token)
+    }
+    let info = db.prepare('UPDATE users SET encrypted_password = ?, salt = ?, updated_at = ? WHERE reset_password_token = ?').run(hashedPassword, salt, now(), req.body.token)
+    if (info.changes != 1) {
+      req.flash('error', t('Internal_error'))
+      return res.redirect('/reset/'+req.body.token)
+    }
+    loginUser(u)
+    res.redirect('/')
   });
 });
 
@@ -197,14 +210,16 @@ router.get('/waiting_reset', redirectHomeIfLoggedIn, function(req, res, next) {
 })
 
 router.get('/confirm_signup', function(req, res, next) {
-  const user = db.fetchRecord('users', {email_confirmation_token: req.query.token}, ['email', 'email_validated'])
+  const user = db.fetchRecord('users', {confirm_email_token: req.query.token}, ['email', 'email_validated', 'name', 'admin'])
   if (user) {
     if (!user.email_validated) {
       user.findAndUpdateRecord('users', user, {email_validated: 1}, req.user)
     }
-    res.redirect('/login?msg=email_just_validated=1') // TODO: Add messages. Add message to user that it the user has been validated. They can now log in.
+    loginUser(user)
+    res.redirect('/')
   } else {
-    res.redirect('/signup') // TODO: Add error message
+    req.flash('error', t('Internal_error'))
+    res.redirect('/signup')
   }
 })
 
@@ -264,10 +279,11 @@ router.get('/signup', function(req, res, next) {
  */
 router.post('/signup', function(req, res, next) {
 
-  let {email, username, password} = req.body
+  let {email, name, password} = req.body
+  let username = normalizeSearchText(name)
   let t = translate(res.locals.locale)
 
-  let allUsers = db.fetchTable('users', {}, ['name', 'email'])
+  let allUsers = db.fetchTable('users', {}, ['username', 'email'])
 
   function validateUnique(value, values, error) {
     let val = normalizeSearchText(value)
@@ -284,7 +300,7 @@ router.post('/signup', function(req, res, next) {
     validateUsername(username),
     validatePassword(password),
     validateUnique(email, allUsers.map(u=>u.email), 'Email_not_unique'),
-    validateUnique(username, allUsers.map(u=>u.name), 'Username_not_unique')
+    validateUnique(username, allUsers.map(u=>u.username), 'Username_not_unique')
   ].filter(f => f)
 
   if (errors.length === 0) {
@@ -294,8 +310,8 @@ router.post('/signup', function(req, res, next) {
       if (err) { return next(err); }
       try {
         var token = crypto.randomUUID();
-        let q = 'INSERT INTO users (email, name, confirm_email_token, encrypted_password, salt, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
-        let info = db.prepare(q).run(email, username, token, hashedPassword, salt, now(), now())
+        let q = 'INSERT INTO users (email, name, username, confirm_email_token, encrypted_password, salt, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+        let info = db.prepare(q).run(email, name, username, token, hashedPassword, salt, now(), now())
         if (info.changes != 1) {throw "Error creating user in database."}
         var link = res.locals.origin+'/confirm_signup?token=' + token;
         var msg = {

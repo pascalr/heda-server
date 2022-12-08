@@ -7,7 +7,7 @@
     {/each}
   {/if}
   <form action={urlWithLocale('/signup', locale)} method="post" on:submit={submitForm}>
-    <LoginFormInput field="username" label={t('Username')+' (public)'} autocomplete="username" validate={validateUsername} bind:validateInput={validateUsernameInput} {t} />
+    <LoginFormInput field="name" label={t('Username')+' (public)'} autocomplete="username" validate={validateUsername} bind:validateInput={validateUsernameInput} {t} />
     <LoginFormInput field="email" label={t('Email')} autocomplete="email" validate={validateEmail} bind:validateInput={validateEmailInput} {t} />
     <LoginFormInput type="password" field="password" label={t('Password')} autocomplete="new-password" validate={validatePassword} bind:validateInput={validatePasswordInput} {t} />
     <Captcha />
