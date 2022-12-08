@@ -321,14 +321,14 @@ const renderApp = [ensureUser, function(req, res, next) {
   let attrs = null
   let ids = null
   //o.users = db.fetchTable('users', {account_id: user.account_id}, ['name', 'image_slug', 'locale', 'is_public'])
-  o.users = db.fetchTable('users', {account_id: user.account_id}, ['name', 'image_slug', 'locale'])
-  let profile = o.users.find(u => u.id == user.user_id)
+  // o.users = db.fetchTable('users', {account_id: user.account_id}, ['name', 'image_slug', 'locale'])
+  // let profile = o.users.find(u => u.id == user.user_id)
   o.recipes = db.fetchTable('recipes', {user_id: user.user_id}, RECIPE_ATTRS)
   o.favorite_recipes = db.fetchTable('favorite_recipes', {user_id: user.user_id}, ['list_id', 'recipe_id', 'updated_at'])
   let recipeIds = o.recipes.map(r => r.id)
   let missingRecipeIds = o.favorite_recipes.map(r=>r.recipe_id).filter(id => !recipeIds.includes(id))
   o.recipes = [...o.recipes, ...db.fetchTable('recipes', {id: missingRecipeIds}, RECIPE_ATTRS)]
-  o.recipe_kinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug', 'kind_id'], ['name', 'recipe_count'], profile.locale)
+  o.recipe_kinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug', 'kind_id'], ['name', 'recipe_count'], req.locale)
   //attrs = ['name', 'instructions', 'recipe_id', 'original_recipe_id']
   //o.mixes = db.fetchTable('mixes', {user_id: user.user_id}, attrs)
   o.machine_users = db.fetchTable('machine_users', {user_id: user.user_id}, ['machine_id'])
@@ -365,9 +365,13 @@ const renderApp = [ensureUser, function(req, res, next) {
   //o.images = db.fetchTable('images', {id: ids}, attrs)
 
   //o.machine_foods = db.fetchTable('machine_foods', {}, ['food_id', 'machine_id'])
-  ids = o.users.map(u => u.id).filter(id => id != user.user_id)
-  o.friends_recipes = db.fetchTable('recipes', {user_id: ids}, ['name', 'user_id', 'image_slug', 'recipe_kind_id'])
-  
+
+
+  // FIXME: FRIENDS OR "SAME ACCOUNT" RECIPES
+  // ids = o.users.map(u => u.id).filter(id => id != user.user_id)
+  // o.friends_recipes = db.fetchTable('recipes', {user_id: ids}, ['name', 'user_id', 'image_slug', 'recipe_kind_id'])
+  o.friends_recipes = db.fetchTable('recipes', {user_id: req.user.id}, ['name', 'user_id', 'image_slug', 'recipe_kind_id'])
+
   res.locals.gon = {...res.locals.gon, ...o}
   next()
 }, function(req, res, next) {

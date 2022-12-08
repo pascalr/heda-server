@@ -1,19 +1,23 @@
 <!doctype html>
 <html lang="<%- locale %>">
   <head>
-    <%- include('partials/head') %>
+    <%- include('partials/login_head') %>
   </head>
   <body>
-    <h1>Reset password</h1>
-    <%- include('partials/flash') %>
-    <form action="/reset" method="post">
-      <div>
-        <label for="new-password">New password</label>
-        <input id="new-password" name="password" type="password" required autofocus>
-      </div>
-      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-      <input type="hidden" name="token" value="<%= token %>">
-      <button type="submit">Reset</button>
-    </form>
+    <div class="form-container">
+      <h2><a href="<%- localeHref(req, '/') %>" style="text-decoration: none;">HedaCuisine (<%- t('beta') %>)</a></h2>
+      <h1><%- t('Reset_password') %></h1>
+      <%- include('partials/flash') %>
+      <form action="/reset" method="post">
+        <div>
+          <label for="new-password">New password</label>
+          <input id="new-password" name="password" class="form-control" type="password" required autofocus>
+        </div>
+        <br/>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <input type="hidden" name="token" value="<%= token %>">
+        <button type="submit" class="btn btn-primary">Reset</button>
+      </form>
+    </div>
   </body>
 </html>

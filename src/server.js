@@ -133,13 +133,16 @@ app.use(function(req, res, next) {
 app.use(function(req, res, next) {
   res.locals.csrfToken = req.csrfToken();
   res.locals.href = req.url;
+  req.user = req.session.user
   console.log('user for locale', req.user)
-  res.locals.locale = (req.user?.locale || req.query.locale || 'en').toLowerCase();
-  res.locals.t = translate(res.locals.locale)
+  if (req.locale) {throw "Internal coding error. Can't overwrite req.locale"}
+  req.locale = (req.user?.locale || req.query.locale || 'en').toLowerCase();
+  res.locals.locale = req.locale;
+  res.locals.t = translate(req.locale)
   res.locals.req = req;
   res.locals.origin = req.protocol+'://'+req.get('host');
   if (req.user) {
-    res.locals.user = {name: req.user.name, locale: req.user.locale}
+    res.locals.user = {name: req.user.name, locale: req.locale}
     res.locals.gon = {user: res.locals.user}
   }
   next();
@@ -209,6 +212,7 @@ function normalizePort(val) {
  * Event listener for HTTP server "error" event.
  */
 function onError(error) {
+  console.log('Server.js onError')
   if (error.syscall !== 'listen') {
     throw error;
   }

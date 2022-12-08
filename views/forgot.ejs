@@ -7,6 +7,7 @@
     <div class="form-container">
       <h2><a href="<%- localeHref(req, '/') %>" style="text-decoration: none;">HedaCuisine (<%- t('beta') %>)</a></h2>
       <h1><%- t('Forgot_password') %></h1>
+      <%- include('partials/flash') %>
       <form action="/forgot" method="post">
         <div>
           <label for="email"><%- t('Username_or_Email') %></label><br/>

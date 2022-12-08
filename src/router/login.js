@@ -39,17 +39,19 @@ router.get('/login', redirectHomeIfLoggedIn, function(req, res, next) {
   res.render('login');
 });
 
-function loginUser(user) {
-  if (!user.name || user.admin === null || user.admin === undefined || !user.id) {
-    throw "Cant log user in. Missing attributes."
+async function loginUser(user, req, res, next) {
+  if (!user.name || user.admin === undefined || !user.id) {
+    console.log(_.pick(user, ['name', 'id', 'admin']))
+    return next("Cant log user in. Missing attributes.")
   }
   req.session.user = _.pick(user, ['name', 'id', 'admin'])
   req.session.user.user_id = user.id
   req.session.user.is_admin = user.admin
+  res.redirect('/')
 }
 
 function findUserByNameOrEmail(nameOrEmail, attrs) {
-  let cond = isValidEmail(nameOrEmail) ? {username: nameOrEmail} : {email: nameOrEmail}
+  let cond = isValidEmail(nameOrEmail) ? {email: nameOrEmail} : {username: nameOrEmail}
   return db.fetchRecord('users', cond, attrs)
 }
 
@@ -69,7 +71,7 @@ router.post('/login/password', function(req, res, next) {
     if (!crypto.timingSafeEqual(user.encrypted_password, hashedPassword)) {
       return invalidLogin()
     }
-    loginUser(user)
+    loginUser(user, req, res, next)
   });
   // passport.authenticate('local', {
   //   successReturnToOrRedirect: localeHref('/choose_user', req.originalUrl),
@@ -150,6 +152,8 @@ router.get('/forgot', redirectHomeIfLoggedIn, function (req, res, next) {
 });
 
 router.post('/forgot', redirectHomeIfLoggedIn, function (req, res, next) {
+  
+  let t = translate(res.locals.locale)
 
   const u = findUserByNameOrEmail(req.body.email, ['email'])
   if (!u) {
@@ -158,7 +162,7 @@ router.post('/forgot', redirectHomeIfLoggedIn, function (req, res, next) {
   }
 
   var token = crypto.randomUUID();
-  let info = db.prepare('UPDATE users SET forgot_password_token = ? WHERE id = ?', token, u.id).run()
+  let info = db.prepare('UPDATE users SET reset_password_token = ? WHERE id = ?').run(token, u.id)
   if (info.changes != 1) {
     req.flash('error', t('Internal_error'))
     return res.render('forgot')
@@ -166,11 +170,11 @@ router.post('/forgot', redirectHomeIfLoggedIn, function (req, res, next) {
 
   var link = res.locals.origin+'/reset/' + token;
   var msg = {
-    to: email,
+    to: u.email,
     from: 'admin@hedacuisine.com',
     subject: 'HedaCuisine - Reset password',
     text: t('Reset_password_message')+'.\r\n\r\n' + link,
-    html: '<h3>'+t('Reset_password_message')+'.</p><p><a href="' + link + '">'+t('Reset')+'</a></p>',
+    html: '<p>'+t('Reset_password_message')+'.</p><p><a href="' + link + '">'+t('Reset')+'</a></p>',
   };
   sendgrid.send(msg);
   res.redirect(localeHref('/waiting_reset', req.originalUrl))
@@ -183,11 +187,14 @@ router.get('/reset/:token', redirectHomeIfLoggedIn, function (req, res, next) {
 
 router.post('/reset', redirectHomeIfLoggedIn, function (req, res, next) {
   
+  let t = translate(res.locals.locale)
+
   var salt = crypto.randomBytes(16);
+  
   crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', function(err, hashedPassword) {
     if (err) { return next(err); }
-    let u = db.fetchRecord('users', {reset_password_token: req.body.token}, ['name', 'admin'])
-    if (!u) {
+    let user = db.fetchRecord('users', {reset_password_token: req.body.token}, ['name', 'admin'])
+    if (!user) {
       req.flash('error', t('Internal_error'))
       return res.redirect('/reset/'+req.body.token)
     }
@@ -196,8 +203,7 @@ router.post('/reset', redirectHomeIfLoggedIn, function (req, res, next) {
       req.flash('error', t('Internal_error'))
       return res.redirect('/reset/'+req.body.token)
     }
-    loginUser(u)
-    res.redirect('/')
+    loginUser(user, req, res, next)
   });
 });
 
@@ -215,8 +221,7 @@ router.get('/confirm_signup', function(req, res, next) {
     if (!user.email_validated) {
       user.findAndUpdateRecord('users', user, {email_validated: 1}, req.user)
     }
-    loginUser(user)
-    res.redirect('/')
+    loginUser(user, req, res, next)
   } else {
     req.flash('error', t('Internal_error'))
     res.redirect('/signup')

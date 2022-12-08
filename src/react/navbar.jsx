@@ -187,7 +187,6 @@ export const PublicNavbar = ({locale}) => {
 
   let collapsableEndItems = [
     <Link path="/login" className="nav-btn">{t('Login', locale)}</Link>,
-    <Link path="/signup" className="nav-btn">{t('Create_account', locale)}</Link>,
     <Link path="/contact" className="nav-btn" checkIfActive={true}>{t('Contact', locale)}</Link>,
   ]
 
