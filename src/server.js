@@ -17,7 +17,7 @@ import fileUpload from 'express-fileupload';
 import _ from 'lodash';
 import flash from 'connect-flash';
 
-import { tr } from './translate.js'
+import { tr, translate } from './translate.js'
 import { enableLiveReload } from './livereload.js'
 import { SearchWhiteIcon, PersonFillWhiteIcon } from './build/image.js'
 import { buildSvelte } from './build_svelte.js'
@@ -134,6 +134,7 @@ app.use(function(req, res, next) {
   res.locals.href = req.url;
   console.log('user for locale', req.user)
   res.locals.locale = (req.user?.locale || req.query.locale || 'en').toLowerCase();
+  res.locals.t = translate(res.locals.locale)
   res.locals.req = req;
   res.locals.origin = req.protocol+'://'+req.get('host');
   next();

@@ -24,9 +24,11 @@ SVELTE!!! Mais pas pour HedaCuisine...
 ******************************************
 ******************************************
 
-/favicon.ico
+Ajouter une image au kinds et les rajouter dans la barre de recherche.
 
-Est-ce que ça me prend toastr pour les logins???
+Remember password
+
+/favicon.ico
 
 Validate signup client side.
 POST /username_available/

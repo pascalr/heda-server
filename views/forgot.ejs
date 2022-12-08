@@ -1,23 +1,22 @@
 <!doctype html>
 <html lang="<%- locale %>">
   <head>
-    <%- include('partials/head') %>
+    <%- include('partials/login_head') %>
   </head>
   <body>
-    <h3>todos</h3>
-    <h1>Sign in</h1>
-    <% if (hasMessages) { %>
-      <% messages.forEach(function(message) { %>
-      <p><%= message %></p>
-      <% }); %>
-    <% } %>
-    <form action="/login/password" method="post">
-      <div>
-        <label for="username">Email</label>
-        <input id="username" name="username" type="text" autocomplete="username" required autofocus>
-      </div>
-      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-      <button type="submit">Send email</button>
-    </form>
+    <div class="form-container">
+      <h2><a href="<%- localeHref(req, '/') %>" style="text-decoration: none;">HedaCuisine (<%- t('beta') %>)</a></h2>
+      <h1><%- t('Forgot_password') %></h1>
+      <form action="/todo" method="post">
+        <div>
+          <label for="username"><%- t('Email') %></label><br/>
+          <input id="username" name="username" class="form-control" type="text" autocomplete="username" required autofocus>
+        </div>
+        <br/>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <button type="submit" class="btn btn-primary">Send email</button>
+        <a href="<%- localeHref(req, '/login') %>" class="btn btn-secondary"><%- t('Back') %></a>
+      </form>
+    </div>
   </body>
 </html>

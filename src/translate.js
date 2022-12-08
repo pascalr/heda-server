@@ -71,6 +71,7 @@ export function tr(id, locale) {
     Waiting_confirm: "An email has been sent. Please check your inbox and validate the email address",
   }
   let fr = {
+    Send_email: 'Envoyer un email',
     Forgot_password: 'Mot de passe oublié',
     Waiting_confirm: "Un email vous a été envoyé. S'il vous plaît regarder votre boîte de réception et valider l'adresse courriel",
     Hello: 'Bonjour',
