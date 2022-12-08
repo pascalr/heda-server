@@ -11,7 +11,7 @@ import { normalizeSearchText } from "./utils"
 const RecipeListItem = ({recipe, isSelected, users, user, selectedRef, setIsSearching}) => {
   let userName = null
   if (user.id != recipe.user_id) {
-    const recipeUser = users.find(u => u.id == recipe.user_id)
+    const recipeUser = users?.find(u => u.id == recipe.user_id)
     userName = recipeUser ? recipeUser.name : `user${recipe.user_id}`
   }
   return (
@@ -31,7 +31,7 @@ export const AppNavbar = ({user, _csrf, recipes, friendsRecipes, users, recipeKi
 
   const [isSearching, setIsSearching] = useState(false)
 
-  let otherProfiles = users.filter(u => u.id != user.id)
+  let otherProfiles = (users || []).filter(u => u.id != user.id)
   
   //if (useHiddenNavParam()) {return ''}
 
