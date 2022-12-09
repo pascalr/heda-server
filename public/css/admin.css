@@ -106,3 +106,7 @@
   overflow: hidden;
   border: none;
 }
+
+.node.depth-1 {
+  margin-left: 2em;
+}

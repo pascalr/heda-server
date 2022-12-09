@@ -19,7 +19,7 @@ import { DescriptionTiptap } from "./tiptap"
 import {EditRecipeImageModal, EditableImage} from './modals/recipe_image'
 import schema from '../schema'
 import { HomeTab } from './core'
-import { sortByDate } from '../utils'
+import { listToTree, sortByDate } from '../utils'
 
 const AdminTabs = ({machines}) => {
   return <>
@@ -27,6 +27,7 @@ const AdminTabs = ({machines}) => {
       <HomeTab {...{title: t('Admin'), path: '/admin'}} />
       <HomeTab {...{title: t('Errors'), path: '/admin/errors'}} />
       <HomeTab {...{title: t('QA'), path: '/admin/qa'}} />
+      <HomeTab {...{title: t('Tree'), path: '/admin/tree'}} />
       <HomeTab {...{title: t('Kinds'), path: '/admin/di'}} />
       <HomeTab {...{title: t('RecipeKinds'), path: '/admin/ki'}} />
       <HomeTab {...{title: t('SQL'), path: '/admin/sql'}} />
@@ -752,6 +753,50 @@ const DbPage = () => {
   </>
 }
 
+const KindNode = ({node, depth}) => {
+  // Draw an L for every node whose depth is greater than 0
+  return <div key={node.id}>
+    <div className="position-relative" style={{marginLeft: depth*4+'em'}}>
+      {depth <= 0 ? null : <>
+        {[...Array(depth).keys()].map(i => (
+          <div key={i} className="position-absolute" style={{height: '4em', width: '1px', background: 'black', left: '-'+(2+4*i)+'em', top: '-2.5em', zIndex: '-10'}}></div>
+        ))}
+        <div className="position-absolute" style={{height: '1px', width: '35.5px', background: 'black', left: '-2em', top: '23px'}}></div>
+      </>}
+      <div className="d-flex align-items-center my-2">
+        <RecipeThumbnailImage recipe={node} />
+        <div style={{width: '0.5em'}}></div>
+        <div>{node.name_fr}</div>
+      </div>
+    </div>
+    {node.children.map(child => <KindNode key={child.id} node={child} depth={depth+1} />)}
+  </div>
+}
+
+// const KindNode = ({node, depth}) => {
+//   return <div key={node.id}>
+//     <div className="d-flex align-items-center">
+//       <div style={{width: 4*depth+'em', background: 'black', height: '1px'}}></div>
+//       <div className="d-flex align-items-center my-2">
+//         <div className="position-relative">
+//           <RecipeThumbnailImage recipe={node} />
+//           <div className="position-absolute" style={{height: '2.5em', width: '1px', background: 'black', left: '35.5px'}}></div>
+//         </div>
+//         {node.name_fr}
+//       </div>
+//     </div>
+//     {node.children.map(child => <KindNode key={child.id} node={child} depth={depth+1} />)}
+//   </div>
+// }
+
+const TreePage = ({kinds, recipeKinds}) => {
+  let tree = listToTree(recipeKinds, 'kind_id')
+  return <div className="trunk">
+    <h1>Tree</h1>
+    {tree.map(root => <KindNode key={root.id} node={root} depth={0} />)}
+  </div>
+}
+
 const Redirect = ({url}) => {useEffect(() => {window.location.href = url}); return null}
 
 export const Admin = () => {
@@ -775,6 +820,7 @@ export const Admin = () => {
     {match: "/admin/sql", elem: () => <SQLPage />},
     {match: "/admin/qa", elem: () => <QAPage />},
     {match: "/admin/errors", elem: () => <ErrorsPage {...{errors}} />},
+    {match: "/admin/tree", elem: () => <TreePage {...{kinds, recipeKinds}} />},
     {match: "/admin/db", elem: () => <DbPage />},
     {match: "/admin/css", elem: () => <CssPage />},
     {match: "/admin/console", elem: () => <Console />},

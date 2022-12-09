@@ -24,6 +24,20 @@ SVELTE!!! Mais pas pour HedaCuisine...
 ******************************************
 ******************************************
 
+Pour ou contre joindre Kinds et RecipeKinds?
+Pour:
+Plus simple
+Plus simple pour tree
+De toute façon je veux rajouter des images aux kinds, et je veux les rajouter dans le search.
+Je veux mettre RecipeKind dans l'arbre aussi
+Si une recette est une nouvelle sorte de pizza, elle devrait être une pizza même si on ne sait pas encore c'est quoi la sorte de pizza exactement.
+
+Contre:
+JE NE VEUX PAS SUGGÉRER DES KINDS QUAND JE VEUX DES SUGGESTIONS. JE VEUX DES RECIPE KINDS. JE VEUX DES LEAFS.
+=> RecipeKinds = Kinds where it has no children, en fait, vu qu'il n'y a pas beaucoup de kind, faire le contraire. ajouter un flag is_category aux recipe_kinds
+Perte de temps/Travail à refaire
+J'aime avoir une petite liste de kind pour tagger les recipe kinds
+
 Reinitializer le mot de passe des 4 comptes
 
 Faire une plus belle page de recettes, (explore)

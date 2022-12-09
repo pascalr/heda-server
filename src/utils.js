@@ -119,6 +119,31 @@ export function localeHref(href, currentUrl=null) {
   return url
 }
 
+// https://stackoverflow.com/questions/18017869/build-tree-array-from-flat-array-in-javascript
+export function listToTree(list, parentAttr) {
+  var map = {}, node, roots = [], i;
+  
+  for (i = 0; i < list.length; i += 1) {
+    map[list[i].id] = i; // initialize the map
+    list[i].children = []; // initialize the children
+  }
+  
+  for (i = 0; i < list.length; i += 1) {
+    node = list[i];
+    if (node[parentAttr]) {
+      if (map[node[parentAttr]]) {
+        list[map[node[parentAttr]]].children.push(node);
+      } else {
+        console.log('Dangling branch. Parent does not exist?', node)
+        roots.push(node);
+      }
+    } else {
+      roots.push(node);
+    }
+  }
+  return roots;
+}
+
 /**
  * Get the time of now. Format looks like: 2022-09-20T17:48:11.522Z
  * The format is in theory comptatible with Ruby on Rails.
