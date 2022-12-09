@@ -134,7 +134,6 @@ app.use(function(req, res, next) {
   res.locals.csrfToken = req.csrfToken();
   res.locals.href = req.url;
   req.user = req.session.user
-  console.log('user for locale', req.user)
   if (req.locale) {throw "Internal coding error. Can't overwrite req.locale"}
   req.locale = (req.user?.locale || req.query.locale || 'en').toLowerCase();
   res.locals.locale = req.locale;

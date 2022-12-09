@@ -133,12 +133,13 @@ export const RecipeViewer = ({recipeId, page, favoriteRecipes, recipeKinds, user
     }, error: handleError(t('Error_updating'))})
   }
   
-  const recipeBelongsToSiblings = users.map(u => u.id).filter(id => id != user.id).includes(recipe.user_id)
+  //const recipeBelongsToSiblings = users.map(u => u.id).filter(id => id != user.id).includes(recipe.user_id)
+  const recipeBelongsToSiblings = false
   const isUser = recipe.user_id == user.id
 
   let userName = recipe.user_name
   if (!userName) {
-    const recipeUser = users.find(u => u.id == recipe.user_id)
+    const recipeUser = users?.find(u => u.id == recipe.user_id)
     userName = recipeUser ? recipeUser.name : `user${recipe.user_id}`
   }
 
