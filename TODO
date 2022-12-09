@@ -24,21 +24,15 @@ SVELTE!!! Mais pas pour HedaCuisine...
 ******************************************
 ******************************************
 
-PAR POUR TOUT DE SUITE...
-OK pour les commentaires. Par contre les ratings je trouve c'est un peu n'importe quoi.
-Le best serait de faire une IA pour te générer des recettes personalisées.
-Je ne sais pas ce serait quoi le niveau de difficulté.
-Utiliser ChatGPT ou similaire.
+Reinitializer le mot de passe des 4 comptes
+
+Faire une plus belle page de recettes, (explore)
 
 Inside /confirm_signup => Show a req.flash('info', t('Welcome_message'))
 
 Add unique username constraint... CREATE UNIQUE INDEX your_unique_index ON your_table(column_name);
 
-Être capable de se logged in avec le nom d'utilisateur case insensitive. Ça va prendre une autre field dans la db pas le choix...
-
 Ajouter une image au kinds et les rajouter dans la barre de recherche.
-
-Remember password
 
 /favicon.ico
 
@@ -141,6 +135,12 @@ Idéalement un input field que tu peux écrire dedans (avec un petit micro à c�
 - Un dessert avec des pommes => tarte aux pommmes, gâteaux aux pommes, ...
 - Apporter à un potluck => ...
 Open source if I die
+
+PAR POUR TOUT DE SUITE...
+OK pour les commentaires. Par contre les ratings je trouve c'est un peu n'importe quoi.
+Le best serait de faire une IA pour te générer des recettes personalisées.
+Je ne sais pas ce serait quoi le niveau de difficulté.
+Utiliser ChatGPT ou similaire.
 
 Later (other users):
 Faire des tests.

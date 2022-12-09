@@ -12,8 +12,13 @@ import Translator, { TranslationsCacheStrategy } from '../translator.js'
 
 const router = express.Router();
 
-// All the routes here are only available to users that are admin.
-// Respond with 404 if the user is not an admin.
+
+/**
+ * All the routes here are only available to users that are admin.
+ * Respond with 404 if the user is not an admin.
+ * I don't want to respond with NOT ALLOWED for security reasons,
+ * because it gives info that an admin route exists.
+ */
 router.use((req, res, next) => {
   if (req.user?.is_admin) {return next()}
   next(createError(404));
@@ -25,9 +30,9 @@ const renderAdmin = (req, res, next) => {
   let users = db.fetchTable('users', {account_id: req.user.account_id}, ['name', 'image_slug', 'locale'])
 
   res.locals.gon = {
+    ...res.locals.gon,
     translations: db.fetchTable('translations', {}, ['from', 'to', 'original', 'translated']),
     recipe_kinds, users,
-    user: users.find(u => u.id == req.user.user_id),
     kinds: db.fetchTable('kinds', {}, ['name_fr', 'name_en', 'kind_id']),
     errors: db.fetchTable('errors', {}, ['url', 'error', 'info', 'created_at']),
     recipes: db.fetchTable('recipes', {}, ['name', 'recipe_kind_id', 'image_slug']),
