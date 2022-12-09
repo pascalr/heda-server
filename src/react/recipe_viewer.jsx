@@ -105,7 +105,7 @@ export const FavoriteButton = ({recipe, user, favorite, width, ...props}) => {
   </button>
 }
   
-export const RecipeViewer = ({recipeId, page, favoriteRecipes, recipeKinds, user, users, recipes, images}) => {
+export const RecipeViewer = ({recipeId, favoriteRecipes, user, users, recipes, images}) => {
 
   //const [showModal, setShowModal] = useState(false)
 

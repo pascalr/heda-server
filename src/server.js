@@ -141,7 +141,7 @@ app.use(function(req, res, next) {
   res.locals.req = req;
   res.locals.origin = req.protocol+'://'+req.get('host');
   if (req.user) {
-    res.locals.user = {name: req.user.name, locale: req.locale}
+    res.locals.user = {name: req.user.name, locale: req.locale, id: req.user.id}
     res.locals.gon = {user: res.locals.user}
   }
   next();

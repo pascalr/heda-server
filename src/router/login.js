@@ -139,13 +139,14 @@ router.post('/logout', function(req, res, next) {
 //   res.locals.user = user
 //   next()
 // }
-// router.get('/edit_profile', fetchAccountUsers, function(req, res, next) {
-//   res.render('edit_profile');
-// });
 // router.get('/edit_account', fetchAccountUsers, function(req, res, next) {
 //   res.locals.gon.account = db.fetchRecord('accounts', {id: req.user.account_id}, ['email'])
 //   res.render('edit_account');
 // });
+
+router.get('/edit_profile', function(req, res, next) {
+  res.render('edit_profile');
+});
 
 router.get('/forgot', redirectHomeIfLoggedIn, function (req, res, next) {
   res.render('forgot');

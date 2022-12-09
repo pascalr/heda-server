@@ -220,6 +220,10 @@ const sqlDb = {
 
     let record = this.fetchRecord(table, {id: id}, securityAttrs)
 
+    if (!record) {
+      throw "Unable to update record because the record was not found. Table: "+table+". Id: "+id
+    }
+
     securityAttrs.forEach(attr => {
       if (record[attr] != manual[attr]) {
         throw "Update record not allowed because of security key "+attr
