@@ -774,7 +774,7 @@ const KindNode = ({node, depth}) => {
 
 const TreePage = ({kinds, recipeKinds}) => {
   let tree = listToTree(recipeKinds, 'kind_id')
-  return <div style={{background: 'rgb(244, 246, 249)'}}>
+  return <div style={{background: 'rgb(252, 253, 254)'}}>
     <div className="trunk">
     <h1>Tree</h1>
       {tree.map(root => <KindNode key={root.id} node={root} depth={0} />)}
