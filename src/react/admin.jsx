@@ -758,11 +758,11 @@ const KindNode = ({node, depth}) => {
     <div className="position-relative" style={{marginLeft: depth*4+'em'}}>
       {depth <= 0 ? null : <>
         {[...Array(depth).keys()].map(i => (
-          <div key={i} className="position-absolute" style={{height: '4em', width: '1px', background: 'repeating-linear-gradient(0deg,black 0 5px,#0000 0 7px)', left: '-'+(2+4*i)+'em', top: '-2.5em', zIndex: '-10'}}></div>
+          <div key={i} className="position-absolute" style={{height: '4em', width: '1px', background: 'repeating-linear-gradient(0deg,black 0 5px,#0000 0 7px)', left: '-'+(2+4*i)+'em', top: '-2.5em'}}></div>
         ))}
         <div className="position-absolute" style={{height: '1px', width: '35.5px', background: 'repeating-linear-gradient(90deg,black 0 5px,#0000 0 7px)', left: '-2em', top: '23px'}}></div>
       </>}
-      <div className="d-flex align-items-center my-2">
+      <div className="d-flex align-items-center my-2 p-1 position-relative" style={{zIndex: '10', border: '1px solid black', width: 'fit-content', minWidth: '20em', background: 'white', borderRadius: '4px'}}>
         <RecipeThumbnailImage recipe={node} />
         <div style={{width: '0.5em'}}></div>
         <div>{node.name_fr}</div>
@@ -772,27 +772,13 @@ const KindNode = ({node, depth}) => {
   </div>
 }
 
-// const KindNode = ({node, depth}) => {
-//   return <div key={node.id}>
-//     <div className="d-flex align-items-center">
-//       <div style={{width: 4*depth+'em', background: 'black', height: '1px'}}></div>
-//       <div className="d-flex align-items-center my-2">
-//         <div className="position-relative">
-//           <RecipeThumbnailImage recipe={node} />
-//           <div className="position-absolute" style={{height: '2.5em', width: '1px', background: 'black', left: '35.5px'}}></div>
-//         </div>
-//         {node.name_fr}
-//       </div>
-//     </div>
-//     {node.children.map(child => <KindNode key={child.id} node={child} depth={depth+1} />)}
-//   </div>
-// }
-
 const TreePage = ({kinds, recipeKinds}) => {
   let tree = listToTree(recipeKinds, 'kind_id')
-  return <div className="trunk">
+  return <div style={{background: 'rgb(244, 246, 249)'}}>
+    <div className="trunk">
     <h1>Tree</h1>
-    {tree.map(root => <KindNode key={root.id} node={root} depth={0} />)}
+      {tree.map(root => <KindNode key={root.id} node={root} depth={0} />)}
+    </div>
   </div>
 }
 
