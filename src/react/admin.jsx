@@ -754,14 +754,13 @@ const DbPage = () => {
 }
 
 const KindNode = ({node, depth}) => {
-  // Draw an L for every node whose depth is greater than 0
   return <div key={node.id}>
     <div className="position-relative" style={{marginLeft: depth*4+'em'}}>
       {depth <= 0 ? null : <>
         {[...Array(depth).keys()].map(i => (
-          <div key={i} className="position-absolute" style={{height: '4em', width: '1px', background: 'black', left: '-'+(2+4*i)+'em', top: '-2.5em', zIndex: '-10'}}></div>
+          <div key={i} className="position-absolute" style={{height: '4em', width: '1px', background: 'repeating-linear-gradient(0deg,black 0 5px,#0000 0 7px)', left: '-'+(2+4*i)+'em', top: '-2.5em', zIndex: '-10'}}></div>
         ))}
-        <div className="position-absolute" style={{height: '1px', width: '35.5px', background: 'black', left: '-2em', top: '23px'}}></div>
+        <div className="position-absolute" style={{height: '1px', width: '35.5px', background: 'repeating-linear-gradient(90deg,black 0 5px,#0000 0 7px)', left: '-2em', top: '23px'}}></div>
       </>}
       <div className="d-flex align-items-center my-2">
         <RecipeThumbnailImage recipe={node} />
