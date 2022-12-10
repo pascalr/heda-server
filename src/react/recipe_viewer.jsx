@@ -105,7 +105,7 @@ export const FavoriteButton = ({recipe, user, favorite, width, ...props}) => {
   </button>
 }
   
-export const RecipeViewer = ({recipeId, favoriteRecipes, user, users, recipes, images}) => {
+export const RecipeViewer = ({recipeId, favoriteRecipes, user, siblings, recipes, images}) => {
 
   //const [showModal, setShowModal] = useState(false)
 
@@ -133,13 +133,12 @@ export const RecipeViewer = ({recipeId, favoriteRecipes, user, users, recipes, i
     }, error: handleError(t('Error_updating'))})
   }
   
-  //const recipeBelongsToSiblings = users.map(u => u.id).filter(id => id != user.id).includes(recipe.user_id)
-  const recipeBelongsToSiblings = false
+  const recipeBelongsToSiblings = siblings.map(u => u.id).filter(id => id != user.id).includes(recipe.user_id)
   const isUser = recipe.user_id == user.id
 
   let userName = recipe.user_name
   if (!userName) {
-    const recipeUser = users?.find(u => u.id == recipe.user_id)
+    const recipeUser = siblings.find(u => u.id == recipe.user_id)
     userName = recipeUser ? recipeUser.name : `user${recipe.user_id}`
   }
 

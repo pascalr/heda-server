@@ -93,10 +93,6 @@ router.post('/logout', function(req, res, next) {
 //   if (res.locals.gon) {res.locals.gon.users = res.locals.users}
 //   next()
 // }
-// router.post('/change_user', function(req, res, next) {
-//   req.user.user_id = req.body.user_id
-//   res.redirect('/');
-// });
 // router.get('/choose_user', redirectHomeIfLoggedIn, fetchAccountUsers, function(req, res, next) {
 //   res.render('choose_user');
 // });
@@ -140,6 +136,16 @@ router.post('/logout', function(req, res, next) {
 //   res.locals.gon.account = db.fetchRecord('accounts', {id: req.user.account_id}, ['email'])
 //   res.render('edit_account');
 // });
+
+router.post('/change_user', function(req, res, next) {
+  let account_id = req.user.account_id
+  if (account_id) {
+    let user = db.fetchRecord('users', {account_id, id: req.body.user_id}, USER_ATTRS)
+    // Redundant account_id check but it's very important security so why not
+    if (user && user.account_id == req.user.account_id) { return loginUser(user, req, res, next) }
+  }
+  res.redirect('/');
+});
 
 router.get('/edit_profile', function(req, res, next) {
   res.render('edit_profile');

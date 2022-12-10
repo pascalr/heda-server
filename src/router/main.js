@@ -323,7 +323,7 @@ const renderApp = [ensureUser, function(req, res, next) {
   //o.users = db.fetchTable('users', {account_id: user.account_id}, ['name', 'image_slug', 'locale', 'is_public'])
   // o.users = db.fetchTable('users', {account_id: user.account_id}, ['name', 'image_slug', 'locale'])
   // let profile = o.users.find(u => u.id == user.user_id)
-  o.siblings = db.fetchTable('users', {account_id: user.account_id})
+  o.siblings = db.fetchTable('users', {account_id: user.account_id}, ['name']).filter(u => u.id != user.id)
   o.recipes = db.fetchTable('recipes', {user_id: user.user_id}, RECIPE_ATTRS)
   o.favorite_recipes = db.fetchTable('favorite_recipes', {user_id: user.user_id}, ['list_id', 'recipe_id', 'updated_at'])
   let recipeIds = o.recipes.map(r => r.id)

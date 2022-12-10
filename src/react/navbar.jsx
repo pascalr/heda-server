@@ -8,10 +8,10 @@ import { useFalseOnce, Link, currentPathIsRoot } from "./lib"
 import { ArrowLeftSquareWhiteIcon, SearchWhiteIcon, PersonFillWhiteIcon, XLgWhiteIcon, ListWhiteIcon } from '../server/image.js'
 import { normalizeSearchText } from "./utils"
 
-const RecipeListItem = ({recipe, isSelected, users, user, selectedRef, setIsSearching}) => {
+const RecipeListItem = ({recipe, isSelected, siblings, user, selectedRef, setIsSearching}) => {
   let userName = null
   if (user.id != recipe.user_id) {
-    const recipeUser = users?.find(u => u.id == recipe.user_id)
+    const recipeUser = siblings.find(u => u.id == recipe.user_id)
     userName = recipeUser ? recipeUser.name : `user${recipe.user_id}`
   }
   return (
@@ -27,11 +27,9 @@ const RecipeListItem = ({recipe, isSelected, users, user, selectedRef, setIsSear
   )
 }
 
-export const AppNavbar = ({user, _csrf, recipes, friendsRecipes, users, recipeKinds}) => {
+export const AppNavbar = ({user, _csrf, recipes, friendsRecipes, siblings, recipeKinds}) => {
 
   const [isSearching, setIsSearching] = useState(false)
-
-  let otherProfiles = (users || []).filter(u => u.id != user.id)
   
   //if (useHiddenNavParam()) {return ''}
 
@@ -43,14 +41,14 @@ export const AppNavbar = ({user, _csrf, recipes, friendsRecipes, users, recipeKi
       ...recipe, list: 'r',
       //url: localeHref("/k/"+recipeKind.id),
       elem: ({isSelected, item, selectedRef}) => (
-        <RecipeListItem key={item.id} {...{recipe: item, isSelected, users, user, selectedRef, setIsSearching}}/>
+        <RecipeListItem key={item.id} {...{recipe: item, isSelected, siblings, user, selectedRef, setIsSearching}}/>
       ),
     })),
     Same_account_recipes: (friendsRecipes||[]).map(recipe => ({
       ...recipe, list: 'r',
       //url: localeHref("/k/"+recipeKind.id),
       elem: ({isSelected, item, selectedRef}) => (
-        <RecipeListItem key={item.id} {...{recipe: item, isSelected, users, user, selectedRef, setIsSearching}}/>
+        <RecipeListItem key={item.id} {...{recipe: item, isSelected, siblings, user, selectedRef, setIsSearching}}/>
       ),
     })),
     Suggestions: recipeKinds.map(recipeKind => ({
@@ -78,7 +76,7 @@ export const AppNavbar = ({user, _csrf, recipes, friendsRecipes, users, recipeKi
     <SearchButton {...{setIsSearching}} />,
     <div className="dropdown">
       <button className="plain-btn dropdown-toggle" type="button" id="dropdownUserButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style={{marginRight: '1em', color: 'white'}}>
-        <img src={PersonFillWhiteIcon} style={{width: '2em', marginTop: '-0.3em'}}/>
+        <img src={PersonFillWhiteIcon} style={{width: '1.8em', marginTop: '-0.1em'}}/>
       </button>
       <div className="dropdown-menu" aria-labelledby="dropdownUserButton" style={{lineHeight: '1.5em'}}>
         <a href="/edit_profile" className="dropdown-item">{t('My_profile')}</a>
@@ -86,11 +84,10 @@ export const AppNavbar = ({user, _csrf, recipes, friendsRecipes, users, recipeKi
           <button className="dropdown-item" type="submit">{t('Logout')}</button>
           <input type="hidden" name="_csrf" value={_csrf}/>
         </form>
-        <a href="/new_user" className="dropdown-item">{t('New_profile')}</a>
-        { otherProfiles.length == 0 ? '' : <>
+        { siblings.length == 0 ? '' : <>
           <hr className="dropdown-divider"/>
           <h6 className="dropdown-header">{t('Switch_user')}</h6>
-          { otherProfiles.map(usr => { 
+          { siblings.map(usr => { 
             return <form key={usr.id} action="/change_user" method="post">
               <button className="dropdown-item" type="submit">{ usr.name }</button>
               <input type="hidden" name="user_id" value={usr.id}/>

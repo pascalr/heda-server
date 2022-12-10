@@ -334,7 +334,7 @@ export const App = () => {
   const friendsRecipes = gon.friends_recipes//.filter(r => !recipeIds.includes(r.id))
   //const recipeSuggestions = gon.recipe_suggestions
   const [user,] = useState(gon.user)
-  const [users,] = useState(gon.users)
+  const [siblings,] = useState(gon.siblings)
   window.locale = user.locale
   const images = useHcuState([], {tableName: 'images'})
 
@@ -345,7 +345,7 @@ export const App = () => {
     {match: "/c", elem: () => <EditTags {...{tags}} />},
     {match: "/n", elem: () => <NewRecipe {...{recipeKinds}} />},
     {match: "/r/:id", elem: ({id}) =>
-      <ShowRecipe {...{recipeId: id, recipes, favoriteRecipes, recipeKinds, user, users, images}} />
+      <ShowRecipe {...{recipeId: id, recipes, favoriteRecipes, recipeKinds, user, siblings, images}} />
     },
     {match: "/k/:id", elem: ({id}) =>
       <ShowRecipeKind {...{recipeKindId: id, recipes, recipeKinds, locale, user, favoriteRecipes}} />
@@ -360,7 +360,7 @@ export const App = () => {
       <EditTag {...{tagId: id, tags}} />
     },
     {match: "/e/:id", elem: ({id}) => 
-      <EditRecipe {...{recipeId: id, recipes, user, users, recipeKinds, favoriteRecipes, images, locale}} />
+      <EditRecipe {...{recipeId: id, recipes, user, recipeKinds, favoriteRecipes, images, locale}} />
     },
     {match: "/m/:id/i", elem: ({id}) => 
       <Inventory {...{machineId: id, machines, machineFoods, containerQuantities, containerFormats}} />
@@ -386,7 +386,7 @@ export const App = () => {
 
     //<div className={(!page.page || page.page === 1) ? "wide-trunk" : "trunk"}>
   return (<>
-    <AppNavbar {...{user, _csrf, recipes, friendsRecipes, users, recipeKinds}} />
+    <AppNavbar {...{user, _csrf, recipes, friendsRecipes, siblings, recipeKinds}} />
     <div className="trunk">
       <HomeTabs {...{user, machines}} />
       <ErrorBoundary key={'err-boundary-'+idx}>

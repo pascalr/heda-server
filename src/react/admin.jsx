@@ -795,7 +795,7 @@ export const Admin = () => {
   const kinds = useHcuState(gon.kinds, {tableName: 'kinds'})
   const images = useHcuState(gon.images||[], {tableName: 'images'})
   const [user,] = useState(gon.user)
-  const [users,] = useState(gon.users)
+  const [siblings,] = useState(gon.siblings)
   const errors = useHcuState(gon.errors||[], {tableName: 'errors'})
   const [publicUsers,] = useState(gon.public_users||[])
   const [stats,] = useState(gon.stats)
@@ -823,7 +823,7 @@ export const Admin = () => {
   const _csrf = useCsrf()
   
   return <>
-    <AppNavbar {...{locale, _csrf, recipes, recipeKinds, user, users}} />
+    <AppNavbar {...{locale, _csrf, recipes, recipeKinds, user, siblings}} />
     <div style={{padding: '0 0.5em'}}>
       <AdminTabs />
       <ErrorBoundary key={idx}>

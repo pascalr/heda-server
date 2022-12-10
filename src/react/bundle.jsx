@@ -18,7 +18,7 @@ export const AppSearchRoot = () => {
 
   // TODO: Show app search for /error
   return <>
-    <AppNavbar {...{user, otherProfiles, _csrf, recipes, friendsRecipes, users, recipeKinds}} />
+    <AppNavbar {...{user, otherProfiles, _csrf, recipes, friendsRecipes, siblings, recipeKinds}} />
   </>
 }
 
