@@ -23,7 +23,8 @@ const schema = {
     data: {
       data_attrs: recipeKindsDataAttrs,
     },
-    write_attrs: ['image_slug', 'name_fr', 'json_fr', 'name_en', 'json_en', 'kind_id', 'recipe_count_fr','recipe_count_en', ...recipeKindsDataAttrs],
+    write_attrs: ['image_slug', 'name_fr', 'json_fr', 'name_en', 'json_en', 'kind_id', 'recipe_count_fr','recipe_count_en', 'is_abstract', 'is_explorable', ...recipeKindsDataAttrs],
+    attrs_types: {is_abstract: 'bool', is_explorable: 'bool'},
     is_allowed: user => user.is_admin,
   },
   'translated_recipes': {

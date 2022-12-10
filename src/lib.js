@@ -220,14 +220,17 @@ export function validateUsername(name) {
 }
 
 /**
- * Parameters
- * url
- * contentType: default is "application/json"
- * method: "GET", "PATCH" or "POST" AKA type (old)
- * data: the data to send either as an object or a FormData
- * sucess: success callback function
- * error: error callback function
-**/
+ * @typedef {Object} AjaxArgs
+ * @property {string} url
+ * @property {string} contentType Default is "application/json".
+ * @property {string} method "GET", "PATCH", "POST" or "DELETE"
+ * @property {function} success Success callback function.
+ * @property {function} error Error callback function.
+ */
+/**
+ * 
+ * @param {AjaxArgs} params 
+ */
 export function ajax(params) {
 
   if (!params.url) {throw "ajax missing params url"}

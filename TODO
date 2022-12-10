@@ -24,6 +24,14 @@ SVELTE!!! Mais pas pour HedaCuisine...
 ******************************************
 ******************************************
 
+New recipe kind => change page to edit
+
+Don't show abstract recipe_kinds inside suggestions
+Explore page with is_explorable
+Replace kinds inside .jsx
+
+Pain pita et Tortillla de blé devrait être dans boulangerie et non Ingrédients
+
 Peut-être utiliser le data de ce site un jour (la partie non copyrightable, par exemple les ingrédients pourrait être très utile):
 https://www.kaggle.com/datasets/paultimothymooney/recipenlg
 

@@ -5,14 +5,13 @@ import toastr from 'toastr'
 
 import { TextInput, TextField, CollectionSelect, RangeField, withSelector } from "./form"
 import { Link, useOrFetch, getLocale, useCsrf } from "./lib"
-import { localeAttr, findRecipeKindForRecipeName  } from "../lib"
+import { localeAttr, findRecipeKindForRecipeName, ajax } from "../lib"
 import { AppNavbar } from './navbar'
 import { ErrorBoundary } from './error_boundary'
 import { t } from "../translate"
 import { useRouter } from "./router"
 import { initHcu, useHcuState, handleError } from '../hcu'
 import { RecipeViewer } from "./show_recipe"
-import { ajax } from "./utils"
 import Translator, { TranslationsCacheStrategy, LogStrategy, StoreStrategy } from '../translator'
 import { RecipeThumbnailImage, RecipeMediumImage } from "./image"
 import { DescriptionTiptap } from "./tiptap"
@@ -20,6 +19,7 @@ import {EditRecipeImageModal, EditableImage} from './modals/recipe_image'
 import schema from '../schema'
 import { HomeTab } from './core'
 import { listToTree, sortByDate } from '../utils'
+import { changeUrl } from './utils'
 
 const AdminTabs = ({machines}) => {
   return <>
@@ -383,6 +383,11 @@ const AdminPage = ({stats, publicUsers, errors}) => {
       setMissings(missings)
     }, error: handleError("Error translating recipes.") })
   }
+  const migrateKinds = () => {
+    ajax({url: '/migrate_kinds', type: 'POST', success: () => {
+      toastr.info("Success")
+    }, error: handleError("Failure") })
+  }
  
   // FIXME: Put translations stuff in another tab...
   let from = 1 // French FIXME
@@ -405,6 +410,7 @@ const AdminPage = ({stats, publicUsers, errors}) => {
       <button className="btn btn-primary m-2" type="button" onClick={updateRecipesLocale}>Update recipes locale</button>
       <button className="btn btn-primary m-2" type="button" onClick={updateKindsCount}>Update kinds count (update locale first)</button>
       <button className="btn btn-primary m-2" type="button" onClick={calcRecipeKinds}>Calc recipe kinds</button>
+      <button className="btn btn-primary m-2" type="button" onClick={migrateKinds}>Migrate kinds</button>
       <br/><br/><br/><h2>Output</h2>
       {missings ? <>
         <h3>Missing translations</h3>
@@ -753,6 +759,27 @@ const DbPage = () => {
   </>
 }
 
+const KindMenu = ({kind}) => {
+
+  const destroyRecipeKind = () => {
+    if (confirm("Êtes-vous certain de vouloir supprimer cette catégorie définitivement?")) {
+      window.hcu.destroyRecord(kind)
+    }
+  }
+
+  //<button type="button" className="dropdown-item" onClick={() => editUserRecipe(recipe)}>{t('Tag')}</button>
+  return <>
+    <div className="dropdown">
+      <button className="plain-btn mx-2 float-end" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+        <img width="24" src="/icons/three-dots.svg"/>
+      </button>
+      <div className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+        <button type="button" className="dropdown-item" onClick={destroyRecipeKind}>{t('Delete')}</button>
+      </div>
+    </div>
+  </>
+}
+
 const KindNode = ({node, depth}) => {
   return <div key={node.id}>
     <div className="position-relative" style={{marginLeft: depth*4+'em'}}>
@@ -762,21 +789,39 @@ const KindNode = ({node, depth}) => {
         ))}
         <div className="position-absolute" style={{height: '1px', width: '35.5px', background: 'repeating-linear-gradient(90deg,black 0 5px,#0000 0 7px)', left: '-2em', top: '23px'}}></div>
       </>}
-      <div className="d-flex align-items-center my-2 p-1 position-relative" style={{zIndex: '10', border: '1px solid black', width: 'fit-content', minWidth: '20em', background: 'white', borderRadius: '4px'}}>
-        <RecipeThumbnailImage recipe={node} />
-        <div style={{width: '0.5em'}}></div>
-        <div>{node.name_fr}</div>
+      <div className="d-flex align-items-center my-2 p-1 position-relative" style={{border: '1px solid black', width: 'fit-content', minWidth: '20em', background: 'white', borderRadius: '4px'}}>
+        <div className="flex-grow-1" style={{zIndex: '1'}}>
+          <Link path={'/admin/ek/'+node.id} style={{textDecoration: 'none', color: 'black'}}>
+            <div className="d-flex align-items-center">
+              <RecipeThumbnailImage recipe={node} />
+              <div style={{width: '0.5em'}}></div>
+              <div>{node.name_fr}</div>
+            </div>
+          </Link>
+        </div>
+        <div><KindMenu kind={node} /></div>
       </div>
     </div>
     {node.children.map(child => <KindNode key={child.id} node={child} depth={depth+1} />)}
   </div>
 }
 
-const TreePage = ({kinds, recipeKinds}) => {
-  let tree = listToTree(recipeKinds, 'kind_id')
+const TreePage = ({recipeKinds}) => {
+  let latestFirst = sortByDate(recipeKinds, 'updated_at').slice().reverse()
+  let tree = listToTree(latestFirst, 'kind_id')
+  
+  const createRecipeKind = (recipe={}) => {
+    window.hcu.createRecord('recipe_kinds', {name_fr: recipe.name, image_slug: recipe.image_slug}, (record) => {
+      changeUrl('/admin/ek/'+record.id)
+    })
+  }
+
   return <div style={{background: 'rgb(252, 253, 254)'}}>
     <div className="trunk">
-    <h1>Tree</h1>
+      <div className="d-flex gap-15 align-items-center">
+        <h1>Recipe Kinds</h1>
+        <button type="button" className="btn btn-outline-primary btn-sm" onClick={createRecipeKind}>Create</button>
+      </div>
       {tree.map(root => <KindNode key={root.id} node={root} depth={0} />)}
     </div>
   </div>
