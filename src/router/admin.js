@@ -85,6 +85,24 @@ router.post('/exe_sql', function(req, res, next) {
     res.send('OK')
   })()
 })
+router.post('/migrate_kinds', function(req, res) {
+  let kinds = db.fetchTable('kinds', {}, ['name_fr', 'name_en', 'kind_id'])
+  let recipeKinds = db.fetchTable('recipe_kinds', {}, ['kind_id'])
+  let map = {}
+  kinds.forEach(kind => {
+    let obj = _.pick(kind, ['name_fr', 'name_en', 'kind_id'])
+    obj.is_abstract = true
+    let recipeKind = db.createRecord('recipe_kinds', obj, req.user)
+    map[kind.id] = recipeKind.id
+  })
+  recipeKinds.forEach(recipeKind => {
+    let updatedKindId = map[recipeKind.kind_id]
+    if (updatedKindId) {
+      db.findAndUpdateRecord('recipe_kinds', recipeKind, {kind_id: updatedKindId}, req.user)
+    }
+  })
+  res.send('OK')
+})
 router.post('/translate_recipes', function(req, res, next) {
   db.doBackup()
   translateRecipes().then(missings => {
