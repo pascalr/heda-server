@@ -138,6 +138,7 @@ app.use(function(req, res, next) {
   req.locale = (req.user?.locale || req.query.locale || 'en').toLowerCase();
   res.locals.locale = req.locale;
   res.locals.t = translate(req.locale)
+  res.t = translate(req.locale)
   res.locals.req = req;
   res.locals.origin = req.protocol+'://'+req.get('host');
   if (req.user) {

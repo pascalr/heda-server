@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 //import { createRoot } from 'react-dom/client';
 
-import { ToggleField, TextField, RadioField, ImageField, ImageSelector, CollectionSelect } from './form'
+import { ToggleField, TextField, RadioField, ImageField, ImageSelector, CollectionSelect, TextInput, withInputField } from './form'
 import { initHcu, useHcuState } from "../hcu"
-import { ajax } from "./utils"
+import { ajax } from "../lib"
 import { image_slug_variant_path } from "./routes"
 import { t } from "../translate"
 
@@ -37,14 +37,22 @@ const UserEditor = () => {
     //  <br/><br/>
     //</> : ''}
 
+  // <b>{t('Image')}</b><br/>
+  // <ImageSelector record={user} field="image_slug" variant="original" maxSizeBytes={2*1000*1000} suggestions={suggestions} height="180px" defaultImage="/icons/person-fill.svg" />
+
+  const [name, nameField] = withInputField(user.name, {size: 8, className: 'editable-input', onBlur: changeName})
+
+  function changeName() { 
+    ajax({url: '/rename_user', method: 'POST', data: {name}})
+  }
+
   return <>
+    <a href="/" className="btn btn-primary">{t('Back')}</a>
     <h1>{t('Edit_profile')}</h1>
     <b>{t('Name')}</b><br/>
-    <TextField model={user} field="name" size="8" className="editable-input" /><br/><br/>
+    {nameField}<br/><br/>
     <b>{t('Language')}</b><br/>
     <CollectionSelect model={user} field="locale" options={['en', 'fr']} showOption={e => e} includeBlank={false}/><br/><br/>
-    <b>{t('Image')}</b><br/>
-    <ImageSelector record={user} field="image_slug" variant="original" maxSizeBytes={2*1000*1000} suggestions={suggestions} height="180px" defaultImage="/icons/person-fill.svg" />
     <hr/>
     <button type="button" className="float-end btn btn-danger" onClick={destroyUser}>{t('Delete')}</button>
     <a href="/" className="btn btn-primary">{t('Ok')}</a>

@@ -32,8 +32,14 @@ export const withSelector = (choices, args={}) => {
   return [val, elem, setVal]
 }
 
-export const withInputField = (args={}) => {
-  const [value, setValue] = useState(null)
+/**
+ * Ex: let [value, valueField] = withInputField()
+ * @param defaultValue 
+ * @param args 
+ * @returns [value, reactComponent]
+ */
+export const withInputField = (defaultValue, args={}) => {
+  const [value, setValue] = useState(defaultValue)
 
   let elem = (
     <input type="text" value={value||''} onChange={(e) => setValue(e.target.value)} {...args} />
@@ -44,7 +50,7 @@ export const withInputField = (args={}) => {
 
 /**
  * A simple text input field. Pass a onBlur fonction get feedback when the value changes.
- * DEPRECATED: Use withInputField instead
+ * @deprecated Use withInputField instead
  */
 export const TextInput = ({defaultValue, onBlur, ...props}) => {
   const [value, setValue] = useState(defaultValue)

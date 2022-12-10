@@ -16,7 +16,7 @@ const router = express.Router();
 sendgrid.setApiKey(process.env['SENDGRID_API_KEY']);
 
 export const ensureLoggedIn = function(req, res, next) {
-  if (req.user && req.user.account_id) {return next()}
+  if (req.user) {return next()}
   res.redirect('/')
   //next("Error the account is not logged in...")
 }
@@ -146,6 +146,25 @@ router.post('/logout', function(req, res, next) {
 
 router.get('/edit_profile', function(req, res, next) {
   res.render('edit_profile');
+});
+
+router.post('/rename_user', ensureLoggedIn, function(req, res, next) {
+  let name = req.body.name
+  let username = normalizeSearchText(name)
+  let err = validateUsername(name)
+  if (!err) {
+    let info = db.prepare('UPDATE users SET name = ?, username = ? WHERE id = ?').run(name, username, req.user.id)
+    if (info.changes != 1) {
+      req.flash('error', res.t('Internal_error'))
+      res.send({error: res.t('Internal_error')})
+    } else {
+      req.user.name = name
+      res.send('ok')
+    }
+  } else {
+    req.flash('error', res.t(err))
+    res.send({error: res.t(err)})
+  }
 });
 
 router.get('/forgot', redirectHomeIfLoggedIn, function (req, res, next) {

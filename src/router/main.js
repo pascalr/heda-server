@@ -402,7 +402,6 @@ router.get('/r/:id', renderAppIfLoggedIn, function(req, res, next) {
   let o = {}
   o.recipe = db.fetchRecord('recipes', {id: recipeId, is_public: 1}, RECIPE_ATTRS)
   if (!o.recipe) {throw 'Unable to fetch recipe. Not existent or private.'}
-  o.user = db.fetchRecord('users', {id: o.recipe.user_id}, ['name', 'locale'])
   //if (res.locals.locale != o.user.locale) {
   //  // TODO: Fetch in the proper locale
   //  attrs = ['name', 'servings_name', 'original_id', 'ingredients', 'json']
@@ -483,7 +482,7 @@ router.get('/h', renderHome);
 
 /* GET home page. */
 router.get('/', renderAppIfLoggedIn, function(req, res, next) {
-  if (req.user && !req.user.user_id) { return res.redirect(localeHref('/choose_user', req.originalUrl)) }
+  // if (req.user && !req.user.user_id) { return res.redirect(localeHref('/choose_user', req.originalUrl)) }
   renderHome(req, res, next)
 })
 

@@ -201,15 +201,6 @@ export function isValidEmail(email) {
   const res = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return res.test(String(email).toLowerCase());
 }
-
-/**
- * Check if the given username is valid. Must be at least 3 characters long.
- * @param String username 
- */
-export function isValidUsername(username) {
-  return username?.length >= 3
-}
-
 /**
  * Returns an empty array if the obj is null.
  * Returns the object if it already is an array.

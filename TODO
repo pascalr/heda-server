@@ -24,6 +24,11 @@ SVELTE!!! Mais pas pour HedaCuisine...
 ******************************************
 ******************************************
 
+Peut-être utiliser le data de ce site un jour (la partie non copyrightable, par exemple les ingrédients pourrait être très utile):
+https://www.kaggle.com/datasets/paultimothymooney/recipenlg
+
+/rename_user => show error inside UI (try with email@gmail.com)
+
 Pouvoir changer de compte facilement pour moi.
 Ouin gérer ça avant de m'attaquer à merger Kinds et RecipeKinds...
 
