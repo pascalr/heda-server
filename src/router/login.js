@@ -39,12 +39,9 @@ router.get('/login', redirectHomeIfLoggedIn, function(req, res, next) {
   res.render('login');
 });
 
+const USER_ATTRS = ['name', 'locale', 'account_id', 'admin']
 async function loginUser(user, req, res, next) {
-  if (!user.name || user.admin === undefined || !user.id || !user.locale) {
-    console.log(_.pick(user, ['name', 'id', 'admin', 'locale']))
-    return next("Cant log user in. Missing attributes.")
-  }
-  req.session.user = _.pick(user, ['name', 'id', 'admin', 'locale'])
+  req.session.user = _.pick(user, ['name', 'id', 'locale', 'account_id'])
   req.session.user.user_id = user.id
   req.session.user.is_admin = user.admin
   res.redirect('/')
@@ -58,7 +55,7 @@ function findUserByNameOrEmail(nameOrEmail, attrs) {
 router.post('/login/password', function(req, res, next) {
 
   let {username, password} = req.body
-  const user = findUserByNameOrEmail(username, ['name', 'salt', 'encrypted_password', 'admin', 'locale'])
+  const user = findUserByNameOrEmail(username, ['salt', 'encrypted_password', ...USER_ATTRS])
 
   function invalidLogin() {
     req.flash('error', tr('Invalid_login', res.locals.locale))
@@ -213,7 +210,7 @@ router.post('/reset', redirectHomeIfLoggedIn, function (req, res, next) {
   
   crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', function(err, hashedPassword) {
     if (err) { return next(err); }
-    let user = db.fetchRecord('users', {reset_password_token: req.body.token}, ['name', 'admin', 'locale'])
+    let user = db.fetchRecord('users', {reset_password_token: req.body.token}, USER_ATTRS)
     if (!user) {
       req.flash('error', t('Internal_error'))
       return res.redirect('/reset/'+req.body.token)
@@ -236,7 +233,7 @@ router.get('/waiting_reset', redirectHomeIfLoggedIn, function(req, res, next) {
 })
 
 router.get('/confirm_signup', function(req, res, next) {
-  const user = db.fetchRecord('users', {confirm_email_token: req.query.token}, ['email', 'email_validated', 'name', 'admin', 'locale'])
+  const user = db.fetchRecord('users', {confirm_email_token: req.query.token}, ['email', 'email_validated', ...USER_ATTRS])
   if (user) {
     if (!user.email_validated) {
       user.findAndUpdateRecord('users', user, {email_validated: 1}, req.user)
