@@ -28,10 +28,6 @@ Peut-être utiliser le data de ce site un jour (la partie non copyrightable, par
 https://www.kaggle.com/datasets/paultimothymooney/recipenlg
 
 /rename_user => show error inside UI (try with email@gmail.com)
-
-Pouvoir changer de compte facilement pour moi.
-Ouin gérer ça avant de m'attaquer à merger Kinds et RecipeKinds...
-
 Edit profile show error like other login, without toastr
 
 Pour ou contre joindre Kinds et RecipeKinds?
@@ -47,8 +43,6 @@ JE NE VEUX PAS SUGGÉRER DES KINDS QUAND JE VEUX DES SUGGESTIONS. JE VEUX DES RE
 => RecipeKinds = Kinds where it has no children, en fait, vu qu'il n'y a pas beaucoup de kind, faire le contraire. ajouter un flag is_category aux recipe_kinds
 Perte de temps/Travail à refaire
 J'aime avoir une petite liste de kind pour tagger les recipe kinds
-
-Reinitializer le mot de passe des 4 comptes
 
 Faire une plus belle page de recettes, (explore)
 
