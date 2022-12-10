@@ -30,7 +30,7 @@ New recipe kind => change page to edit
 
 Don't show abstract recipe_kinds inside suggestions
 Explore page with is_explorable
-Replace kinds inside .jsx
+Remove refences of Kinds
 
 Pain pita et Tortillla de blé devrait être dans boulangerie et non Ingrédients
 

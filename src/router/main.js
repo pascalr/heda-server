@@ -170,17 +170,22 @@ router.patch('/update_field/:table/:id', ensureUser, function(req, res, next) {
 
 function extractExplore(locale) {
 
-  let kinds = fetchTableLocaleAttrs(db, 'kinds', {}, ['kind_id'], ['name'], locale)
-  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug', 'kind_id'], ['name'], locale)
-  let recipeKindsByAncestorId = _.groupBy(recipeKinds, (k) => kindAncestorId(kinds, k))
-  delete recipeKindsByAncestorId.undefined
-  let kindIds = _.keys(recipeKindsByAncestorId).map(id => parseInt(id))
-  kindIds.forEach(kindId => {
-    // Randomize and limit to 10
-    recipeKindsByAncestorId[kindId] = shuffle(recipeKindsByAncestorId[kindId]).slice(0,10)
+  // let kinds = fetchTableLocaleAttrs(db, 'kinds', {}, ['kind_id'], ['name'], locale)
+  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug', 'kind_id', 'is_explorable'], ['name'], locale)
+  let roots = recipeKinds.filter(k => k.is_explorable)
+  roots.forEach(root => {
+    root.children = shuffle(recipeKinds.filter(k => k.kind_id == root.id)).slice(0,10)
   })
-  kinds = kinds.filter(k => kindIds.includes(k.id))
-  return {kinds, recipeKindsByAncestorId}
+  return {roots}
+  // let recipeKindsByAncestorId = _.groupBy(recipeKinds, (k) => kindAncestorId(kinds, k))
+  // delete recipeKindsByAncestorId.undefined
+  // let kindIds = _.keys(recipeKindsByAncestorId).map(id => parseInt(id))
+  // kindIds.forEach(kindId => {
+  //   // Randomize and limit to 10
+  //   recipeKindsByAncestorId[kindId] = shuffle(recipeKindsByAncestorId[kindId]).slice(0,10)
+  // })
+  // kinds = kinds.filter(k => kindIds.includes(k.id))
+  // return {kinds, recipeKindsByAncestorId}
 }
 
 function extractUser(id) {

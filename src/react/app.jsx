@@ -68,9 +68,9 @@ const UsersPage = ({user}) => {
 const ExplorePage = ({}) => {
 
   const data = useCacheOrFetch(urlWithLocale('/fetch_explore', locale))
-  const kinds = useShuffled(data?.kinds)
-  if (!data || !kinds) {return null}
-  return <ExploreViewer {...{...data, kinds}} />
+  const roots = useShuffled(data?.roots)
+  if (!data || !roots) {return null}
+  return <ExploreViewer {...{...data, roots}} />
 }
 
 const ShowKind = ({kindId, locale}) => {

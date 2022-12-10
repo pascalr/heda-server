@@ -121,21 +121,22 @@ export function localeHref(href, currentUrl=null) {
 
 // https://stackoverflow.com/questions/18017869/build-tree-array-from-flat-array-in-javascript
 export function listToTree(list, parentAttr) {
-  var map = {}, node, roots = [], i;
+  var idxById = {}, node, roots = [], i;
   
   for (i = 0; i < list.length; i += 1) {
-    map[list[i].id] = i; // initialize the map
-    list[i].children = []; // initialize the children
+    idxById[list[i].id] = i;
+    list[i].children = [];
   }
   
   for (i = 0; i < list.length; i += 1) {
     node = list[i];
-    if (node[parentAttr]) {
-      if (map[node[parentAttr]]) {
-        list[map[node[parentAttr]]].children.push(node);
-      } else {
+    let parentId = node[parentAttr]
+    if (parentId) {
+      if (idxById[parentId] === undefined) {
         console.log('Dangling branch. Parent does not exist?', node)
         roots.push(node);
+      } else {
+        list[idxById[parentId]].children.push(node);
       }
     } else {
       roots.push(node);
