@@ -46,15 +46,13 @@ const UserEditor = () => {
     ajax({url: '/rename_user', method: 'POST', data: {name}})
   }
 
+  // <button type="button" className="float-end btn btn-danger" onClick={destroyUser}>{t('Delete')}</button>
   return <>
-    <a href="/" className="btn btn-primary">{t('Back')}</a>
     <h1>{t('Edit_profile')}</h1>
     <b>{t('Name')}</b><br/>
     {nameField}<br/><br/>
     <b>{t('Language')}</b><br/>
     <CollectionSelect model={user} field="locale" options={['en', 'fr']} showOption={e => e} includeBlank={false}/><br/><br/>
-    <hr/>
-    <button type="button" className="float-end btn btn-danger" onClick={destroyUser}>{t('Delete')}</button>
     <a href="/" className="btn btn-primary">{t('Ok')}</a>
   </>
 }
