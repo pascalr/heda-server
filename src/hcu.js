@@ -164,3 +164,24 @@ export const initHcu = () => {
     return found ? {...found} : found
   }
 }
+
+/**
+ * 
+ * @param {*} record 
+ * @param {string} field 
+ * @param {*} value 
+ * @param {function} successCallback 
+ */
+export const updateField = (record, field, value, successCallback=null) => {
+  if (!record.table_name) { throw "Error: hcu.updateField record must have a valid tableName" }
+  //console.log(`updateField record=${record.table_name} field=${field} from ${record[field]} to ${value}.`)
+  if (value != record[field]) { // update only if value changed
+
+    let data = {field, value}
+    ajax({url: '/update_field/'+record.table_name+'/'+record.id, type: 'PATCH', data: data, success: () => {
+      window.hcu.changeField(record, field, value, successCallback)
+    }, error: handleError(t('Error_updating')) })
+  } else {
+    console.log('Skipping updateField, value not modified.')
+  }
+}

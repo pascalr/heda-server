@@ -26,7 +26,7 @@ router.use((req, res, next) => {
 
 const renderAdmin = (req, res, next) => {
 
-  let recipe_kinds = db.fetchTable('recipe_kinds', {}, ['name_fr', 'json_fr', 'name_en', 'json_en', 'kind_id', 'image_slug', 'recipe_count_fr', 'recipe_count_en', 'updated_at', ...schema.recipe_kinds.data.data_attrs])
+  let recipe_kinds = db.fetchTable('recipe_kinds', {}, ['name_fr', 'json_fr', 'name_en', 'json_en', 'kind_id', 'image_slug', 'recipe_count_fr', 'recipe_count_en', 'updated_at', 'is_explorable', ...schema.recipe_kinds.data.data_attrs])
   let siblings = db.fetchTable('users', {account_id: req.user.account_id}, ['name']).filter(u => u.id != req.user.id)
 
   res.locals.gon = {

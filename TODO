@@ -24,6 +24,8 @@ SVELTE!!! Mais pas pour HedaCuisine...
 ******************************************
 ******************************************
 
+Refactor all using hcu to do like the export I did. window.hcu no more...
+
 New recipe kind => change page to edit
 
 Don't show abstract recipe_kinds inside suggestions

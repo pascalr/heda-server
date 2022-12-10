@@ -10,7 +10,7 @@ import { AppNavbar } from './navbar'
 import { ErrorBoundary } from './error_boundary'
 import { t } from "../translate"
 import { useRouter } from "./router"
-import { initHcu, useHcuState, handleError } from '../hcu'
+import { initHcu, useHcuState, handleError, updateField } from '../hcu'
 import { RecipeViewer } from "./show_recipe"
 import Translator, { TranslationsCacheStrategy, LogStrategy, StoreStrategy } from '../translator'
 import { RecipeThumbnailImage, RecipeMediumImage } from "./image"
@@ -775,7 +775,12 @@ const KindMenu = ({kind}) => {
       </button>
       <div className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
         <button type="button" className="dropdown-item" onClick={destroyRecipeKind}>{t('Delete')}</button>
+        {kind.is_explorable ?
+          <button type="button" className="dropdown-item" onClick={() => updateField(kind, 'is_explorable', false)}>{'Make not explorable'}</button> :
+          <button type="button" className="dropdown-item" onClick={() => updateField(kind, 'is_explorable', true)}>{'Make explorable'}</button>
+        }
       </div>
+      
     </div>
   </>
 }
