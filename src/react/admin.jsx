@@ -18,7 +18,7 @@ import { DescriptionTiptap } from "./tiptap"
 import {EditRecipeImageModal, EditableImage} from './modals/recipe_image'
 import schema from '../schema'
 import { HomeTab } from './core'
-import { listToTree, sortByDate } from '../utils'
+import { listToTree, sortBy, sortByDate } from '../utils'
 import { changeUrl } from './utils'
 
 const AdminTabs = ({machines}) => {
@@ -208,9 +208,10 @@ const EditKind = ({id, kinds}) => {
   </>
 }
 
-const EditRecipeKind = ({id, recipeKinds, kinds, images, locale}) => {
+const EditRecipeKind = ({id, recipeKinds, images, locale}) => {
 
   let recipeKind = recipeKinds.find(k => k.id == id)
+  let abstractKinds = sortBy(recipeKinds.filter(k => k.is_abstract), localeAttr('name', locale))
  
   //const translateRecipeKind = () => {
   //}
@@ -231,7 +232,7 @@ const EditRecipeKind = ({id, recipeKinds, kinds, images, locale}) => {
       <h3>Edit recipe kind</h3>
       <EditableImage {...{recipe: recipeKind, images}}/>
       <br/><br/>
-      <b>Kind: </b><CollectionSelect model={recipeKind} field="kind_id" options={kinds.map(k => k.id)} showOption={(id) => kinds.find(k => k.id == id)[localeAttr('name', locale)]} includeBlank="true" />
+      <b>Kind: </b><CollectionSelect model={recipeKind} field="kind_id" options={abstractKinds.map(k => k.id)} showOption={(id) => abstractKinds.find(k => k.id == id)[localeAttr('name', locale)]} includeBlank="true" />
       <br/><br/>
       <h2>Français</h2>
       <h1 className="ff-satisfy bold fs-25"><TextField model={recipeKind} field='name_fr' style={{width: '100%'}} /></h1>
