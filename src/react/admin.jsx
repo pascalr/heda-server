@@ -780,6 +780,10 @@ const KindMenu = ({kind}) => {
           <button type="button" className="dropdown-item" onClick={() => updateField(kind, 'is_explorable', false)}>{'Make not explorable'}</button> :
           <button type="button" className="dropdown-item" onClick={() => updateField(kind, 'is_explorable', true)}>{'Make explorable'}</button>
         }
+        {kind.is_abstract ?
+          <button type="button" className="dropdown-item" onClick={() => updateField(kind, 'is_abstract', false)}>{'Make not abstract'}</button> :
+          <button type="button" className="dropdown-item" onClick={() => updateField(kind, 'is_abstract', true)}>{'Make abstract'}</button>
+        }
       </div>
       
     </div>
