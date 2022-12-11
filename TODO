@@ -18,11 +18,23 @@ Faire une page de vente pour chacune de mes idées!
 
 Paniers à bocaux pour faire l'épicerie au bulk barn.
 
-SVELTE!!! Mais pas pour HedaCuisine...
+******************************************
+******************************************
+******************************************
+
+dynamic.css => chokidar les html et js et générer dynamiquement le css nécessaire. w-100% => width: 100_p_;
+ne pas travailler sur ça cette semaine. Laisser mijoter
+Pour que ça soit efficace, il faudrait que ça puisse fonctionner avec Intellisense
 
 ******************************************
 ******************************************
 ******************************************
+
+Dropdown venir de la droite. Plus près pour cliquer.
+
+Explore filter is_abstract for children (Meal, Appetizer)
+
+Ne pas afficher dans l'arbre pour les derniers les lignes à gauche inutile
 
 Refactor all using hcu to do like the export I did. window.hcu no more...
 

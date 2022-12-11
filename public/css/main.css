@@ -251,7 +251,23 @@ input[type="checkbox"] {
     font-size: 1.4em;
   }
 
-  #menu-toggle ~ .menu-toggled {
+  /* #menu-toggle:not(:checked) ~ .menu-toggled {
+    display: none;
+  }
+  #menu-toggle:checked ~ .menu-toggled {
+    display: block;
+  } */
+  .right-slide-navbar {
+    transform-origin: 100% 50%;
+    transition: transform 0.2s ease-in-out;
+  }
+  #menu-toggle:not(:checked) ~ .menu-toggled .right-slide-navbar {
+    transform: scaleX(0.00001);
+  }
+  #menu-toggle:checked ~ .menu-toggled .right-slide-navbar {
+    transform: scaleX(1);
+  }
+  /* #menu-toggle ~ .menu-toggled {
     flex-direction: column;
     max-width: 800px;
     margin: auto;
@@ -271,7 +287,7 @@ input[type="checkbox"] {
   }
   .menu-toggled > * {
     transition: height 0.4s linear, line-height 0.4s linear;
-  }
+  } */
 }
 
 .active {

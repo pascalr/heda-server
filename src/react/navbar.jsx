@@ -192,7 +192,7 @@ export const PublicNavbar = ({locale}) => {
 
   return <SearchNavbar {...{data, isSearching, setIsSearching, onTermChanged}}>
     <div className='mx-lg-3' style={{height: '100%'}}>
-      <CssNavbar {...{startItems, endItems, setIsSearching, collapsableEndItems, collapsableStartItems}} />
+      <RightSlideNavbar {...{startItems, endItems, setIsSearching, collapsableEndItems, collapsableStartItems}} />
     </div>
   </SearchNavbar>
 }
@@ -295,6 +295,14 @@ const SearchBar = ({data, isSearching, setIsSearching, onTermChanged}) => {
   </>
 }
 
+const NavbarTitle = () => {
+  return <>
+    <div className='position-absolute fs-15' style={{left: '50%', transform: 'translateX(-50%)', fontWeight: '500', color: 'rgb(249, 249, 249)'}}>
+    { currentPathIsRoot() ? 'HedaCuisine' : <Link path="/" className="plain-link white">HedaCuisine</Link>}
+  </div>
+  </>
+}
+
 const CssNavbar = ({startItems=[], endItems=[], collapsableStartItems=[], collapsableEndItems=[]}) => {
 
   const hasCollapsable = collapsableStartItems.length && collapsableEndItems.length
@@ -304,9 +312,7 @@ const CssNavbar = ({startItems=[], endItems=[], collapsableStartItems=[], collap
 
   return <>
     <div className='position-relative m-auto' style={{backgroundColor: 'rgb(33, 37, 41)', zIndex: '10000', lineHeight: '3.25em', height: '100%'}}>
-      <div className='position-absolute fs-15' style={{left: '50%', transform: 'translateX(-50%)', fontWeight: '500', color: 'rgb(249, 249, 249)'}}>
-        { currentPathIsRoot() ? 'HedaCuisine' : <Link path="/" className="plain-link white">HedaCuisine</Link>}
-      </div>
+      <NavbarTitle />
       <input id="menu-toggle" type="checkbox" className='d-none'/>
       <div className='d-flex d-lg-none align-items-center' style={{height: '100%'}}>
         {keyedStartItems}
@@ -332,6 +338,67 @@ const CssNavbar = ({startItems=[], endItems=[], collapsableStartItems=[], collap
     </div>
   </>
 }
+
+const ExpandedNavbar = ({startItems=[], endItems=[], collapsableStartItems=[], collapsableEndItems=[]}) => {
+  
+  return <>
+    <div className='d-flex' style={{backgroundColor: 'rgb(33, 37, 41)'}}>
+      {collapsableStartItems.map((e,i) => <div key={'b'+i}>{e}</div>)}
+      {startItems.map((e,i) => <div key={'a'+i}>{e}</div>)}
+      <div className='flex-grow-1'/>
+      {endItems.map((e,i) => <div key={'c'+i}>{e}</div>)}
+      {collapsableEndItems.map((e,i) => <div key={'d'+i}>{e}</div>)}
+    </div>
+  </>
+}
+
+const OpenedRightSlideNavbar = ({startItems=[], endItems=[], collapsableStartItems=[], collapsableEndItems=[]}) => {
+  
+  return <>
+    <div className='position-absolute d-flex flex-column right-slide-navbar' style={{right: '0', top: '52px', lineHeight: '2em', fontSize: '1.2em', backgroundColor: 'rgb(33, 37, 41)', color: 'white', height: '100vh', maxWidth: '100vw', width: '200px'}}>
+      {collapsableStartItems.map((e,i) => <div key={'b'+i}>{e}</div>)}
+      {collapsableEndItems.map((e,i) => <div key={'d'+i}>{e}</div>)}
+    </div>
+  </>
+}
+
+const CollapsedNavbar = ({startItems=[], endItems=[], collapsableStartItems=[], collapsableEndItems=[]}) => {
+
+  const hasCollapsable = collapsableStartItems.length && collapsableEndItems.length
+
+  return <>
+    <div className='d-flex d-lg-none align-items-center' style={{height: '100%'}}>
+      {startItems.map((e,i) => <div key={'a'+i}>{e}</div>)}
+      <div className='flex-grow-1'/>
+      {endItems.map((e,i) => <div key={'c'+i}>{e}</div>)}
+      {hasCollapsable ?
+        <label className='menu-button-container clickable' htmlFor="menu-toggle">
+          <img className="me-3 ms-1" src={ListWhiteIcon} style={{width: '2em', marginTop: '-0.2em'}}/>
+        </label>
+      : null}
+    </div>
+  </>
+}
+
+const RightSlideNavbar = ({startItems=[], endItems=[], collapsableStartItems=[], collapsableEndItems=[]}) => {
+
+  return <>
+    <div className='position-relative m-auto right-slide-navbar' style={{backgroundColor: 'rgb(33, 37, 41)', zIndex: '10000', lineHeight: '3.25em', height: '100%'}}>
+      <NavbarTitle />
+      <input id="menu-toggle" type="checkbox" className='d-none'/>
+      <div className="d-none d-lg-block">
+        <ExpandedNavbar {...{startItems, endItems, collapsableStartItems, collapsableEndItems}} />
+      </div>
+      <div className="d-lg-none">
+        <CollapsedNavbar {...{startItems, endItems, collapsableStartItems, collapsableEndItems}} />
+      </div>
+      <div className='menu-toggled d-lg-none'>
+        <OpenedRightSlideNavbar {...{startItems, endItems, collapsableStartItems, collapsableEndItems}} />
+      </div>
+    </div>
+  </>
+}
+
 
 const SearchNavbar = ({onTermChanged, isSearching, setIsSearching, data, children}) => {
 
