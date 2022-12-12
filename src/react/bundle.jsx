@@ -12,6 +12,7 @@ import { ShowExplore } from "./show_explore"
 import { getUrlParams } from "../utils"
 import { getLocale } from "./lib"
 import { ErrorBoundary } from './error_boundary'
+import { SuggestionsPage } from './suggestions'
 
 export const AppSearchRoot = () => {
 
@@ -34,6 +35,7 @@ let roots = {
   'root-x': <ShowExplore/>,
   'root-k': <ShowRecipeKind/>,
   'root-u': <ShowUser/>,
+  'root-g': <SuggestionsPage/>,
 }
 
 const PublicPage = ({children}) => {

@@ -144,6 +144,8 @@ app.use(function(req, res, next) {
   if (req.user) {
     res.locals.user = {name: req.user.name, locale: req.locale, id: req.user.id}
     res.locals.gon = {user: res.locals.user}
+  } else {
+    res.locals.gon = {}
   }
   next();
 });

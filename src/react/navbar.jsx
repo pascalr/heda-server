@@ -175,6 +175,7 @@ export const PublicNavbar = ({locale}) => {
   let collapsableStartItems = [
     <Link path="/" className="nav-btn" active={currentPathIsRoot()}>{t('Home', locale)}</Link>,
     <Link path="/x" className="nav-btn" checkIfActive={true}>{t('Recipes', locale)}</Link>,
+    <Link path="/g" className="nav-btn" checkIfActive={true}>{t('Suggestions', locale)}</Link>,
   ]
 
   let startItems = [

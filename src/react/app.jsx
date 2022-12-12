@@ -12,7 +12,7 @@ import { image_path } from './routes'
 import {TextField, CollectionSelect, ImageField, ImageSelector} from './form'
 import {RecipeEditor} from "./recipe_editor"
 import {RecipeViewer, FavoriteButton, AddToListButton, DuplicateButton} from "./recipe_viewer"
-import {RecipeKindViewer} from "./show_recipe_kind"
+import {KindViewer} from "./show_recipe_kind"
 import {UserViewer} from "./show_user"
 import {ExploreViewer} from "./show_explore"
 import { initHcu, useHcuState } from '../hcu'
@@ -21,7 +21,7 @@ import { t } from "../translate"
 import {EditMix, ShowMix} from './recipe_editor'
 import { AppNavbar, useHiddenNavParam } from './navbar'
 import { useRouter } from "./router"
-import { SuggestionsPage } from "./suggestions"
+import { SuggestionsViewer } from "./suggestions"
 import { RecipeCarrousel, HomeTab } from './core'
 import { ErrorBoundary } from './error_boundary'
 
@@ -83,6 +83,7 @@ const ShowRecipeKind = ({user, favoriteRecipes, recipeKindId, ...props}) => {
 
   const data = useCacheOrFetch(urlWithLocale('/fetch_recipe_kind/'+recipeKindId, locale))
   if (!data) {return null}
+  console.log('data', data)
 
   const recipeButtons = (recipe) => {
     if (user.id == recipe.user_id) {return null}
@@ -101,7 +102,7 @@ const ShowRecipeKind = ({user, favoriteRecipes, recipeKindId, ...props}) => {
         //</div>
 
   return <>
-    <RecipeKindViewer {...{...props, ...data, recipeButtons}} />
+    <KindViewer {...{...props, ...data, recipeButtons}} />
   </>
 }
 
@@ -332,7 +333,7 @@ export const App = () => {
 
   const routes = [
     {match: "/s", elem: () => <UsersPage {...{user}} />},
-    {match: "/g", elem: () => <SuggestionsPage {...{recipeKinds}} />},
+    {match: "/g", elem: () => <SuggestionsViewer {...{recipeKinds}} />},
     {match: "/y", elem: () => <MyRecipes {...{recipes, favoriteRecipes, recipeKinds, user}} />},
     {match: "/c", elem: () => <EditTags {...{tags}} />},
     {match: "/n", elem: () => <NewRecipe {...{recipeKinds}} />},

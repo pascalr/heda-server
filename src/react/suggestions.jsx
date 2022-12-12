@@ -33,7 +33,7 @@ const QuestionPage = ({title, answers, answer}) => {
   </>
 }
 
-export const SuggestionsPage = ({}) => {
+export const SuggestionsViewer = ({}) => {
 
   const [answers, setAnswers] = useState([])
   const [result, setResult] = useState({})
@@ -72,5 +72,13 @@ export const SuggestionsPage = ({}) => {
     <br/><br/>
     <h2 className="fs-14 bold">{t('Suggestions')}</h2>
     <RecipeCarrousel {...{items: result.suggestions||[], isRecipeKind: true}}/>
+  </>
+}
+
+export const SuggestionsPage = () => {
+  return <>
+    <div className="trunk">
+      <SuggestionsViewer />
+    </div>
   </>
 }

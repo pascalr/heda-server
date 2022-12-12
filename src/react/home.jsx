@@ -10,7 +10,7 @@ import { Carrousel } from "./carrousel"
 import { initHcu, useHcuState } from '../hcu'
 import { getUrlParams, localeHref } from "../utils"
 import { getLocale, Link } from "./lib"
-import { SuggestionsPage } from "./suggestions"
+import { SuggestionsViewer } from "./suggestions"
 
 export const Home = () => {
 
@@ -64,7 +64,7 @@ export const Home = () => {
         <h2>{t('Home_3')}</h2>
         <p>{t('Home_4')}</p>
       </div>
-      <SuggestionsPage />
+      <SuggestionsViewer />
     </div>
     <hr style={{border: '1px solid black', width: '70%', margin: 'auto'}} />
     <div style={{padding: '5em 0.5em', backgroundColor: '#fafbfc'}}>

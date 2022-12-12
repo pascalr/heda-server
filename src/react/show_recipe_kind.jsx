@@ -48,12 +48,12 @@ const Recipe = ({recipe, recipeKind}) => {
   </>
 }
 
-export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors, recipeButtons, locale}) => {
+export const RecipeKindViewer = ({kind, recipes, ancestors, recipeButtons, locale}) => {
 
   const [recipeIdx, setRecipeIdx] = useState(0)
   const [localeFilter, setLocaleFilter] = useState(locale)
 
-  if (!recipeKind || !recipes) {return ''}
+  if (!kind || !recipes) {return ''}
 
   let filtered = recipes.filter(r => {
     let filtered = false
@@ -72,23 +72,23 @@ export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors, recipeButt
 
   return <>
     <div className="trunk">
-      {!kindAncestors?.length ? null :
+      {!ancestors?.length ? null :
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb" style={{margin: '-0.15em 0 0.5em 0'}}>
-            {(kindAncestors||[]).map(kind => {
+            {(ancestors||[]).map(kind => {
               return <li key={kind.id} className="breadcrumb-item"><Link path={'/k/'+kind.id}>{kind.name}</Link></li>
             })}
-            <li className="breadcrumb-item active" aria-current="page">{recipeKind.name}</li>
+            <li className="breadcrumb-item active" aria-current="page">{kind.name}</li>
           </ol>
         </nav>
       }
       <div className="d-block d-md-flex">
-        <RecipeMediumImage {...{recipe: recipeKind}} />
+        <RecipeMediumImage {...{recipe: kind}} />
         <div style={{margin: '0.5em 0.5em'}}></div>
         <div>
-          <h1 className="ff-satisfy bold fs-25">{recipeKind.name}</h1>
+          <h1 className="ff-satisfy bold fs-25">{kind.name}</h1>
           <div className="fs-09">
-            <DescriptionTiptap {...{model: recipeKind, json_field: 'description_json', editable: false}} />
+            <DescriptionTiptap {...{model: kind, json_field: 'description_json', editable: false}} />
           </div>
         </div>
       </div>
@@ -121,7 +121,7 @@ export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors, recipeButt
             <div className='flex-grow-1' />
             {recipeButtonsE}
           </div>
-          <Recipe {...{recipe: filtered[idx], recipeKind}} />
+          <Recipe {...{recipe: filtered[idx], recipeKind: kind}} />
         </> : <>
           <p>{t('There_are_no_recipe_in_this_category_yet')}.</p>
           <br/>
@@ -181,16 +181,21 @@ export const AbstractKindViewer = ({kind, ancestors, children}) => {
 export const ShowRecipeKind = () => {
 
   const locale = getLocale()
-  const [recipeKind, ] = useState(gon.recipeKind)
+  const [kind, ] = useState(gon.kind)
   const [recipes, ] = useState(gon.recipes)
-  const [kindAncestors, ] = useState(gon.kindAncestors||[])
+  const [ancestors, ] = useState(gon.ancestors||[])
   const [children, ] = useState(gon.children||[])
 
   // TODO: Show credit
   //<div><RecipeMediumImage {...{recipe: recipeKind, images, showCredit: true}} /></div>
-  if (recipeKind.is_abstract) {
-    return <AbstractKindViewer {...{kind: recipeKind, ancestors: kindAncestors, children, locale}} />
+  return <KindViewer {...{kind, ancestors, children, recipes, locale}} />
+}
+
+export const KindViewer = ({kind, ancestors, children, recipes}) => {
+  if (!kind) {return null}
+  if (kind.is_abstract) {
+    return <AbstractKindViewer {...{kind, ancestors, children, locale}} />
   } else {
-    return <RecipeKindViewer {...{recipeKind, recipes, kindAncestors, locale}} />
+    return <RecipeKindViewer {...{kind, recipes, ancestors, locale}} />
   }
 }

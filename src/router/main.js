@@ -194,16 +194,16 @@ function extractUser(id) {
 
 function extractRecipeKind(id, locale) {
 
-  let kindAncestors = fetchWithAncestors(id, 'kind_id', (id) => (
+  let ancestors = fetchWithAncestors(id, 'kind_id', (id) => (
     fetchRecordLocaleAttrs(db, 'recipe_kinds', {id}, ['image_slug', 'kind_id', 'is_abstract'], ['name', 'json'], locale)
   ))
-  let recipeKind = kindAncestors.splice(-1)[0]
-  if (!recipeKind) {throw 'Unable to extract recipe kind. Not existent.'}
+  let kind = ancestors.splice(-1)[0]
+  if (!kind) {throw 'Unable to extract recipe kind. Not existent.'}
   //let recipes = db.fetchTable('recipes', {is_public: 1, recipe_kind_id: recipeKind.id}, RECIPE_ATTRS)
   // FIXME: SELECT recipes.*
-  let recipes = db.prepare("SELECT recipes.*, users.locale, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE recipes.is_public = 1 AND recipes.recipe_kind_id = ?;").all(recipeKind.id)
+  let recipes = db.prepare("SELECT recipes.*, users.locale, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE recipes.is_public = 1 AND recipes.recipe_kind_id = ?;").all(kind.id)
   let children;
-  if (recipeKind.is_abstract) {
+  if (kind.is_abstract) {
     children = fetchTableLocaleAttrs(db, 'recipe_kinds', {kind_id: id}, ['kind_id', 'image_slug', 'is_abstract'], ['name', 'recipe_count'], locale)
     children.forEach(k => {
       if (k.is_abstract) {
@@ -211,7 +211,7 @@ function extractRecipeKind(id, locale) {
       }
     })
   }
-  return {recipeKind, recipes, kindAncestors, children}
+  return {kind, recipes, ancestors, children}
 }
 
 router.get('/fetch_user/:id', (req, res, next) => res.json(extractUser(req.params.id)))
@@ -374,7 +374,6 @@ function renderAppIfLoggedIn(req, res, next) {
 
 router.get('/e/:id', renderApp)
 router.get('/c', renderApp)
-router.get('/g', renderApp)
 router.get('/s', renderApp)
 router.get('/t/:id', renderApp)
 router.get('/l', renderApp)
@@ -424,6 +423,10 @@ router.get('/k/:id', renderAppIfLoggedIn, function(req, res, next) {
 
   res.locals.gon = extractRecipeKind(req.params.id, res.locals.locale)
   res.render('show_recipe_kind');
+});
+
+router.get('/g', renderAppIfLoggedIn, function(req, res, next) {
+  res.render('suggestions');
 });
 
 router.get('/x', renderAppIfLoggedIn, function(req, res, next) {

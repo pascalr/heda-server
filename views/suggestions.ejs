@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="<%- locale %>">
+  <head>
+    <%- include('partials/head') %>
+  </head>
+  <body>
+    <div class="root" id="root-g"></div>
+    <%- include('partials/footer') %>
+  </body>
+</html>
+
+<script>
+  window.gon = <%- JSON.stringify(gon) %>
+</script>
+<%- loadScript("/build/bundle") %>
