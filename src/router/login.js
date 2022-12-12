@@ -9,7 +9,6 @@ import _ from 'lodash'
 import { normalizeSearchText, localeHref, now, shuffle, isValidEmail } from '../utils.js';
 import { db } from '../db.js';
 import { validateEmail, validateUnique, validatePassword, validateUsername, fetchTableLocaleAttrs } from '../lib.js'
-import { tr, translate } from '../translate.js'
 
 const router = express.Router();
 
@@ -58,7 +57,7 @@ router.post('/login/password', function(req, res, next) {
   const user = findUserByNameOrEmail(username, ['salt', 'encrypted_password', ...USER_ATTRS])
 
   function invalidLogin() {
-    req.flash('error', tr('Invalid_login', res.locals.locale))
+    req.flash('error', res.t('Invalid_login'))
     res.redirect('/login')
   }
   if (!user) {return invalidLogin()}
@@ -172,18 +171,16 @@ router.get('/forgot', redirectHomeIfLoggedIn, function (req, res, next) {
 
 router.post('/forgot', redirectHomeIfLoggedIn, function (req, res, next) {
   
-  let t = translate(res.locals.locale)
-
   const u = findUserByNameOrEmail(req.body.email, ['email'])
   if (!u) {
-    req.flash('error', t('Invalid_email_address_or_username'))
+    req.flash('error', res.t('Invalid_email_address_or_username'))
     return res.render('forgot')
   }
 
   var token = crypto.randomUUID();
   let info = db.prepare('UPDATE users SET reset_password_token = ? WHERE id = ?').run(token, u.id)
   if (info.changes != 1) {
-    req.flash('error', t('Internal_error'))
+    req.flash('error', res.t('Internal_error'))
     return res.render('forgot')
   }
 
@@ -192,8 +189,8 @@ router.post('/forgot', redirectHomeIfLoggedIn, function (req, res, next) {
     to: u.email,
     from: 'admin@hedacuisine.com',
     subject: 'HedaCuisine - Reset password',
-    text: t('Reset_password_message')+'.\r\n\r\n' + link,
-    html: '<p>'+t('Reset_password_message')+'.</p><p><a href="' + link + '">'+t('Reset')+'</a></p>',
+    text: res.t('Reset_password_message')+'.\r\n\r\n' + link,
+    html: '<p>'+res.t('Reset_password_message')+'.</p><p><a href="' + link + '">'+res.t('Reset')+'</a></p>',
   };
   sendgrid.send(msg);
   res.redirect(localeHref('/waiting_reset', req.originalUrl))
@@ -206,20 +203,18 @@ router.get('/reset/:token', redirectHomeIfLoggedIn, function (req, res, next) {
 
 router.post('/reset', redirectHomeIfLoggedIn, function (req, res, next) {
   
-  let t = translate(res.locals.locale)
-
   var salt = crypto.randomBytes(16);
   
   crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', function(err, hashedPassword) {
     if (err) { return next(err); }
     let user = db.fetchRecord('users', {reset_password_token: req.body.token}, USER_ATTRS)
     if (!user) {
-      req.flash('error', t('Internal_error'))
+      req.flash('error', res.t('Internal_error'))
       return res.redirect('/reset/'+req.body.token)
     }
     let info = db.prepare('UPDATE users SET encrypted_password = ?, salt = ?, updated_at = ? WHERE reset_password_token = ?').run(hashedPassword, salt, now(), req.body.token)
     if (info.changes != 1) {
-      req.flash('error', t('Internal_error'))
+      req.flash('error', res.t('Internal_error'))
       return res.redirect('/reset/'+req.body.token)
     }
     loginUser(user, req, res, next)
@@ -247,7 +242,7 @@ router.get('/confirm_signup', function(req, res, next) {
   }
 })
 
-function captchaQuestion(req, locale) {
+function captchaQuestion(req, t) {
   if (!req.session.captchaAttempts) {
     req.session.captchaAttempts = 1
   } else if (req.session.captchaAttempts >= 5) {
@@ -257,11 +252,11 @@ function captchaQuestion(req, locale) {
         req.session.captchaAttempts = 1
         req.session.captchaBanDate = null
       } else {
-        return {error: tr('Maximum_limit_reached', locale)+'. '+tr('Please_try_again_later', locale)}
+        return {error: t('Maximum_limit_reached')+'. '+t('Please_try_again_later')}
       }
     } else {
       req.session.captchaBanDate = Date.now()
-      return {error: tr('Maximum_limit_reached', locale)+'. '+tr('Please_try_again_later', locale)}
+      return {error: t('Maximum_limit_reached')+'. '+r('Please_try_again_later')}
     }
   } else {
     req.session.captchaAttempts += 1
@@ -271,11 +266,11 @@ function captchaQuestion(req, locale) {
   let choices = shuffle(recipeKinds).slice(0, 9)
   let correctIdx = randomInt(9)
   req.session.captcha = choices[correctIdx].id
-  let question = tr('Please_select', locale)+': <b>'+choices[correctIdx].name+'</b>?'
+  let question = res.t('Please_select')+': <b>'+choices[correctIdx].name+'</b>?'
   return {choices, question}
 }
 router.get('/fetch_captcha', function(req, res, next) {
-  res.json(captchaQuestion(req, res.locals.locale));
+  res.json(captchaQuestion(req, res.t));
 })
 router.post('/validate_captcha', function(req, res, next) {
 
@@ -284,7 +279,7 @@ router.post('/validate_captcha', function(req, res, next) {
     console.log('Captcha validated!')
     req.session.captchaValidatedAt = Date.now()
   }
-  res.json(validated ? {validated} : captchaQuestion(req, res.locals.locale))
+  res.json(validated ? {validated} : captchaQuestion(req, res.t))
 })
 
 router.get('/signup', function(req, res, next) {
@@ -305,12 +300,11 @@ router.post('/signup', function(req, res, next) {
 
   let {email, name, password} = req.body
   let username = normalizeSearchText(name)
-  let t = translate(res.locals.locale)
 
   let allUsers = db.fetchTable('users', {}, ['username', 'email'])
 
   if (!req.session.captchaValidatedAt || (Date.now() - req.session.captchaValidatedAt >= 5*60*1000)) {
-    req.flash('error', t('Invalid_captcha'))
+    req.flash('error', res.t('Invalid_captcha'))
     return res.redirect(localeHref('/signup', req.originalUrl));
   }
 
@@ -337,21 +331,21 @@ router.post('/signup', function(req, res, next) {
           to: email,
           from: 'admin@hedacuisine.com',
           subject: 'Sign in to HedaCuisine',
-          text: t('Hello')+'! '+t('Sign_in_email')+'.\r\n\r\n' + link,
-          html: '<h3>'+t('Hello')+'!</h3><p>'+t('Sign_in_email')+'.</p><p><a href="' + link + '">'+t('Sign_in')+'</a></p>',
+          text: res.t('Hello')+'! '+res.t('Sign_in_email')+'.\r\n\r\n' + link,
+          html: '<h3>'+t('Hello')+'!</h3><p>'+res.t('Sign_in_email')+'.</p><p><a href="' + link + '">'+res.t('Sign_in')+'</a></p>',
         };
         sendgrid.send(msg);
         res.redirect(localeHref('/waiting_confirm', req.originalUrl))
       } catch (err) {
         console.log('CREATE USER ERROR:', err)
         if (err.code && err.code === "SQLITE_CONSTRAINT_UNIQUE") { // SqliteError
-          req.flash('error', t('Account_already_associated'))
+          req.flash('error', res.t('Account_already_associated'))
           res.redirect(localeHref('/signup', req.originalUrl));
         }
       }
     })
   } else {
-    req.flash('error', errors.map(e => t(e)).join('. '))
+    req.flash('error', errors.map(e => res.t(e)).join('. '))
     res.redirect(localeHref('/signup', req.originalUrl));
   }
 });

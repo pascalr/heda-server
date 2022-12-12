@@ -59,7 +59,7 @@ router.post('/upload_image', function(req, res, next) {
   let ext = file.name.substr(file.name.lastIndexOf('.') + 1).toLowerCase();
   if (!['jpg', 'jpeg', 'png'].includes(ext)) {
     // FIXME: Send the user locale from the client side in order to translate properly.
-    return res.status(500).json({publicError: tr('Image_format_not_supported', res.locals.locale) + ext});
+    return res.status(500).json({publicError: res.t('Image_format_not_supported') + ext});
   }
 
   let {record_table, record_id, record_field} = req.body
