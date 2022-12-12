@@ -8,7 +8,7 @@ import _ from 'lodash'
 // import passport from '../passport.js';
 import { normalizeSearchText, localeHref, now, shuffle, isValidEmail } from '../utils.js';
 import { db } from '../db.js';
-import { validateEmail, validatePassword, validateUsername, fetchTableLocaleAttrs } from '../lib.js'
+import { validateEmail, validateUnique, validatePassword, validateUsername, fetchTableLocaleAttrs } from '../lib.js'
 import { tr, translate } from '../translate.js'
 
 const router = express.Router();
@@ -154,20 +154,16 @@ router.get('/edit_profile', function(req, res, next) {
 router.post('/rename_user', ensureLoggedIn, function(req, res, next) {
   let name = req.body.name
   let username = normalizeSearchText(name)
-  let err = validateUsername(name)
+  let allUsers = db.fetchTable('users', {}, ['username'])
+  let err = validateUsername(name) || validateUnique(username, allUsers.map(u=>u.username), 'Username_not_unique')
   if (!err) {
     let info = db.prepare('UPDATE users SET name = ?, username = ? WHERE id = ?').run(name, username, req.user.id)
-    if (info.changes != 1) {
-      req.flash('error', res.t('Internal_error'))
-      res.send({error: res.t('Internal_error')})
-    } else {
+    if (info.changes == 1) {
       req.user.name = name
-      res.send('ok')
+      return res.send('ok')
     }
-  } else {
-    req.flash('error', res.t(err))
-    res.send({error: res.t(err)})
   }
+  res.status(400).json({error: res.t(err) || res.t('Internal_error')})
 });
 
 router.get('/forgot', redirectHomeIfLoggedIn, function (req, res, next) {
@@ -312,11 +308,6 @@ router.post('/signup', function(req, res, next) {
   let t = translate(res.locals.locale)
 
   let allUsers = db.fetchTable('users', {}, ['username', 'email'])
-
-  function validateUnique(value, values, error) {
-    let val = normalizeSearchText(value)
-    return values.find(v => normalizeSearchText(v) == val) ? error : ''
-  }
 
   if (!req.session.captchaValidatedAt || (Date.now() - req.session.captchaValidatedAt >= 5*60*1000)) {
     req.flash('error', t('Invalid_captcha'))

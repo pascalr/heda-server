@@ -39,9 +39,6 @@ Remove refences of Kinds
 Peut-être utiliser le data de ce site un jour (la partie non copyrightable, par exemple les ingrédients pourrait être très utile):
 https://www.kaggle.com/datasets/paultimothymooney/recipenlg
 
-/rename_user => show error inside UI (try with email@gmail.com)
-Edit profile show error like other login, without toastr
-
 Inside /confirm_signup => Show a req.flash('info', t('Welcome_message'))
 
 Add unique username constraint... CREATE UNIQUE INDEX your_unique_index ON your_table(column_name);

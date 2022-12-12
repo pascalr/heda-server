@@ -13,6 +13,7 @@ const UserEditor = () => {
   if (!window.hcu) {initHcu()}
   const users = useHcuState([gon.user], {tableName: 'users'})
   const user = users[0]
+  const [error, setError] = useState(null)
   window.locale = user.locale
 
   const destroyUser = () => {
@@ -40,15 +41,19 @@ const UserEditor = () => {
   // <b>{t('Image')}</b><br/>
   // <ImageSelector record={user} field="image_slug" variant="original" maxSizeBytes={2*1000*1000} suggestions={suggestions} height="180px" defaultImage="/icons/person-fill.svg" />
 
-  const [name, nameField] = withInputField(user.name, {size: 8, className: 'editable-input', onBlur: changeName})
+  const [name, nameField, setName] = withInputField(user.name, {size: 8, className: 'editable-input', onBlur: changeName})
 
   function changeName() { 
-    ajax({url: '/rename_user', method: 'POST', data: {name}})
+    ajax({url: '/rename_user', method: 'POST', data: {name}, error: ({error}) => {
+      setError(error)
+      setName(user.name)
+    }})
   }
 
   // <button type="button" className="float-end btn btn-danger" onClick={destroyUser}>{t('Delete')}</button>
   return <>
     <h1>{t('Edit_profile')}</h1>
+    <div className='inform-error'>{error}</div>
     <b>{t('Name')}</b><br/>
     {nameField}<br/><br/>
     <b>{t('Language')}</b><br/>

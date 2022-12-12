@@ -45,7 +45,7 @@ export const withInputField = (defaultValue, args={}) => {
     <input type="text" value={value||''} onChange={(e) => setValue(e.target.value)} {...args} />
   )
 
-  return [value, elem]
+  return [value, elem, setValue]
 }
 
 /**

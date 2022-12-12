@@ -219,6 +219,12 @@ export function validateUsername(name) {
   return null
 }
 
+// EX: validateUnique(email, allUsers.map(u=>u.email), 'Email_not_unique'),
+export function validateUnique(value, values, error) {
+  let val = normalizeSearchText(value)
+  return values.find(v => normalizeSearchText(v) == val) ? error : null
+}
+
 /**
  * @typedef {Object} AjaxArgs
  * @property {string} url

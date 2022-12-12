@@ -83,8 +83,6 @@ const RecipeListItemMenu = ({fav, recipe, user}) => {
 
 export const RecipeList = ({list, selected, recipes, user}) => {
 
-  console.log('RecipeList', list)
-
   return (<>
     <ul id="recipes" className="recipe-list">
       {list.map((item, current) => {
