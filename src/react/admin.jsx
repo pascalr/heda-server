@@ -27,9 +27,8 @@ const AdminTabs = ({machines}) => {
       <HomeTab {...{title: t('Admin'), path: '/admin'}} />
       <HomeTab {...{title: t('Errors'), path: '/admin/errors'}} />
       <HomeTab {...{title: t('QA'), path: '/admin/qa'}} />
-      <HomeTab {...{title: t('Tree'), path: '/admin/tree'}} />
-      <HomeTab {...{title: t('Kinds'), path: '/admin/di'}} />
-      <HomeTab {...{title: t('RecipeKinds'), path: '/admin/ki'}} />
+      <HomeTab {...{title: t('RecipeKinds'), path: '/admin/tree'}} />
+      <HomeTab {...{title: t('RecipesWithoutKinds'), path: '/admin/ki'}} />
       <HomeTab {...{title: t('SQL'), path: '/admin/sql'}} />
       <HomeTab {...{title: t('DB'), path: '/admin/db'}} />
       <HomeTab {...{title: t('Console'), path: '/admin/console'}} />
@@ -194,19 +193,19 @@ const QAPage = ({}) => {
   </>
 }
 
-const EditKind = ({id, kinds}) => {
-  let kind = kinds.find(k => k.id == id)
+// const EditKind = ({id, kinds}) => {
+//   let kind = kinds.find(k => k.id == id)
   
-  return <>
-    <div className='trunk'>
-      <h3>Edit kind</h3>
-      <h2>Français</h2>
-      <h1 className="ff-satisfy bold fs-25"><TextField model={kind} field='name_fr' style={{width: '100%'}} /></h1>
-      <h2>English</h2>
-      <h1 className="ff-satisfy bold fs-25"><TextField model={kind} field='name_en' style={{width: '100%'}} /></h1>
-    </div>
-  </>
-}
+//   return <>
+//     <div className='trunk'>
+//       <h3>Edit kind</h3>
+//       <h2>Français</h2>
+//       <h1 className="ff-satisfy bold fs-25"><TextField model={kind} field='name_fr' style={{width: '100%'}} /></h1>
+//       <h2>English</h2>
+//       <h1 className="ff-satisfy bold fs-25"><TextField model={kind} field='name_en' style={{width: '100%'}} /></h1>
+//     </div>
+//   </>
+// }
 
 const EditRecipeKind = ({id, recipeKinds, images, locale}) => {
 
@@ -267,73 +266,48 @@ const EditRecipeKind = ({id, recipeKinds, images, locale}) => {
   </>
 }
 
-const KindsIndex = ({kinds, recipeKinds, locale}) => {
+// const KindsIndex = ({kinds, recipeKinds, locale}) => {
 
-  const createKind = (kind) => {
-    window.hcu.createRecord('kinds', {})
-  }
-  const destroyKind = (kind) => {
-    if (confirm("Êtes-vous certain de vouloir supprimer cette catégorie définitivement?")) {
-      window.hcu.destroyRecord(kind)
-    }
-  }
+//   const createKind = (kind) => {
+//     window.hcu.createRecord('kinds', {})
+//   }
+//   const destroyKind = (kind) => {
+//     if (confirm("Êtes-vous certain de vouloir supprimer cette catégorie définitivement?")) {
+//       window.hcu.destroyRecord(kind)
+//     }
+//   }
 
-  return <>
-    <div className='trunk'>
-      <div className="d-flex gap-15 align-items-center">
-        <h1>Kinds</h1>
-        <button type="button" className="btn btn-outline-primary btn-sm" onClick={createKind}>Create kind</button>
-      </div>
-      {kinds.map(kind => {
-        let name = kind[localeAttr('name', locale)] || 'Untitled'
-        return <div key={kind.id} className='d-flex align-items-center'>
-          <CollectionSelect model={kind} field="kind_id" options={kinds.map(k => k.id)} showOption={(id) => kinds.find(k => k.id == id)[localeAttr('name', locale)]} includeBlank="true" />
-          <div className='mx-2'>/</div>
-          <Link path={'/admin/ed/'+kind.id} className="plain-link">
-            <div>{name}</div>
-          </Link>
-          <button type='button' className='btn ms-2 btn-sm btn-outline-secondary' onClick={() => destroyKind(kind)}>Destroy</button>
-        </div>
-      })}
-    </div>
-  </>
-}
+//   return <>
+//     <div className='trunk'>
+//       <div className="d-flex gap-15 align-items-center">
+//         <h1>Kinds</h1>
+//         <button type="button" className="btn btn-outline-primary btn-sm" onClick={createKind}>Create kind</button>
+//       </div>
+//       {kinds.map(kind => {
+//         let name = kind[localeAttr('name', locale)] || 'Untitled'
+//         return <div key={kind.id} className='d-flex align-items-center'>
+//           <CollectionSelect model={kind} field="kind_id" options={kinds.map(k => k.id)} showOption={(id) => kinds.find(k => k.id == id)[localeAttr('name', locale)]} includeBlank="true" />
+//           <div className='mx-2'>/</div>
+//           <Link path={'/admin/ed/'+kind.id} className="plain-link">
+//             <div>{name}</div>
+//           </Link>
+//           <button type='button' className='btn ms-2 btn-sm btn-outline-secondary' onClick={() => destroyKind(kind)}>Destroy</button>
+//         </div>
+//       })}
+//     </div>
+//   </>
+// }
 
-const RecipeKindsIndex = ({recipes, recipeKinds, publicUsers, locale, kinds}) => {
+const RecipeKindsIndex = ({recipes, recipeKinds, publicUsers}) => {
 
   const missings = recipes.filter(r => !r.recipe_kind_id && !findRecipeKindForRecipeName(r.name, recipeKinds))
 
   const createRecipeKind = (recipe={}) => {
     window.hcu.createRecord('recipe_kinds', {name_fr: recipe.name, image_slug: recipe.image_slug})
   }
-  const destroyRecipeKind = (recipeKind) => {
-    if (confirm("Êtes-vous certain de vouloir supprimer cette catégorie définitivement?")) {
-      window.hcu.destroyRecord(recipeKind)
-    }
-  }
-
-  const latestFirst = sortByDate(recipeKinds, 'updated_at').slice().reverse()
 
   return <>
     <div className='trunk'>
-      <div className="d-flex gap-15 align-items-center">
-        <h1>Recipe Kinds</h1>
-        <button type="button" className="btn btn-outline-primary btn-sm" onClick={createRecipeKind}>Create recipe kind</button>
-      </div>
-      {latestFirst.map(recipeKind => {
-        let name = recipeKind[localeAttr('name', locale)]
-        return <div key={recipeKind.id} className='d-flex align-items-center'>
-          <CollectionSelect model={recipeKind} field="kind_id" options={kinds.map(k => k.id)} showOption={(id) => kinds.find(k => k.id == id)[localeAttr('name', locale)]} includeBlank="true" />
-          <div className='mx-2'>/</div>
-          <Link path={'/admin/ek/'+recipeKind.id} className="plain-link">
-            <div className="d-flex align-items-center mb-2">
-              <div><RecipeThumbnailImage {...{recipe: recipeKind}} /></div>
-              <div className='ms-2'>{name} ({(recipeKind.recipe_count_fr||0)}, {(recipeKind.recipe_count_en||0)})</div>
-            </div>
-          </Link>
-          <button type='button' className='btn ms-2 btn-sm btn-outline-secondary' onClick={() => destroyRecipeKind(recipeKind)}>Destroy</button>
-        </div>
-      })}
       <h2>Recipes without categories</h2>
       {missings.map(recipe => {
         let u = publicUsers.find(u => u.id == recipe.user_id)
@@ -790,11 +764,17 @@ const KindMenu = ({kind}) => {
   </>
 }
 
-const KindNode = ({node, depth}) => {
+// lastArray is used to store wheter the node parents are the last in the list
+// Don't print a vertical for parents that are last in the list
+const KindNode = ({node, depth, lastArray=[]}) => {
+  console.log('name', node.name_fr)
+  console.log('depth', depth)
+  console.log('lastArray', lastArray)
+  let lA = lastArray.slice(0,-1)
   return <div key={node.id}>
     <div className="position-relative" style={{marginLeft: depth*4+'em'}}>
       {depth <= 0 ? null : <>
-        {[...Array(depth).keys()].map(i => (
+        {[...Array(depth).keys()].map(i => (lA[depth-i-1] ? null :
           <div key={i} className="position-absolute" style={{height: '4em', width: '1px', background: 'repeating-linear-gradient(0deg,black 0 5px,#0000 0 7px)', left: '-'+(2+4*i)+'em', top: '-2.5em'}}></div>
         ))}
         <div className="position-absolute" style={{height: '1px', width: '35.5px', background: 'repeating-linear-gradient(90deg,black 0 5px,#0000 0 7px)', left: '-2em', top: '23px'}}></div>
@@ -812,7 +792,7 @@ const KindNode = ({node, depth}) => {
         <div><KindMenu kind={node} /></div>
       </div>
     </div>
-    {node.children.map(child => <KindNode key={child.id} node={child} depth={depth+1} />)}
+    {node.children.map((child,i) => <KindNode key={child.id} node={child} depth={depth+1} lastArray={[...lastArray, i == node.children.length-1]} />)}
   </div>
 }
 
@@ -832,7 +812,7 @@ const TreePage = ({recipeKinds}) => {
         <h1>Recipe Kinds</h1>
         <button type="button" className="btn btn-outline-primary btn-sm" onClick={createRecipeKind}>Create</button>
       </div>
-      {tree.map(root => <KindNode key={root.id} node={root} depth={0} />)}
+      {tree.map((root, i) => <KindNode key={root.id} node={root} depth={0} />)}
     </div>
   </div>
 }
@@ -867,7 +847,7 @@ export const Admin = () => {
     {match: "/admin/ki", elem: () => <RecipeKindsIndex {...{recipeKinds, recipes, publicUsers, locale, kinds}} />},
     {match: "/admin/di", elem: () => <KindsIndex {...{kinds, recipeKinds, locale}} />},
     {match: "/admin/ek/:id", elem: ({id}) => <EditRecipeKind {...{id, recipeKinds, images, kinds, locale}} />},
-    {match: "/admin/ed/:id", elem: ({id}) => <EditKind {...{id, kinds}} />},
+    // {match: "/admin/ed/:id", elem: ({id}) => <EditKind {...{id, kinds}} />},
     {match: "/admin/translate_recipe", elem: () => <TranslateRecipePage {...{recipes, locale, translations}} />},
     {match: "/admin", elem: () => <AdminPage {...{stats, publicUsers, errors}} />},
     {match: "/", elem: () => <Redirect url='/' />},

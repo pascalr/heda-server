@@ -171,10 +171,10 @@ router.patch('/update_field/:table/:id', ensureUser, function(req, res, next) {
 function extractExplore(locale) {
 
   // let kinds = fetchTableLocaleAttrs(db, 'kinds', {}, ['kind_id'], ['name'], locale)
-  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug', 'kind_id', 'is_explorable'], ['name'], locale)
+  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug', 'kind_id', 'is_explorable', 'is_abstract'], ['name'], locale)
   let roots = recipeKinds.filter(k => k.is_explorable)
   roots.forEach(root => {
-    root.children = shuffle(recipeKinds.filter(k => k.kind_id == root.id)).slice(0,10)
+    root.children = shuffle(recipeKinds.filter(k => k.kind_id == root.id && !k.is_abstract)).slice(0,10)
   })
   return {roots}
   // let recipeKindsByAncestorId = _.groupBy(recipeKinds, (k) => kindAncestorId(kinds, k))
