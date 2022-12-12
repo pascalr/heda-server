@@ -214,22 +214,6 @@ function extractRecipeKind(id, locale) {
   return {recipeKind, recipes, kindAncestors, children}
 }
 
-// function extractKind(id, locale) {
-
-//   let ancestors = fetchWithAncestors(id, 'kind_id', (id) => (
-//     fetchRecordLocaleAttrs(db, 'kinds', {id}, ['kind_id'], ['name'], locale)
-//   ))
-//   let kind = ancestors.pop(-1)
-//   if (!kind) {throw 'Unable to fetch kind. Not existent.'}
-//   let kinds = fetchTableLocaleAttrs(db, 'kinds', {kind_id: id}, ['kind_id'], ['name'], locale)
-//   kinds.forEach(k => {
-//     k.recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {kind_id: k.id}, ['image_slug', 'kind_id'], ['name', 'recipe_count'], locale, {limit: 10})
-//   })
-//   let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {kind_id: id}, ['image_slug', 'kind_id'], ['name', 'recipe_count'], locale)
-//   return {kind, ancestors, kinds, recipeKinds}
-// }
-
-
 router.get('/fetch_user/:id', (req, res, next) => res.json(extractUser(req.params.id)))
 router.get('/fetch_explore', (req, res, next) => res.json(extractExplore(res.locals.locale)))
 // router.get('/fetch_kind/:id', (req, res, next) => res.json(extractKind(req.params.id, res.locals.locale)))

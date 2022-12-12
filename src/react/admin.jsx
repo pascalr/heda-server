@@ -192,20 +192,6 @@ const QAPage = ({}) => {
   </>
 }
 
-// const EditKind = ({id, kinds}) => {
-//   let kind = kinds.find(k => k.id == id)
-  
-//   return <>
-//     <div className='trunk'>
-//       <h3>Edit kind</h3>
-//       <h2>Français</h2>
-//       <h1 className="ff-satisfy bold fs-25"><TextField model={kind} field='name_fr' style={{width: '100%'}} /></h1>
-//       <h2>English</h2>
-//       <h1 className="ff-satisfy bold fs-25"><TextField model={kind} field='name_en' style={{width: '100%'}} /></h1>
-//     </div>
-//   </>
-// }
-
 const EditRecipeKind = ({id, recipeKinds, images, locale}) => {
 
   let recipeKind = recipeKinds.find(k => k.id == id)
@@ -264,38 +250,6 @@ const EditRecipeKind = ({id, recipeKinds, images, locale}) => {
     </div>
   </>
 }
-
-// const KindsIndex = ({kinds, recipeKinds, locale}) => {
-
-//   const createKind = (kind) => {
-//     window.hcu.createRecord('kinds', {})
-//   }
-//   const destroyKind = (kind) => {
-//     if (confirm("Êtes-vous certain de vouloir supprimer cette catégorie définitivement?")) {
-//       window.hcu.destroyRecord(kind)
-//     }
-//   }
-
-//   return <>
-//     <div className='trunk'>
-//       <div className="d-flex gap-15 align-items-center">
-//         <h1>Kinds</h1>
-//         <button type="button" className="btn btn-outline-primary btn-sm" onClick={createKind}>Create kind</button>
-//       </div>
-//       {kinds.map(kind => {
-//         let name = kind[localeAttr('name', locale)] || 'Untitled'
-//         return <div key={kind.id} className='d-flex align-items-center'>
-//           <CollectionSelect model={kind} field="kind_id" options={kinds.map(k => k.id)} showOption={(id) => kinds.find(k => k.id == id)[localeAttr('name', locale)]} includeBlank="true" />
-//           <div className='mx-2'>/</div>
-//           <Link path={'/admin/ed/'+kind.id} className="plain-link">
-//             <div>{name}</div>
-//           </Link>
-//           <button type='button' className='btn ms-2 btn-sm btn-outline-secondary' onClick={() => destroyKind(kind)}>Destroy</button>
-//         </div>
-//       })}
-//     </div>
-//   </>
-// }
 
 const RecipeKindsIndex = ({recipes, recipeKinds, publicUsers}) => {
 
@@ -826,7 +780,6 @@ export const Admin = () => {
   const translations = useHcuState(gon.translations, {tableName: 'translations'})
   const recipeKinds = useHcuState(gon.recipe_kinds, {tableName: 'recipe_kinds'})
   const recipes = useHcuState(gon.recipes||[], {tableName: 'recipes'})
-  const kinds = useHcuState(gon.kinds, {tableName: 'kinds'})
   const images = useHcuState(gon.images||[], {tableName: 'images'})
   const [user,] = useState(gon.user)
   const [siblings,] = useState(gon.siblings)
@@ -839,13 +792,13 @@ export const Admin = () => {
     {match: "/admin/sql", elem: () => <SQLPage />},
     {match: "/admin/qa", elem: () => <QAPage />},
     {match: "/admin/errors", elem: () => <ErrorsPage {...{errors}} />},
-    {match: "/admin/tree", elem: () => <TreePage {...{kinds, recipeKinds}} />},
+    {match: "/admin/tree", elem: () => <TreePage {...{recipeKinds}} />},
     {match: "/admin/db", elem: () => <DbPage />},
     {match: "/admin/css", elem: () => <CssPage />},
     {match: "/admin/console", elem: () => <Console />},
-    {match: "/admin/ki", elem: () => <RecipeKindsIndex {...{recipeKinds, recipes, publicUsers, locale, kinds}} />},
-    {match: "/admin/di", elem: () => <KindsIndex {...{kinds, recipeKinds, locale}} />},
-    {match: "/admin/ek/:id", elem: ({id}) => <EditRecipeKind {...{id, recipeKinds, images, kinds, locale}} />},
+    {match: "/admin/ki", elem: () => <RecipeKindsIndex {...{recipeKinds, recipes, publicUsers, locale}} />},
+    {match: "/admin/di", elem: () => <KindsIndex {...{recipeKinds, locale}} />},
+    {match: "/admin/ek/:id", elem: ({id}) => <EditRecipeKind {...{id, recipeKinds, images, locale}} />},
     // {match: "/admin/ed/:id", elem: ({id}) => <EditKind {...{id, kinds}} />},
     {match: "/admin/translate_recipe", elem: () => <TranslateRecipePage {...{recipes, locale, translations}} />},
     {match: "/admin", elem: () => <AdminPage {...{stats, publicUsers, errors}} />},

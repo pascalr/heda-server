@@ -104,10 +104,6 @@ const schema = {
   'errors' : {
     is_allowed: user => user.is_admin || user.force,
   },
-  'kinds' : {
-    write_attrs: ['name_fr', 'name_en', 'kind_id'],
-    is_allowed: user => user.is_admin,
-  },
   'accounts' : {
     write_attrs: [],
     is_allowed: user => false,
