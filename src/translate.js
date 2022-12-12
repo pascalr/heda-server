@@ -173,7 +173,7 @@ export function tr(id, locale) {
     Home: 'Acceuil',
     Contact: 'Contact',
     Home_1: "Découvrez de nouvelles recettes et personnalisez-les à votre goût. Partagez avec tout le monde si vous le voulez. Recevez des suggestions de recettes.",
-    Home_2: "Des recettes personnalisées",
+    Home_2: "Recettes personnalisées",
     Home_3: "Suggestions pour vous",
     Home_4: "Arrêtez de vous casser la tête pour savoir quoi cuisiner. Répondez à quelques petites questions pour avoir des suggestions selon vos besoins.",
     Home_8: "Desserts",

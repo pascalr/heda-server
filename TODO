@@ -38,13 +38,14 @@ Pour que ça soit efficace, il faudrait que ça puisse fonctionner avec Intellis
 ******************************************
 ******************************************
 
+Remove tr. Always use translate(locale)(text) => this way I never forget to pass locale!
+
+More professional about page on the home page.
+
 Summarize and clear the analytics data daily.
 Do it for the past data too. Create daily data from previous dates.
 
 Dans le grand menu, au lieu de juste une loupe, j'aimerais qu'il soit écrit Rechercher avec un text field déjà affiché peut-être
-
-Afficher les Kinds comme avant meême si c'est maintenant des RecipeKind
-Inside app too
 
 Whenever I modify kind_id, update the is_abstract if it has one children
 
