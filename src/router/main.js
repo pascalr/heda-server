@@ -170,22 +170,12 @@ router.patch('/update_field/:table/:id', ensureUser, function(req, res, next) {
 
 function extractExplore(locale) {
 
-  // let kinds = fetchTableLocaleAttrs(db, 'kinds', {}, ['kind_id'], ['name'], locale)
   let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug', 'kind_id', 'is_explorable', 'is_abstract'], ['name'], locale)
   let roots = recipeKinds.filter(k => k.is_explorable)
   roots.forEach(root => {
     root.children = shuffle(recipeKinds.filter(k => k.kind_id == root.id && !k.is_abstract)).slice(0,10)
   })
   return {roots}
-  // let recipeKindsByAncestorId = _.groupBy(recipeKinds, (k) => kindAncestorId(kinds, k))
-  // delete recipeKindsByAncestorId.undefined
-  // let kindIds = _.keys(recipeKindsByAncestorId).map(id => parseInt(id))
-  // kindIds.forEach(kindId => {
-  //   // Randomize and limit to 10
-  //   recipeKindsByAncestorId[kindId] = shuffle(recipeKindsByAncestorId[kindId]).slice(0,10)
-  // })
-  // kinds = kinds.filter(k => kindIds.includes(k.id))
-  // return {kinds, recipeKindsByAncestorId}
 }
 
 function extractUser(id) {
@@ -205,23 +195,24 @@ function extractUser(id) {
 function extractRecipeKind(id, locale) {
 
   let kindAncestors = fetchWithAncestors(id, 'kind_id', (id) => (
-    fetchRecordLocaleAttrs(db, 'recipe_kinds', {id}, ['image_slug', 'kind_id'], ['name', 'json'], locale)
+    fetchRecordLocaleAttrs(db, 'recipe_kinds', {id}, ['image_slug', 'kind_id', 'is_abstract'], ['name', 'json'], locale)
   ))
   let recipeKind = kindAncestors.splice(-1)[0]
   if (!recipeKind) {throw 'Unable to extract recipe kind. Not existent.'}
   //let recipes = db.fetchTable('recipes', {is_public: 1, recipe_kind_id: recipeKind.id}, RECIPE_ATTRS)
   // FIXME: SELECT recipes.*
   let recipes = db.prepare("SELECT recipes.*, users.locale, users.name AS user_name FROM recipes JOIN users ON recipes.user_id = users.id WHERE recipes.is_public = 1 AND recipes.recipe_kind_id = ?;").all(recipeKind.id)
-  return {recipeKind, recipes}
+  let children;
+  if (recipeKind.is_abstract) {
+    children = fetchTableLocaleAttrs(db, 'recipe_kinds', {kind_id: id}, ['kind_id', 'image_slug', 'is_abstract'], ['name', 'recipe_count'], locale)
+    children.forEach(k => {
+      if (k.is_abstract) {
+        k.recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {kind_id: k.id}, ['image_slug', 'kind_id', 'is_abstract'], ['name', 'recipe_count'], locale, {limit: 10})
+      }
+    })
+  }
+  return {recipeKind, recipes, kindAncestors, children}
 }
-
-  // let recipeKind = fetchRecordLocaleAttrs(db, 'recipe_kinds', {id}, ['image_slug', 'kind_id'], ['name', 'json'], locale)
-  // if (recipeKind.kind_id) {
-  //   let kindAncestors = fetchWithAncestors(recipeKind.kind_id, 'kind_id', (id) => (
-  //     fetchRecordLocaleAttrs(db, 'kinds', {id}, ['kind_id'], ['name'], locale)
-  //   ))
-  //   return {recipeKind, recipes, kindAncestors}
-  // }
 
 // function extractKind(id, locale) {
 
@@ -237,6 +228,7 @@ function extractRecipeKind(id, locale) {
 //   let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {kind_id: id}, ['image_slug', 'kind_id'], ['name', 'recipe_count'], locale)
 //   return {kind, ancestors, kinds, recipeKinds}
 // }
+
 
 router.get('/fetch_user/:id', (req, res, next) => res.json(extractUser(req.params.id)))
 router.get('/fetch_explore', (req, res, next) => res.json(extractExplore(res.locals.locale)))
@@ -428,12 +420,9 @@ router.get('/r/:id', renderAppIfLoggedIn, function(req, res, next) {
   //  o.recipe_kind = db.fetchTable('recipe_kinds', {id: o.recipe.recipe_kind_id}, attrs)[0]
   //}
   if (o.recipe.recipe_kind_id) {
-    o.recipe_kind = fetchRecordLocaleAttrs(db, 'recipe_kinds', {id: o.recipe.recipe_kind_id}, ['kind_id'], ['name'], res.locals.locale)
-    if (o.recipe_kind.kind_id) {
-      o.kind_ancestors = fetchWithAncestors(o.recipe_kind.kind_id, 'kind_id', (id) => (
-        fetchRecordLocaleAttrs(db, 'kinds', {id}, ['kind_id'], ['name'], res.locals.locale)
-      ))
-    }
+    o.kind_ancestors = fetchWithAncestors(o.recipe.recipe_kind_id, 'kind_id', (id) => (
+      fetchRecordLocaleAttrs(db, 'recipe_kinds', {id}, ['kind_id'], ['name'], req.locale)
+    ))
   }
  
   res.locals.descriptionRecipeIngredients = descriptionRecipeIngredients

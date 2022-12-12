@@ -71,7 +71,6 @@ const QAPage = ({}) => {
   
   let pages = [
     '/k/51',
-    '/d/6',
     '/u/5',
     '/dontExists',
     '/g',

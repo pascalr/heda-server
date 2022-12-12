@@ -8,7 +8,6 @@ import { App } from "./app"
 import { ShowRecipe } from "./show_recipe"
 import { ShowRecipeKind } from "./show_recipe_kind"
 import { ShowUser } from "./show_user"
-import { ShowKind } from "./show_kind"
 import { ShowExplore } from "./show_explore"
 import { getUrlParams } from "../utils"
 import { getLocale } from "./lib"
@@ -34,7 +33,6 @@ let roots = {
   'root-r': <ShowRecipe/>,
   'root-x': <ShowExplore/>,
   'root-k': <ShowRecipeKind/>,
-  'root-d': <ShowKind/>,
   'root-u': <ShowUser/>,
 }
 

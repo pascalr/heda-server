@@ -14,7 +14,6 @@ import {RecipeEditor} from "./recipe_editor"
 import {RecipeViewer, FavoriteButton, AddToListButton, DuplicateButton} from "./recipe_viewer"
 import {RecipeKindViewer} from "./show_recipe_kind"
 import {UserViewer} from "./show_user"
-import {KindViewer} from "./show_kind"
 import {ExploreViewer} from "./show_explore"
 import { initHcu, useHcuState } from '../hcu'
 import { UserThumbnailImage, RecipeThumbnailImage, RecipeMediumImage } from "./image"
@@ -71,13 +70,6 @@ const ExplorePage = ({}) => {
   const roots = useShuffled(data?.roots)
   if (!data || !roots) {return null}
   return <ExploreViewer {...{...data, roots}} />
-}
-
-const ShowKind = ({kindId, locale}) => {
-
-  const data = useCacheOrFetch(urlWithLocale('/fetch_kind/'+kindId, locale))
-  if (!data) {return null}
-  return <KindViewer {...data} />
 }
 
 const ShowUser = ({userId, locale}) => {
@@ -352,9 +344,6 @@ export const App = () => {
     },
     {match: "/u/:id", elem: ({id}) =>
       <ShowUser {...{userId: id, locale}} />
-    },
-    {match: "/d/:id", elem: ({id}) =>
-      <ShowKind {...{kindId: id, locale}} />
     },
     {match: "/t/:id", elem: ({id}) => 
       <EditTag {...{tagId: id, tags}} />

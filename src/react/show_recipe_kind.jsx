@@ -6,6 +6,7 @@ import { t } from "../translate"
 import { IngredientList } from "./recipe_viewer"
 import { DescriptionTiptap, RecipeTiptap } from "./tiptap"
 import { prettyMinutes } from "../lib"
+import { RecipeCarrousel } from './core'
 
 const RecipeAttribute = ({recipe, attr, label}) => {
   if (!recipe[attr]) {return ''}
@@ -75,7 +76,7 @@ export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors, recipeButt
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb" style={{margin: '-0.15em 0 0.5em 0'}}>
             {(kindAncestors||[]).map(kind => {
-              return <li key={kind.id} className="breadcrumb-item"><Link path={'/d/'+kind.id}>{kind.name}</Link></li>
+              return <li key={kind.id} className="breadcrumb-item"><Link path={'/k/'+kind.id}>{kind.name}</Link></li>
             })}
             <li className="breadcrumb-item active" aria-current="page">{recipeKind.name}</li>
           </ol>
@@ -131,14 +132,65 @@ export const RecipeKindViewer = ({recipeKind, recipes, kindAncestors, recipeButt
   </>
 }
 
+export const AbstractKindViewer = ({kind, ancestors, children}) => {
+
+  if (!kind) {return ''}
+
+  let kinds = children.filter(k => k.is_abstract)
+  let recipeKinds = children.filter(k => !k.is_abstract)
+
+  return <>
+    <div className="trunk">
+      {!ancestors?.length ? null :
+        <nav aria-label="breadcrumb">
+          <ol className="breadcrumb" style={{margin: '-0.15em 0 0.5em 0'}}>
+            {ancestors.map(k => {
+              console.log('ancestor', k)
+              return <li key={k.id} className="breadcrumb-item"><Link path={'/k/'+k.id}>{k.name}</Link></li>
+            })}
+            <li className="breadcrumb-item active" aria-current="page">{kind.name}</li>
+          </ol>
+        </nav>
+      }
+      <h1>{kind.name}</h1>
+      {(kinds||[]).map(k => {
+        return <div key={k.id}>
+          <h2><Link path={'/k/'+k.id} className='plain-link'>{k.name}</Link></h2>
+          <RecipeCarrousel items={k.recipeKinds||[]} isRecipeKind={true} />
+        </div>
+      })}
+      {(recipeKinds||[]).map(k => {
+        let count = k.recipe_count || 0
+        return <div key={k.id} className="mb-3">
+          <Link path={"/k/"+k.id} className="plain-link">
+            <div className='d-block d-xsm-flex'>
+              <RecipeSmallImage {...{recipe: k}} />
+              <div style={{width: '1em', marginTop: '-0.5em'}}/>
+              <div>
+                <div className='ff-satisfy fs-2 bold mt-3' style={{lineHeight: 1}}>{k.name}</div>
+                <div className='fs-13'>({count} {count > 1 ? t('recipes') : t('recipe')})</div>
+              </div>
+            </div>
+          </Link>
+        </div>
+      })}
+    </div>
+  </>
+}
+
 export const ShowRecipeKind = () => {
 
   const locale = getLocale()
   const [recipeKind, ] = useState(gon.recipeKind)
   const [recipes, ] = useState(gon.recipes)
   const [kindAncestors, ] = useState(gon.kindAncestors||[])
+  const [children, ] = useState(gon.children||[])
 
   // TODO: Show credit
   //<div><RecipeMediumImage {...{recipe: recipeKind, images, showCredit: true}} /></div>
-  return <RecipeKindViewer {...{recipeKind, recipes, kindAncestors, locale}} />
+  if (recipeKind.is_abstract) {
+    return <AbstractKindViewer {...{kind: recipeKind, ancestors: kindAncestors, children, locale}} />
+  } else {
+    return <RecipeKindViewer {...{recipeKind, recipes, kindAncestors, locale}} />
+  }
 }

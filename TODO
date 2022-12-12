@@ -38,6 +38,11 @@ Pour que ça soit efficace, il faudrait que ça puisse fonctionner avec Intellis
 ******************************************
 ******************************************
 
+Afficher les Kinds comme avant meême si c'est maintenant des RecipeKind
+Inside app too
+
+Whenever I modify kind_id, update the is_abstract if it has one children
+
 Arrivé au bout des suggestions, je n'arrive plus à naviguer les suggestions...
 Il faudrait au moins une manière de voir ce qui a été choisi pour les suggestions.
 Essayer un autre UI pour les suggestions.
