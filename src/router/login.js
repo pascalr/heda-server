@@ -262,11 +262,11 @@ function captchaQuestion(req, t) {
     req.session.captchaAttempts += 1
   }
   console.log('Captcha attempt: ', req.session.captchaAttempts)
-  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug'], ['name'], locale).filter(k => k.image_slug && k.name)
+  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug'], ['name'], req.locale).filter(k => k.image_slug && k.name)
   let choices = shuffle(recipeKinds).slice(0, 9)
   let correctIdx = randomInt(9)
   req.session.captcha = choices[correctIdx].id
-  let question = res.t('Please_select')+': <b>'+choices[correctIdx].name+'</b>?'
+  let question = t('Please_select')+': <b>'+choices[correctIdx].name+'</b>?'
   return {choices, question}
 }
 router.get('/fetch_captcha', function(req, res, next) {

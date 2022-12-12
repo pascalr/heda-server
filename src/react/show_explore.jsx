@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from 'react'
 import { RecipeCarrousel } from "./core"
 import { getLocale, Link } from "./lib"
 import { getUrlParams } from "../utils"
-import { t } from "../translate"
 
 export const ExploreViewer = ({roots}) => {
 

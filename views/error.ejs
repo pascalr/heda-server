@@ -8,9 +8,9 @@
       <br><br><br>
       <img src="/sorry.jpg" style="height: 50vh; margin: auto;">
       <br><br><br>
-      <h1 class="h003"><%- tr('Sorry_error', locale) %></h1>
-      <a href="<%- localeHref(req, '/') %>" class="btn btn-primary"><%- tr('Back', locale) %></a>
-      <a href="<%- localeHref(req, '/contact') %>" class="btn btn-secondary"><%- tr('Contact_us', locale) %></a>
+      <h1 class="h003"><%- t('Sorry_error') %></h1>
+      <a href="<%- localeHref(req, '/') %>" class="btn btn-primary"><%- t('Back') %></a>
+      <a href="<%- localeHref(req, '/contact') %>" class="btn btn-secondary"><%- t('Contact_us') %></a>
     </div>
     <%- include('partials/footer') %>
   </body>

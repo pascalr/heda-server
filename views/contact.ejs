@@ -10,12 +10,12 @@
     <div class="root">
       <div id="root-search"></div>
       <div class="trunk">
-        <h1><%- tr("Contact_us", locale) %></h1>
-        <p><%- tr("Contact_msg", locale) %></p>
+        <h1><%- t("Contact_us") %></h1>
+        <p><%- t("Contact_msg") %></p>
         <img src="/email.png" />
         <button class="btn btn-primary" onclick="navigator.clipboard.writeText('pascal.rainville@gmail.com')">Copier</button>
         <br/><br/>
-        <a href="/" class="btn btn-primary"><%- tr("Back", locale) %></a>
+        <a href="/" class="btn btn-primary"><%- t("Back") %></a>
       </div>
     </div>
     <%- include('partials/footer') %>
