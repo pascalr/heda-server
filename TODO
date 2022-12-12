@@ -18,6 +18,14 @@ Faire une page de vente pour chacune de mes idées!
 
 Paniers à bocaux pour faire l'épicerie au bulk barn.
 
+https://www.thediff.co/p/a-solution-in-search-of-a-problem
+New product lifecycle:
+- It's impossible
+- It's a frivolous toy that only appeals to reach hobbyists or nerds
+- It's a bubble that, while promising, suffers from wildly inflated expectations
+- It becomes nearly ubiquitous
+- The product is a human right and you're a monster if you'd trade better earnings this quarter for depriving someone of it.
+
 ******************************************
 ******************************************
 ******************************************
@@ -29,6 +37,11 @@ Pour que ça soit efficace, il faudrait que ça puisse fonctionner avec Intellis
 ******************************************
 ******************************************
 ******************************************
+
+Arrivé au bout des suggestions, je n'arrive plus à naviguer les suggestions...
+Il faudrait au moins une manière de voir ce qui a été choisi pour les suggestions.
+Essayer un autre UI pour les suggestions.
+Une tab publique pour les suggestions de recettes dans la navbar
 
 Pouvoir slide pour fermer la navbar???
 
@@ -53,8 +66,6 @@ Only allow email validated users to log in?
 
 Typescript la database pour que l'autocomplete puisse me suggérer des noms function. db.create... => ...........
 (Ou bien c'est parce que c'est bizare ce que j'ai fait. Créer une classe?)
-
-Email en français aussi.
 
 Quand je change un truc de sélection de suggestions. Remettre le carrousel au départ
 

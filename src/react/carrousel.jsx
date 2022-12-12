@@ -1,3 +1,4 @@
+import { set } from 'lodash';
 import React, { useState, useEffect, useRef } from 'react'
 import { Swiper, SwiperSlide, useSwiper, useSwiperSlide } from 'swiper/react';
 
@@ -39,6 +40,9 @@ export const Carrousel = ({items, children, preloadItem, maxItems=3}) => {
 
   const [maxPreloaded, setMaxPreloaded] = useState(Math.ceil(nbView))
 
+  useEffect(() => {
+    setIdx(0)
+  }, [items])
   useEffect(() => {
     if (preloadItem) {
       // The index of the next slide out of view
