@@ -30,6 +30,8 @@ Pour que ça soit efficace, il faudrait que ça puisse fonctionner avec Intellis
 ******************************************
 ******************************************
 
+Fix average based on kind. Do it for Chicken burger et Fish burger et Quiche lorraine
+
 Pouvoir créer un recipe kind sous une catégorie. Ex: Cheeseburger sous hamburger
 
 Cheeseburger est un hambuger et non un pain blanc...

@@ -164,12 +164,12 @@ router.post('/update_kinds_count', function(req, res, next) {
 router.post('/average_recipe_kind/:id', function(req, res, next) {
   
   let recipeKind = db.fetchRecord('recipe_kinds', {id: req.params.id}, ['kind_id'])
-  let siblings = db.fetchTable('recipe_kinds', {kind_id: recipeKind.kind_id}, RECIPE_KIND_DATA_ATTRS)
+  let siblings = db.fetchTable('recipe_kinds', {kind_id: recipeKind.kind_id}, schema.recipe_kinds.data.data_attrs)
   siblings = siblings.filter(k => k.id != recipeKind.id)
 
   if (siblings?.length) {
     let data = {}
-    RECIPE_KIND_DATA_ATTRS.forEach(attr => {
+    schema.recipe_kinds.data.data_attrs.forEach(attr => {
       data[attr] = _.mean(siblings.map(k => k[attr]))
     })
     console.log('siblings', siblings)
