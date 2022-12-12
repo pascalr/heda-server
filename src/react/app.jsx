@@ -31,10 +31,10 @@ const HomeTabs = ({user, machines}) => {
       //<HomeTab {...{title: t('Tags'), path: '/c'}} />
   return <>
     <ul className="nav nav-tabs mb-3">
-      <HomeTab {...{title: t('My_recipes'), path: '/'}} />
-      <HomeTab {...{title: t('My_public_page'), path: '/u/'+user.id}} />
+      <HomeTab {...{title: t('Explore'), path: '/'}} />
+      <HomeTab {...{title: t('My_recipes'), path: '/y'}} />
+      <HomeTab {...{title: t('My_page'), path: '/u/'+user.id}} />
       <HomeTab {...{title: t('Users'), path: '/s'}} />
-      <HomeTab {...{title: t('Explore'), path: '/x'}} />
       <HomeTab {...{title: t('Suggestions'), path: '/g'}} />
       {machines.map((machine) => (
         <HomeTab key={'m'+machine.id} {...{title: machine.name, path: '/m/'+machine.id}} />
@@ -341,7 +341,7 @@ export const App = () => {
   const routes = [
     {match: "/s", elem: () => <UsersPage {...{user}} />},
     {match: "/g", elem: () => <SuggestionsPage {...{recipeKinds}} />},
-    {match: "/x", elem: () => <ExplorePage />},
+    {match: "/y", elem: () => <MyRecipes {...{recipes, favoriteRecipes, recipeKinds, user}} />},
     {match: "/c", elem: () => <EditTags {...{tags}} />},
     {match: "/n", elem: () => <NewRecipe {...{recipeKinds}} />},
     {match: "/r/:id", elem: ({id}) =>
@@ -379,7 +379,7 @@ export const App = () => {
     },
   ]
   
-  const defaultElement = (params) => <MyRecipes {...{recipes, favoriteRecipes, recipeKinds, user}} />
+  const defaultElement = (params) => <ExplorePage />
 
   const {elem,idx} = useRouter(routes, defaultElement)
   const _csrf = useCsrf()

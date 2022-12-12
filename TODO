@@ -43,20 +43,13 @@ Inside /confirm_signup => Show a req.flash('info', t('Welcome_message'))
 
 Add unique username constraint... CREATE UNIQUE INDEX your_unique_index ON your_table(column_name);
 
-/favicon.ico
-
 Validate signup client side.
 POST /username_available/
 Username is available in green
 
-Une erreur flash au lieu de celà.
-http://localhost:3000/signup?locale=FR&err=Error_creating
-
 Add message to user that it the user has been validated. They can now log in.
 
-J'ai commenté les users dans schéma parce qu'ils ne sont plus dépendant des accounts maintenant... Pouvoir modifier les valeurs des users.
-
-Only allow email validated users to log in.
+Only allow email validated users to log in?
 
 Typescript la database pour que l'autocomplete puisse me suggérer des noms function. db.create... => ...........
 (Ou bien c'est parce que c'est bizare ce que j'ai fait. Créer une classe?)

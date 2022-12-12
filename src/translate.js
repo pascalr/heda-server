@@ -287,6 +287,7 @@ export function tr(id, locale) {
     Filter: 'Filtrer',
     Features: 'Fonctionnalités', 
     My_public_page: 'Ma page publique',
+    My_page: 'Ma page',
     Invalid_email: 'Veuillez entrer une adresse courriel valide.',
     Invalid_password_length: 'Le mot de passe doit avoir au minimum 6 caractères.',
     Invalid_username_length: "Le nom d'utilisateur doit avoir au minimum 3 caractères.",
