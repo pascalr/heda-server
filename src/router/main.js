@@ -248,7 +248,9 @@ router.get('/fetch_suggestions', function(req, res, next) {
   let answers = req.query.answers.split(',')
   console.log('answers', answers)
   
-  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug', ...schema.recipe_kinds.data.data_attrs], ['name', 'recipe_count'], res.locals.locale)
+  // FIXME: Filter directly with the where, but I currently can't do WHERE NOT is_abstract IN [0, NULL]
+  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['is_abstract', 'image_slug', ...schema.recipe_kinds.data.data_attrs], ['name', 'recipe_count'], res.locals.locale)
+  recipeKinds = recipeKinds.filter(k => !k.is_abstract)
   let suggestions = _.sortBy(recipeKinds, k => {
     let score = Math.random()*0.001
     answers.forEach(answer => {
