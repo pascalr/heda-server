@@ -31,7 +31,7 @@ const SQLiteStore = SQLiteStoreModule(session);
 import router from './router/main.js';
 import loginRouter from './router/login.js';
 import adminRouter from './router/admin.js';
-import { getUrlParams, localeHref, getPathFromUrl, urlWithLocale } from './utils.js';
+import { getUrlParams, getPathFromUrl, urlWithLocale } from './utils.js';
 import { DEFAULT_LOCALE } from './config.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -56,10 +56,6 @@ if (process.env.NODE_ENV == "development") {
 app.set('views', path.join(path.join(__dirname, '..'), 'views'));
 app.set('view engine', 'ejs');
 
-// TODO: Put these functions inside helpers
-app.locals.localeHref = (req, url) => {
-  return localeHref(url, req.originalUrl)
-}
 app.locals.getPathFromUrl = getPathFromUrl
 // FIXME: Should I sanitize the inputs?
 const linkToBegin = (req, href, options={}) => {

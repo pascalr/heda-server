@@ -8,7 +8,7 @@ import { ajax, preloadImage } from "./utils"
 import { t } from "../translate"
 import { Carrousel } from "./carrousel"
 import { initHcu, useHcuState } from '../hcu'
-import { getUrlParams, localeHref } from "../utils"
+import { getUrlParams, urlWithLocale } from "../utils"
 import { Link } from "./lib"
 import { SuggestionsViewer } from "./suggestions"
 import { getLocale } from '../lib'
@@ -54,7 +54,7 @@ export const Home = () => {
         <div style={{width: '2em', height: '2em', flexShrink: '0', order: '2'}}/>
         <div className="smartphone" style={{width: '360px', height: '600px', maxWidth: '80vw', flexShrink: '0', order: '1'}}>
           <div className='content' style={{width: '100%', height: '100%'}}>
-            <iframe src={localeHref("/k/51")} style={{width: '100%', border: 'none', height: '100%'}}/>
+            <iframe src={urlWithLocale("/k/51", locale)} style={{width: '100%', border: 'none', height: '100%'}}/>
           </div>
         </div>
       </div>

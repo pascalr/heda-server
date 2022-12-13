@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 import { db } from '../db.js';
 import { ensureUser } from './login.js';
-import { localeHref, now, shuffle } from '../utils.js';
+import { now, shuffle } from '../utils.js';
 import { tr } from '../translate.js'
 import schema from '../schema.js'
 import { fetchWithAncestors, fetchTableLocaleAttrs, fetchRecordLocaleAttrs, descriptionRecipeIngredients, kindAncestorId } from "../lib.js"

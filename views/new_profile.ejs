@@ -9,7 +9,7 @@
       <% if (typeof error !== 'undefined') { %>
         <div class="error"><%- error %></div>
       <% } %>
-      <form action="<%- localeHref(req, '/create_user') %>" method="post">
+      <form action="<%- uwl('/create_user') %>" method="post">
         <div>
           <label for="name"><%- tr('Name', locale) %></label>
           <input id="name" name="name" class="form-control" type="text" autocomplete="name" required>

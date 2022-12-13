@@ -110,28 +110,6 @@ export const urlWithLocaleFunc = (locale) => (url) => {
   return urlWithLocale(url, locale)
 }
 
-/**
- * Adds the locale to the given url by extracting from the current url if possible.
- * @param {String} href The url to add the locale to
- * @param {String} currentUrl The current url to extract the locale from
- * @return {String} The url with the locale added if possible
- * @deprecated use urlWithLocale or use Link directrly instead
- */
-// DEPRECATED: use urlWithLocale or use Link directrly instead
-export function localeHref(href, currentUrl=null) {
-
-  if (!currentUrl) {currentUrl = window.location.href}
-  let path = getPathFromUrl(href);
-  let locale = getUrlParams(currentUrl).locale
-  let params = locale ? {locale} : {}
-  params = {...params, ...getUrlParams(href)}
-  let url = path
-  if (params && Object.keys(params).length >= 1) {
-    url += '?' + new URLSearchParams(params).toString()
-  }
-  return url
-}
-
 // https://stackoverflow.com/questions/18017869/build-tree-array-from-flat-array-in-javascript
 export function listToTree(list, parentAttr) {
   var idxById = {}, node, roots = [], i;

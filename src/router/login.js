@@ -69,11 +69,6 @@ router.post('/login/password', function(req, res, next) {
     }
     loginUser(user, req, res, next)
   });
-  // passport.authenticate('local', {
-  //   successReturnToOrRedirect: localeHref('/choose_user', req.originalUrl),
-  //   failureRedirect: '/login',
-  //   failureMessage: true
-  // })(req, res, next);
 });
 
 router.post('/logout', function(req, res, next) {

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import toastr from 'toastr'
 
-import { ajax, omit, join, bindSetter, capitalize, changeUrl } from "./utils"
-import { localeHref, shuffle, urlWithDocumentLocale } from "../utils"
+import { ajax, omit, join, changeUrl } from "./utils"
+import { shuffle, urlWithDocumentLocale } from "../utils"
 import { t } from '../translate'
 
 export function useShuffled(list) {

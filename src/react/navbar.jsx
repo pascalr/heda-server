@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react'
 
 import { UserThumbnailImage, RecipeThumbnailImage } from "./image"
-import { ajax, changeUrl } from "./utils"
+import { changeUrl } from "./utils"
 import { t } from "../translate"
-import { localeHref, getPathFromUrl, ArrayCombination, getUrlParams } from "../utils"
+import { ArrayCombination, getUrlParams, urlWithLocale } from "../utils"
 import { useFalseOnce, Link, currentPathIsRoot } from "./lib"
 import { ArrowLeftSquareWhiteIcon, SearchWhiteIcon, PersonFillWhiteIcon, XLgWhiteIcon, ListWhiteIcon } from '../server/image.js'
 import { normalizeSearchText } from "./utils"
+import { ajax } from '../lib'
 
 const RecipeListItem = ({recipe, isSelected, siblings, user, selectedRef, setIsSearching}) => {
   let userName = null
@@ -39,24 +40,21 @@ export const AppNavbar = ({user, _csrf, recipes, friendsRecipes, siblings, recip
   let data = {
     My_recipes: recipes.map(recipe => ({
       ...recipe, list: 'r',
-      //url: localeHref("/k/"+recipeKind.id),
       elem: ({isSelected, item, selectedRef}) => (
         <RecipeListItem key={item.id} {...{recipe: item, isSelected, siblings, user, selectedRef, setIsSearching}}/>
       ),
     })),
     Same_account_recipes: (friendsRecipes||[]).map(recipe => ({
       ...recipe, list: 'r',
-      //url: localeHref("/k/"+recipeKind.id),
       elem: ({isSelected, item, selectedRef}) => (
         <RecipeListItem key={item.id} {...{recipe: item, isSelected, siblings, user, selectedRef, setIsSearching}}/>
       ),
     })),
     Suggestions: recipeKinds.map(recipeKind => ({
       ...recipeKind, list: 'rk',
-      //url: localeHref("/k/"+recipeKind.id),
       elem: ({isSelected, item, selectedRef}) => <>
         <li key={item.id} ref={isSelected ? selectedRef : null}>
-          <Link id={'rk-'+item.id} path={localeHref('/k/'+item.id)} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
+          <Link id={'rk-'+item.id} path={urlWithLocale('/k/'+item.id, locale)} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
             <div className="d-flex align-items-center">
               <RecipeThumbnailImage {...{recipe: item}} />
               <div style={{marginRight: '0.5em'}}></div>
@@ -96,7 +94,7 @@ export const AppNavbar = ({user, _csrf, recipes, friendsRecipes, siblings, recip
           })}
         </>}
         <hr className="dropdown-divider"/>
-        <a href={localeHref("/contact")} className="dropdown-item">{t('Contact_us', locale)}</a>
+        <a href={urlWithLocale("/contact", locale)} className="dropdown-item">{t('Contact_us', locale)}</a>
       </div>
     </div>,
   ]
@@ -113,7 +111,6 @@ function convertSearchData(fetched) {
     Recipes: fetched.recipeKinds.map(recipeKind => ({
       ...recipeKind,
       list: 'rk',
-      //url: localeHref("/k/"+recipeKind.id),
       elem: ({isSelected, item, selectedRef}) => <>
         <li key={item.id} ref={isSelected ? selectedRef : null}>
           <Link id={'rk-'+item.id} path={'/k/'+item.id} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={isSelected ? "selected" : undefined}>
@@ -129,7 +126,6 @@ function convertSearchData(fetched) {
     Public_members: fetched.publicUsers.map(publicUser => ({
       ...publicUser,
       list: 'u',
-      //url: localeHref("/u/"+publicUser.id),
       elem: ({isSelected, item, selectedRef}) => <>
         <li key={item.id} className="list-group-item" ref={isSelected ? selectedRef : null}>
           <Link id={'u-'+item.id} path={`/u/${item.id}`} className={isSelected ? "selected" : undefined}>
@@ -162,7 +158,7 @@ export const PublicNavbar = ({locale}) => {
   let onTermChanged = (term) => {
     if (term.length >= 1 && data === undefined) {
       setData(null)
-      ajax({url: localeHref("/fetch_search_data"), type: 'GET', success: (fetched) => {
+      ajax({url: urlWithLocale("/fetch_search_data", locale), type: 'GET', success: (fetched) => {
         setData(convertSearchData(fetched))
       }, error: (errors) => {
         console.error('Fetch search results error...', errors.responseText)

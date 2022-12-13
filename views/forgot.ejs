@@ -5,7 +5,7 @@
   </head>
   <body>
     <div class="form-container">
-      <h2><a href="<%- localeHref(req, '/') %>" style="text-decoration: none;">HedaCuisine (<%- t('beta') %>)</a></h2>
+      <h2><a href="<%- uwl('/') %>" style="text-decoration: none;">HedaCuisine (<%- t('beta') %>)</a></h2>
       <h1><%- t('Forgot_password') %></h1>
       <%- include('partials/flash') %>
       <form action="/forgot" method="post">
@@ -16,7 +16,7 @@
         <br/>
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <button type="submit" class="btn btn-primary">Send email</button>
-        <a href="<%- localeHref(req, '/login') %>" class="btn btn-secondary"><%- t('Back') %></a>
+        <a href="<%- uwl('/login') %>" class="btn btn-secondary"><%- t('Back') %></a>
       </form>
     </div>
   </body>
