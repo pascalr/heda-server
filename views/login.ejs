@@ -5,10 +5,10 @@
   </head>
   <body>
     <div class="form-container">
-      <h2><a href="<%- localeHref(req, '/') %>" style="text-decoration: none;">HedaCuisine (<%- t('beta') %>)</a></h2>
+      <h2><a href="<%- uwl('/') %>" style="text-decoration: none;">HedaCuisine (<%- t('beta') %>)</a></h2>
       <h1><%- t('Sign_in') %></h1>
       <%- include('partials/flash') %>
-      <form action="<%- localeHref(req, '/login/password') %>" method="post">
+      <form action="<%- uwl('/login/password') %>" method="post">
         <div>
           <label for="username"><%- t('Username_or_Email') %></label><br/>
           <input id="username" name="username" class="form-control" type="text" autocomplete="username" required autofocus>
@@ -25,9 +25,9 @@
       <hr>
       <p class="help">
         <%- t('Help_signup') %>
-        <%- linkTo(req, t('Sign_up'), "/signup") %>
+        <a href=<%- uwl('/signup') %>><%- t('Sign_up') %></a>
         <br/>
-        <%- linkTo(req, t('Forgot_password')+'?', "/forgot") %>
+        <a href=<%- uwl('/forgot') %>><%- t('Forgot_password') %></a>
       </p>
     </div>
   </body>

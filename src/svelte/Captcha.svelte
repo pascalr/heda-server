@@ -27,7 +27,7 @@
 <script>
   import { getLocale, ajax } from "../lib";
   import { translate } from "../translate";
-  import { localeHref } from "../utils";
+  import { urlWithLocaleFunc } from "../utils";
 
   let choices = [];
   let question = '';
@@ -37,6 +37,8 @@
   let captchaValidated = gon.captchaAlreadyValidated || false;
   let captchaError = ''
   let serverError = false
+  let locale = getLocale()
+  let uwl = urlWithLocaleFunc(locale)
 
   function showCaptcha() {
     captchaShowned = true
@@ -56,7 +58,7 @@
   async function validateCaptcha() {
     
     if (selected) {
-      ajax({url: localeHref('/validate_captcha'), method: 'POST', data: {captcha: selected.id}, success: (res) => {
+      ajax({url: uwl('/validate_captcha'), method: 'POST', data: {captcha: selected.id}, success: (res) => {
         handleResponse(res, t('Wrong_answer'))
       }})
     }
@@ -76,7 +78,7 @@
 
   async function fetchCaptcha() {
     deselect()
-    const res = await fetch(localeHref(`/fetch_captcha`));
+    const res = await fetch(uwl(`/fetch_captcha`));
     const json = await res.json();
     handleResponse(json)
   }
@@ -92,7 +94,7 @@
     }
   }
 
-  let t = translate(getLocale())
+  let t = translate(locale)
 </script>
 
 <style>

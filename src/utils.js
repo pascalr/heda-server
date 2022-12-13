@@ -1,3 +1,6 @@
+import { DEFAULT_LOCALE } from "./config.js";
+import { getLocale } from "./lib.js";
+
 /**
 * Convert the integer given to a string at least two characters long.
 * Source: https://stackoverflow.com/questions/5914020/javascript-date-to-string
@@ -81,20 +84,30 @@ export function shuffle(array) {
 
 /**
  * Adds the locale to the given url.
- * @param {String} href The url to add the locale to
+ * @param {String} url The url to add the locale to
  * @param {String} locale The locale
  * @return {String} The url with the locale added if possible
  */
-export function urlWithLocale(href, locale) {
+export function urlWithLocale(url, locale) {
 
-  let path = getPathFromUrl(href);
-  let params = locale ? {locale} : {}
-  params = {...params, ...getUrlParams(href)}
-  let url = path
+  if (locale == DEFAULT_LOCALE) {return url}
+
+  let path = getPathFromUrl(url);
+  let params = locale ? {l: locale} : {}
+  params = {...params, ...getUrlParams(url)}
+  let modified = path
   if (params && Object.keys(params).length >= 1) {
-    url += '?' + new URLSearchParams(params).toString()
+    modified += '?' + new URLSearchParams(params).toString()
   }
-  return url
+  return modified
+}
+
+export function urlWithDocumentLocale(url) {
+  return urlWithLocale(url, getLocale())
+}
+
+export const urlWithLocaleFunc = (locale) => (url) => {
+  return urlWithLocale(url, locale)
 }
 
 /**
@@ -210,6 +223,15 @@ export function isValidEmail(email) {
 export function ensureIsArray(obj) {
   if (obj === null) {return []}
   return Array.isArray(obj) ? obj : [obj]
+}
+
+export function sanitizeNoHtml(str) {
+  str.replace(/[<>\/]/g, '')
+}
+
+// FIXME: Does not work for not latin letters. Does not work for emojis.
+export function sanitizeOnlyText(str) {
+  str.replace(/[^a-zA-Z0-9ÁÉÍÓÚáéíóúâêîôûàèìòùÇç,.?!#$@%&]/g, '')
 }
 
 /**

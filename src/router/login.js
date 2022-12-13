@@ -6,7 +6,7 @@ import sendgrid from '@sendgrid/mail';
 import _ from 'lodash'
 
 // import passport from '../passport.js';
-import { normalizeSearchText, localeHref, now, shuffle, isValidEmail } from '../utils.js';
+import { normalizeSearchText, now, shuffle, isValidEmail, sanitizeOnlyText } from '../utils.js';
 import { db } from '../db.js';
 import { validateEmail, validateUnique, validatePassword, validateUsername, fetchTableLocaleAttrs } from '../lib.js'
 
@@ -79,7 +79,7 @@ router.post('/login/password', function(req, res, next) {
 router.post('/logout', function(req, res, next) {
   req.logout(function(err) {
     if (err) { return next(err); }
-    res.redirect(localeHref('/', req.originalUrl));
+    res.redirect(res.uwl('/'));
   });
 });
 
@@ -193,7 +193,7 @@ router.post('/forgot', redirectHomeIfLoggedIn, function (req, res, next) {
     html: '<p>'+res.t('Reset_password_message')+'.</p><p><a href="' + link + '">'+res.t('Reset')+'</a></p>',
   };
   sendgrid.send(msg);
-  res.redirect(localeHref('/waiting_reset', req.originalUrl))
+  res.redirect(res.uwl('/waiting_reset'))
 
 });
 
@@ -291,6 +291,28 @@ router.get('/signup', function(req, res, next) {
   res.render('signup', {gon});
 });
 
+
+router.get('/contact', function(req, res, next) {
+  return res.render('contact');
+})
+router.post('/contact', function(req, res, next) {
+  let {email, name, message} = req.body
+  let title = 'Message de '+sanitizeOnlyText(name)
+  let content = sanitizeOnlyText(message)
+  var msg = {
+    to: 'admin@hedacuisine.com',
+    from: 'admin@hedacuisine.com',
+    subject: title,
+    text: title+'\r\n\r\n'+content,
+    html: '<h3>'+title+'</h3><p>'+content+'.</p>',
+  };
+  sendgrid.send(msg);
+  res.redirect(res.uwl('/contact_confirm'))
+})
+router.get('/contact_confirm', function(req, res, next) {
+  return res.render('contact_confirm');
+})
+
 /**
  * Create a user with the given email. Store salt and encrypted password. Store token for email validation.
  * 
@@ -305,7 +327,7 @@ router.post('/signup', function(req, res, next) {
 
   if (!req.session.captchaValidatedAt || (Date.now() - req.session.captchaValidatedAt >= 5*60*1000)) {
     req.flash('error', res.t('Invalid_captcha'))
-    return res.redirect(localeHref('/signup', req.originalUrl));
+    return res.redirect(res.uwl('/signup'));
   }
 
   let errors = [
@@ -335,18 +357,18 @@ router.post('/signup', function(req, res, next) {
           html: '<h3>'+t('Hello')+'!</h3><p>'+res.t('Sign_in_email')+'.</p><p><a href="' + link + '">'+res.t('Sign_in')+'</a></p>',
         };
         sendgrid.send(msg);
-        res.redirect(localeHref('/waiting_confirm', req.originalUrl))
+        res.redirect(res.uwl('/waiting_confirm'))
       } catch (err) {
         console.log('CREATE USER ERROR:', err)
         if (err.code && err.code === "SQLITE_CONSTRAINT_UNIQUE") { // SqliteError
           req.flash('error', res.t('Account_already_associated'))
-          res.redirect(localeHref('/signup', req.originalUrl));
+          res.redirect(res.uwl('/signup'));
         }
       }
     })
   } else {
     req.flash('error', errors.map(e => res.t(e)).join('. '))
-    res.redirect(localeHref('/signup', req.originalUrl));
+    res.redirect(res.uwl('/signup'));
   }
 });
 

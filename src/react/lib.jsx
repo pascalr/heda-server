@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import toastr from 'toastr'
 
 import { ajax, omit, join, bindSetter, capitalize, changeUrl } from "./utils"
-import { localeHref, shuffle } from "../utils"
+import { localeHref, shuffle, urlWithDocumentLocale } from "../utils"
 import { t } from '../translate'
 
 export function useShuffled(list) {
@@ -111,7 +111,7 @@ export const Link = ({href, className, children, active, checkIfActive, path, on
     }
   }
   active = active || (checkIfActive && currentPathIs(path))
-  path = (window.preventLinksDefaultEvent) ? path : localeHref(path)
+  path = (window.preventLinksDefaultEvent) ? path : urlWithDocumentLocale(path)
   return <a className={join(className, active ? 'active' : null)} href={path} onClick={handleClick} {...props}>{children}</a>
 }
 

@@ -31,7 +31,8 @@ const SQLiteStore = SQLiteStoreModule(session);
 import router from './router/main.js';
 import loginRouter from './router/login.js';
 import adminRouter from './router/admin.js';
-import { getUrlParams, localeHref, getPathFromUrl } from './utils.js';
+import { getUrlParams, localeHref, getPathFromUrl, urlWithLocale } from './utils.js';
+import { DEFAULT_LOCALE } from './config.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -134,7 +135,8 @@ app.use(function(req, res, next) {
   res.locals.href = req.url;
   req.user = req.session.user
   if (req.locale) {throw "Internal coding error. Can't overwrite req.locale"}
-  req.locale = (req.user?.locale || req.query.locale || 'en').toLowerCase();
+  req.locale = (req.user?.locale || req.query.l || req.query.locale || DEFAULT_LOCALE).toLowerCase();
+  console.log('locale', req.locale)
   res.locals.locale = req.locale;
   res.locals.t = translate(req.locale)
   res.t = translate(req.locale)
@@ -146,6 +148,13 @@ app.use(function(req, res, next) {
   } else {
     res.locals.gon = {}
   }
+  res.locals.urlWithLocale = (url) => {
+    return urlWithLocale(url, req.locale)
+  }
+  res.uwl = (url) => {
+    return urlWithLocale(url, req.locale)
+  }
+  res.locals.uwl = res.uwl
   next();
 });
 

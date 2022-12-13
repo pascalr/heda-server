@@ -38,6 +38,8 @@ Pour que ça soit efficace, il faudrait que ça puisse fonctionner avec Intellis
 ******************************************
 ******************************************
 
+Remove localeHref, does not work anymore with ?l=fr
+
 Au lieu de is_fast, is_gourmand, ...
 let recipeKindsDataAttrs = ['is_meal', 'is_appetizer', 'is_dessert', 'is_simple', 'is_normal', 'is_gourmet', 'is_other', 'is_very_fast', 'is_fast', 'is_small_qty', 'is_big_qty', 'is_medium_qty']
 Un input field AVEC: ____________________
@@ -53,6 +55,8 @@ Il y a des tokens primitif qui sont liés directement à la database.
 Et il y a des tokens composés qui sont liés à d'autres tokens, des synonymes un peu
 
 Pouvoir filtrer les recipes kinds végés et véganes. Avec ou sans ingrédients.
+
+?l=fr au lieu de ?locale=fr
 
 M'envoyer un couriel à admin@hedacuisine.com tous les jours avec les analytics.
 

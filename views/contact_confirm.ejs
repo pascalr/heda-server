@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="<%- locale %>">
+  <head>
+    <%- include('partials/login_head') %>
+  </head>
+  <body>
+    <div class="form-container">
+      <h2><a href="<%- localeHref(req, '/') %>" style="text-decoration: none;">HedaCuisine (<%- t('beta') %>)</a></h2>
+      <p><%= t('Contact_confirm') %>.</p>
+      <p><a class="btn btn-primary" href=<%- urlWithLocale('/') %>><%- t('Back') %></a></p>
+    </div>
+  </body>
+</html>

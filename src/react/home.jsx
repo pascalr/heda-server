@@ -9,8 +9,9 @@ import { t } from "../translate"
 import { Carrousel } from "./carrousel"
 import { initHcu, useHcuState } from '../hcu'
 import { getUrlParams, localeHref } from "../utils"
-import { getLocale, Link } from "./lib"
+import { Link } from "./lib"
 import { SuggestionsViewer } from "./suggestions"
+import { getLocale } from '../lib'
 
 export const Home = () => {
 

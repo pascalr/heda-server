@@ -9,8 +9,7 @@ import { ShowRecipe } from "./show_recipe"
 import { ShowRecipeKind } from "./show_recipe_kind"
 import { ShowUser } from "./show_user"
 import { ShowExplore } from "./show_explore"
-import { getUrlParams } from "../utils"
-import { getLocale } from "./lib"
+import { getLocale } from "../lib"
 import { ErrorBoundary } from './error_boundary'
 import { SuggestionsPage } from './suggestions'
 
@@ -26,7 +25,7 @@ export const AppSearchRoot = () => {
 // It works, but I have to remove this listener because it does not get this event anymore.
 //document.addEventListener('DOMContentLoaded', () => {
 
-window.locale = getUrlParams(window.location.href).locale
+window.locale = getLocale()
 
 let roots = {
   'root-search': <></>,

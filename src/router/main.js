@@ -448,10 +448,6 @@ router.get('/error', function(req, res, next) {
   return res.render('error');
 })
 
-router.get('/contact', function(req, res, next) {
-  return res.render('contact');
-})
-
 const renderHome = function(req, res, next) {
 
   // Whether or not to show an HTML cached version while the JS is loading.

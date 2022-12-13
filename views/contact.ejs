@@ -1,25 +1,33 @@
 <!doctype html>
 <html lang="<%- locale %>">
   <head>
-    <%- include('partials/head') %>
-    <link rel="stylesheet" href="/build/prose_mirror.css">
-    <link rel="stylesheet" href="/build/imports.css">
-    <link rel="stylesheet" href="/build/toastr.min.css">
+    <%- include('partials/login_head') %>
   </head>
   <body>
-    <div class="root">
-      <div id="root-search"></div>
-      <div class="trunk">
-        <h1><%- t("Contact_us") %></h1>
-        <p><%- t("Contact_msg") %></p>
-        <img src="/email.png" />
-        <button class="btn btn-primary" onclick="navigator.clipboard.writeText('pascal.rainville@gmail.com')">Copier</button>
-        <br/><br/>
-        <a href="/" class="btn btn-primary"><%- t("Back") %></a>
-      </div>
+    <div class="form-container">
+      <h2><a href="<%- urlWithLocale('/') %>" style="text-decoration: none;">HedaCuisine (<%- t('beta') %>)</a></h2>
+      <h1><%- t('Contact_us') %></h1>
+      <%- include('partials/flash') %>
+      <form action="<%- urlWithLocale('/contact') %>" method="post">
+        <div>
+          <label for="name"><%- t('Name') %></label><br/>
+          <input id="name" name="name" class="form-control" type="text" required>
+        </div>
+        <br/>
+        <div>
+          <label for="email"><%- t('Email') %></label><br/>
+          <input id="email" name="email" class="form-control" type="text" autocomplete="email" required>
+        </div>
+        <br/>
+        <div>
+          <label for="message"><%- t('Message') %></label><br/>
+          <textarea id="message" name="message" class="form-control" type="text" required></textarea>
+        </div>
+        <br/>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <button class="btn btn-primary" type="submit"><%- t('Send') %></button>
+        <a href=<%- urlWithLocale("/") %> class="btn btn-secondary"><%- t('Back') %></a>
+      </form>
     </div>
-    <%- include('partials/footer') %>
   </body>
 </html>
-
-<%- loadScript("/build/bundle") %>
