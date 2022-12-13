@@ -256,7 +256,7 @@ function captchaQuestion(req, t) {
       }
     } else {
       req.session.captchaBanDate = Date.now()
-      return {error: t('Maximum_limit_reached')+'. '+r('Please_try_again_later')}
+      return {error: t('Maximum_limit_reached')+'. '+t('Please_try_again_later')}
     }
   } else {
     req.session.captchaAttempts += 1

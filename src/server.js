@@ -17,7 +17,7 @@ import fileUpload from 'express-fileupload';
 import _ from 'lodash';
 import flash from 'connect-flash';
 
-import { tr, translate } from './translate.js'
+import { translate } from './translate.js'
 import { enableLiveReload } from './livereload.js'
 import { SearchWhiteIcon, PersonFillWhiteIcon } from './build/image.js'
 import { buildSvelte } from './build_svelte.js'
@@ -84,7 +84,6 @@ app.locals.linkTo = (req, label, href, options={}) => {
   return linkToBegin(req, href, options)+label+'</a>'
 }
 app.locals.linkToEnd = () => ('</a>')
-app.locals.tr = tr;
 app.locals.loadScript = (path) => {
 // I thought that esbuild would compile with .min.js as an extension, but apparently not...
 //  if (process.env.NODE_ENV === 'production') {

@@ -38,7 +38,36 @@ Pour que ça soit efficace, il faudrait que ça puisse fonctionner avec Intellis
 ******************************************
 ******************************************
 
-Remove tr. Always use translate(locale)(text) => this way I never forget to pass locale!
+Au lieu de is_fast, is_gourmand, ...
+let recipeKindsDataAttrs = ['is_meal', 'is_appetizer', 'is_dessert', 'is_simple', 'is_normal', 'is_gourmet', 'is_other', 'is_very_fast', 'is_fast', 'is_small_qty', 'is_big_qty', 'is_medium_qty']
+Un input field AVEC: ____________________
+Un input field SANS: _____________________
+Et là simplement détecter les tokens et les matcher aux recettes.
+OK: meal, appetizer, dessert, simple, gourmet, very fast, fast, 
+NOT SO OK: id_normal, is_other, is_small_qty, is_big_qty, is_medium_qty
+Un repas végane pour toute la semaine => 
+OK: repas, végane, toute la semaine => ????? synonyme de big quantity
+Il y a des liens entre des tokens et des recettes.
+Mais il y a aussi des liens entre des tokens entres eux.
+Il y a des tokens primitif qui sont liés directement à la database.
+Et il y a des tokens composés qui sont liés à d'autres tokens, des synonymes un peu
+
+Pouvoir filtrer les recipes kinds végés et véganes. Avec ou sans ingrédients.
+
+M'envoyer un couriel à admin@hedacuisine.com tous les jours avec les analytics.
+
+Plus de test avant de faire fly deploy. La moindre des choses serait de regarder certains URL et s'assurer qu'il n'y a pas d'erreur (400 et +) et qu'il n'y a pas d'erreur en javascript non plus.
+J'aimerais être rassuré que mon site fonctionne...
+
+Contact page
+Remplacé mon addresse courrielle et mettre admin@hedacuisine.com. Rediriger les courriels vers mon addresse personel?
+Contact form
+Garder les messages dans la base de données et me notifier d'un courriel quand je reçois une message contact?
+Ou bien simplement attendre à mon courriel quotidient de voir si j'ai des notifications.
+
+Pouvoir faire des notes un peu comme avant. Dans Hamburger aux haricots noirs et riz j'aimerais bien mettre une note en base pour comment faire caraméliser des oignons. Idéalement aussi des suggestions de notes.
+
+Inside /confirm_signup => Show a req.flash('info', t('Welcome_message'))
 
 More professional about page on the home page.
 
@@ -58,13 +87,6 @@ Pouvoir slide pour fermer la navbar???
 
 Refactor all using hcu to do like the export I did. window.hcu no more...
 
-Remove refences of Kinds
-
-Peut-être utiliser le data de ce site un jour (la partie non copyrightable, par exemple les ingrédients pourrait être très utile):
-https://www.kaggle.com/datasets/paultimothymooney/recipenlg
-
-Inside /confirm_signup => Show a req.flash('info', t('Welcome_message'))
-
 Add unique username constraint... CREATE UNIQUE INDEX your_unique_index ON your_table(column_name);
 
 Validate signup client side.
@@ -72,23 +94,12 @@ POST /username_available/
 Username is available in green
 
 Add message to user that it the user has been validated. They can now log in.
-
 Only allow email validated users to log in?
 
 Typescript la database pour que l'autocomplete puisse me suggérer des noms function. db.create... => ...........
 (Ou bien c'est parce que c'est bizare ce que j'ai fait. Créer une classe?)
 
-Quand je change un truc de sélection de suggestions. Remettre le carrousel au départ
-
-Remplacé mon addresse courrielle et mettre admin@hedacuisine.com. Rediriger les courriels vers mon addresse personel?
-
-Contact form
-
-Ajouter des recettes gourmets.
-
 <noscript><div className='warning'>Afficher une message d'avertissement.</div></noscript>
-
-Pouvoir faire des notes un peu comme avant. Dans Hamburger aux haricots noirs et riz j'aimerais bien mettre une note en base pour comment faire caraméliser des oignons. Idéalement aussi des suggestions de notes.
 
 Faire une animation pour le hamburger menu? https://alvarotrigo.com/blog/hamburger-menu-css/
 
@@ -281,3 +292,8 @@ I can translate by myself using Moses? http://www2.statmt.org/moses/
 
 Prendre des recettes de là?
 https://recipes.fandom.com/wiki/Baked_Buffalo_Wings
+
+
+
+Peut-être utiliser le data de ce site un jour (la partie non copyrightable, par exemple les ingrédients pourrait être très utile):
+https://www.kaggle.com/datasets/paultimothymooney/recipenlg
