@@ -38,7 +38,7 @@ Pour que ça soit efficace, il faudrait que ça puisse fonctionner avec Intellis
 ******************************************
 ******************************************
 
-Remove localeHref, does not work anymore with ?l=fr
+ZOHO SPF et DKIM
 
 Au lieu de is_fast, is_gourmand, ...
 let recipeKindsDataAttrs = ['is_meal', 'is_appetizer', 'is_dessert', 'is_simple', 'is_normal', 'is_gourmet', 'is_other', 'is_very_fast', 'is_fast', 'is_small_qty', 'is_big_qty', 'is_medium_qty']
@@ -56,18 +56,10 @@ Et il y a des tokens composés qui sont liés à d'autres tokens, des synonymes 
 
 Pouvoir filtrer les recipes kinds végés et véganes. Avec ou sans ingrédients.
 
-?l=fr au lieu de ?locale=fr
-
 M'envoyer un couriel à admin@hedacuisine.com tous les jours avec les analytics.
 
 Plus de test avant de faire fly deploy. La moindre des choses serait de regarder certains URL et s'assurer qu'il n'y a pas d'erreur (400 et +) et qu'il n'y a pas d'erreur en javascript non plus.
 J'aimerais être rassuré que mon site fonctionne...
-
-Contact page
-Remplacé mon addresse courrielle et mettre admin@hedacuisine.com. Rediriger les courriels vers mon addresse personel?
-Contact form
-Garder les messages dans la base de données et me notifier d'un courriel quand je reçois une message contact?
-Ou bien simplement attendre à mon courriel quotidient de voir si j'ai des notifications.
 
 Pouvoir faire des notes un peu comme avant. Dans Hamburger aux haricots noirs et riz j'aimerais bien mettre une note en base pour comment faire caraméliser des oignons. Idéalement aussi des suggestions de notes.
 

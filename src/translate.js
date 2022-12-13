@@ -74,10 +74,10 @@ export function tr(id, locale) {
     Invalid_username_is_email: "Invalid username. Username can't be an email",
     Invalid_login: "Incorrect username, email or password",
     Internal_error: "Internal error. Please try again later",
-    Contact_confirm: 'Thank you for reaching to us. We have received your message. We will answer as soon as possible.',
+    Contact_confirm: 'Thank you for reaching to us. We have received your message. We will answer as soon as possible',
   }
   let fr = {
-    Contact_confirm: 'Merci de nous avoir contacté. Nous avons bien reçu votre message. Nous y répondrons dans le plus bref délais.',
+    Contact_confirm: 'Merci de nous avoir contacté. Nous avons bien reçu votre message. Nous y répondrons dans les plus bref délais',
     Send: 'Envoyer',
     Invalid_email_address_or_username: "Mauvais nom d'utilisateur ou d'adresse courriel",
     Internal_error: "Erreur du serveur. Veuillez réessayer plus tard",

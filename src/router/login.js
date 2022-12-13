@@ -294,12 +294,13 @@ router.post('/contact', function(req, res, next) {
   let {email, name, message} = req.body
   let title = 'Message de '+sanitizeOnlyText(name)
   let content = sanitizeOnlyText(message)
+  let address = sanitizeOnlyText(email)
   var msg = {
     to: 'admin@hedacuisine.com',
     from: 'admin@hedacuisine.com',
     subject: title,
-    text: title+'\r\n\r\n'+content,
-    html: '<h3>'+title+'</h3><p>'+content+'.</p>',
+    text: title+'\r\n\r\n'+content+'\r\n\r\nDe: '+address,
+    html: '<h3>'+title+'</h3><p>'+content+'.</p><p>De: '+address+'.</p>',
   };
   sendgrid.send(msg);
   res.redirect(res.uwl('/contact_confirm'))

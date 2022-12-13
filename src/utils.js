@@ -209,7 +209,7 @@ export function sanitizeNoHtml(str) {
 
 // FIXME: Does not work for not latin letters. Does not work for emojis.
 export function sanitizeOnlyText(str) {
-  str.replace(/[^a-zA-Z0-9ÁÉÍÓÚáéíóúâêîôûàèìòùÇç,.?!#$@%&]/g, '')
+  return str.replace(/[^a-z A-Z0-9ÁÉÍÓÚáéíóúâêîôûàèìòùÇç,.?!#$@%&]/g, '')
 }
 
 /**
