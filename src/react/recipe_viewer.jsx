@@ -138,7 +138,7 @@ export const RecipeViewer = ({recipeId, favoriteRecipes, user, siblings, recipes
 
   let userName = recipe.user_name
   if (!userName) {
-    const recipeUser = siblings.find(u => u.id == recipe.user_id)
+    const recipeUser = [...siblings, (user||{})].find(u => u.id == recipe.user_id)
     userName = recipeUser ? recipeUser.name : `user${recipe.user_id}`
   }
 
