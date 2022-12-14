@@ -1,25 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react'
-import ReactDOM from 'react-dom'
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-//import { createRoot } from 'react-dom/client';
 
-import { useCacheOrFetch, useCacheOrFetchHTML, useWindowWidth, Link, useShuffled, useCsrf } from "./lib"
+import { useCacheOrFetch, useWindowWidth, Link, useShuffled, useCsrf } from "./lib"
 import { findRecipeKindForRecipeName } from "../lib"
-import { RecipeList, RecipeIndex } from './recipe_index'
-import { changeUrl, ajax, normalizeSearchText, join, bindSetter, capitalize, isTrue } from "./utils"
-import { urlWithLocale, getUrlParams, sortBy, sortByDate } from "../utils"
+import { RecipeIndex } from './recipe_index'
+import { changeUrl, ajax, capitalize } from "./utils"
+import { urlWithLocale, sortBy } from "../utils"
 import { image_path } from './routes'
-import {TextField, CollectionSelect, ImageField, ImageSelector} from './form'
 import {RecipeEditor} from "./recipe_editor"
 import {RecipeViewer, FavoriteButton, AddToListButton, DuplicateButton} from "./recipe_viewer"
 import {KindViewer} from "./show_recipe_kind"
 import {UserViewer} from "./show_user"
 import {ExploreViewer} from "./show_explore"
 import { initHcu, useHcuState } from '../hcu'
-import { UserThumbnailImage, RecipeThumbnailImage, RecipeMediumImage } from "./image"
+import { UserThumbnailImage } from "./image"
 import { t } from "../translate"
 import {EditMix, ShowMix} from './recipe_editor'
-import { AppNavbar, useHiddenNavParam } from './navbar'
+import { AppNavbar } from './navbar'
 import { useRouter } from "./router"
 import { SuggestionsViewer } from "./suggestions"
 import { RecipeCarrousel, HomeTab } from './core'
@@ -385,16 +381,6 @@ export const App = () => {
     </div>
   </>)
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-
-  const root = document.getElementById('root')
-  if (root) {ReactDOM.render(<App/>, root)}
-  //const root = createRoot(document.getElementById("root"));
-  //root.render(<App/>);
-})
-
-
 
 //const SuggestionsNav = ({page, tagSuggestions, categorySuggestions}) => {
 //  return (<>
