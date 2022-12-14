@@ -16,6 +16,7 @@ const debug = debugModule('todos:server');
 import fileUpload from 'express-fileupload';
 import _ from 'lodash';
 import flash from 'connect-flash';
+import Scheduler from './scheduler.js';
 
 import { translate } from './translate.js'
 import { enableLiveReload } from './livereload.js'
@@ -37,7 +38,8 @@ import { DEFAULT_LOCALE } from './config.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
- buildSvelte()
+
+buildSvelte()
 
 // Backup database every day
 //setInterval(() => {
@@ -187,6 +189,19 @@ app.use(function(err, req, res, next) {
     res.redirect('/error');
   }
 });
+
+function sendAnalyticsEmail() {
+  console.log('Sending analytics email!')
+}
+
+let config = {
+  dailyTasks: [
+    {title: 'Send analytics email', time: '12:04', execute: sendAnalyticsEmail}
+  ]
+};
+
+const scheduler = new Scheduler(config)
+scheduler.start()
 
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);

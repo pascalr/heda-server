@@ -38,10 +38,6 @@ Pour que ça soit efficace, il faudrait que ça puisse fonctionner avec Intellis
 ******************************************
 ******************************************
 
-POURQUOI EST-CE QUE JE N'AVAIS PAS ACCÈS À LA RECETTE DE QUICHE AU ÉPINARDS AU PUBlIC???
-
-Dans admin le search était un peu fucked up on dirait.
-
 ZOHO SPF et DKIM
 
 Au lieu de is_fast, is_gourmand, ...
@@ -68,6 +64,7 @@ Quand il y a une description du kind, l'afficher dans la vue kind leaf. Par exem
 pour chaque de soupe afficher la description du kind si elle existe.
 
 M'envoyer un couriel à admin@hedacuisine.com tous les jours avec les analytics.
+Mettre dans le courriel aussi les erreurs survenus.
 
 Plus de test avant de faire fly deploy. La moindre des choses serait de regarder certains URL et s'assurer qu'il n'y a pas d'erreur (400 et +) et qu'il n'y a pas d'erreur en javascript non plus.
 J'aimerais être rassuré que mon site fonctionne...
