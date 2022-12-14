@@ -8,6 +8,7 @@ import { useFalseOnce, Link, currentPathIsRoot } from "./lib"
 import { ArrowLeftSquareWhiteIcon, SearchWhiteIcon, PersonFillWhiteIcon, XLgWhiteIcon, ListWhiteIcon } from '../server/image.js'
 import { normalizeSearchText } from "./utils"
 import { ajax } from '../lib'
+import { DEFAULT_LOCALE } from '../config'
 
 const RecipeListItem = ({recipe, isSelected, siblings, user, selectedRef, setIsSearching}) => {
   let userName = null
@@ -35,7 +36,6 @@ export const AppNavbar = ({user, _csrf, recipes, friendsRecipes, siblings, recip
   //if (useHiddenNavParam()) {return ''}
 
   let locale = user.locale
-  let renderingHome = currentPathIsRoot()
 
   let data = {
     My_recipes: recipes.map(recipe => ({
@@ -50,7 +50,7 @@ export const AppNavbar = ({user, _csrf, recipes, friendsRecipes, siblings, recip
         <RecipeListItem key={item.id} {...{recipe: item, isSelected, siblings, user, selectedRef, setIsSearching}}/>
       ),
     })),
-    Suggestions: recipeKinds.map(recipeKind => ({
+    Recipe_kinds: recipeKinds.map(recipeKind => ({
       ...recipeKind, list: 'rk',
       elem: ({isSelected, item, selectedRef}) => <>
         <li key={item.id} ref={isSelected ? selectedRef : null}>
@@ -165,8 +165,6 @@ export const PublicNavbar = ({locale}) => {
       }})
     }
   }
-
-  let otherLocale = (locale.toLowerCase() == 'en') ? 'FR' : 'EN'
   
   let collapsableStartItems = [
     <Link path="/" className="nav-btn" active={currentPathIsRoot()}>{t('Home', locale)}</Link>,
@@ -174,8 +172,10 @@ export const PublicNavbar = ({locale}) => {
     <Link path="/g" className="nav-btn" checkIfActive={true}>{t('Suggestions', locale)}</Link>,
   ]
 
+  let otherLocale = (locale.toLowerCase() == 'en') ? 'fr' : 'en'
+  let url = window.location.pathname + (otherLocale == DEFAULT_LOCALE ? '' : '?l='+otherLocale)
   let startItems = [
-    <Link path={window.location.pathname+'?locale='+otherLocale} className="nav-btn fs-lg-14" rel="alternate" hrefLang={otherLocale.toLowerCase()}>{otherLocale}</Link>,
+    <a href={url} className="nav-btn fs-lg-14" rel="alternate" hrefLang={otherLocale}>{otherLocale.toUpperCase()}</a>,
   ]
 
   let collapsableEndItems = [

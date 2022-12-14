@@ -121,6 +121,7 @@ export function tr(id, locale) {
     Soon: 'Bientôt',
     Skip: 'Peu importe',
     Recipe_kind: 'Catégorie',
+    Recipe_kinds: 'Catégories',
     Same_account_recipes: 'Recettes du même compte',
     There_are_no_recipe_in_this_category_yet: "Il n'y a aucune recette dans cette catégorie pour l'instant",
     Users_recipes: "Recettes d'utilisateurs",
