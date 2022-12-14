@@ -191,11 +191,11 @@ export const ShowRecipeKind = () => {
   return <KindViewer {...{kind, ancestors, children, recipes, locale}} />
 }
 
-export const KindViewer = ({kind, ancestors, children, recipes}) => {
-  if (!kind) {return null}
-  if (kind.is_abstract) {
-    return <AbstractKindViewer {...{kind, ancestors, children, locale}} />
+export const KindViewer = (props) => {
+  if (!props.kind) {return null}
+  if (props.kind.is_abstract) {
+    return <AbstractKindViewer {...props} />
   } else {
-    return <RecipeKindViewer {...{kind, recipes, ancestors, locale}} />
+    return <RecipeKindViewer {...props} />
   }
 }
