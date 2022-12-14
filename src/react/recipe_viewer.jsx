@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom'
 import { ajax, changeUrl } from "./utils"
 import { RecipeTiptap, BubbleTiptap } from './tiptap'
 import { Link, useOrFetch } from "./lib"
-import { recipeIngredientsAndHeaders, quantityWithPreposition, prettyPreposition } from "../lib"
+import { recipeIngredientsAndHeaders, quantityWithPreposition, prettyPreposition, prettyTimeMinutesToWords } from "../lib"
 import { RecipeMediumImage } from "./image"
 //import { EditTagsModal } from './modals/edit_tags'
 import { removeRecipe, AddToListMenu, ChangeVisibilityMenuItem, duplicateRecipe, updateFavoriteRecipe } from './recipe_index'
@@ -42,6 +42,11 @@ export const IngredientList = ({recipe}) => {
 }
 
 export const RecipeAttributes = ({recipe, userName}) => {
+  let attrs = [
+    {label: 'Preparation', field: 'preparation_time'},
+    {label: 'Cooking', field: 'cooking_time'},
+    {label: 'Total', field: 'total_time'},
+  ]
   return <>
     <div className='d-flex'>
       <h1>
@@ -52,18 +57,13 @@ export const RecipeAttributes = ({recipe, userName}) => {
     <div style={{marginTop: '-0.8em', marginBottom: '1.2em'}}>
       <span style={{color: 'gray'}}>{t('by')} {userName}</span>
     </div>
-    <div>
-      <b>{t('Preparation')} ({t('min')}): </b>
-      <span style={{color: 'gray'}}>{recipe.preparation_time}</span>
-    </div>
-    <div>
-      <b>{t('Cooking')} ({t('min')}): </b>
-      <span style={{color: 'gray'}}>{recipe.cooking_time}</span>
-    </div>
-    <div>
-      <b>{t('Total')} ({t('min')}): </b>
-      <span style={{color: 'gray'}}>{recipe.total_time}</span>
-    </div>
+    {attrs.map(attr => {
+      if (!recipe[attr.field]) {return null}
+      return <div key={attr.field}>
+        <b>{t(attr.label)}: </b>
+        <span style={{color: 'gray'}}>{prettyTimeMinutesToWords(recipe[attr.field])}</span>
+      </div>
+    })}
     <div>
       <b>{t('Servings')}: </b>
       <span style={{color: 'gray'}}>{recipe.raw_servings}</span>

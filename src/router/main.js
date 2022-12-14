@@ -391,6 +391,7 @@ router.get('/r/:id', renderAppIfLoggedIn, function(req, res, next) {
   let o = {}
   o.recipe = db.fetchRecord('recipes', {id: recipeId, is_public: 1}, RECIPE_ATTRS)
   if (!o.recipe) {throw 'Unable to fetch recipe. Not existent or private.'}
+  o.user = db.fetchRecord('users', {id: o.recipe.user_id}, 'name')
   //if (res.locals.locale != o.user.locale) {
   //  // TODO: Fetch in the proper locale
   //  attrs = ['name', 'servings_name', 'original_id', 'ingredients', 'json']

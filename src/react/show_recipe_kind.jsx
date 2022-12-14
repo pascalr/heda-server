@@ -5,14 +5,14 @@ import { getLocale, Link } from "./lib"
 import { t } from "../translate"
 import { IngredientList } from "./recipe_viewer"
 import { DescriptionTiptap, RecipeTiptap } from "./tiptap"
-import { prettyMinutes } from "../lib"
 import { RecipeCarrousel } from './core'
+import { prettyTimeMinutesToWords } from '../lib'
 
 const RecipeAttribute = ({recipe, attr, label}) => {
   if (!recipe[attr]) {return ''}
   return <>
     <div className="d-inline-block" style={{width: '50%'}}>
-      <b>{t(label)}:</b> <span className="gray">{prettyMinutes(recipe[attr])}</span>
+      <b>{t(label)}:</b> <span className="gray">{prettyTimeMinutesToWords(recipe[attr])}</span>
     </div>
   </>
 }

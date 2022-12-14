@@ -1,19 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react'
-import ReactDOM from 'react-dom'
-//import { createRoot } from 'react-dom/client';
 
 import { RecipeThumbnailImage, RecipeSmallImage } from "./image"
-import { normalizeSearchText, join, capitalize } from "./utils"
-import { image_slug_variant_path } from "./routes"
 import { t } from "../translate"
 import { getLocale, Link } from "./lib"
-import { recipeIngredientsAndHeaders, extractFoodNameFromIngredient, prettyMinutes } from "../lib"
-import { ErrorBoundary } from './error_boundary'
+import { recipeIngredientsAndHeaders, extractFoodNameFromIngredient, prettyTimeMinutesToWords } from "../lib"
 
 const RecipeAttribute = ({recipe, attr, label}) => {
   if (!recipe[attr]) {return ''}
   return <div key={attr}>
-    <b>{t(label)}:</b> <span className="gray">{prettyMinutes(recipe[attr])}</span>
+    <b>{t(label)}:</b> <span className="gray">{prettyTimeMinutesToWords(recipe[attr])}</span>
   </div>
 }
 

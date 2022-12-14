@@ -1,10 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import ReactDOM from 'react-dom'
-//import { createRoot } from 'react-dom/client';
 
-import { recipeIngredientsAndHeaders, prettyPreposition } from "../lib"
-import { normalizeSearchText, join, capitalize } from "./utils"
-import { image_slug_variant_path } from "./routes"
 import { t } from "../translate"
 import { RecipeTiptap } from './tiptap'
 import { RecipeMediumImage } from "./image"
@@ -44,7 +39,7 @@ export const RecipeViewer = ({recipe, user, locale, recipeKind, kindAncestors}) 
         <div><RecipeMediumImage {...{recipe, image, showCredit: true}} /></div>
         <div style={{height: '20px', width: '0'}}></div>
         <div style={{width: '100%'}}>
-          <RecipeAttributes {...{recipe, userName: user.name}} />
+          <RecipeAttributes {...{recipe, userName: user?.name}} />
         </div>
       </div>
       <div className="recipe-body">

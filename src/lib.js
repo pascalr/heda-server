@@ -1,6 +1,6 @@
 import { normalizeSearchText, isValidEmail } from "./utils.js"
 import Quantity from './quantity.js'
-import { t, tr } from './translate.js'
+import { translate } from './translate.js'
 import { ensureIsArray } from './utils.js';
 
 // gros oignon espagnol, finement coupé => gros oignon espagnol
@@ -22,7 +22,7 @@ export function descriptionRecipeIngredients(recipe, locale) {
   const ingredientsAndHeaders = recipeIngredientsAndHeaders(recipe)
   const ingredients = ingredientsAndHeaders.filter(e => e.label || e.qty)
   if (ingredients.length === 0) {return ''}
-  return tr("Ingredients", locale) + ": " + ingredients.map(ing => extractFoodNameFromIngredient(ing.label)).join(" · ")
+  return translate(locale)("Ingredients") + ": " + ingredients.map(ing => extractFoodNameFromIngredient(ing.label)).join(" · ")
 }
 
 export function localeAttr(attr, locale) {
@@ -112,7 +112,8 @@ export function quantityWithPreposition(qty, label, locale) {
   return qty + ' ' + prettyPreposition(qty, label, locale)
 }
 
-export function prettyMinutes(minutes) {
+export function prettyTimeMinutesToWords(minutes, locale) {
+  let t = translate(locale)
   if (minutes === 0) {return '0 ' + t("minute")}
   let hours = Math.floor(minutes / 60)
   let mins = minutes % 60

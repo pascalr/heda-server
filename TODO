@@ -38,6 +38,16 @@ Pour que ça soit efficace, il faudrait que ça puisse fonctionner avec Intellis
 ******************************************
 ******************************************
 
+POURQUOI EST-CE QUE JE N'AVAIS PAS ACCÈS À LA RECETTE DE QUICHE AU ÉPINARDS AU PUBlIC???
+
+Preparation (min): 10
+Cooking (min): 30
+Total (min):
+Servings: 
+=> Don't show if blank.
+=> Put units on the right side
+=> Pretty time units.
+
 ZOHO SPF et DKIM
 
 Au lieu de is_fast, is_gourmand, ...
@@ -55,6 +65,13 @@ Il y a des tokens primitif qui sont liés directement à la database.
 Et il y a des tokens composés qui sont liés à d'autres tokens, des synonymes un peu
 
 Pouvoir filtrer les recipes kinds végés et véganes. Avec ou sans ingrédients.
+
+Ajouter une note à Quiche aux épinards sur comment faire l'abaisse d'une pâte brisée.
+Dans l'éditeur texte, pouvoir ajouter des extraits (snippets). De l'aide texte un peu comme: «Comment faire une pâte brisée.»
+API GPT-3. Sauvegarder les réponses et les garder dans la table snippets.
+
+Quand il y a une description du kind, l'afficher dans la vue kind leaf. Par exemple, pour soupe (https://www.hedacuisine.com/k/230)
+pour chaque de soupe afficher la description du kind si elle existe.
 
 M'envoyer un couriel à admin@hedacuisine.com tous les jours avec les analytics.
 
