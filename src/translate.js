@@ -233,6 +233,7 @@ export function tr(id, locale) {
     My_profile: 'Mon profil',
     My_account: 'Mon compte',
     My_list: 'Ma liste',
+    My_favorites: 'Mes favoris',
     Logout: 'Déconnexion',
     New_profile: 'Nouveau profil',
     Switch_user: "Changer d'utilisateur",

@@ -37,19 +37,20 @@ export const AppNavbar = ({user, _csrf, recipes, friendsRecipes, siblings, recip
 
   let locale = user.locale
 
+  let transformRecipe = recipe => ({
+    ...recipe, list: 'r',
+    elem: ({isSelected, item, selectedRef}) => (
+      <RecipeListItem key={item.id} {...{recipe: item, isSelected, siblings, user, selectedRef, setIsSearching}}/>
+    ),
+  })
+
+  let userRecipes = recipes.filter(r => r.user_id == user.id)
+  let favoriteRecipes = recipes.filter(r => r.user_id != user.id)
+
   let data = {
-    My_recipes: recipes.map(recipe => ({
-      ...recipe, list: 'r',
-      elem: ({isSelected, item, selectedRef}) => (
-        <RecipeListItem key={item.id} {...{recipe: item, isSelected, siblings, user, selectedRef, setIsSearching}}/>
-      ),
-    })),
-    Same_account_recipes: (friendsRecipes||[]).map(recipe => ({
-      ...recipe, list: 'r',
-      elem: ({isSelected, item, selectedRef}) => (
-        <RecipeListItem key={item.id} {...{recipe: item, isSelected, siblings, user, selectedRef, setIsSearching}}/>
-      ),
-    })),
+    My_recipes: userRecipes.map(transformRecipe),
+    My_favorites: favoriteRecipes.map(transformRecipe),
+    Same_account_recipes: (friendsRecipes||[]).map(transformRecipe),
     Recipe_kinds: recipeKinds.map(recipeKind => ({
       ...recipeKind, list: 'rk',
       elem: ({isSelected, item, selectedRef}) => <>
@@ -352,7 +353,7 @@ const ExpandedNavbar = ({startItems=[], endItems=[], collapsableStartItems=[], c
 const OpenedRightSlideNavbar = ({startItems=[], endItems=[], collapsableStartItems=[], collapsableEndItems=[]}) => {
   
   return <>
-    <div className='position-absolute d-flex flex-column right-slide-navbar' style={{right: '0', top: '52px', lineHeight: '2em', fontSize: '1.2em', backgroundColor: 'rgb(33, 37, 41)', color: 'white', height: '100vh', maxWidth: '100vw', width: '200px'}}>
+    <div className='position-absolute d-flex flex-column right-slide-navbar' style={{right: '0', top: '2.7em', lineHeight: '2em', fontSize: '1.2em', backgroundColor: 'rgb(33, 37, 41)', color: 'white', height: '100vh', maxWidth: '100vw', width: '200px'}}>
       {collapsableStartItems.map((e,i) => <div key={'b'+i}>{e}</div>)}
       {collapsableEndItems.map((e,i) => <div key={'d'+i}>{e}</div>)}
     </div>
