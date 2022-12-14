@@ -20,6 +20,7 @@ import schema from '../schema'
 import { HomeTab } from './core'
 import { listToTree, sortBy, sortByDate } from '../utils'
 import { changeUrl } from './utils'
+import { Chart } from 'chart.js/auto'
 
 const AdminTabs = ({machines}) => {
   return <>
@@ -275,46 +276,51 @@ const RecipeKindsIndex = ({recipes, recipeKinds, publicUsers}) => {
   </>
 }
 
+const AnalyticsData = () => {
+  const dailyChart = useRef(null)
+  const monthlyChart = useRef(null)
+  const yearlyChart = useRef(null)
+
+  const data = [
+    { year: 2010, count: 10 },
+    { year: 2011, count: 20 },
+    { year: 2012, count: 15 },
+    { year: 2013, count: 25 },
+    { year: 2014, count: 22 },
+    { year: 2015, count: 30 },
+    { year: 2016, count: 28 },
+  ];
+
+  useEffect(() => {
+    new Chart(dailyChart.current, {type: 'bar', data: { labels: data.map(row => row.year), datasets: [{label: 'Acquisitions by year', data: data.map(row => row.count)}]}});
+    new Chart(monthlyChart.current, {type: 'bar', data: { labels: data.map(row => row.year), datasets: [{label: 'Acquisitions by year', data: data.map(row => row.count)}]}});
+    new Chart(yearlyChart.current, {type: 'bar', data: { labels: data.map(row => row.year), datasets: [{label: 'Acquisitions by year', data: data.map(row => row.count)}]}});
+  }, [])
+
+  return <>
+    <h4>Last 24 hours</h4>
+    <div style={{width: '600px'}}><canvas ref={dailyChart}></canvas></div>
+    <h4>Last 30 days</h4>
+    <div style={{width: '600px'}}><canvas ref={monthlyChart}></canvas></div>
+    <h4>Last 365 days</h4>
+    <div style={{width: '600px'}}><canvas ref={yearlyChart}></canvas></div>
+  </>
+}
+
 const AdminPage = ({stats, publicUsers, errors}) => {
 
   const [missings, setMissings] = useState(null)
 
-  const updateKindsCount = () => {
-    ajax({url: '/update_kinds_count', type: 'POST', success: () => {
-      toastr.info("Update kinds count successfull.")
-    }, error: handleError("Error updating kinds count.") })
+  const run = (name) => {
+    ajax({url: '/'+name, type: 'POST', success: () => {toastr.info("Success")}, error: handleError("Failure") })
   }
-  const backupDb = () => {
-    ajax({url: '/backup_db', type: 'POST', success: () => {
-      toastr.info("Database backup up successfully.")
-    }, error: handleError("Error backing up database.") })
-  }
-  const calcRecipeKinds = () => {
-    ajax({url: '/calc_recipe_kinds', type: 'POST', success: () => {
-      toastr.info("Success.")
-    }, error: handleError("Failure.") })
-  }
-  const matchRecipeKinds = () => {
-    ajax({url: '/match_recipe_kinds', type: 'POST', success: () => {
-      toastr.info("Recipe kinds matched successfully. Reload page to see changes.")
-    }, error: handleError("Error matching recipe kinds.") })
-  }
-  const updateRecipesLocale = () => {
-    ajax({url: '/update_recipes_locale', type: 'POST', success: () => {
-      toastr.info("Success")
-    }, error: handleError("Fail") })
-  }
+
   const translateRecipes = () => {
     ajax({url: '/translate_recipes', type: 'POST', success: ({missings}) => {
       toastr.info("Translate recipes successfull.")
       console.log('missings', missings)
       setMissings(missings)
     }, error: handleError("Error translating recipes.") })
-  }
-  const migrateKinds = () => {
-    ajax({url: '/migrate_kinds', type: 'POST', success: () => {
-      toastr.info("Success")
-    }, error: handleError("Failure") })
   }
  
   // FIXME: Put translations stuff in another tab...
@@ -331,14 +337,16 @@ const AdminPage = ({stats, publicUsers, errors}) => {
       <b>Nb users:</b> {stats.nbUsers}<br/>
       <b>Public users:</b><br/>
       {publicUsers.map(u => <div key={u.id}>{u.name}</div>)}
+      <h2>Analytics</h2>
+      <AnalyticsData/>
       <br/><br/><h2>Manual commands</h2>
-      <button className="btn btn-primary m-2" type="button" onClick={backupDb}>Backup database</button>
+      <button className="btn btn-primary m-2" type="button" onClick={() => run('backup_db')}>Backup database</button>
       <button className="btn btn-primary m-2" type="button" onClick={translateRecipes}>Translate recipes</button>
-      <button className="btn btn-primary m-2" type="button" onClick={matchRecipeKinds}>Match recipe kinds</button>
-      <button className="btn btn-primary m-2" type="button" onClick={updateRecipesLocale}>Update recipes locale</button>
-      <button className="btn btn-primary m-2" type="button" onClick={updateKindsCount}>Update kinds count (update locale first)</button>
-      <button className="btn btn-primary m-2" type="button" onClick={calcRecipeKinds}>Calc recipe kinds</button>
-      <button className="btn btn-primary m-2" type="button" onClick={migrateKinds}>Migrate kinds</button>
+      <button className="btn btn-primary m-2" type="button" onClick={() => run('match_recipe_kinds')}>Match recipe kinds</button>
+      <button className="btn btn-primary m-2" type="button" onClick={() => run('update_recipes_locale')}>Update recipes locale</button>
+      <button className="btn btn-primary m-2" type="button" onClick={() => run('update_kinds_count')}>Update kinds count (update locale first)</button>
+      <button className="btn btn-primary m-2" type="button" onClick={() => run('calc_recipe_kinds')}>Calc recipe kinds</button>
+      <button className="btn btn-primary m-2" type="button" onClick={() => run('migrate_kinds')}>Migrate kinds</button>
       <br/><br/><br/><h2>Output</h2>
       {missings ? <>
         <h3>Missing translations</h3>

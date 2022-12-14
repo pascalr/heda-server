@@ -4,6 +4,7 @@ import ipware from '@fullerstack/nax-ipware';
 
 import lazyDb from './lazy_db.js';
 import {now, hashCode} from './utils.js';
+import _ from 'lodash';
 
 const schema = {
   'requests': {
@@ -13,7 +14,11 @@ const schema = {
   'daily_visits': {
     write_attrs: [],
     is_allowed: user => true
-  }
+  },
+  'stats': {
+    write_attrs: ['key', 'date', 'value'],
+    is_allowed: user => true
+  },
 }
 
 // FIXME: DB_URL should be DB_PATH, it's not an URL (doesn't start with sqlite3://...)
@@ -56,6 +61,16 @@ analytics.nbRequestsTotal = () => {
 }
 analytics.nbDailyVisitsTotal = () => {
   return db.prepare('SELECT COUNT(*) FROM daily_visits').get()['COUNT(*)']
+}
+
+analytics.summarize = () => {
+  let dailyVisits = db.fetchTable('daily_visits', {}, ['created_at'])
+  let requests = db.fetchTable('requests', {}, ['created_at'])
+  let dayKey = (date) => date.getYear()+'-'+date.getMonth()+'-'+date.getDate()
+  let dailyUniqueVisits = _.groupBy(dailyVisits, (visit) => dayKey(new Date(visit.created_at)))
+  _.keys(dailyUniqueVisits).forEach((day) => {
+    db.createRecord('stats', {key: 'daily_visits', date: day, value: dailyUniqueVisits[day].length})
+  })
 }
 
 export default analytics;
