@@ -5,7 +5,7 @@ import sveltePreprocess from "svelte-preprocess";
 export function buildSvelte() {
   
   esbuild.build({
-    entryPoints: ["src/svelte/navbar.js", "src/svelte/signup.js"],
+    entryPoints: ["src/svelte/signup.js"],
     mainFields: ["svelte", "browser", "module", "main"],
     bundle: true,
     minify: false,
