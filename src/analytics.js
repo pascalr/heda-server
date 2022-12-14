@@ -16,7 +16,7 @@ const schema = {
     is_allowed: user => true
   },
   'stats': {
-    write_attrs: ['key', 'date', 'value'],
+    write_attrs: ['key', 'date', 'value', 'count'],
     is_allowed: user => true
   },
 }
@@ -65,11 +65,36 @@ analytics.nbDailyVisitsTotal = () => {
 
 analytics.summarize = () => {
   let dailyVisits = db.fetchTable('daily_visits', {}, ['created_at'])
-  let requests = db.fetchTable('requests', {}, ['created_at'])
+  let requests = db.fetchTable('requests', {}, ['created_at', 'status', 'url'])
   let dayKey = (date) => date.getYear()+'-'+date.getMonth()+'-'+date.getDate()
+
+  // GOOD CODE, COMMENTED BECAUSE NOT DESTROYED */
   let dailyUniqueVisits = _.groupBy(dailyVisits, (visit) => dayKey(new Date(visit.created_at)))
   _.keys(dailyUniqueVisits).forEach((day) => {
-    db.createRecord('stats', {key: 'daily_visits', date: day, value: dailyUniqueVisits[day].length})
+    let n = dailyUniqueVisits[day].length
+    // db.createRecord('stats', {key: 'daily_visits', date: day, value: n, count: n})
+  })
+
+  let dailyRequests = _.groupBy(requests, (o) => dayKey(new Date(o.created_at)))
+  _.keys(dailyRequests).forEach((day) => {
+    let rs = dailyRequests[day]
+
+    let dailyStatus = _.groupBy(rs, (o) => o.status)
+    _.keys(dailyStatus).forEach(_status => {
+      let n = dailyStatus[_status].length
+      // db.createRecord('stats', {key: 'daily_status', date: day, value: _status, count: n})
+    })
+
+    let dailyUrlRoots = _.groupBy(rs, (o) => {
+      if (o.url.includes('wp-includes')) {
+        console.log('WTF', o.url)
+      }
+      return o.url.split('/').slice(0,-1).join('/')
+    })
+    _.keys(dailyUrlRoots).forEach(url => {
+      let n = dailyUrlRoots[url].length
+      // db.createRecord('stats', {key: 'daily_url_roots', date: day, value: url, count: n})
+    })
   })
 }
 

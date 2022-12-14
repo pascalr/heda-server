@@ -347,7 +347,9 @@ const AdminPage = ({stats, publicUsers, errors}) => {
       <button className="btn btn-primary m-2" type="button" onClick={() => run('update_kinds_count')}>Update kinds count (update locale first)</button>
       <button className="btn btn-primary m-2" type="button" onClick={() => run('calc_recipe_kinds')}>Calc recipe kinds</button>
       <button className="btn btn-primary m-2" type="button" onClick={() => run('migrate_kinds')}>Migrate kinds</button>
+      <button className="btn btn-primary m-2" type="button" onClick={() => run('summarize_analytics')}>Summarize analytics</button>
       <br/><br/><br/><h2>Output</h2>
+      
       {missings ? <>
         <h3>Missing translations</h3>
         <hr/>

@@ -84,6 +84,10 @@ router.post('/exe_sql', function(req, res, next) {
     res.send('OK')
   })()
 })
+router.post('/summarize_analytics', function(req, res) {
+  analytics.summarize()
+  res.send('OK')
+})
 router.post('/translate_recipes', function(req, res, next) {
   db.doBackup()
   translateRecipes().then(missings => {
