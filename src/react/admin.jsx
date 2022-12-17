@@ -21,6 +21,7 @@ import { HomeTab } from './core'
 import { listToTree, sortBy, sortByDate } from '../utils'
 import { changeUrl } from './utils'
 import { Chart } from 'chart.js/auto'
+import _ from 'lodash'
 
 const AdminTabs = ({machines}) => {
   return <>
@@ -276,38 +277,29 @@ const RecipeKindsIndex = ({recipes, recipeKinds, publicUsers}) => {
   </>
 }
 
-const AnalyticsData = () => {
-  const dailyChart = useRef(null)
-  const monthlyChart = useRef(null)
-  const yearlyChart = useRef(null)
+const AnalyticsData = ({analytics}) => {
+  const dailyVisitorChart = useRef(null)
+  const statusCodesChart = useRef(null)
 
-  const data = [
-    { year: 2010, count: 10 },
-    { year: 2011, count: 20 },
-    { year: 2012, count: 15 },
-    { year: 2013, count: 25 },
-    { year: 2014, count: 22 },
-    { year: 2015, count: 30 },
-    { year: 2016, count: 28 },
-  ];
+  const dailyVisitsData = analytics.filter(o => o.key == 'daily_visits')
+  const statusCodesData = analytics.filter(o => o.key == 'daily_status')
+  const statusCodesByCode = _.groupBy(statusCodesData, (o) => o.value)
 
   useEffect(() => {
-    new Chart(dailyChart.current, {type: 'bar', data: { labels: data.map(row => row.year), datasets: [{label: 'Acquisitions by year', data: data.map(row => row.count)}]}});
-    new Chart(monthlyChart.current, {type: 'bar', data: { labels: data.map(row => row.year), datasets: [{label: 'Acquisitions by year', data: data.map(row => row.count)}]}});
-    new Chart(yearlyChart.current, {type: 'bar', data: { labels: data.map(row => row.year), datasets: [{label: 'Acquisitions by year', data: data.map(row => row.count)}]}});
+    let days = [...new Set(statusCodesData.map(d => d.date))]
+    new Chart(statusCodesChart.current, {type: 'line', data: { labels: days, datasets: _.keys(statusCodesByCode).map(code => ({label: code, data: days.map(d => statusCodesByCode[code].find(o => o.date == d)?.count || 0)}))}});
+    new Chart(dailyVisitorChart.current, {type: 'bar', data: { labels: dailyVisitsData.map(row => row.date), datasets: [{label: 'Daily visits', data: dailyVisitsData.map(row => row.count)}]}});
   }, [])
 
   return <>
-    <h4>Last 24 hours</h4>
-    <div style={{width: '600px'}}><canvas ref={dailyChart}></canvas></div>
-    <h4>Last 30 days</h4>
-    <div style={{width: '600px'}}><canvas ref={monthlyChart}></canvas></div>
-    <h4>Last 365 days</h4>
-    <div style={{width: '600px'}}><canvas ref={yearlyChart}></canvas></div>
+    <h4>Daily unique visits</h4>
+    <div style={{width: '600px'}}><canvas ref={dailyVisitorChart}></canvas></div>
+    <h4>Status codes</h4>
+    <div style={{width: '600px'}}><canvas ref={statusCodesChart}></canvas></div>
   </>
 }
 
-const AdminPage = ({stats, publicUsers, errors}) => {
+const AdminPage = ({stats, publicUsers, errors, analytics}) => {
 
   const [missings, setMissings] = useState(null)
 
@@ -338,7 +330,7 @@ const AdminPage = ({stats, publicUsers, errors}) => {
       <b>Public users:</b><br/>
       {publicUsers.map(u => <div key={u.id}>{u.name}</div>)}
       <h2>Analytics</h2>
-      <AnalyticsData/>
+      <AnalyticsData {...{analytics}} />
       <br/><br/><h2>Manual commands</h2>
       <button className="btn btn-primary m-2" type="button" onClick={() => run('backup_db')}>Backup database</button>
       <button className="btn btn-primary m-2" type="button" onClick={translateRecipes}>Translate recipes</button>
@@ -796,6 +788,7 @@ export const Admin = () => {
   const errors = useHcuState(gon.errors||[], {tableName: 'errors'})
   const [publicUsers,] = useState(gon.public_users||[])
   const [stats,] = useState(gon.stats)
+  const [analytics,] = useState(gon.analytics)
 
   const routes = [
     {match: "/admin/translations", elem: () => <TranslationsPage {...{translations}} />},
@@ -811,7 +804,7 @@ export const Admin = () => {
     {match: "/admin/ek/:id", elem: ({id}) => <EditRecipeKind {...{id, recipeKinds, images, locale}} />},
     // {match: "/admin/ed/:id", elem: ({id}) => <EditKind {...{id, kinds}} />},
     {match: "/admin/translate_recipe", elem: () => <TranslateRecipePage {...{recipes, locale, translations}} />},
-    {match: "/admin", elem: () => <AdminPage {...{stats, publicUsers, errors}} />},
+    {match: "/admin", elem: () => <AdminPage {...{stats, publicUsers, errors, analytics}} />},
     {match: "/", elem: () => <Redirect url='/' />},
   ]
   const defaultElement = (params) => <TranslationsPage />

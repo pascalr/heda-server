@@ -150,3 +150,6 @@ If I ever put ads.
 
 npm install -g loadtest
 loadtest http://localhost:3000/
+
+## Close old buggy npm server
+pkill node

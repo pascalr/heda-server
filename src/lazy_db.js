@@ -4,7 +4,7 @@
 import betterSqlite3 from 'better-sqlite3';
 import path from 'path';
 
-import {now} from './utils.js';
+import {now, printDateLong} from './utils.js';
 import { ensureIsArray } from './utils.js';
 
 export const getTableList = (schema) => {return Object.keys(schema)}
@@ -130,11 +130,7 @@ const sqlDb = {
     let outDir = process.env.DB_BACKUP_DIR
     if (!outDir) {throw "Error backing up db: missing environment variable DB_BACKUP_DIR"}
     
-    let date = new Date()
-    const months = ["janvier","fevrier","mars","avril","mai","juin","juillet","aout","septembre","octobre","novembre","decembre"];
-    let month = months[date.getMonth()];
-    let filename = `${date.getFullYear()}_${month}_${date.getDate()}_${date.getHours()}_${date.getMinutes()}_${date.getSeconds()}.db`
-  
+    let filename = `${printDateLong(new Date())}.db`
     let name = path.join(outDir, filename)
     console.log('Starting backup up database to: ', name)
     this.backup(name)

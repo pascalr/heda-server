@@ -277,6 +277,22 @@ export function extractNumberAtBeginning(str) {
   return (str.match(fraction_number) || str.match(number) || [])[0]
 }
 
+export function printDateLong(date) {
+  const months = ["janvier","fevrier","mars","avril","mai","juin","juillet","aout","septembre","octobre","novembre","decembre"];
+  let month = months[date.getMonth()];
+  return `${date.getFullYear()}_${month}_${date.getDate()}_${date.getHours()}_${date.getMinutes()}_${date.getSeconds()}`
+}
+
+export function printDateYMD(date) {
+  return `${printDateYM(date)}-${date.getDate()}`
+}
+
+export function printDateYM(date) {
+  const months = ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"];
+  let month = months[date.getMonth()];
+  return `${date.getFullYear()}-${month}`
+}
+
 //export function stringSnippet(str, maxLength=20) {
 //  if (str == null || str == '') {return ''}
 //  if (str.length <= maxLength) {return str}

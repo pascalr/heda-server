@@ -35,6 +35,7 @@ const renderAdmin = (req, res, next) => {
     recipe_kinds, siblings,
     errors: db.fetchTable('errors', {}, ['url', 'error', 'info', 'created_at']),
     recipes: db.fetchTable('recipes', {}, ['name', 'recipe_kind_id', 'image_slug']),
+    analytics: analytics.fetchStats(),
     stats: {
       nbUsers: db.prepare('SELECT COUNT(*) FROM users').get()['COUNT(*)'],
       nbAccounts: db.prepare('SELECT COUNT(*) FROM accounts').get()['COUNT(*)'],

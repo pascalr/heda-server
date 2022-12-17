@@ -3,7 +3,7 @@ import path from 'path';
 import ipware from '@fullerstack/nax-ipware';
 
 import lazyDb from './lazy_db.js';
-import {now, hashCode} from './utils.js';
+import {now, hashCode, printDateYMD, printDateYM} from './utils.js';
 import _ from 'lodash';
 
 const schema = {
@@ -66,36 +66,44 @@ analytics.nbDailyVisitsTotal = () => {
 analytics.summarize = () => {
   let dailyVisits = db.fetchTable('daily_visits', {}, ['created_at'])
   let requests = db.fetchTable('requests', {}, ['created_at', 'status', 'url'])
-  let dayKey = (date) => date.getYear()+'-'+date.getMonth()+'-'+date.getDate()
 
   // GOOD CODE, COMMENTED BECAUSE NOT DESTROYED */
-  let dailyUniqueVisits = _.groupBy(dailyVisits, (visit) => dayKey(new Date(visit.created_at)))
+  let dailyUniqueVisits = _.groupBy(dailyVisits, (visit) => printDateYMD(new Date(visit.created_at)))
   _.keys(dailyUniqueVisits).forEach((day) => {
     let n = dailyUniqueVisits[day].length
-    // db.createRecord('stats', {key: 'daily_visits', date: day, value: n, count: n})
+    db.createRecord('stats', {key: 'daily_visits', date: day, value: n, count: n})
   })
 
-  let dailyRequests = _.groupBy(requests, (o) => dayKey(new Date(o.created_at)))
+  let dailyRequests = _.groupBy(requests, (o) => printDateYMD(new Date(o.created_at)))
   _.keys(dailyRequests).forEach((day) => {
     let rs = dailyRequests[day]
 
     let dailyStatus = _.groupBy(rs, (o) => o.status)
     _.keys(dailyStatus).forEach(_status => {
       let n = dailyStatus[_status].length
-      // db.createRecord('stats', {key: 'daily_status', date: day, value: _status, count: n})
+      db.createRecord('stats', {key: 'daily_status', date: day, value: _status, count: n})
     })
 
-    let dailyUrlRoots = _.groupBy(rs, (o) => {
-      if (o.url.includes('wp-includes')) {
-        console.log('WTF', o.url)
-      }
-      return o.url.split('/').slice(0,-1).join('/')
-    })
+    let dailyUrlRoots = _.groupBy(rs, (o) => o.url.split('/').slice(0,-1).join('/'))
     _.keys(dailyUrlRoots).forEach(url => {
       let n = dailyUrlRoots[url].length
       // db.createRecord('stats', {key: 'daily_url_roots', date: day, value: url, count: n})
     })
   })
+
+  let monthlyRequests = _.groupBy(requests, (o) => printDateYM(new Date(o.created_at)))
+  _.keys(monthlyRequests).forEach((month) => {
+    let rs = monthlyRequests[month]
+    let urls = _.groupBy(rs, (o) => o.url)
+    _.keys(urls).forEach(url => {
+      let n = urls[url].length
+      db.createRecord('stats', {key: 'montly_urls', date: month, value: url, count: n})
+    })
+  })
+}
+
+analytics.fetchStats = () => {
+  return db.fetchTable('stats', {}, ['key', 'value', 'date', 'count'])
 }
 
 export default analytics;
