@@ -10,6 +10,8 @@ import { now, shuffle } from '../utils.js';
 import { tr } from '../translate.js'
 import schema from '../schema.js'
 import { fetchWithAncestors, fetchTableLocaleAttrs, fetchRecordLocaleAttrs, descriptionRecipeIngredients, kindAncestorId } from "../lib.js"
+import { generateHTML } from '@tiptap/core';
+import { getRecipeExtensions } from '../tiptap_helpers.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -407,6 +409,14 @@ router.get('/x', renderAppIfLoggedIn, function(req, res, next) {
   res.locals.gon = extractExplore(res.locals.locale)
   res.render('show_explore');
 });
+
+router.get('/genRecipeHtml/:id', function(req, res) {
+
+  let recipe = db.fetchRecord('recipes', {id: req.params.id}, ['json'])
+  let html = generateHTML(recipe.json, getRecipeExtensions(false))
+
+  res.send(html)
+})
 
 router.get('/u/:id', renderAppIfLoggedIn, function(req, res, next) {
 
