@@ -413,9 +413,10 @@ router.get('/x', renderAppIfLoggedIn, function(req, res, next) {
 router.get('/genRecipeHtml/:id', function(req, res) {
 
   let recipe = db.fetchRecord('recipes', {id: req.params.id}, ['json'])
-  let html = generateHTML(recipe.json, getRecipeExtensions(false))
+  let html = generateHTML(JSON.parse(recipe.json), getRecipeExtensions(false))
 
   res.send(html)
+  //res.send('FIXME')
 })
 
 router.get('/u/:id', renderAppIfLoggedIn, function(req, res, next) {
