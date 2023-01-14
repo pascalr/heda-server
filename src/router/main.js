@@ -131,13 +131,13 @@ router.get('/imgs/:variant/:slug', function(req, res, next) {
   });
 });
 
-router.post('/create_record/:table', function(req, res, next) {
+router.post('/create_record/:table', function(req, res) {
  
   let record = db.createRecord(req.params.table, req.body.record, req.user)
   res.json({...record})
 })
 
-router.patch('/change_recipe_owner', function(req, res, next) {
+router.patch('/change_recipe_owner', function(req, res) {
     
   let recipeId = parseInt(req.body.recipeId)
   let newOwnerId = parseInt(req.body.newOwnerId)
@@ -158,7 +158,7 @@ router.patch('/change_recipe_owner', function(req, res, next) {
   res.json({status: 'ok'})
 });
 
-router.patch('/update_field/:table/:id', ensureUser, function(req, res, next) {
+router.patch('/update_field/:table/:id', ensureUser, function(req, res) {
 
   let {table, id} = req.params
   let {field, value} = req.body
@@ -179,6 +179,23 @@ function extractExplore(locale) {
   })
   return {roots}
 }
+
+// FIXME: Must be autheticated, otherwise this fetches can fetch private recipes...
+router.get('/fetch_app_data/:user_id', (req, res) => {
+
+  let userId = parseInt(req.params.user_id)
+  let user = db.fetchRecord('users', {id: userId}, ['name'])
+  if (!user) {throw 'Unable to fetch user.'}
+  // OPTIMIZE: No need to extract all RECIPE_ATTRS....
+  let recipeAttrs = [...RECIPE_ATTRS, 'html']
+  let userRecipes = db.fetchTable('recipes', {user_id: userId}, recipeAttrs)
+  let favs = db.fetchTable('favorite_recipes', {user_id: userId}, ['recipe_id'])
+  let fetchedIds = userRecipes.map(r => r.id)
+  let missingRecipeIds = favs.map(r=>r.recipe_id).filter(id => !fetchedIds.includes(id))
+  let favRecipes = db.fetchTable('recipes', {id: missingRecipeIds}, recipeAttrs)
+
+  res.json({user, userRecipes, favRecipes})
+})
 
 function extractUser(id) {
 

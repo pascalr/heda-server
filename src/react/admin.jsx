@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
-import toastr from 'toastr'
+import toastr, { success } from 'toastr'
 //import { createRoot } from 'react-dom/client';
 
 import { TextInput, TextField, CollectionSelect, RangeField, withSelector } from "./form"
@@ -14,7 +14,7 @@ import { initHcu, useHcuState, handleError, updateField } from '../hcu'
 import { RecipeViewer } from "./show_recipe"
 import Translator, { TranslationsCacheStrategy, LogStrategy, StoreStrategy } from '../translator'
 import { RecipeThumbnailImage, RecipeMediumImage } from "./image"
-import { DescriptionTiptap } from "./tiptap"
+import { DescriptionTiptap, recipeExtensions } from "./tiptap"
 import {EditRecipeImageModal, EditableImage} from './modals/recipe_image'
 import schema from '../schema'
 import { HomeTab } from './core'
@@ -22,6 +22,7 @@ import { listToTree, sortBy, sortByDate } from '../utils'
 import { changeUrl } from './utils'
 import { Chart } from 'chart.js/auto'
 import _ from 'lodash'
+import { generateHTML } from '@tiptap/core'
 
 const AdminTabs = ({machines}) => {
   return <>
@@ -314,6 +315,19 @@ const AdminPage = ({stats, publicUsers, errors, analytics}) => {
       setMissings(missings)
     }, error: handleError("Error translating recipes.") })
   }
+
+  function updateRecipesHtml() {
+    ajax({method: 'PATCH', url: '/get_recipes_json', success: ({recipes}) => {
+      recipes.forEach(recipe => {
+        if (recipe.json) {
+          let html = generateHTML(JSON.parse(recipe.json), recipeExtensions(false))
+          if (recipe.html != html) {
+            ajax({method: 'PATCH', url: '/update_recipe_html/'+recipe.id, data: {html}})
+          }
+        }
+      })
+    }})
+  }
  
   // FIXME: Put translations stuff in another tab...
   let from = 1 // French FIXME
@@ -340,6 +354,7 @@ const AdminPage = ({stats, publicUsers, errors, analytics}) => {
       <button className="btn btn-primary m-2" type="button" onClick={() => run('calc_recipe_kinds')}>Calc recipe kinds</button>
       <button className="btn btn-primary m-2" type="button" onClick={() => run('migrate_kinds')}>Migrate kinds</button>
       <button className="btn btn-primary m-2" type="button" onClick={() => run('summarize_analytics')}>Summarize analytics</button>
+      <button className="btn btn-primary m-2" type="button" onClick={updateRecipesHtml}>Update recipes HTML</button>
       <br/><br/><br/><h2>Output</h2>
       
       {missings ? <>

@@ -122,6 +122,16 @@ router.post('/translate_recipe/:id', function(req, res, next) {
     res.json(newRecipe)
   })
 });
+router.patch('/get_recipes_json', function(req, res, next) {
+
+  let recipes = db.fetchTable('recipes', {}, ['json', 'html'])
+  res.json({recipes})
+})
+router.patch('/update_recipe_html/:id', function(req, res) {
+  let recipe = db.fetchRecord('recipes', {id: req.params.id}, ['user_id'])
+  db.findAndUpdateRecord('recipes', {id: req.params.id}, {html: req.body.html}, {user_id: recipe.user_id})
+  res.send('ok')
+})
 router.post('/update_recipes_locale', function(req, res, next) {
 
   let recipes = db.prepare('SELECT recipes.id as id, recipes.locale as locale, user_id, users.locale as user_locale FROM recipes JOIN users ON users.id = recipes.user_id').all()
