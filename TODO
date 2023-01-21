@@ -1,3 +1,19 @@
+- Fix /admin, I must be able to connect. Remove stats? I only started working on that I believe, I am not even using it...
+- Add login_key to users in the database
+- Copy hedacuisine db to local
+- /gen_login_key
+- Login from app using POST
+- Call /gen_login_key from app
+- Store login_key in SharedPreferences
+- Check if /am_i_logged_in
+- If no, log in automatically using login_key if exists
+- Otherwise, go to login page
+- TODO: User lockout for two many logins
+
+*********************************************************
+*********************************************************
+*********************************************************
+
 Chess with Fog of War. 
 
 Publier sur facebook une recette par semaine.

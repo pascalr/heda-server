@@ -93,3 +93,26 @@ image = db.createRecord('images', {slug: 'foosdfsdf.jpg'}, admin, {allow_write: 
 db.findAndUpdateRecord('images', image, {is_user_author: true}, admin)
 fetched = db.fetchRecord('images', {id: image.id}, ['is_user_author'])
 assert(fetched.is_user_author, "Updating booleans should work.")
+
+header('Testing hasTable')
+assert(!db.hasTable('foo'))
+assert(db.hasTable('recipes'))
+
+header('Testing migrateDb')
+const farmSchema = {
+  'chickens': {
+    attrs: [
+      ["name", "TEXT"],
+      ["egg_count",	"INTEGER"],
+    ],
+    write_attrs: ['name', 'egg_count'],
+    is_allowed: user => true
+  },
+}
+let f = "var/db/test_farm.db"
+if (fs.existsSync(f)) {fs.unlinkSync(f)}
+const farmDb = new lazyDb(f, { verbose: console.log })
+farmDb.setSchema(farmSchema)
+assert(!farmDb.hasTable('chickens'))
+farmDb.migrate()
+assert(farmDb.hasTable('chickens'))

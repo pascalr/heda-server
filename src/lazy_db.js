@@ -111,6 +111,32 @@ const sqlDb = {
   },
   getSchema() {return this.___schema},
 
+  migrate() {
+    let schema = this.getSchema()
+    let tables = Object.keys(schema)
+    tables.forEach(table => {
+      if (!this.hasTable(table)) {
+        console.log('Creating missing table:', table)
+        this.createTable(table, schema[table].attrs)
+      }
+    })
+
+    // TODO: Create missing columns... // PRAGMA table_info(table_name);
+  },
+
+  createTable(tableName, attrs) {
+    let s = 'CREATE TABLE "'+tableName+'" ('
+    s += '"id" INTEGER NOT NULL,'
+    s += '"created_at" TEXT NOT NULL,'
+    s += '"updated_at" TEXT NOT NULL,'
+    attrs.forEach(attr => {
+      s += '"'+attr[0]+'" '+attr[1]+','
+    })
+    s += 'PRIMARY KEY("id" AUTOINCREMENT)'
+    s += ')'
+    this.prepare(s).run()
+  },
+
   fetchTable(tableName, conditions, attributes=[], options={}) {
     let o = fetchStatement(this.getSchema(), tableName, conditions, attributes, options)
     if (!o) return []
@@ -255,6 +281,12 @@ const sqlDb = {
       this.findAndDestroyRecord(table, id, manual)
     })()
   },
+
+  hasTable(name) {
+    let q = "SELECT name FROM sqlite_master WHERE type='table' AND name=?"
+    let r = this.prepare(q).get(name)
+    return !!r
+  }
 }
 
 function injectFunctions(obj, functionsObj) {

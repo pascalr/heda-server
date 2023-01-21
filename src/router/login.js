@@ -141,6 +141,10 @@ router.post('/change_user', function(req, res, next) {
   res.redirect('/');
 });
 
+router.post('/gen_login_key', ensureLoggedIn, function(req, res) {
+  
+});
+
 router.get('/edit_profile', function(req, res, next) {
   res.render('edit_profile');
 });
@@ -286,6 +290,9 @@ router.get('/signup', function(req, res, next) {
   res.render('signup', {gon});
 });
 
+router.get('/am_i_logged_in', function(req, res) {
+  res.send((req.user && req.user.id) ? "1" : "0")
+})
 
 router.get('/contact', function(req, res, next) {
   return res.render('contact');

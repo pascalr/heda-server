@@ -21,6 +21,36 @@ const schema = {
   },
 }
 
+// PRAGMA table_info(table_name);
+const schemaV2 = {
+  'requests': {
+    attrs: [
+      ["url", "TEXT"],
+      ["status",	"INTEGER"],
+      ["ip_hash",	"TEXT"],
+      ["error",	"TEXT"],
+      ["referrer", "TEXT"],
+    ],
+    write_attrs: ['url', 'status', 'error', 'referrer', 'ip_hash'],
+    is_allowed: user => true
+  },
+  'daily_visits': {
+    attrs: [],
+    write_attrs: [],
+    is_allowed: user => true
+  },
+  'stats': {
+    attrs: [
+      ["key", "TEXT"],
+      ["date",	"TEXT"],
+      ["value",	"TEXT"],
+      ["count",	"INTEGER"],
+    ],
+    write_attrs: ['key', 'date', 'value', 'count'],
+    is_allowed: user => true
+  },
+}
+	
 // FIXME: DB_URL should be DB_PATH, it's not an URL (doesn't start with sqlite3://...)
 if (!process.env.VOLUME_PATH) {throw "Error VOLUME_PATH not set..."}
 let dbPath = path.join(process.env.VOLUME_PATH, 'analytics.db')
