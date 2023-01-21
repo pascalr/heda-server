@@ -8,22 +8,6 @@ import _ from 'lodash';
 
 const schema = {
   'requests': {
-    write_attrs: ['url', 'status', 'error', 'referrer', 'ip_hash'],
-    is_allowed: user => true
-  },
-  'daily_visits': {
-    write_attrs: [],
-    is_allowed: user => true
-  },
-  'stats': {
-    write_attrs: ['key', 'date', 'value', 'count'],
-    is_allowed: user => true
-  },
-}
-
-// PRAGMA table_info(table_name);
-const schemaV2 = {
-  'requests': {
     attrs: [
       ["url", "TEXT"],
       ["status",	"INTEGER"],
@@ -57,6 +41,7 @@ let dbPath = path.join(process.env.VOLUME_PATH, 'analytics.db')
 export const db = new lazyDb(dbPath, { verbose: console.log })
 db.setSchema(schema)
 console.log('Opening database successful!')
+db.migrate()
 
 const analytics = {}
 
