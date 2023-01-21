@@ -123,7 +123,7 @@ const sqlDb = {
         this.createTable(table, schema[table].attrs)
       } else {
         let dbColumnsNames = this.tableColumns(table).map(c => c.name)
-        let schemaColumns = schema[table].attrs
+        let schemaColumns = schema[table].attrs || []
         schemaColumns.forEach(col => {
           if (!dbColumnsNames.includes(col[0])) {
             this.tableAddColumn(table, col)
@@ -154,7 +154,7 @@ const sqlDb = {
     s += '"id" INTEGER NOT NULL,'
     s += '"created_at" TEXT NOT NULL,'
     s += '"updated_at" TEXT NOT NULL,'
-    attrs.forEach(attr => {
+    ;(attrs || []).forEach(attr => {
       s += '"'+attr[0]+'" '+attr[1]+','
     })
     s += 'PRIMARY KEY("id" AUTOINCREMENT)'
