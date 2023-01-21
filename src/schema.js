@@ -38,6 +38,23 @@ const schema = {
     security_attrs: ['user_id'],
   },
   'users': {
+    attrs: [
+      ["name", "TEXT", "NOT NULL", "UNIQUE"],
+      ["account_id", "INTEGER"],
+      //["gender", "INTEGER"],
+      ["image_slug", "TEXT"],
+      ["locale", "TEXT"],
+      ["is_public", "INTEGER"],
+      ["email", "TEXT"],
+      ["email_validated", "INTEGER"],
+      ["confirm_email_token", "TEXT"],
+      ["reset_password_token", "TEXT"],
+      ["encrypted_password", "BLOB"],
+      ["salt", "BLOB"],
+      ["admin", "INTEGER"],
+      ["username", "TEXT"],
+      ["login_access_token", "TEXT"]
+    ],
     //write_attrs: ['name', 'gender', 'image_slug', 'locale', 'is_public'],
     write_attrs: ['image_slug', 'locale'],
     //attrs_types: {is_public: 'bool'},

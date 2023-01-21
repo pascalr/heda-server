@@ -126,6 +126,7 @@ const sqlDb = {
         let schemaColumns = schema[table].attrs || []
         schemaColumns.forEach(col => {
           if (!dbColumnsNames.includes(col[0])) {
+            console.log('Creating missing column:', table)
             this.tableAddColumn(table, col)
           }
         })
@@ -140,13 +141,13 @@ const sqlDb = {
    */
   tableAddColumn(tableName, column) {
     let [name, type, ...args] = column
-    let q = "ALTER TABLE "+tableName+" ADD COLUMN "+name+" "+type+" "+(args || "").join(" ")
+    let q = 'ALTER TABLE "'+tableName+'" ADD COLUMN '+name+" "+type+" "+(args || "").join(" ")
     this.prepare(q).run()
   },
 
   // Example: [ {cid: 0, name: 'id', type: 'INTEGER', notnull: 1, dflt_value: null, pk: 1} ]
   tableColumns(tableName) {
-    return this.pragma("table_info("+tableName+")")
+    return this.pragma('table_info("'+tableName+'")')
   },
 
   createTable(tableName, attrs) {

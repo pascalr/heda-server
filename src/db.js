@@ -15,6 +15,7 @@ if (fs.existsSync(dbPath)) {
 }
 export const db = new lazyDb(dbPath, { verbose: console.log })
 db.setSchema(schema)
+db.migrate()
 console.log('Opening database successful!')
 
 export default db;

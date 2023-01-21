@@ -141,8 +141,15 @@ router.post('/change_user', function(req, res, next) {
   res.redirect('/');
 });
 
-router.post('/gen_login_key', ensureLoggedIn, function(req, res) {
-  
+//router.post('/gen_login_token', ensureLoggedIn, function(req, res) {
+router.post('/gen_login_token', ensureLoggedIn, function(req, res) {
+  var token = crypto.randomUUID();
+  let info = db.prepare('UPDATE users SET login_access_token = ? WHERE id = ?').run(token, req.user.id)
+  if (info.changes != 1) {
+    req.flash('error', res.t('Internal_error'))
+    return res.send('Internal error')
+  }
+  res.json({token})
 });
 
 router.get('/edit_profile', function(req, res, next) {

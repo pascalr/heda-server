@@ -1,4 +1,3 @@
-- Fix /admin, I must be able to connect. Remove stats? I only started working on that I believe, I am not even using it...
 - Add login_key to users in the database
 - Copy hedacuisine db to local
 - /gen_login_key
