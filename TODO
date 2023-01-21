@@ -9,6 +9,8 @@
 - If no, log in automatically using login_key if exists
 - Otherwise, go to login page
 - TODO: User lockout for two many logins
+OPTIMIZE:
+db.pragma('journal_mode = WAL'); db.pragma('journal_mode = WAL');
 
 *********************************************************
 *********************************************************

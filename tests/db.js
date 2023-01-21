@@ -103,7 +103,6 @@ const farmSchema = {
   'chickens': {
     attrs: [
       ["name", "TEXT"],
-      ["egg_count",	"INTEGER"],
     ],
     write_attrs: ['name', 'egg_count'],
     is_allowed: user => true
@@ -116,3 +115,13 @@ farmDb.setSchema(farmSchema)
 assert(!farmDb.hasTable('chickens'))
 farmDb.migrate()
 assert(farmDb.hasTable('chickens'))
+
+// Add a column
+farmSchema.chickens.attrs = [
+  ["name", "TEXT"],
+  ["egg_count",	"INTEGER"],
+]
+farmDb.migrate()
+farmDb.createRecord("chickens", {name: 'Jack', egg_count: 10})
+let jack = farmDb.fetchRecord('chickens', {name: 'Jack'}, ['egg_count'])
+assertEquals(10, jack.egg_count)

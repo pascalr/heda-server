@@ -111,6 +111,9 @@ const sqlDb = {
   },
   getSchema() {return this.___schema},
 
+  /**
+   * Create missing tables and missing columns.
+   */
   migrate() {
     let schema = this.getSchema()
     let tables = Object.keys(schema)
@@ -118,10 +121,32 @@ const sqlDb = {
       if (!this.hasTable(table)) {
         console.log('Creating missing table:', table)
         this.createTable(table, schema[table].attrs)
+      } else {
+        let dbColumnsNames = this.tableColumns(table).map(c => c.name)
+        let schemaColumns = schema[table].attrs
+        schemaColumns.forEach(col => {
+          if (!dbColumnsNames.includes(col[0])) {
+            this.tableAddColumn(table, col)
+          }
+        })
       }
     })
+  },
 
-    // TODO: Create missing columns... // PRAGMA table_info(table_name);
+  /**
+   * 
+   * @param {*} tableName 
+   * @param {*} column ["col_name", "col_type", "NOT NULL"?]
+   */
+  tableAddColumn(tableName, column) {
+    let [name, type, ...args] = column
+    let q = "ALTER TABLE "+tableName+" ADD COLUMN "+name+" "+type+" "+(args || "").join(" ")
+    this.prepare(q).run()
+  },
+
+  // Example: [ {cid: 0, name: 'id', type: 'INTEGER', notnull: 1, dflt_value: null, pk: 1} ]
+  tableColumns(tableName) {
+    return this.pragma("table_info("+tableName+")")
   },
 
   createTable(tableName, attrs) {
