@@ -353,7 +353,7 @@ const ExpandedNavbar = ({startItems=[], endItems=[], collapsableStartItems=[], c
 const OpenedRightSlideNavbar = ({startItems=[], endItems=[], collapsableStartItems=[], collapsableEndItems=[]}) => {
   
   return <>
-    <div className='position-absolute d-flex flex-column right-slide-navbar' style={{right: '0', top: '2.7em', lineHeight: '2em', fontSize: '1.2em', backgroundColor: 'rgb(33, 37, 41)', color: 'white', height: '100vh', maxWidth: '100vw', width: '200px'}}>
+    <div className='position-absolute d-flex flex-column right-slide-navbar' style={{right: '0', top: '2.3em', lineHeight: '2em', fontSize: '1.4em', backgroundColor: 'rgb(33, 37, 41)', color: 'white', height: '100vh', maxWidth: '100vw', width: '200px'}}>
       {collapsableStartItems.map((e,i) => <div key={'b'+i}>{e}</div>)}
       {collapsableEndItems.map((e,i) => <div key={'d'+i}>{e}</div>)}
     </div>

@@ -12,7 +12,12 @@ db.pragma('journal_mode = WAL'); db.pragma('journal_mode = WAL');
 *********************************************************
 *********************************************************
 
-Chess with Fog of War. 
+Pour mon projet, un bras robotique normal dans l'extension sur le côté.
+Un peu comme eux: https://www.dexai.com/
+Je sais pas. Le problème c'est que ce n'est pas puissant. Ça peut être pratique
+comme 2e bras.
+
+Chess with Fog of War. Tu vois maximum 2 cases plus loin que tes pièces. Tu vois le roi s'il est en échec. Si tu essaies de te déplacer loin dans le fog of war, mais qu'il y a une pièce sur ton chemin, tu t'arrêtes sur cette pièce et tu es obligé de la manger. Ainsi, il n'y a pas de coup illégal qui te donne de l'information.
 
 Publier sur facebook une recette par semaine.
 Une recette que j'ai fait* cette semaine.
