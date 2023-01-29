@@ -301,6 +301,15 @@ router.get('/am_i_logged_in', function(req, res) {
   res.send((req.user && req.user.id) ? "1" : "0")
 })
 
+router.get('/app_status', function(req, res) {
+  let data = {
+    logged_in: (req.user && req.user.id) ? "1" : "0",
+    user_id: req.user ? req.user.id : undefined,
+    csrf: res.locals.csrfToken,
+  }
+  res.json(data)
+})
+
 router.get('/contact', function(req, res, next) {
   return res.render('contact');
 })
