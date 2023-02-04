@@ -134,7 +134,6 @@ app.use(function(req, res, next) {
   req.user = req.session.user
   if (req.locale) {throw "Internal coding error. Can't overwrite req.locale"}
   req.locale = (req.user?.locale || req.query.l || req.query.locale || DEFAULT_LOCALE).toLowerCase();
-  console.log('locale', req.locale)
   res.locals.locale = req.locale;
   res.locals.t = translate(req.locale)
   res.t = translate(req.locale)

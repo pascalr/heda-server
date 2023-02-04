@@ -1,3 +1,5 @@
+Supprimer la recette Riz au quinoa et curmuma en doublon: /r/448
+
 - Login from app using POST
 - Call /gen_login_key from app
 - Store login_key in SharedPreferences
@@ -11,6 +13,8 @@ db.pragma('journal_mode = WAL'); db.pragma('journal_mode = WAL');
 *********************************************************
 *********************************************************
 *********************************************************
+
+De la réalité augmenté pour voir l'inventaire dans la machine!
 
 Pour mon projet, un bras robotique normal dans l'extension sur le côté.
 Un peu comme eux: https://www.dexai.com/

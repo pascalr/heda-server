@@ -93,7 +93,6 @@ export function fetchTableLocaleAttrs(db, table, conditions, attributes, localeA
 }
 
 export function fetchWithAncestors(id, attr, fetch) {
-  console.log('id', id)
   let record = fetch(id)
   if (!record) {return null}
   if (record[attr]) {

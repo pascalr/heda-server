@@ -289,7 +289,6 @@ const sqlDb = {
 
     let schema = this.getSchema()
     let id = parseInt(typeof recordOrId === 'string' ? recordOrId : recordOrId.id)
-    console.log('id', id)
 
     this.transaction(() => {
     
