@@ -81,12 +81,12 @@ const RecipeListItemMenu = ({fav, recipe, user}) => {
   </>
 }
 
-export const RecipeList = ({list, selected, recipes, user}) => {
+export const RecipeList = ({list, user, favoriteRecipes}) => {
 
   return (<>
     <ul id="recipes" className="recipe-list">
-      {list.map((item, current) => {
-        let {fav, recipe} = item
+      {list.map(recipe => {
+        let fav = favoriteRecipes.find(f => f.recipe_id == recipe.id)
         //let recipeTags = suggestions.filter(suggestion => suggestion.recipe_id == recipe.id).map(suggestion => tags.find(t => t.id == suggestion.tag_id))
         //let mix = mixes.find(e => e.recipe_id == recipe.id)
               //{mix ? <img src="/img/logo_001.svg" width="24" height="24"/> : ''}
@@ -94,7 +94,7 @@ export const RecipeList = ({list, selected, recipes, user}) => {
         
         return (
           <li key={recipe.id} className='d-flex align-items-center'>
-            <Link path={'/r/'+recipe.id} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}} className={current == selected ? "selected" : undefined}>
+            <Link path={'/r/'+recipe.id} style={{color: 'black', fontSize: '1.1em', textDecoration: 'none'}}>
               <div className="d-flex align-items-center">
                 <RecipeThumbnailImage {...{recipe}} />
                 <div style={{marginRight: '0.5em'}}></div>
@@ -110,34 +110,19 @@ export const RecipeList = ({list, selected, recipes, user}) => {
   </>)
 }
 
-export const RecipeIndex = ({favoriteRecipes, suggestions, tags, mixes, recipes, user, images}) => {
-
-  const [recipeToEdit, setRecipeToEdit] = useState(null)
-  //const [showModal, setShowModal] = useState(true)
-  
-  console.log('favoriteRecipes', favoriteRecipes)
+export const RecipeIndex = ({favoriteRecipes, recipes, user}) => {
 
   let publicRecipes = []
   let privateRecipes = []
-  let favList = []
 
   recipes.forEach((recipe) => {
-    f = favoriteRecipes.find(r => r.recipe_id == recipe.id)
-    if (recipe.user_id == user.id) {
-      if (recipe.is_public) {publicRecipes.push({recipe: recipe, fav: f})}
-      else {privateRecipes.push({recipe: recipe, fav: f})}
-    }
-    else if (f) { favList.push({recipe: recipe, fav: f}) }
+      if (recipe.is_public) {publicRecipes.push(recipe)}
+      else {privateRecipes.push(recipe)}
   })
 
-  //let editUserRecipe = (recipe) => {
-  //  setRecipeToEdit(recipe)
-  //  setShowModal(true)
-  //}
 
-  let listArgs = {suggestions, tags, mixes, recipes, user, images}
+  let listArgs = {user, favoriteRecipes}
 
-    //<EditTagsModal {...{recipe: recipeToEdit, tags, suggestions, showModal, setShowModal}} />
   return (<>
     <br/>
     {publicRecipes.length || privateRecipes.length ? '' : <p>{t('No_personal_recipes_yet')}.</p>}
@@ -148,10 +133,6 @@ export const RecipeIndex = ({favoriteRecipes, suggestions, tags, mixes, recipes,
     {privateRecipes.length == 0 ? null : <>
       <h3 className="h001">{t('My_private_recipes')}</h3>
       <RecipeList list={privateRecipes} {...listArgs} />
-    </>}
-    {favList.length == 0 ? null : <>
-      <h3 className="h001">{t('Favorite_recipes')}</h3>
-      <RecipeList list={favList} {...listArgs} />
     </>}
   </>)
 }

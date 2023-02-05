@@ -86,26 +86,26 @@ export const AddToListButton = ({recipe, user, favorite, ...props}) => {
   </button> 
 }
 
-export const FavoriteButton = ({recipe, user, favorite, width, ...props}) => {
-  if (recipe.user_id == user.id) {return ''}
-  const handleClick = () => {
-    if (favorite) {
-      window.hcu.destroyRecord(favorite)
-    } else {
-      window.hcu.createRecord('favorite_recipes', {recipe_id: recipe.id})
-      if (!window.hcu.hasRecord('recipes', recipe)) {
-        window.hcu.addRecord('recipes', recipe)
-      }
-    }
-  }
-  let img = favorite ? "/icons/heart-fill.svg" : "/icons/heart.svg"
-  let title = favorite ? t('Remove_from_my_favorites') : t('Add_to_my_favorites')
-  return <button type="button" className="btn btn-outline-secondary" onClick={handleClick} {...props}>
-    <img src={img} width={width||"24"} title={title}></img>
-  </button>
-}
+// export const FavoriteButton = ({recipe, user, favorite, width, ...props}) => {
+//   if (recipe.user_id == user.id) {return ''}
+//   const handleClick = () => {
+//     if (favorite) {
+//       window.hcu.destroyRecord(favorite)
+//     } else {
+//       window.hcu.createRecord('favorite_recipes', {recipe_id: recipe.id})
+//       if (!window.hcu.hasRecord('recipes', recipe)) {
+//         window.hcu.addRecord('recipes', recipe)
+//       }
+//     }
+//   }
+//   let img = favorite ? "/icons/heart-fill.svg" : "/icons/heart.svg"
+//   let title = favorite ? t('Remove_from_my_favorites') : t('Add_to_my_favorites')
+//   return <button type="button" className="btn btn-outline-secondary" onClick={handleClick} {...props}>
+//     <img src={img} width={width||"24"} title={title}></img>
+//   </button>
+// }
   
-export const RecipeViewer = ({recipeId, favoriteRecipes, user, siblings, recipes, images}) => {
+export const RecipeViewer = ({recipeId, user, favoriteRecipes, siblings, recipes, images}) => {
 
   //const [showModal, setShowModal] = useState(false)
 
@@ -146,6 +146,7 @@ export const RecipeViewer = ({recipeId, favoriteRecipes, user, siblings, recipes
             //<button type="button" className="btn btn-outline-secondary" onClick={() => setShowModal(true)}>
             //  <img src="/icons/tags.svg" width="24"></img>
             //</button>
+            //<FavoriteButton {...{recipe, user, favorite}} />
   return (<>
     <div className="recipe mt-3">
       <div className="d-block d-md-flex" style={{gap: '20px'}}>
@@ -159,7 +160,6 @@ export const RecipeViewer = ({recipeId, favoriteRecipes, user, siblings, recipes
                 <img src="/icons/pencil.svg" width="24"></img>
               </Link>
             : ''}
-            <FavoriteButton {...{recipe, user, favorite}} />
             <AddToListButton {...{recipe, user, favorite}} className='btn btn-outline-secondary' />
             {recipe.user_id != user.id ? <DuplicateButton {...{recipe}} className='btn btn-outline-secondary' /> : ''}
             <span className="dropdown">

@@ -34,7 +34,7 @@ const schema = {
   'recipes': {
     write_attrs: ['name', 'main_ingredient_id', 'preparation_time', 'cooking_time', 'total_time', 'json', 'ingredients', 'recipe_kind_id', 'image_slug', 'servings_name', 'is_public', 'heda_instructions', 'raw_servings', 'html'],
     attrs_types: {is_public: 'bool'},
-    dependant_destroy: {recipe_id: ['favorite_recipes', 'meals', 'mixes', 'recipe_comments', 'recipe_notes', 'recipe_ratings', 'recipe_tools', 'references', 'suggestions']},
+    dependant_destroy: {recipe_id: ['favorite_recipes', 'meals', 'mixes', 'recipe_comments', 'recipe_notes', 'recipe_ratings', 'recipe_tools', 'suggestions']}, // references (not used anymore and causing issues. OK not indexed.)
     security_attrs: ['user_id'],
   },
   'users': {

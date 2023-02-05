@@ -7,7 +7,7 @@ import { changeUrl, ajax, capitalize } from "./utils"
 import { urlWithLocale, sortBy } from "../utils"
 import { image_path } from './routes'
 import {RecipeEditor} from "./recipe_editor"
-import {RecipeViewer, FavoriteButton, AddToListButton, DuplicateButton} from "./recipe_viewer"
+import {RecipeViewer, AddToListButton, DuplicateButton} from "./recipe_viewer"
 import {KindViewer} from "./show_recipe_kind"
 import {UserViewer} from "./show_user"
 import {ExploreViewer} from "./show_explore"
@@ -81,11 +81,11 @@ const ShowRecipeKind = ({user, favoriteRecipes, recipeKindId, ...props}) => {
   if (!data) {return null}
   console.log('data', data)
 
+  // <FavoriteButton {...{recipe, user, favorite}} className='plain-btn' width='32' />
   const recipeButtons = (recipe) => {
     if (user.id == recipe.user_id) {return null}
     const favorite = favoriteRecipes?.find(f => f.recipe_id == recipe.id)
     return <>
-      <FavoriteButton {...{recipe, user, favorite}} className='plain-btn' width='32' />
       <AddToListButton {...{recipe, user, favorite}} className='plain-btn ms-2' width='32' />
       <DuplicateButton {...{recipe}} className='plain-btn ms-2' width='32' />
     </>
