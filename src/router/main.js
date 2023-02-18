@@ -291,10 +291,10 @@ router.get('/fetch_recipe/:id', function(req, res, next) {
   let recipe = db.fetchRecord('recipes', {id: req.params.id}, RECIPE_ATTRS)
   if (!recipe) {throw "Can't fetch a recipe. Does not exist."}
   let user = db.fetchRecord('users', {id: recipe.user_id}, ['name'])
-  if (!user || (recipe.is_private && user.account_id != req.user.account_id)) {
-    throw "Can't fetch private recipe."
-  }
-  res.json({...recipe, user_name: user.name})
+  // if (!user || (recipe.is_private && user.account_id != req.user.account_id)) {
+  //   throw "Can't fetch private recipe."
+  // }
+  res.json({...recipe, user_name: user?.name || 'UNKOWN_USER'})
 });
 
 router.get('/fetch_search_data', function(req, res, next) {
