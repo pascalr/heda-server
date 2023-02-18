@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { getLocale } from '../lib'
 import { translate } from '../translate'
-import { urlWithLocale } from '../utils'
+import { groupBy, urlWithLocale } from '../utils'
 import { RecipeSmallImage, RecipeThumbnailImage } from './image'
 import { Link } from './lib'
 
@@ -34,7 +34,7 @@ export const ShowSearch = () => {
     //   </div>
     // })}
 
-  //let recipesByUsername = groupBy(recipe, '')
+  let recipesByAuthor = groupBy(recipes, 'author')
 
   return <>
     <div className='trunk'>
@@ -53,17 +53,21 @@ export const ShowSearch = () => {
         </li>
         ))}
       </ul>
-
-      <h3>Recettes</h3>
-      <ul>
-        {recipes.map(recipe => (
-          <li key={recipe.id}>
-            <Link path={'/r/'+recipe.id} className='plain-link'>
-              {recipe.name} — {recipe.author}
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <br/>
+      {Object.keys(recipesByAuthor).map(author => {
+        return <div key={author}>
+          <div className="fs-12">{t('Recipes')} {t('by')} <b>{author}</b></div>
+          <ul className="recipe-list">
+            {recipesByAuthor[author].map(recipe => (
+              <li key={recipe.id}>
+                <Link path={'/r/'+recipe.id} className='plain-link'>
+                  {recipe.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      })}
     </div>
   </>
 }
