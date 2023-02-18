@@ -214,6 +214,7 @@ export function tr(id, locale) {
     Recipes_by: 'Les recettes de',
     Recipes: 'Recettes',
     Search: 'Rechercher',
+    Searching_for: 'Recherche',
     Search_for_a_public_member: 'Rechercher un membre publique',
     Public_members: 'Membres publics',
     Make_public: 'Rendre public',

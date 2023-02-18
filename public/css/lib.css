@@ -5,6 +5,10 @@ img {
   height: auto;
 }
 
+ul.plain, ol.plain {
+  list-style-type: none;
+}
+
 .plain-input {
   border: none;
   /*font-family: inherit;*/

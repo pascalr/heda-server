@@ -21,6 +21,20 @@ export function normalizeSearchText(text) {
   return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
 }
 
+// https://stackoverflow.com/questions/14446511/most-efficient-method-to-groupby-on-an-array-of-objects
+/**
+ * Groups the array based on the given key.
+ * @param {*} xs 
+ * @param {*} key 
+ * @returns 
+ */
+export function groupBy(xs, key) {
+  return xs.reduce(function(rv, x) {
+    (rv[x[key]] = rv[x[key]] || []).push(x);
+    return rv;
+  }, {});
+};
+
 /**
  * Returns a hash code from a string
  * @param  {String} str The string to hash.

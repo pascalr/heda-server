@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 import { db } from '../db.js';
 import { ensureUser } from './login.js';
-import { now, shuffle } from '../utils.js';
+import { normalizeSearchText, now, shuffle } from '../utils.js';
 import { tr } from '../translate.js'
 import schema from '../schema.js'
 import { fetchWithAncestors, fetchTableLocaleAttrs, fetchRecordLocaleAttrs, descriptionRecipeIngredients, kindAncestorId } from "../lib.js"
@@ -212,8 +212,14 @@ function extractUser(id) {
 }
 
 function extractSearch(query, locale) {
-  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug'], ['name'], locale)
-  let recipes = db.prepare("SELECT id,name from recipes where name LIKE ?").all("%"+query+"%")
+  let allRecipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug'], ['name', 'recipe_count'], locale)
+  let q = normalizeSearchText(query)
+  console.log('q', q)
+  console.log('test', allRecipeKinds.map(k => k.name && normalizeSearchText(k.name)))
+  let recipeKinds = allRecipeKinds.filter(k => k.name && normalizeSearchText(k.name).includes(q))
+  console.log('recipeKinds', recipeKinds)
+  
+  let recipes = db.prepare("SELECT recipes.id AS id, recipes.name AS name, users.name AS author FROM recipes JOIN users ON recipes.user_id = users.id WHERE recipes.name LIKE ?").all("%"+query+"%")
   //let publicUsers = db.fetchTable('users', {}, ['name', 'image_slug'])
   return {query, recipeKinds, recipes}
 }
