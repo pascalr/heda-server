@@ -254,6 +254,8 @@ const SearchBar = ({data, isSearching, setIsSearching, onTermChanged}) => {
       let match = allMatching[selected]
       if (match) {
         document.getElementById(match.list+'-'+match.id).click()
+      } else {
+        window.location.href = "/q?q="+search
       }
       //console.log('selected', selected)
       //console.log('matchi', allMatching[selected])

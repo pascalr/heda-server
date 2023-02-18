@@ -1,52 +1,6 @@
 # Heda Server
 
-Message to fly:
-How to use scp with fly properly?
-I am able to make it work, but it's a pain every time. Any way to make it easier? Here how it goes for me:
-> scp ... ... ... ...
-ssh: Could not resolve hostname heda-server.internal: Name or service not known
-Alright I check wireguard status:
-> sudo wg
-Not running...
-> wg-quick up path-to-file.conf
-> scp ... ... ... ...
-Does not work...
-> fly doctor
-Does not work... I try to go on Hacker News when waiting, hacker news does not work anymore...
-restart internet
-Internet works. Fly doctor works.
-ssh: Could not resolve hostname heda-server.internal: Name or service not known
-I give up, I remove all previous wireguard entries and create a new one.
-> fly wireguard remove
-> fly wireguard remove
-> fly wireguard reset
-> fly wireguard create
-wg-quick up path-to-file.conf
-Alright now it works...
-> scp .... ... .... 
-But every time I get:
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
-Someone could be eavesdropping on you right now (man-in-the-middle attack)!
-It is also possible that a host key has just been changed.
-The fingerprint for the ED25519 key sent by the remote host is
-SHA256:yjFBuKnLyPvC9QSU5XzcUenIIxZsVzUcWh9nHR3kLwQ.
-Please contact your system administrator.
-Add correct host key in /home/pascalr/.ssh/known_hosts to get rid of this message.
-Offending ED25519 key in /home/pascalr/.ssh/known_hosts:2
-  remove with:
-  ssh-keygen -f "/home/pascalr/.ssh/known_hosts" -R "heda-server.internal"
-Host key for heda-server.internal has changed and you have requested strict checking.
-Host key verification failed.
-> ssh-keygen -f "/home/pascalr/.ssh/known_hosts" -R "heda-server.internal"
-> scp .... ... .... 
-
-If there could be a fly scp command that would be sooooooooo awesome.
-
-:q
-
+Heda is a recipe sharing platform. It is not a private. If you store your recipes, everyone can see and copy your recipes.
 
 ## INSTALL
 requirements node.js

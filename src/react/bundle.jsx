@@ -12,6 +12,7 @@ import { ShowExplore } from "./show_explore"
 import { getLocale } from "../lib"
 import { ErrorBoundary } from './error_boundary'
 import { SuggestionsPage } from './suggestions'
+import { ShowSearch } from './show_search'
 
 export const AppSearchRoot = () => {
 
@@ -34,6 +35,7 @@ let roots = {
   'root-x': <ShowExplore/>,
   'root-k': <ShowRecipeKind/>,
   'root-u': <ShowUser/>,
+  'root-q': <ShowSearch/>,
   'root-g': <SuggestionsPage/>,
 }
 

@@ -211,6 +211,13 @@ function extractUser(id) {
   return {user, userRecipes, favRecipes}
 }
 
+function extractSearch(query, locale) {
+  let recipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug'], ['name'], locale)
+  let recipes = db.prepare("SELECT id,name from recipes where name LIKE ?").all("%"+query+"%")
+  //let publicUsers = db.fetchTable('users', {}, ['name', 'image_slug'])
+  return {query, recipeKinds, recipes}
+}
+
 function extractRecipeKind(id, locale) {
 
   let ancestors = fetchWithAncestors(id, 'kind_id', (id) => (
@@ -377,8 +384,10 @@ router.get('/r/:id', renderAppIfLoggedIn, function(req, res, next) {
 
   let recipeId = req.params.id
   let o = {}
-  o.recipe = db.fetchRecord('recipes', {id: recipeId, is_public: 1}, RECIPE_ATTRS)
-  if (!o.recipe) {throw 'Unable to fetch recipe. Not existent or private.'}
+  o.recipe = db.fetchRecord('recipes', {id: recipeId}, RECIPE_ATTRS)
+  if (!o.recipe) {throw 'Unable to fetch recipe.'}
+  //o.recipe = db.fetchRecord('recipes', {id: recipeId, is_public: 1}, RECIPE_ATTRS)
+  //if (!o.recipe) {throw 'Unable to fetch recipe. Not existent or private.'}
   o.user = db.fetchRecord('users', {id: o.recipe.user_id}, 'name')
   //if (res.locals.locale != o.user.locale) {
   //  // TODO: Fetch in the proper locale
@@ -407,6 +416,12 @@ router.get('/r/:id', renderAppIfLoggedIn, function(req, res, next) {
 //   res.locals.gon = extractKind(req.params.id, res.locals.locale)
 //   res.render('show_kind');
 // });
+
+
+router.get('/q', function(req, res) {
+  res.locals.gon = extractSearch(req.query.q, res.locals.locale)
+  res.render('search')
+})
 
 router.get('/k/:id', renderAppIfLoggedIn, function(req, res, next) {
 

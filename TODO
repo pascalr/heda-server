@@ -1,3 +1,11 @@
+Change la langue dans le search fait perdre le query...
+Et aussi, rechercher fait perdre le locale...
+
+(FIELD AJOUTÉ À LA DB) Ajouter is_validated aux recettes. Au début, mettre à vrai pour les recettes is_public.
+Afficher toutes les recettes pour les recipe kinds. Afficher un avertissement si la recette n'est pas validé. Cette recette est une ébauche. Vous pouvez l'utilisez comme référence, mais elle peut être incomplète ou contenir certaines erreurs.
+Une page de search qui affichent toutes les recettes.
+Pouvoir faire des liens dans les recettes. Par exemple, pour Tapenlou, lien vers les recettes de sauce.
+
 - Login from app using POST
 - Call /gen_login_key from app
 - Store login_key in SharedPreferences
