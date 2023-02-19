@@ -88,7 +88,7 @@ export function parseIngredientsOldFormat(text) {
     if (line[0] == '#') {return null;}
     let args = line.split(";")
     itemNb += 1
-    return {key: `${itemNb}-${line}`, item_nb: itemNb, raw: args[0].trim(), raw_food: args[1].trim()}
+    return {key: `${itemNb}-${line}`, item_nb: itemNb, raw: args[0]?.trim(), raw_food: args[1]?.trim()}
   }).filter(e => e)
 }
 

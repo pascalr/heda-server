@@ -162,7 +162,7 @@ export function parseIngredientsAndHeaders(text) {
     }
     let args = line.split(";")
     itemNb += 1
-    return {key, qty: args[0].trim(), label: args[1].trim(), item_nb: itemNb}
+    return {key, qty: args[0]?.trim(), label: args[1]?.trim(), item_nb: itemNb}
   }).filter(e => e)
 }
 function parseHedaInstructionsIngredients(raw) {
