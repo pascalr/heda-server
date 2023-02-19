@@ -7,7 +7,7 @@ import { ArrayCombination, getUrlParams, urlWithLocale } from "../utils"
 import { useFalseOnce, Link, currentPathIsRoot } from "./lib"
 import { ArrowLeftSquareWhiteIcon, SearchWhiteIcon, PersonFillWhiteIcon, XLgWhiteIcon, ListWhiteIcon } from '../server/image.js'
 import { normalizeSearchText } from "./utils"
-import { ajax } from '../lib'
+import { ajax, getLocale } from '../lib'
 import { DEFAULT_LOCALE } from '../config'
 
 const RecipeListItem = ({recipe, isSelected, siblings, user, selectedRef, setIsSearching}) => {
@@ -100,7 +100,7 @@ export const AppNavbar = ({user, _csrf, recipes, friendsRecipes, siblings, recip
     </div>,
   ]
 
-  return <SearchNavbar {...{isSearching, setIsSearching, data}}>
+  return <SearchNavbar {...{isSearching, setIsSearching, data, locale}}>
     <div style={{maxWidth: '800px', margin: 'auto'}}>
       <CssNavbar {...{startItems, endItems}} />
     </div>
@@ -188,7 +188,7 @@ export const PublicNavbar = ({locale}) => {
     <SearchButton {...{setIsSearching}} />,
   ]
 
-  return <SearchNavbar {...{data, isSearching, setIsSearching, onTermChanged}}>
+  return <SearchNavbar {...{data, isSearching, setIsSearching, onTermChanged, locale}}>
     <div className='mx-lg-3' style={{height: '100%'}}>
       <RightSlideNavbar {...{startItems, endItems, setIsSearching, collapsableEndItems, collapsableStartItems}} />
     </div>
@@ -204,7 +204,7 @@ const filterItems = (items, term) => {
   ))
 }
 
-const SearchBar = ({data, isSearching, setIsSearching, onTermChanged}) => {
+const SearchBar = ({data, isSearching, setIsSearching, onTermChanged, locale}) => {
   
   // Search is the text shown in the input field
   // Term is the term currently used to filter the search
@@ -255,7 +255,7 @@ const SearchBar = ({data, isSearching, setIsSearching, onTermChanged}) => {
       if (match) {
         document.getElementById(match.list+'-'+match.id).click()
       } else {
-        window.location.href = "/q?q="+search
+        window.location.href = urlWithLocale("/q?q="+search, locale)
       }
       //console.log('selected', selected)
       //console.log('matchi', allMatching[selected])
@@ -400,9 +400,9 @@ const RightSlideNavbar = ({startItems=[], endItems=[], collapsableStartItems=[],
 }
 
 
-const SearchNavbar = ({onTermChanged, isSearching, setIsSearching, data, children}) => {
+const SearchNavbar = ({onTermChanged, isSearching, setIsSearching, data, children, locale}) => {
 
-  const searchMode = <SearchBar {...{data, isSearching, setIsSearching, onTermChanged}} />
+  const searchMode = <SearchBar {...{data, isSearching, setIsSearching, onTermChanged, locale}} />
 
   return <>
     <nav style={{backgroundColor: 'rgb(33, 37, 41)', height: '3.25em', marginBottom: '0.5em'}}>

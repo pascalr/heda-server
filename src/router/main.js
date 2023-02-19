@@ -214,11 +214,7 @@ function extractUser(id) {
 function extractSearch(query, locale) {
   let allRecipeKinds = fetchTableLocaleAttrs(db, 'recipe_kinds', {}, ['image_slug'], ['name', 'recipe_count'], locale)
   let q = normalizeSearchText(query)
-  console.log('q', q)
-  console.log('test', allRecipeKinds.map(k => k.name && normalizeSearchText(k.name)))
   let recipeKinds = allRecipeKinds.filter(k => k.name && normalizeSearchText(k.name).includes(q))
-  console.log('recipeKinds', recipeKinds)
-  
   let recipes = db.prepare("SELECT recipes.id AS id, recipes.name AS name, users.name AS author FROM recipes JOIN users ON recipes.user_id = users.id WHERE recipes.name LIKE ?").all("%"+query+"%")
   //let publicUsers = db.fetchTable('users', {}, ['name', 'image_slug'])
   return {query, recipeKinds, recipes}
