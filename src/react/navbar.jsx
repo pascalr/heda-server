@@ -174,7 +174,7 @@ export const PublicNavbar = ({locale}) => {
   ]
 
   let otherLocale = (locale.toLowerCase() == 'en') ? 'fr' : 'en'
-  let url = window.location.pathname + (otherLocale == DEFAULT_LOCALE ? '' : '?l='+otherLocale)
+  let url = urlWithLocale(window.location.href, otherLocale)
   let startItems = [
     <a href={url} className="nav-btn fs-lg-14" rel="alternate" hrefLang={otherLocale}>{otherLocale.toUpperCase()}</a>,
   ]
